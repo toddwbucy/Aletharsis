@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "ascii",
+      "prefix": "",
+      "repeat": "A simple document with ordinary words and numbers 12345.\n",
+      "suffix": "\n",
+      "sha256_65536": "202b8cb51316123cd95aaa629f290b9393e61531f444e3e2f960e616603beaed"
+    },
+    {
+      "name": "multilingual",
+      "prefix": "",
+      "repeat": "Caf\u00e9 \u039a\u03b1\u03bb\u03b7\u03bc\u03ad\u03c1\u03b1 \u0645\u0631\u062d\u0628\u0627 \u0928\u092e\u0938\u094d\u0924\u0947 \u4e2d\u6587 \u65e5\u672c\u8a9e.\n",
+      "suffix": "\n",
+      "sha256_65536": "71e5aa80df0165c2ca98478f0a54d0a667f6c737cfc01ade061d5ba63542a83c"
+    },
+    {
+      "name": "source",
+      "prefix": "",
+      "repeat": "def greet(name):\n    \"\"\"Return a greeting.\"\"\"\n    return f\"Hello, {name} \ud83d\ude00\"\n\n",
+      "suffix": "\n",
+      "sha256_65536": "eccdc741f1a0cbf62fd200eb313384501acfc1289ca86389bbd52d126a5ed58d"
+    },
+    {
+      "name": "zero_width",
+      "prefix": "pattern:\n",
+      "repeat": "\u200b\u200c",
+      "suffix": "\n",
+      "sha256_65536": "462f48324f7a62b0cadf112a69a5b20ac8082e48fbcd85878d2c2b512a1aa41a"
+    },
+    {
+      "name": "periodic",
+      "prefix": "",
+      "repeat": "abc\u2060",
+      "suffix": "\n",
+      "sha256_65536": "15837ec9dfc9563f7f111db834125eef4c918e6da31c1692a9cc2cb64759c405"
+    },
+    {
+      "name": "combining",
+      "prefix": "A",
+      "repeat": "\u0305",
+      "suffix": "\u0301\u0323\n",
+      "sha256_65536": "2b676874182af4d4bf60a79f548ce8ab6d63ddb0a46e3a20b5b005a24725bf04"
+    }
+  ]
+}

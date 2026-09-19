@@ -1,6 +1,6 @@
 # Backend CI foundation
 
-This guide covers the CI foundation, focused unit contracts, and compiled-CLI integration workstreams of [Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7). Acquisition fault tests are described below, and the [bounded fuzzing guide](fuzzing.md) covers property targets and scheduled searches. Performance and platform validation remain separate workstreams.
+This guide covers the CI foundation, focused unit contracts, and compiled-CLI integration workstreams of [Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7). Acquisition fault tests are described below, and the [bounded fuzzing guide](fuzzing.md) covers property targets and scheduled searches. The [performance guide](performance.md) covers resource characterization; native platform validation remains a separate workstream.
 
 ## Checks and scope
 
@@ -56,7 +56,7 @@ Actions are pinned to immutable commits from the official [checkout](https://git
 
 After observing successful hosted runs, propose both job names above as required checks on main. On initial inspection, GitHub's classic branch-protection endpoint reported main as unprotected. This PR does not change branch protection or repository rulesets; enabling enforcement is a separate repository-policy action. If a merge queue is later enabled, add and validate its event trigger before requiring these checks there.
 
-Windows/macOS readers remain unsupported, and cross-builds do not establish runtime integrity. Native platform validation, fuzz schedules, benchmarks, and resource budgets remain open in Issue #7.
+Windows/macOS readers remain unsupported, and cross-builds do not establish runtime integrity. Scheduled fuzzing and resource characterization have dedicated guides; native platform validation remains open in Issue #7.
 
 ## Direct unit contracts
 
