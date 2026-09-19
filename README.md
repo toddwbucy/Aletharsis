@@ -253,3 +253,7 @@ Do not regenerate reference artifacts as part of normal testing. Changes to them
 are reviewed behavior changes. Frontend F0/F1 specifications remain paused until
 the Go parity and migration review is accepted. Directory auditing, office-format
 parsing, the service API, and stable failure codes remain separately scoped work.
+
+The [backend CI guide](docs/testing/backend-ci.md) documents the Go version matrix,
+reference checks, retained validation artifacts, and proposed merge gates tracked
+in [Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7).
