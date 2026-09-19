@@ -56,6 +56,8 @@ jobs:
           esac
           printf 'ALETHARSIS_BENCH_SIZES=%s\nREPEATS=%s\nWORKERS=%s\n' "$sizes" "$repeats" "$workers" >> "$GITHUB_ENV"
           { go version; python --version; git rev-parse HEAD; uname -sm; } > artifacts/environment.txt
+      - name: Check harness failure accounting
+        run: timeout 60s python -m unittest discover -s benchmarks -p 'test_*.py' -v
       - name: Measure executable and separate concurrency batches
         run: |
           timeout --kill-after=10s 900s python scripts/measure_backend.py \
