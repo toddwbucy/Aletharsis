@@ -1,0 +1,75 @@
+package cli
+
+import (
+	"bytes"
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strings"
+	"testing"
+)
+
+func TestHelpVersionAndUsage(t *testing.T) {
+	for _, args := range [][]string{{"--version"}, {"--help"}, {"audit", "--help"}} {
+		var out, err bytes.Buffer
+		if Run(args, &out, &err) != 0 || out.Len() == 0 {
+			t.Fatal("missing help/version")
+		}
+	}
+	var out, err bytes.Buffer
+	if Run([]string{"audit"}, &out, &err) != 4 {
+		t.Fatal("usage exit")
+	}
+}
+func TestViewsOutputsAndNoOverwrite(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("Linux-only reader")
+	}
+	dir := t.TempDir()
+	source := filepath.Join(dir, "source.py")
+	original := []byte("# 😀\u200b\x1b\n\nmore ordinary prose\n")
+	os.WriteFile(source, original, 0600)
+	link := filepath.Join(dir, "hardlink")
+	os.Link(source, link)
+	symlink := filepath.Join(dir, "symlink")
+	os.Symlink(source, symlink)
+	for _, output := range []string{source, link, symlink} {
+		var out, err bytes.Buffer
+		if Run([]string{"audit", source, "--output", output}, &out, &err) != 4 {
+			t.Fatal("overwrote existing destination")
+		}
+	}
+	for _, command := range []string{"audit", "unicode", "metadata", "structure"} {
+		var out, err bytes.Buffer
+		code := Run([]string{command, source, "--json", "--verbose"}, &out, &err)
+		var report map[string]any
+		if json.Unmarshal(out.Bytes(), &report) != nil {
+			t.Fatal("invalid JSON stdout")
+		}
+		if command == "audit" && code != 2 {
+			t.Fatalf("exit %d", code)
+		}
+		if !strings.Contains(err.String(), "audit_completed") {
+			t.Fatal("missing structured log")
+		}
+	}
+	var out, err bytes.Buffer
+	Run([]string{"audit", source, "--verbose"}, &out, &err)
+	if strings.ContainsAny(out.String(), "\x1b\x00") {
+		t.Fatal("unsafe console output")
+	}
+	got, _ := os.ReadFile(source)
+	if !bytes.Equal(got, original) {
+		t.Fatal("source bytes changed")
+	}
+}
+
+func TestMissingOutputArgument(t *testing.T) {
+	for _, args := range [][]string{{"audit", "unused.txt", "--output", "--json"}, {"audit", "unused.txt", "--output="}} {
+		var out, err bytes.Buffer
+		if Run(args, &out, &err) != 4 || !strings.Contains(err.String(), "requires a path") {
+			t.Fatal("accepted missing output path")
+		}
+	}
+}

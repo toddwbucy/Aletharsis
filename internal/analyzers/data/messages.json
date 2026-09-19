@@ -1,0 +1,200 @@
+{
+  "identifier.uuid": {
+    "category": "identifier",
+    "classification": "observed_fact",
+    "confidence": 0.99,
+    "description": "A UUID-shaped value may serve as a persistent identifier. Its persistence, uniqueness, purpose and origin cannot be inferred from syntax alone.",
+    "id": "identifier.uuid",
+    "severity": "MEDIUM",
+    "title": "UUID-like identifier present"
+  },
+  "parser.failure": {
+    "category": "parser",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "The file was not fully analyzed. Review the error before interpreting findings.",
+    "id": "parser.failure",
+    "severity": "INFO",
+    "title": "Audit could not complete"
+  },
+  "pattern.periodic_insertion": {
+    "category": "possible_steganography",
+    "classification": "suspicious_pattern",
+    "confidence": 0.7,
+    "description": "Invisible formatting characters recur at an exact character interval. Formatting conventions may also produce this pattern.",
+    "id": "pattern.periodic_insertion",
+    "severity": "MEDIUM",
+    "title": "Periodic invisible-character insertion"
+  },
+  "pattern.tag_run": {
+    "category": "possible_steganography",
+    "classification": "suspicious_pattern",
+    "confidence": 0.75,
+    "description": "This run is consistent with encoded character data. Tags and variation selectors also have legitimate uses; interpretation requires review.",
+    "id": "pattern.tag_run",
+    "severity": "MEDIUM",
+    "title": "Long contiguous tag sequence"
+  },
+  "pattern.variation_selector_run": {
+    "category": "possible_steganography",
+    "classification": "suspicious_pattern",
+    "confidence": 0.75,
+    "description": "This run is consistent with encoded character data. Tags and variation selectors also have legitimate uses; interpretation requires review.",
+    "id": "pattern.variation_selector_run",
+    "severity": "MEDIUM",
+    "title": "Long contiguous variation selector sequence"
+  },
+  "pattern.zero_width_binary": {
+    "category": "possible_steganography",
+    "classification": "suspicious_pattern",
+    "confidence": 0.8,
+    "description": "A two-symbol ZWSP/ZWNJ alphabet forms a long contiguous or regularly spaced sequence. This is consistent with an invisible encoding scheme; no payload, author or watermark intent is confirmed.",
+    "id": "pattern.zero_width_binary",
+    "severity": "HIGH",
+    "title": "Possible zero-width binary encoding"
+  },
+  "provenance.text_marker": {
+    "category": "provenance",
+    "classification": "observed_fact",
+    "confidence": 0.9,
+    "description": "The source contains a provenance-related label, possibly in a comment. The statement is unverified and could be an example or ordinary prose.",
+    "id": "provenance.text_marker",
+    "severity": "LOW",
+    "title": "Explicit provenance or identifier label detected"
+  },
+  "text.bom": {
+    "category": "document_structure",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "An initial BOM is an ordinary encoding marker.",
+    "id": "text.bom",
+    "severity": "INFO",
+    "title": "Byte order mark detected"
+  },
+  "text.embedded_bom": {
+    "category": "document_structure",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "Possible concatenated text or embedded formatting marker.",
+    "id": "text.embedded_bom",
+    "severity": "LOW",
+    "title": "Embedded BOM character detected"
+  },
+  "text.encoded_candidate": {
+    "category": "embedded_content",
+    "classification": "suspicious_pattern",
+    "confidence": 0.5,
+    "description": "This alphanumeric token is syntactically valid Base64; hashes, identifiers and ordinary application data can match. Decoded content is not executed or recursively analyzed.",
+    "id": "text.encoded_candidate",
+    "severity": "INFO",
+    "title": "Long encoding-compatible token detected"
+  },
+  "text.line_endings": {
+    "category": "document_structure",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "Line-ending differences can result from ordinary editing or platform conversion.",
+    "id": "text.line_endings",
+    "severity": "LOW",
+    "title": "Mixed or legacy line endings detected"
+  },
+  "text.mixed_script": {
+    "category": "unicode",
+    "classification": "suspicious_pattern",
+    "confidence": 0.6,
+    "description": "Mixed scripts can contain visually similar letters, but can also be intentional. This is not a comprehensive confusables detector.",
+    "id": "text.mixed_script",
+    "severity": "LOW",
+    "title": "Mixed Latin and Greek/Cyrillic letters within a token"
+  },
+  "unicode.bidi_control": {
+    "category": "unicode",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+    "id": "unicode.bidi_control",
+    "severity": "LOW",
+    "title": "U+202C POP DIRECTIONAL FORMATTING detected"
+  },
+  "unicode.combining": {
+    "category": "unicode",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+    "id": "unicode.combining",
+    "severity": "INFO",
+    "title": "U+20E3 COMBINING ENCLOSING KEYCAP detected"
+  },
+  "unicode.control": {
+    "category": "unicode",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+    "id": "unicode.control",
+    "severity": "MEDIUM",
+    "title": "U+0000 UNNAMED CONTROL detected"
+  },
+  "unicode.emoji": {
+    "category": "unicode",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+    "id": "unicode.emoji",
+    "severity": "LOW",
+    "title": "Emoji-capable U+1F469 WOMAN detected"
+  },
+  "unicode.normalization": {
+    "category": "unicode",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "Canonical or compatibility equivalents differ. This is common in normal text and does not imply a watermark.",
+    "id": "unicode.normalization",
+    "severity": "INFO",
+    "title": "Unicode normalization changes extracted text"
+  },
+  "unicode.soft_hyphen": {
+    "category": "unicode",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+    "id": "unicode.soft_hyphen",
+    "severity": "INFO",
+    "title": "U+00AD SOFT HYPHEN detected"
+  },
+  "unicode.tag": {
+    "category": "unicode",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+    "id": "unicode.tag",
+    "severity": "LOW",
+    "title": "U+E0067 TAG LATIN SMALL LETTER G detected"
+  },
+  "unicode.unusual_whitespace": {
+    "category": "unicode",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+    "id": "unicode.unusual_whitespace",
+    "severity": "INFO",
+    "title": "U+00A0 NO-BREAK SPACE detected"
+  },
+  "unicode.variation_selector": {
+    "category": "unicode",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+    "id": "unicode.variation_selector",
+    "severity": "INFO",
+    "title": "U+FE0F VARIATION SELECTOR-16 detected"
+  },
+  "unicode.zero_width": {
+    "category": "unicode",
+    "classification": "observed_fact",
+    "confidence": 1.0,
+    "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+    "id": "unicode.zero_width",
+    "severity": "LOW",
+    "title": "U+200D ZERO WIDTH JOINER detected"
+  }
+}
