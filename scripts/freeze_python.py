@@ -6,11 +6,14 @@ reviewed operation in a new destination/revision, not part of normal tests.
 from pathlib import Path
 import hashlib
 import json
+import platform
 import unicodedata as ud
 from aletharsis.audit import audit, LIMITATIONS
 
 root = Path('reference/python-behavior')
 assert ud.unidata_version == '15.0.0'
+if platform.python_version() != '3.12.13':
+    raise RuntimeError('Reference capture requires Python 3.12.13')
 assert (root/'unicode.json').is_file(), 'Run freeze_unicode.py first in a fresh capture'
 assert (root/'report.schema.json').is_file(), 'Supply the reviewed schema snapshot first'
 for directory in ['inputs', 'reports']:

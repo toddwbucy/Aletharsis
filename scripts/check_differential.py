@@ -7,7 +7,7 @@ import subprocess
 import tempfile
 
 from aletharsis.audit import audit
-from check_parity import canonical, differences
+from check_parity import AUDIT_TIMEOUT_SECONDS, canonical, differences
 
 parser=argparse.ArgumentParser()
 parser.add_argument('binary',type=Path)
@@ -27,10 +27,14 @@ with tempfile.TemporaryDirectory(prefix='aletharsis-parity-') as folder:
         path=Path(folder)/f'{i}.txt'
         path.write_bytes(text.encode())
         expected=audit(path).to_dict()
-        run=subprocess.run([str(binary),'audit',str(path),'--json'],capture_output=True,text=True)
-        actual=json.loads(run.stdout)
-        errors=list(differences(canonical(expected),canonical(actual)))
-        if run.returncode!=expected['summary']['exit_code']:errors.append('exit code differs')
+        errors=[]
+        try:
+            run=subprocess.run([str(binary),'audit',str(path),'--json'],capture_output=True,text=True,timeout=AUDIT_TIMEOUT_SECONDS)
+            actual=json.loads(run.stdout)
+            errors=list(differences(canonical(expected),canonical(actual)))
+            if run.returncode!=expected['summary']['exit_code']:errors.append('exit code differs')
+        except subprocess.TimeoutExpired:
+            errors.append(f'audit timed out after {AUDIT_TIMEOUT_SECONDS} seconds')
         if errors:
             failures.append(i)
             print(repr(text),*errors[:3],sep='\n  ')
