@@ -117,133 +117,14 @@
         "texts": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "source": {
-                "type": "string"
-              },
-              "text": {
-                "type": "string"
-              },
-              "encoding": {
-                "type": "string"
-              },
-              "byte_offsets": {
-                "type": "array",
-                "items": {
-                  "type": "integer",
-                  "minimum": 0
-                }
-              },
-              "bom": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "line_endings": {
-                "type": "object",
-                "properties": {
-                  "crlf": {
-                    "type": "integer",
-                    "minimum": 0
-                  },
-                  "lf": {
-                    "type": "integer",
-                    "minimum": 0
-                  },
-                  "cr": {
-                    "type": "integer",
-                    "minimum": 0
-                  }
-                },
-                "required": [
-                  "crlf",
-                  "lf",
-                  "cr"
-                ],
-                "additionalProperties": false
-              },
-              "hashes": {
-                "type": "object",
-                "properties": {
-                  "raw_text_sha256": {
-                    "type": "string",
-                    "pattern": "^[a-f0-9]{64}$"
-                  },
-                  "nfc_text_sha256": {
-                    "type": "string",
-                    "pattern": "^[a-f0-9]{64}$"
-                  },
-                  "nfkc_text_sha256": {
-                    "type": "string",
-                    "pattern": "^[a-f0-9]{64}$"
-                  },
-                  "formatting_removed_sha256": {
-                    "type": "string",
-                    "pattern": "^[a-f0-9]{64}$"
-                  }
-                },
-                "required": [
-                  "raw_text_sha256",
-                  "nfc_text_sha256",
-                  "nfkc_text_sha256",
-                  "formatting_removed_sha256"
-                ],
-                "additionalProperties": false
-              },
-              "normalization": {
-                "type": "object",
-                "properties": {
-                  "nfc_changed": {
-                    "type": "boolean"
-                  },
-                  "nfkc_changed": {
-                    "type": "boolean"
-                  },
-                  "formatting_removed_count": {
-                    "type": "integer",
-                    "minimum": 0
-                  },
-                  "unicode_version": {
-                    "type": "string"
-                  },
-                  "hash_encoding": {
-                    "const": "utf-8"
-                  },
-                  "removal_policy": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "nfc_changed",
-                  "nfkc_changed",
-                  "formatting_removed_count",
-                  "unicode_version",
-                  "hash_encoding",
-                  "removal_policy"
-                ],
-                "additionalProperties": false
-              }
-            },
-            "required": [
-              "source",
-              "text",
-              "encoding",
-              "byte_offsets",
-              "bom",
-              "line_endings",
-              "hashes",
-              "normalization"
-            ],
-            "additionalProperties": false
+            "$ref": "#/$defs/textEvidence"
           }
         },
         "metadata": {
-          "type": "object"
+          "$ref": "#/$defs/metadata"
         },
         "structure": {
-          "type": "object"
+          "$ref": "#/$defs/structure"
         }
       },
       "required": [
@@ -256,71 +137,7 @@
     "findings": {
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "severity": {
-            "enum": [
-              "INFO",
-              "LOW",
-              "MEDIUM",
-              "HIGH"
-            ]
-          },
-          "confidence": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "category": {
-            "enum": [
-              "metadata",
-              "unicode",
-              "hidden_content",
-              "document_structure",
-              "embedded_content",
-              "identifier",
-              "visual_watermark",
-              "possible_steganography",
-              "provenance",
-              "parser"
-            ]
-          },
-          "classification": {
-            "enum": [
-              "observed_fact",
-              "suspicious_pattern",
-              "likely_mechanism",
-              "undetermined"
-            ]
-          },
-          "title": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "evidence": {
-            "type": "object"
-          },
-          "location": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "id",
-          "severity",
-          "confidence",
-          "category",
-          "classification",
-          "title",
-          "description",
-          "evidence",
-          "location"
-        ],
-        "additionalProperties": false
+        "$ref": "#/$defs/finding"
       }
     },
     "limitations": {
@@ -342,5 +159,1270 @@
   ],
   "additionalProperties": false,
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Aletharsis report v1.0"
+  "title": "Aletharsis report v1.0",
+  "$defs": {
+    "emptyObject": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "encoding": {
+      "enum": [
+        "utf-8",
+        "utf-16-le",
+        "utf-16-be",
+        "utf-32-le",
+        "utf-32-be"
+      ]
+    },
+    "bomHex": {
+      "enum": [
+        "efbbbf",
+        "fffe",
+        "feff",
+        "fffe0000",
+        "0000feff"
+      ]
+    },
+    "lineEndings": {
+      "type": "object",
+      "properties": {
+        "crlf": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lf": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cr": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "crlf",
+        "lf",
+        "cr"
+      ],
+      "additionalProperties": false
+    },
+    "textHashes": {
+      "type": "object",
+      "properties": {
+        "raw_text_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "nfc_text_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "nfkc_text_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "formatting_removed_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "raw_text_sha256",
+        "nfc_text_sha256",
+        "nfkc_text_sha256",
+        "formatting_removed_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "normalization": {
+      "type": "object",
+      "properties": {
+        "nfc_changed": {
+          "type": "boolean"
+        },
+        "nfkc_changed": {
+          "type": "boolean"
+        },
+        "formatting_removed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unicode_version": {
+          "type": "string"
+        },
+        "hash_encoding": {
+          "const": "utf-8"
+        },
+        "removal_policy": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "nfc_changed",
+        "nfkc_changed",
+        "formatting_removed_count",
+        "unicode_version",
+        "hash_encoding",
+        "removal_policy"
+      ],
+      "additionalProperties": false
+    },
+    "normalizationEvidence": {
+      "type": "object",
+      "properties": {
+        "nfc_changed": {
+          "type": "boolean"
+        },
+        "nfkc_changed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "nfc_changed",
+        "nfkc_changed"
+      ],
+      "additionalProperties": false
+    },
+    "sourceLocation": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "offsetLocation": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "character_offsets": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 1
+        },
+        "byte_offsets": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "source",
+        "character_offsets",
+        "byte_offsets"
+      ],
+      "additionalProperties": false
+    },
+    "bomLocation": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "byte_offset": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "source",
+        "byte_offset"
+      ],
+      "additionalProperties": false
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "character_offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "escaped_text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "character_offset",
+        "escaped_text"
+      ],
+      "additionalProperties": false
+    },
+    "countEvidence": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "count"
+      ],
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "creator": {
+          "type": "string"
+        },
+        "last_modified_by": {
+          "type": "string"
+        },
+        "company": {
+          "type": "string"
+        },
+        "application": {
+          "type": "string"
+        },
+        "application_version": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        },
+        "modified": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "template": {
+          "type": "string"
+        },
+        "document_id": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "description": "Supported normalized metadata keys have string values, preserving observed text without asserting valid timestamps or identifiers. All keys are optional; M0/M1 text parsing emits {}. Additional keys or value types require an explicit schema update."
+    },
+    "textStructure": {
+      "type": "object",
+      "properties": {
+        "inspection": {
+          "const": "literal source text"
+        },
+        "byte_length": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "inspection",
+        "byte_length"
+      ],
+      "additionalProperties": false
+    },
+    "structure": {
+      "description": "No structure before parsing, or the complete text-source structure contract.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/emptyObject"
+        },
+        {
+          "$ref": "#/$defs/textStructure"
+        }
+      ]
+    },
+    "textEvidence": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "encoding": {
+          "$ref": "#/$defs/encoding"
+        },
+        "byte_offsets": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 1
+        },
+        "bom": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/bomHex"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "line_endings": {
+          "$ref": "#/$defs/lineEndings"
+        },
+        "hashes": {
+          "$ref": "#/$defs/textHashes"
+        },
+        "normalization": {
+          "$ref": "#/$defs/normalization"
+        }
+      },
+      "required": [
+        "source",
+        "text",
+        "encoding",
+        "byte_offsets",
+        "bom",
+        "line_endings",
+        "hashes",
+        "normalization"
+      ],
+      "additionalProperties": false
+    },
+    "unicodeEvidence": {
+      "type": "object",
+      "properties": {
+        "code_point": {
+          "type": "string",
+          "pattern": "^U\\+(?:[0-9A-F]{4,5}|10[0-9A-F]{4})$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "leading_bom": {
+          "type": "boolean"
+        },
+        "contexts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/context"
+          },
+          "maxItems": 8
+        },
+        "contexts_omitted": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "code_point",
+        "name",
+        "count",
+        "leading_bom",
+        "contexts",
+        "contexts_omitted"
+      ],
+      "additionalProperties": false
+    },
+    "emojiEvidence": {
+      "type": "object",
+      "properties": {
+        "code_point": {
+          "type": "string",
+          "pattern": "^U\\+(?:[0-9A-F]{4,5}|10[0-9A-F]{4})$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "contexts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/context"
+          },
+          "maxItems": 8
+        },
+        "contexts_omitted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "emoji_data_version": {
+          "type": "string"
+        },
+        "match_basis": {
+          "enum": [
+            "keycap_base",
+            "unicode_emoji_property"
+          ]
+        },
+        "count_unit": {
+          "const": "code_point"
+        },
+        "requires_context_review": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code_point",
+        "name",
+        "count",
+        "contexts",
+        "contexts_omitted",
+        "emoji_data_version",
+        "match_basis",
+        "count_unit",
+        "requires_context_review"
+      ],
+      "additionalProperties": false
+    },
+    "binaryThresholds": {
+      "type": "object",
+      "properties": {
+        "minimum_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "minimum_minority_fraction": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "minimum_adjacent_fraction_or_constant_spacing": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "minimum_count",
+        "minimum_minority_fraction",
+        "minimum_adjacent_fraction_or_constant_spacing"
+      ],
+      "additionalProperties": false
+    },
+    "binaryAlphabet": {
+      "type": "object",
+      "properties": {
+        "U+200B": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "U+200C": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "U+200B",
+        "U+200C"
+      ],
+      "additionalProperties": false
+    },
+    "binaryEvidence": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "alphabet": {
+          "$ref": "#/$defs/binaryAlphabet"
+        },
+        "adjacent_fraction": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "constant_spacing": {
+          "type": "boolean"
+        },
+        "sequence_period": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 32
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "thresholds": {
+          "$ref": "#/$defs/binaryThresholds"
+        }
+      },
+      "required": [
+        "count",
+        "alphabet",
+        "adjacent_fraction",
+        "constant_spacing",
+        "sequence_period",
+        "thresholds"
+      ],
+      "additionalProperties": false
+    },
+    "selectorRunEvidence": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "minimum_run": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "alphabet_size": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "count",
+        "minimum_run",
+        "alphabet_size"
+      ],
+      "additionalProperties": false
+    },
+    "tagRunEvidence": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "minimum_run": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "alphabet_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ascii_projection": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "count",
+        "minimum_run",
+        "alphabet_size",
+        "ascii_projection"
+      ],
+      "additionalProperties": false
+    },
+    "periodicEvidence": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "character_interval": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "minimum_count": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "count",
+        "character_interval",
+        "minimum_count"
+      ],
+      "additionalProperties": false
+    },
+    "bomEvidence": {
+      "type": "object",
+      "properties": {
+        "hex": {
+          "$ref": "#/$defs/bomHex"
+        },
+        "encoding": {
+          "$ref": "#/$defs/encoding"
+        }
+      },
+      "required": [
+        "hex",
+        "encoding"
+      ],
+      "additionalProperties": false
+    },
+    "mixedScriptEvidence": {
+      "type": "object",
+      "properties": {
+        "escaped_token": {
+          "type": "string"
+        },
+        "scripts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "escaped_token",
+        "scripts"
+      ],
+      "additionalProperties": false
+    },
+    "encodedEvidence": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "character_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "base64_decoded_bytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "value",
+        "character_count",
+        "base64_decoded_bytes"
+      ],
+      "additionalProperties": false
+    },
+    "uuidEvidence": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "repeated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "value",
+        "count",
+        "repeated"
+      ],
+      "additionalProperties": false
+    },
+    "provenanceEvidence": {
+      "type": "object",
+      "properties": {
+        "escaped_marker": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "escaped_marker"
+      ],
+      "additionalProperties": false
+    },
+    "metadataEvidence": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "enum": [
+            "creator",
+            "last_modified_by",
+            "company",
+            "application",
+            "application_version",
+            "created",
+            "modified",
+            "revision",
+            "template",
+            "document_id"
+          ]
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "failureEvidence": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "error_type": {
+              "type": "string",
+              "not": {
+                "const": "UnicodeDecodeError"
+              }
+            },
+            "message": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "error_type",
+            "message"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "error_type": {
+              "const": "UnicodeDecodeError"
+            },
+            "message": {
+              "type": "string"
+            },
+            "byte_start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "byte_end": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "error_type",
+            "message",
+            "byte_start",
+            "byte_end",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "unicode_zero_widthFinding": {
+      "properties": {
+        "id": {
+          "const": "unicode.zero_width"
+        },
+        "category": {
+          "const": "unicode"
+        },
+        "evidence": {
+          "$ref": "#/$defs/unicodeEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "unicode_bidi_controlFinding": {
+      "properties": {
+        "id": {
+          "const": "unicode.bidi_control"
+        },
+        "category": {
+          "const": "unicode"
+        },
+        "evidence": {
+          "$ref": "#/$defs/unicodeEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "unicode_variation_selectorFinding": {
+      "properties": {
+        "id": {
+          "const": "unicode.variation_selector"
+        },
+        "category": {
+          "const": "unicode"
+        },
+        "evidence": {
+          "$ref": "#/$defs/unicodeEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "unicode_tagFinding": {
+      "properties": {
+        "id": {
+          "const": "unicode.tag"
+        },
+        "category": {
+          "const": "unicode"
+        },
+        "evidence": {
+          "$ref": "#/$defs/unicodeEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "unicode_soft_hyphenFinding": {
+      "properties": {
+        "id": {
+          "const": "unicode.soft_hyphen"
+        },
+        "category": {
+          "const": "unicode"
+        },
+        "evidence": {
+          "$ref": "#/$defs/unicodeEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "unicode_unusual_whitespaceFinding": {
+      "properties": {
+        "id": {
+          "const": "unicode.unusual_whitespace"
+        },
+        "category": {
+          "const": "unicode"
+        },
+        "evidence": {
+          "$ref": "#/$defs/unicodeEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "unicode_controlFinding": {
+      "properties": {
+        "id": {
+          "const": "unicode.control"
+        },
+        "category": {
+          "const": "unicode"
+        },
+        "evidence": {
+          "$ref": "#/$defs/unicodeEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "unicode_combiningFinding": {
+      "properties": {
+        "id": {
+          "const": "unicode.combining"
+        },
+        "category": {
+          "const": "unicode"
+        },
+        "evidence": {
+          "$ref": "#/$defs/unicodeEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "unicode_normalizationFinding": {
+      "properties": {
+        "id": {
+          "const": "unicode.normalization"
+        },
+        "category": {
+          "const": "unicode"
+        },
+        "evidence": {
+          "$ref": "#/$defs/normalizationEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/sourceLocation"
+        }
+      }
+    },
+    "unicode_emojiFinding": {
+      "properties": {
+        "id": {
+          "const": "unicode.emoji"
+        },
+        "category": {
+          "const": "unicode"
+        },
+        "evidence": {
+          "$ref": "#/$defs/emojiEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "pattern_zero_width_binaryFinding": {
+      "properties": {
+        "id": {
+          "const": "pattern.zero_width_binary"
+        },
+        "category": {
+          "const": "possible_steganography"
+        },
+        "evidence": {
+          "$ref": "#/$defs/binaryEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "pattern_variation_selector_runFinding": {
+      "properties": {
+        "id": {
+          "const": "pattern.variation_selector_run"
+        },
+        "category": {
+          "const": "possible_steganography"
+        },
+        "evidence": {
+          "$ref": "#/$defs/selectorRunEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "pattern_tag_runFinding": {
+      "properties": {
+        "id": {
+          "const": "pattern.tag_run"
+        },
+        "category": {
+          "const": "possible_steganography"
+        },
+        "evidence": {
+          "$ref": "#/$defs/tagRunEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "pattern_periodic_insertionFinding": {
+      "properties": {
+        "id": {
+          "const": "pattern.periodic_insertion"
+        },
+        "category": {
+          "const": "possible_steganography"
+        },
+        "evidence": {
+          "$ref": "#/$defs/periodicEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "text_line_endingsFinding": {
+      "properties": {
+        "id": {
+          "const": "text.line_endings"
+        },
+        "category": {
+          "const": "document_structure"
+        },
+        "evidence": {
+          "$ref": "#/$defs/lineEndings"
+        },
+        "location": {
+          "$ref": "#/$defs/sourceLocation"
+        }
+      }
+    },
+    "text_bomFinding": {
+      "properties": {
+        "id": {
+          "const": "text.bom"
+        },
+        "category": {
+          "const": "document_structure"
+        },
+        "evidence": {
+          "$ref": "#/$defs/bomEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/bomLocation"
+        }
+      }
+    },
+    "text_embedded_bomFinding": {
+      "properties": {
+        "id": {
+          "const": "text.embedded_bom"
+        },
+        "category": {
+          "const": "document_structure"
+        },
+        "evidence": {
+          "$ref": "#/$defs/countEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "text_mixed_scriptFinding": {
+      "properties": {
+        "id": {
+          "const": "text.mixed_script"
+        },
+        "category": {
+          "const": "unicode"
+        },
+        "evidence": {
+          "$ref": "#/$defs/mixedScriptEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "text_encoded_candidateFinding": {
+      "properties": {
+        "id": {
+          "const": "text.encoded_candidate"
+        },
+        "category": {
+          "const": "embedded_content"
+        },
+        "evidence": {
+          "$ref": "#/$defs/encodedEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "identifier_uuidFinding": {
+      "properties": {
+        "id": {
+          "const": "identifier.uuid"
+        },
+        "category": {
+          "const": "identifier"
+        },
+        "evidence": {
+          "$ref": "#/$defs/uuidEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "provenance_text_markerFinding": {
+      "properties": {
+        "id": {
+          "const": "provenance.text_marker"
+        },
+        "category": {
+          "const": "provenance"
+        },
+        "evidence": {
+          "$ref": "#/$defs/provenanceEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/offsetLocation"
+        }
+      }
+    },
+    "metadata_presentFinding": {
+      "properties": {
+        "id": {
+          "const": "metadata.present"
+        },
+        "category": {
+          "const": "metadata"
+        },
+        "evidence": {
+          "$ref": "#/$defs/metadataEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/emptyObject"
+        }
+      }
+    },
+    "parser_failureFinding": {
+      "properties": {
+        "id": {
+          "const": "parser.failure"
+        },
+        "category": {
+          "const": "parser"
+        },
+        "evidence": {
+          "$ref": "#/$defs/failureEvidence"
+        },
+        "location": {
+          "$ref": "#/$defs/emptyObject"
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "INFO",
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "category": {
+          "enum": [
+            "metadata",
+            "unicode",
+            "hidden_content",
+            "document_structure",
+            "embedded_content",
+            "identifier",
+            "visual_watermark",
+            "possible_steganography",
+            "provenance",
+            "parser"
+          ]
+        },
+        "classification": {
+          "enum": [
+            "observed_fact",
+            "suspicious_pattern",
+            "likely_mechanism",
+            "undetermined"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "evidence": {
+          "type": "object"
+        },
+        "location": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "severity",
+        "confidence",
+        "category",
+        "classification",
+        "title",
+        "description",
+        "evidence",
+        "location"
+      ],
+      "additionalProperties": false,
+      "description": "A stable rule ID selects exactly one nested evidence and location contract. The enclosing object requires all common fields and forbids unknown keys. New detector IDs/shapes require a schema update; there is no unconstrained fallback.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/unicode_zero_widthFinding"
+        },
+        {
+          "$ref": "#/$defs/unicode_bidi_controlFinding"
+        },
+        {
+          "$ref": "#/$defs/unicode_variation_selectorFinding"
+        },
+        {
+          "$ref": "#/$defs/unicode_tagFinding"
+        },
+        {
+          "$ref": "#/$defs/unicode_soft_hyphenFinding"
+        },
+        {
+          "$ref": "#/$defs/unicode_unusual_whitespaceFinding"
+        },
+        {
+          "$ref": "#/$defs/unicode_controlFinding"
+        },
+        {
+          "$ref": "#/$defs/unicode_combiningFinding"
+        },
+        {
+          "$ref": "#/$defs/unicode_normalizationFinding"
+        },
+        {
+          "$ref": "#/$defs/unicode_emojiFinding"
+        },
+        {
+          "$ref": "#/$defs/pattern_zero_width_binaryFinding"
+        },
+        {
+          "$ref": "#/$defs/pattern_variation_selector_runFinding"
+        },
+        {
+          "$ref": "#/$defs/pattern_tag_runFinding"
+        },
+        {
+          "$ref": "#/$defs/pattern_periodic_insertionFinding"
+        },
+        {
+          "$ref": "#/$defs/text_line_endingsFinding"
+        },
+        {
+          "$ref": "#/$defs/text_bomFinding"
+        },
+        {
+          "$ref": "#/$defs/text_embedded_bomFinding"
+        },
+        {
+          "$ref": "#/$defs/text_mixed_scriptFinding"
+        },
+        {
+          "$ref": "#/$defs/text_encoded_candidateFinding"
+        },
+        {
+          "$ref": "#/$defs/identifier_uuidFinding"
+        },
+        {
+          "$ref": "#/$defs/provenance_text_markerFinding"
+        },
+        {
+          "$ref": "#/$defs/metadata_presentFinding"
+        },
+        {
+          "$ref": "#/$defs/parser_failureFinding"
+        }
+      ]
+    }
+  }
 }
