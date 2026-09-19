@@ -29,11 +29,15 @@ func Run(args []string, out, errout io.Writer) int {
 		return failure("a command is required")
 	}
 	if args[0] == "--version" {
-		fmt.Fprintln(out, "aletharsis "+audit.Version)
+		if _, err := fmt.Fprintln(out, "aletharsis "+audit.Version); err != nil {
+			return 4
+		}
 		return 0
 	}
 	if args[0] == "--help" || args[0] == "-h" {
-		fmt.Fprint(out, help)
+		if _, err := fmt.Fprint(out, help); err != nil {
+			return 4
+		}
 		return 0
 	}
 	command := args[0]
@@ -50,7 +54,9 @@ func Run(args []string, out, errout io.Writer) int {
 				endFlags = true
 				continue
 			case "--help", "-h":
-				fmt.Fprint(out, help)
+				if _, err := fmt.Fprint(out, help); err != nil {
+					return 4
+				}
 				return 0
 			case "--json":
 				jsonOutput = true
@@ -59,7 +65,7 @@ func Run(args []string, out, errout io.Writer) int {
 				verbose = true
 				continue
 			case "--output":
-				if i+1 >= len(args) || args[i+1] == "" || strings.HasPrefix(args[i+1], "--") {
+				if i+1 >= len(args) || args[i+1] == "" || strings.HasPrefix(args[i+1], "-") {
 					return failure("--output requires a path")
 				}
 				i++
@@ -134,9 +140,11 @@ func Run(args []string, out, errout io.Writer) int {
 		_, writeErr := io.WriteString(f, rendered)
 		closeErr := f.Close()
 		if writeErr != nil {
+			_ = os.Remove(output)
 			return failure("could not write report: " + writeErr.Error())
 		}
 		if closeErr != nil {
+			_ = os.Remove(output)
 			return failure("could not close report: " + closeErr.Error())
 		}
 	} else {

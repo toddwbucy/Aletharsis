@@ -3,6 +3,8 @@ package cli
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
+	"io"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -29,11 +31,17 @@ func TestViewsOutputsAndNoOverwrite(t *testing.T) {
 	dir := t.TempDir()
 	source := filepath.Join(dir, "source.py")
 	original := []byte("# 😀\u200b\x1b\n\nmore ordinary prose\n")
-	os.WriteFile(source, original, 0600)
+	if err := os.WriteFile(source, original, 0600); err != nil {
+		t.Fatal(err)
+	}
 	link := filepath.Join(dir, "hardlink")
-	os.Link(source, link)
+	if err := os.Link(source, link); err != nil {
+		t.Fatal(err)
+	}
 	symlink := filepath.Join(dir, "symlink")
-	os.Symlink(source, symlink)
+	if err := os.Symlink(source, symlink); err != nil {
+		t.Fatal(err)
+	}
 	for _, output := range []string{source, link, symlink} {
 		var out, err bytes.Buffer
 		if Run([]string{"audit", source, "--output", output}, &out, &err) != 4 {
@@ -66,7 +74,7 @@ func TestViewsOutputsAndNoOverwrite(t *testing.T) {
 }
 
 func TestMissingOutputArgument(t *testing.T) {
-	for _, args := range [][]string{{"audit", "unused.txt", "--output", "--json"}, {"audit", "unused.txt", "--output="}} {
+	for _, args := range [][]string{{"audit", "unused.txt", "--output", "--json"}, {"audit", "unused.txt", "--output="}, {"audit", "unused.txt", "--output", "-h"}, {"audit", "unused.txt", "--output", "-"}, {"audit", "unused.txt", "--output", ""}, {"audit", "unused.txt", "--output"}} {
 		var out, err bytes.Buffer
 		if Run(args, &out, &err) != 4 || !strings.Contains(err.String(), "requires a path") {
 			t.Fatal("accepted missing output path")
@@ -96,6 +104,41 @@ func TestReportFilePermissions(t *testing.T) {
 		t.Fatalf("report grants group/other permissions: %04o", info.Mode().Perm())
 	}
 	data, err := os.ReadFile(output)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !json.Valid(data) {
+		t.Fatal("report is not valid JSON")
+	}
+}
+
+type failingWriter struct{}
+
+func (failingWriter) Write(p []byte) (int, error) {
+	return 0, errors.New("write failed")
+}
+
+func TestHelpVersionWriteFailure(t *testing.T) {
+	for _, args := range [][]string{{"--version"}, {"--help"}, {"-h"}, {"audit", "--help"}, {"audit", "-h"}} {
+		if code := Run(args, failingWriter{}, io.Discard); code != 4 {
+			t.Fatalf("%v: got exit %d, want 4", args, code)
+		}
+	}
+}
+
+func TestExplicitDashOutputName(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("Linux-only reader")
+	}
+	t.Chdir(t.TempDir())
+	if err := os.WriteFile("source.txt", []byte("Ordinary text.\n"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	var stdout, stderr bytes.Buffer
+	if code := Run([]string{"audit", "source.txt", "--output=-h"}, &stdout, &stderr); code != 0 {
+		t.Fatalf("exit %d: %s", code, stderr.String())
+	}
+	data, err := os.ReadFile("-h")
 	if err != nil {
 		t.Fatal(err)
 	}

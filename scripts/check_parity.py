@@ -9,6 +9,8 @@ import json
 from pathlib import Path
 import subprocess
 
+AUDIT_TIMEOUT_SECONDS = 30
+
 
 def canonical(report):
     report = json.loads(json.dumps(report))
@@ -21,7 +23,8 @@ def canonical(report):
 
 
 def differences(expected, actual, path=''):
-    if type(expected) is not type(actual) and not isinstance(expected, (int, float)):
+    numeric_pair = type(expected) in (int, float) and type(actual) in (int, float)
+    if type(expected) is not type(actual) and not numeric_pair:
         yield f'{path}: {type(expected).__name__} != {type(actual).__name__}'
     elif isinstance(expected, dict):
         for k in sorted(expected.keys() | actual.keys()):
@@ -55,14 +58,18 @@ def main():
         assert hashlib.sha256(Path(case['input']).read_bytes()).hexdigest() == case['sha256']
         assert hashlib.sha256((root/case['report']).read_bytes()).hexdigest() == case['report_sha256']
         expected = json.loads((root/case['report']).read_text())
-        run = subprocess.run([str(binary), 'audit', case['input'], '--json'], capture_output=True, text=True)
-        actual = json.loads(run.stdout)
-        errors = list(differences(canonical(expected), canonical(actual)))
-        if run.returncode != case['exit_code']:
-            errors.append(f'exit: {case["exit_code"]} != {run.returncode}')
-        second = subprocess.run([str(binary), 'audit', case['input'], '--json'], capture_output=True, text=True)
-        if second.stdout != run.stdout or second.returncode != run.returncode:
-            errors.append('nondeterministic output')
+        errors = []
+        try:
+            run = subprocess.run([str(binary), 'audit', case['input'], '--json'], capture_output=True, text=True, timeout=AUDIT_TIMEOUT_SECONDS)
+            actual = json.loads(run.stdout)
+            errors = list(differences(canonical(expected), canonical(actual)))
+            if run.returncode != case['exit_code']:
+                errors.append(f'exit: {case["exit_code"]} != {run.returncode}')
+            second = subprocess.run([str(binary), 'audit', case['input'], '--json'], capture_output=True, text=True, timeout=AUDIT_TIMEOUT_SECONDS)
+            if second.stdout != run.stdout or second.returncode != run.returncode:
+                errors.append('nondeterministic output')
+        except subprocess.TimeoutExpired:
+            errors.append(f'audit timed out after {AUDIT_TIMEOUT_SECONDS} seconds')
         if errors:
             failures.append(case['input'])
             print(case['input'], *errors[:10], sep='\n  ')

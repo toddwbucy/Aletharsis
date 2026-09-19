@@ -164,9 +164,25 @@ Aletharsis cannot determine vendor or model authorship from prose alone. The
 
 ## JSON contract
 
-The pinned schema snapshot from PR #3 is
+The complete versioned schema is [schemas/report.schema.json](schemas/report.schema.json).
+Nested contracts use reusable `$defs` and finding variants keyed by stable rule
+IDs. Evidence, locations, context samples, thresholds, and text structure reject
+unknown keys and require their documented fields. Normalized metadata accepts
+optional string-valued creator/editor/application/date/revision/template/document
+identifier fields defined in the schema; M0/M1 text parsing still emits no metadata.
+Unknown metadata keys and structured values require an explicit schema extension.
+Read/parse failures retain valid empty evidence structures and their own error
+contracts. The `unicode.emoji` contract also supports the separately reviewed emoji
+analyzer without requiring it to be installed.
+
+Schema validation checks shapes and types, not semantic integrity: consumers must
+still verify source hashes, bounds, monotonic offsets, correspondence between
+offset arrays and text, and consistency of counts. New detector IDs or evidence
+shapes require an explicit schema update; there is no permissive fallback.
+
+The migration also retains a frozen compatibility snapshot in
 [reference/python-behavior/report.schema.json](reference/python-behavior/report.schema.json).
-It is a compatibility reference; the Go port does not merge or freeze that PR.
+
 Top-level fields:
 
 | Field | Contents |
