@@ -56,3 +56,20 @@ Actions are pinned to immutable commits from the official [checkout](https://git
 After observing successful hosted runs, propose both job names above as required checks on main. On initial inspection, GitHub's classic branch-protection endpoint reported main as unprotected. This PR does not change branch protection or repository rulesets; enabling enforcement is a separate repository-policy action. If a merge queue is later enabled, add and validate its event trigger before requiring these checks there.
 
 Windows/macOS readers remain unsupported, and cross-builds do not establish runtime integrity. Native platform validation, fuzz schedules, benchmarks, and resource budgets remain open in Issue #7.
+
+## Direct unit contracts
+
+The focused unit suite supplements migration parity with independently stated expectations:
+
+| Tests | Contract exercised |
+| --- | --- |
+| `internal/parsers/text_test.go` | Literal UTF-8/16/32 bytes, BOM retention, exact scalar/byte/end coordinates, malformed encoding spans, no partial decoded evidence, literal markup and line endings |
+| `internal/parsers/identify_test.go` | Signatures versus filename hints, ZIP/OOXML member requirements, supported MIME hints, binary-control density below/at/above the cutoff |
+| `internal/analyzers/patterns_test.go` | Count, minority, adjacency, spacing and contiguous-run boundaries; context locations; legitimate-language/emoji negative controls with inventory retained |
+| `internal/analyzers/evidence_test.go` | Explicit normalization results and independent SHA-256 values, unchanged source coordinates, UUID/Base64 boundaries, source-code emoji and keycaps |
+| `internal/evidence/model_test.go` | Severity/failed-audit exit precedence, summary reset, end-boundary location mapping |
+| `internal/reporters/report_test.go` | ASCII-safe lossless JSON, deterministic key ordering, serialization failures, escaped console evidence |
+
+Run these with `go test ./internal/parsers ./internal/analyzers ./internal/evidence ./internal/reporters`, or use the full CI commands above. Expected decoding bytes and normalization strings are written explicitly; the new tests do not import Python, read golden reports, or generate expected output by calling the implementation under test. Pattern input generators construct counts/gaps, while expected detection boundaries are stated independently.
+
+Negative controls establish behavior for those inputs, not a guarantee that all legitimate Unicode is free of suspicious patterns. Statement coverage is diagnostic, not proof of branch coverage or correctness. Executable/strict-schema integration, acquisition fault injection, fuzzing, resource characterization and platform validation remain separate Issue #7 workstreams.
