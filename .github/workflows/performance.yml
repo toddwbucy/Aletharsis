@@ -1,0 +1,82 @@
+name: Resource characterization
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Measurement size (full includes 8 MiB inputs)
+        type: choice
+        options: [quick, full]
+        default: quick
+  pull_request:
+    paths:
+      - '.github/workflows/performance.yml'
+      - 'benchmarks/**'
+      - 'internal/benchmarks/**'
+      - 'scripts/measure_backend.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: performance-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  measure:
+    name: Performance / characterization
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      GOTOOLCHAIN: local
+      GOMAXPROCS: '2'
+      PROFILE: ${{ github.event_name == 'workflow_dispatch' && inputs.profile || 'quick' }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version: '1.27.1'
+          cache-dependency-path: go.sum
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12.13'
+      - name: Build candidate and select budget
+        run: |
+          mkdir -p artifacts bin
+          timeout 180s go build -trimpath -o bin/aletharsis ./cmd/aletharsis
+          case "$PROFILE" in
+            quick) sizes=65536; repeats=1; workers=1,2 ;;
+            full) sizes=65536,1048576,8388608; repeats=3; workers=1,2,4 ;;
+            *) exit 1 ;;
+          esac
+          printf 'ALETHARSIS_BENCH_SIZES=%s\nREPEATS=%s\nWORKERS=%s\n' "$sizes" "$repeats" "$workers" >> "$GITHUB_ENV"
+          { go version; python --version; git rev-parse HEAD; uname -sm; } > artifacts/environment.txt
+      - name: Measure executable and separate concurrency batches
+        run: |
+          timeout --kill-after=10s 900s python scripts/measure_backend.py \
+            --binary bin/aletharsis --output artifacts/measurement \
+            --sizes "$ALETHARSIS_BENCH_SIZES" --repeats "$REPEATS" \
+            --workers "$WORKERS" --timeout 120 2>&1 | tee artifacts/processes.txt
+      - name: Measure stages after executable measurements finish
+        run: |
+          timeout --kill-after=10s 1200s go test ./internal/benchmarks -run='^$' \
+            -bench=BenchmarkStages -benchmem -benchtime=1x -count="$REPEATS" \
+            -timeout=19m 2>&1 | tee artifacts/stages.txt
+      - name: Retain measurements (no large source/report files)
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: performance-${{ github.run_attempt }}
+          path: |
+            artifacts/*.txt
+            artifacts/measurement/results.json
+            artifacts/measurement/corpus-manifest.json
+            artifacts/measurement/reports/*.stderr
+            artifacts/measurement/reports/*.time
+          if-no-files-found: warn
+          retention-days: 14
