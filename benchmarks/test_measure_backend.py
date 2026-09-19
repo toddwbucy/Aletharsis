@@ -12,6 +12,12 @@ ROOT = Path(__file__).resolve().parents[1]
 @unittest.skipUnless(sys.platform == 'linux', 'GNU time measurement requires Linux')
 class MeasurementTests(unittest.TestCase):
     def run_case(self, broken):
+        cases = json.loads((ROOT / 'benchmarks/corpus.json').read_text())['cases']
+        repeats = 1
+        # One worker-count batch runs each case twice, after the serial repeats.
+        runs_per_case = repeats + 2
+        expected_total = len(cases) * runs_per_case
+        expected_timeouts = sum(c['name'] == 'ascii' for c in cases) * runs_per_case
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             binary = root / 'candidate'
@@ -35,15 +41,15 @@ raise SystemExit(1)
             command = [sys.executable, str(ROOT / 'scripts/measure_backend.py'),
                        '--binary', str(binary), '--output', str(output),
                        '--go', '/bin/echo', '--sizes', '16', '--concurrency-size', '16',
-                       '--repeats', '1', '--workers', '1', '--timeout', '1']
+                       '--repeats', str(repeats), '--workers', '1', '--timeout', '1']
             run = subprocess.run(command, capture_output=True, text=True, timeout=20)
             self.assertEqual(run.returncode, int(broken), run.stderr)
             result = json.loads((output / 'results.json').read_text())
             rows = result['runs'] + result['concurrency'][0]['runs']
-            self.assertEqual(len(rows), 18)
+            self.assertEqual(len(rows), expected_total)
             self.assertTrue(all(r['measurement_valid'] == (not broken) for r in rows))
-            self.assertEqual(sum(r['timed_out'] for r in rows), 3 if broken else 0)
-            self.assertEqual(len(list((output / 'reports').glob('*.json'))), 18 if broken else 0)
+            self.assertEqual(sum(r['timed_out'] for r in rows), expected_timeouts if broken else 0)
+            self.assertEqual(len(list((output / 'reports').glob('*.json'))), expected_total if broken else 0)
             manifest = (output / 'corpus-manifest.json').read_bytes()
             again = subprocess.run(command, capture_output=True, text=True, timeout=10)
             self.assertNotEqual(again.returncode, 0)
