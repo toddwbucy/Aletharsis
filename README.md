@@ -26,7 +26,9 @@ Audits require no network connection or external program.
 
 Darwin and Windows binaries can be built, but source acquisition fails closed on
 those platforms until equivalent timestamp-preserving readers are implemented and
-tested. Cross-compilation does not imply cross-platform forensic guarantees.
+tested. Cross-compilation does not imply cross-platform forensic guarantees. See the
+[platform validation matrix](docs/testing/platforms.md) for native tests, build/install
+checks, and reader prerequisites.
 
 The original `src/aletharsis`, `pyproject.toml`, and Python tests are retained for
 reference verification, not required by the Go CLI. See the

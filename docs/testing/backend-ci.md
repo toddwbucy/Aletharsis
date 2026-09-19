@@ -1,13 +1,14 @@
 # Backend CI foundation
 
-This guide covers the CI foundation, focused unit contracts, and compiled-CLI integration workstreams of [Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7). Acquisition fault tests are described below, and the [bounded fuzzing guide](fuzzing.md) covers property targets and scheduled searches. The [performance guide](performance.md) covers resource characterization; native platform validation remains a separate workstream.
+This guide covers the CI foundation, focused unit contracts, and compiled-CLI integration workstreams of [Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7). Acquisition fault tests are described below, and the [bounded fuzzing guide](fuzzing.md) covers property targets and scheduled searches. The [performance guide](performance.md) covers resource characterization; the [platform guide](platforms.md) covers native and cross-build verification.
 
 ## Checks and scope
 
-`.github/workflows/backend.yml` runs for pull requests, pushes to main, and manual dispatch. Linux/amd64 jobs use Ubuntu 24.04 and exact Go versions:
+`.github/workflows/backend.yml` runs for pull requests, pushes to main, and manual dispatch. Linux jobs use Ubuntu 24.04 and exact Go versions:
 
 - **Backend / Go 1.24.0** checks the minimum compiler declared in `go.mod`.
-- **Backend / Go 1.27.1** checks the pinned development compiler.
+- **Backend / Go 1.27.1** checks the pinned development compiler on amd64.
+- **Backend / Go 1.27.1 / arm64** runs the same gates on native arm64.
 
 Each job checks Go formatting, module integrity, `go vet`, uncached tests, combined internal-package statement coverage, race tests, and a built executable. Python 3.12.13 / Unicode 15.0.0 runs retained Python tests, 37 frozen report comparisons (including hashes and repeated-output determinism), and 210 seeded differential cases. The workflow installs pinned test dependencies and the retained Python application solely to exercise its installed-entry-point test; it never regenerates references. Go comparisons explicitly execute `bin/aletharsis`, avoiding ambiguity with the Python entry point. `GOTOOLCHAIN=local` prevents an automatic compiler upgrade from defeating minimum-version testing.
 
@@ -44,7 +45,7 @@ The formatting command must print no paths. CI enforces that requirement. CI add
 
 ## Evidence and failures
 
-Each job retains an artifact named `backend-go-<version>-<attempt>` for 14 days, including toolchain information, Go test/race JSON logs, coverage profile/summary, Python test results, and comparison diagnostics produced before a failure. Upload runs after ordinary failures; cancellation or abrupt runner termination can prevent collection. No audited user documents, application secrets, or release binaries are uploaded. The workflow uses read-only repository permissions and does not persist checkout credentials.
+Each job retains an artifact named `backend-go-<version>-<runner>-<attempt>` for 14 days, including toolchain information, Go test/race JSON logs, coverage profile/summary, Python test results, and comparison diagnostics produced before a failure. Upload runs after ordinary failures; cancellation or abrupt runner termination can prevent collection. No audited user documents, application secrets, or release binaries are uploaded. The workflow uses read-only repository permissions and does not persist checkout credentials.
 
 Tests may halt a job before later gates run. A red job is never evidence that unexecuted gates passed. Frozen-artifact integrity checks run after ordinary failures as well.
 
@@ -54,9 +55,9 @@ Update development Go, Python dependency pins, and action commit pins through re
 
 Actions are pinned to immutable commits from the official [checkout](https://github.com/actions/checkout), [setup-go](https://github.com/actions/setup-go), [setup-python](https://github.com/actions/setup-python), and [upload-artifact](https://github.com/actions/upload-artifact) repositories. Review upstream release changes before refreshing pins.
 
-After observing successful hosted runs, propose both job names above as required checks on main. On initial inspection, GitHub's classic branch-protection endpoint reported main as unprotected. This PR does not change branch protection or repository rulesets; enabling enforcement is a separate repository-policy action. If a merge queue is later enabled, add and validate its event trigger before requiring these checks there.
+After observing successful hosted runs, propose the three job names above as required checks on main. On initial inspection, GitHub's classic branch-protection endpoint reported main as unprotected. This PR does not change branch protection or repository rulesets; enabling enforcement is a separate repository-policy action. If a merge queue is later enabled, add and validate its event trigger before requiring these checks there.
 
-Windows/macOS readers remain unsupported, and cross-builds do not establish runtime integrity. Scheduled fuzzing and resource characterization have dedicated guides; native platform validation remains open in Issue #7.
+Windows/macOS readers remain unsupported, and cross-builds do not establish runtime integrity. Scheduled fuzzing and resource characterization have dedicated guides; platform verification has a dedicated guide, with non-Linux readers still outstanding in Issue #7.
 
 ## Direct unit contracts
 
