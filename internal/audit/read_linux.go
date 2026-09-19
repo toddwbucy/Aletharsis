@@ -9,13 +9,31 @@ import (
 	"syscall"
 )
 
+type snapshotFile interface {
+	io.Reader
+	Stat() (os.FileInfo, error)
+	Close() error
+}
+
 // readSnapshot never falls back to a read that could alter source access time.
 func readSnapshot(path string, limit int) ([]byte, error) {
-	fd, err := syscall.Open(path, syscall.O_RDONLY|syscall.O_NOATIME|syscall.O_NOFOLLOW|syscall.O_NONBLOCK, 0)
+	return readSnapshotWithOpen(path, limit, openSnapshot)
+}
+
+func openSnapshot(path string, flags int) (snapshotFile, error) {
+	fd, err := syscall.Open(path, flags, 0)
 	if err != nil {
 		return nil, &os.PathError{Op: "open", Path: path, Err: err}
 	}
-	f := os.NewFile(uintptr(fd), path)
+	return os.NewFile(uintptr(fd), path), nil
+}
+
+// Inject dependencies per call, never through mutable package-level hooks.
+func readSnapshotWithOpen(path string, limit int, open func(string, int) (snapshotFile, error)) ([]byte, error) {
+	f, err := open(path, syscall.O_RDONLY|syscall.O_NOATIME|syscall.O_NOFOLLOW|syscall.O_NONBLOCK)
+	if err != nil {
+		return nil, err
+	}
 	defer f.Close()
 	before, err := f.Stat()
 	if err != nil {

@@ -23,6 +23,10 @@ var checks = []analyzers.Analyzer{analyzers.Unicode{}, analyzers.Emoji{}, analyz
 
 func Run(path string) *evidence.Report { return WithLimit(path, MaxBytes) }
 func WithLimit(path string, limit int) *evidence.Report {
+	return withReader(path, limit, readSnapshot)
+}
+
+func withReader(path string, limit int, read func(string, int) ([]byte, error)) *evidence.Report {
 	path = filepath.Clean(path)
 	name := filepath.Base(path)
 	if name == "." || name == string(filepath.Separator) {
@@ -33,7 +37,7 @@ func WithLimit(path string, limit int) *evidence.Report {
 		extension = u.Lower(name[i:])
 	}
 	r := &evidence.Report{Version: Version, Schema: "1.0", File: evidence.File{Path: path, Filename: name, Extension: extension, MIME: "application/octet-stream", Format: "unknown", Basis: "unavailable"}, Status: "completed", Evidence: evidence.EmptyDocument(), Findings: []evidence.Finding{}, Limitations: analyzers.Limitations()}
-	data, err := readSnapshot(path, limit)
+	data, err := read(path, limit)
 	if err != nil {
 		return failed(r, err)
 	}
