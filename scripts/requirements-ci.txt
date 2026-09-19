@@ -1,0 +1,14 @@
+# Test-only Python dependencies; no Python dependency is added to the Go binary.
+# Update pins together in a reviewed PR and rerun the frozen-reference checks.
+attrs==26.1.0
+iniconfig==2.3.0
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+packaging==26.3
+pluggy==1.6.0
+Pygments==2.21.0
+pytest==9.1.1
+referencing==0.37.0
+rpds-py==2026.6.3
+typing_extensions==4.16.0
+setuptools==84.0.0
