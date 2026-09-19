@@ -54,6 +54,21 @@ def test_legitimate_formatting_not_encoding(fixtures, name):
     assert all(f.severity in {"LOW", "INFO"} for f in report.findings)
 
 
+@pytest.mark.parametrize("count", [12, 24])
+def test_repeated_joined_emoji_not_periodic_encoding(tmp_path, count):
+    """Regular emoji joiners remain inventory evidence, not encoding evidence."""
+    path = tmp_path / "repeated_emoji.txt"
+    path.write_text("\U0001f469\u200d\U0001f4bb" * count, encoding="utf-8")
+    report = audit(path)
+    assert report.status == "completed"
+    assert not any(f.category == "possible_steganography" for f in report.findings)
+    joiner, = [f for f in report.findings if f.evidence.get("code_point") == "U+200D"]
+    assert joiner.id == "unicode.zero_width"
+    assert joiner.evidence["count"] == count
+    assert joiner.location["character_offsets"] == list(range(1, count * 3, 3))
+    assert report.exit_code == 1
+
+
 def test_required_inventory_and_hashes(tmp_path):
     text = "é" + "".join(chr(cp) for cp in [0x200B, 0x200C, 0x200D, 0x2060, 0x2061, 0x2062,
                                           0x2063, 0x2064, 0xFEFF, 0xAD, 0xA0, 0x202F, 0x2009, 0xE0100]) + "e\u0301"
