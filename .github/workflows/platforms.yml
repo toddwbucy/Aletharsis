@@ -1,0 +1,118 @@
+name: Platform verification
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: platforms-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cross-build:
+    name: Cross-build / ${{ matrix.goos }}-${{ matrix.goarch }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: linux
+            goarch: arm64
+          - goos: darwin
+            goarch: arm64
+          - goos: windows
+            goarch: amd64
+    env:
+      GOTOOLCHAIN: local
+      CGO_ENABLED: '0'
+      GOOS: ${{ matrix.goos }}
+      GOARCH: ${{ matrix.goarch }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version: '1.27.1'
+          cache-dependency-path: go.sum
+      - name: Compile without running foreign binaries
+        run: |
+          mkdir -p artifacts bin
+          timeout 180s go build -trimpath -o bin/candidate ./cmd/aletharsis
+          { go version; git rev-parse HEAD; go env GOOS GOARCH CGO_ENABLED; go version -m bin/candidate; file bin/candidate; sha256sum bin/candidate; } > artifacts/build.txt
+          git diff --exit-code -- go.mod go.sum
+      - name: Retain build evidence (not release binaries)
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: cross-build-${{ matrix.goos }}-${{ matrix.goarch }}-${{ github.run_attempt }}
+          path: artifacts/
+          if-no-files-found: warn
+          retention-days: 14
+
+  unsupported:
+    name: Fail closed / ${{ matrix.goos }}-${{ matrix.goarch }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            goos: darwin
+            goarch: arm64
+          - runner: windows-2025
+            goos: windows
+            goarch: amd64
+    env:
+      GOTOOLCHAIN: local
+      EXPECTED_GOOS: ${{ matrix.goos }}
+      EXPECTED_GOARCH: ${{ matrix.goarch }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version: '1.27.1'
+          cache-dependency-path: go.sum
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.14.7'
+      - name: Install contract validator (no Python auditor)
+        run: python -m pip install --disable-pip-version-check -r scripts/requirements-ci.txt
+      - name: Record and check native target
+        run: |
+          mkdir -p artifacts
+          { go version; python --version; git rev-parse HEAD; go env GOOS GOARCH; } > artifacts/environment.txt
+          test "$(go env GOOS)" = "$EXPECTED_GOOS"
+          test "$(go env GOARCH)" = "$EXPECTED_GOARCH"
+      - name: Portable Go tests and explicit skips
+        run: go test -count=1 -timeout=2m -json ./... | tee artifacts/go-tests.jsonl
+      - name: Native build and install fail-closed contract
+        run: python scripts/check_distribution.py --output artifacts/distribution.json
+      - name: Verify frozen inputs and dependencies
+        if: ${{ !cancelled() }}
+        run: git diff --exit-code -- reference/python-behavior src/aletharsis tests/fixtures pyproject.toml go.mod go.sum
+      - name: Retain validation evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: fail-closed-${{ matrix.goos }}-${{ matrix.goarch }}-${{ github.run_attempt }}
+          path: artifacts/
+          if-no-files-found: warn
+          retention-days: 14
