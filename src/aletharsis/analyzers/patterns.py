@@ -58,7 +58,11 @@ class PatternAnalyzer:
                         f"Long contiguous {group.replace('_', ' ')} sequence",
                         "This run is consistent with encoded character data. Tags and variation selectors also have legitimate uses; interpretation requires review.",
                         details, location(segment, run)))
-            positions = [i for i, c in enumerate(text) if kind(c) == "zero_width" and not (i == 0 and c == "\ufeff")]
+            # Repeated joined emoji naturally place ZWJ at regular intervals.
+            # Retain joiners in the Unicode inventory, but not this heuristic.
+            positions = [i for i, c in enumerate(text)
+                         if kind(c) == "zero_width" and c != "\u200d"
+                         and not (i == 0 and c == "\ufeff")]
             if len(positions) >= 12:
                 gaps = [b - a for a, b in zip(positions, positions[1:])]
                 if len(set(gaps)) == 1 and gaps[0] > 1:
