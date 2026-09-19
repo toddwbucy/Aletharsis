@@ -92,7 +92,7 @@ jobs:
           cache-dependency-path: go.sum
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
-          python-version: '3.12.13'
+          python-version: '3.14.7'
       - name: Install contract validator (no Python auditor)
         run: python -m pip install --disable-pip-version-check -r scripts/requirements-ci.txt
       - name: Record and check native target

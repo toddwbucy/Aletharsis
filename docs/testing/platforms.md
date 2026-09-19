@@ -32,7 +32,7 @@ On Linux, 24 built/installed cases cover clean ASCII, supplementary emoji/ZWSP/C
 
 On macOS/Windows, 40 cases cover the same existing files plus missing paths and directories. Every audit/view must return exit 4, a schema-valid `parser.failure` report, the current unsupported-reader diagnostic, no source digest/size/parser and empty evidence. These are assertions about the existing refusal behavior, not a new public failure-code protocol. Source bytes and nanosecond atime/mtime/ctime (as exposed by the host) are checked around candidate execution. Test validation reads occur after timestamp comparisons to avoid attributing the test's own reads to the auditor.
 
-CI retains test logs and completed distribution evidence for 14 days. Workflow job limits bound the overall native runs; compilation and candidate invocations have their own limits. No user documents are used. macOS/Windows jobs install validation dependencies but not the Python application. Source dependencies and frozen evidence must remain unmodified.
+CI retains test logs and completed distribution evidence for 14 days. Workflow job limits bound the overall native runs; compilation and candidate invocations have their own limits. No user documents are used. macOS/Windows jobs use Python 3.14.7 only for schema/process validation, not the Python application or Unicode oracle. Python 3.12.13 has no matching macOS/Windows installers in the setup-python catalog; Linux parity retains that exact oracle version. Source dependencies and frozen evidence must remain unmodified. Git attributes also disable line-ending conversion for the embedded Go Unicode tables: category rows are byte-sensitive and a CR suffix would change classification on Windows checkouts.
 
 ## Manual compilation
 
