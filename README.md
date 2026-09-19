@@ -1,26 +1,37 @@
 # Aletharsis
 
 A read-only command-line forensic auditor for Unicode artifacts, text structure,
-identifier candidates, and provenance labels. Version 0.1.0 implements **M0/M1**.
+identifier candidates, and provenance labels. Version 0.2.0 ports **M0/M1** to Go,
+with the Python 0.1.0 implementation retained as a frozen behavior reference.
 
 > A suspicious artifact is not necessarily a watermark. Aletharsis reports observable evidence and structural patterns; intent and provenance may require additional investigation.
 
 ## Installation
 
-Python 3.12+ is required. This release requires Linux with `O_NOATIME` for strict
+Build with Go 1.24+; the resulting binary requires no Python runtime. Auditing
+currently requires Linux with `O_NOATIME` for strict
 timestamp-preserving file reads. Run as the source file's owner; insufficient
 permissions cause an explicit audit failure instead of a normal read fallback.
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e '.[dev]'
-aletharsis --version
+go build -trimpath -o bin/aletharsis ./cmd/aletharsis
+./bin/aletharsis --version
+./bin/aletharsis audit tests/fixtures/binary_zero_width.txt
 ```
 
-Alternatively, with uv: `uv venv --python 3.12`, then `uv pip install -e '.[dev]'`.
-There are **no runtime dependencies** beyond Python. Setuptools builds the package;
-pytest runs tests and jsonschema validates reports during development.
+Place the binary on your PATH to use the commands below. The sole Go module
+dependency is pinned `golang.org/x/text`, compiled into the binary for Unicode
+normalization and names; Unicode classification and Emoji data are also bundled.
+Audits require no network connection or external program.
+
+Darwin and Windows binaries can be built, but source acquisition fails closed on
+those platforms until equivalent timestamp-preserving readers are implemented and
+tested. Cross-compilation does not imply cross-platform forensic guarantees.
+
+The original `src/aletharsis`, `pyproject.toml`, and Python tests are retained for
+reference verification, not required by the Go CLI. See the
+[migration record](docs/migration/go-backend-migration.md) and
+[frozen reference manifest](reference/python-behavior/manifest.json).
 
 ## Usage
 
@@ -117,9 +128,9 @@ their appearance depends on presentation selectors and rendering. Counts and
 offsets refer to individual code points, not complete rendered emoji. Flags,
 skin-tone modifiers and joined emoji can therefore contribute multiple code
 points. Joiners, tags and selectors remain separately inventoried. Code-point
-names use Python's Unicode database and may be unavailable for newer characters,
+names use pinned Unicode 15.0.0 data matching the Python reference and may be unavailable for newer characters,
 but detection still uses the pinned table. The bundled data's source hash and
-Unicode license are included in `src/aletharsis/data/`.
+Unicode license are included in `internal/analyzers/data/` and in the frozen Python source.
 
 This is literal-source inspection: an ASCII escape such as `\\U0001F600` is not
 decoded into an emoji, and Emojicode or other language semantics are not analyzed.
@@ -169,6 +180,9 @@ still verify source hashes, bounds, monotonic offsets, correspondence between
 offset arrays and text, and consistency of counts. New detector IDs or evidence
 shapes require an explicit schema update; there is no permissive fallback.
 
+The migration also retains a frozen compatibility snapshot in
+[reference/python-behavior/report.schema.json](reference/python-behavior/report.schema.json).
+
 Top-level fields:
 
 | Field | Contents |
@@ -188,15 +202,20 @@ Full source text is retained in JSON. `file.sha256` hashes original bytes, which
 differ from `raw_text_sha256` for non-UTF-8 input. Unavailable identity fields are
 null on read failure. Failures are valid JSON reports with `parser.failure` findings.
 
-Output uses sorted keys, deterministic ordering, escaped Unicode, and no runtime
+Go output uses fixed struct field order, sorted map keys, deterministic finding
+ordering, escaped Unicode, and no runtime
 timestamps or random IDs. It is reproducible for the same supplied path, bytes,
-configuration and Python Unicode database version (recorded in evidence).
+configuration and pinned Unicode database version (recorded in evidence).
+Serialization whitespace/key/finding order and human-readable failure prose may
+differ from Python; those differences are disclosed in the migration record.
 
 ## Architecture and integrity
 
-`identify` → parser registry → `DocumentEvidence` → analyzer protocols → `Report`
-→ console/JSON reporters. Parsers extract facts; analyzers classify them. New
-format parsers and optional analyzers can be registered without changing reporters.
+`internal/audit` → `internal/parsers` → `internal/evidence` → analyzer interfaces
+→ console/JSON reporters. `cmd/aletharsis` delegates to `internal/cli`.
+Parsers extract facts; analyzers classify them. Format-specific readers use Go
+build constraints; unsupported platforms fail closed. New analyzers can be added
+without changing reporters.
 The raw model preserves text, metadata and structural evidence as separate fields.
 
 All transformations occur in memory. Source files are opened with `O_RDONLY`,
@@ -212,14 +231,25 @@ forensic image/mount. No attempt is made to restore timestamps by writing them.
 ## Development and examples
 
 ```bash
-python tests/generate_fixtures.py
-python -m pytest
-aletharsis audit tests/fixtures/binary_zero_width.txt --verbose
-aletharsis audit tests/fixtures/binary_zero_width.txt --json
+go test ./...
+go test -race ./...
+go vet ./...
+go build -trimpath -o bin/aletharsis ./cmd/aletharsis
+python3 scripts/check_parity.py bin/aletharsis
 ```
 
-Fixtures are deterministic and checked in. Tests assert findings, legitimate-language
-cases, offsets, hashes, JSON schema, exit codes, failure behavior, report overwrite
-protection and byte/timestamp integrity. Representative complete reports are in
-`examples/`. M0/M1 stop here; DOCX/PDF fixtures and analyzers belong to subsequent
-milestones after this implementation is reviewed.
+Go tests require no Python runtime: they consume 37 committed Python report
+oracles, exhaustive Unicode property/normalization digests, and 155 normalization
+vectors. They also exercise concurrent audits, failure handling, safe reporting,
+CLI output protection, and unchanged source bytes/timestamps. The optional parity
+script needs only Python's standard library and also checks reference-file hashes.
+
+For live differential checks, use Python 3.12 with the frozen modules:
+`PYTHONPATH=src python scripts/check_differential.py bin/aletharsis`.
+This covers 210 seeded Unicode/identifier/provenance cases. Original Python tests
+remain runnable with `PYTHONPATH=src python -m pytest` after installing pytest.
+
+Do not regenerate reference artifacts as part of normal testing. Changes to them
+are reviewed behavior changes. Frontend F0/F1 specifications remain paused until
+the Go parity and migration review is accepted. Directory auditing, office-format
+parsing, the service API, and stable failure codes remain separately scoped work.
