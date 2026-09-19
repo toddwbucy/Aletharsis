@@ -104,6 +104,16 @@ Controlled-environment reviewers may investigate suspected information transfer 
 
 Distinguish a validated known-watermark match, an explicitly justified anomaly, a known keyed-channel match and insufficient evidence. Every proposed analyzer needs stated assumptions, suitable positive/negative controls and measured false-positive limits. Unusual vocabulary alone is not evidence of steganography. Aletharsis may decode a known observed carrier when necessary to characterize evidence, such as extracting the ASCII projection of Unicode tags, but does not provide tooling to construct or operationalize covert channels. Channel generation and exploitation are outside this detection scope.
 
+### 5.5 Experimental stretch goal: intrinsic model fingerprint analysis
+
+Aletharsis may experimentally investigate whether outputs without a deliberate watermark exhibit reproducible, model-associated generative signatures under controlled conditions. This is a research hypothesis to validate, not an assumed stable or unique identifier. Intrinsic fingerprint analysis is separate from keyed watermark detection, cryptographic provenance and evidence of an intentionally encoded covert channel.
+
+Any experiment must use documented, versioned baselines and independently held-out samples, with controls for prompts, topic, language, model/version, sampling configuration and subsequent editing. Evaluation must test unseen models and changed conditions rather than force every sample into a known-model label. Sample size and scope must be explicit; minimum usable sample sizes, error rates and decision thresholds require empirical validation. Shared training data, model families, prompt effects and distribution shifts are potential confounders, not evidence of identity.
+
+Results remain probabilistic and scoped to the tested baselines. Report method/version, baseline identity, analyzed sample identity, evaluation conditions, uncertainty and limitations; do not present an uncalibrated similarity score as an attribution probability. Unknown, inconclusive, insufficient-sample and out-of-scope outcomes must be supported. A fingerprint result cannot establish authorship, intent, a particular user or organization, or the presence of a deliberate watermark; it supplies no exact watermark bytes to reveal or remove.
+
+This is an optional P6 research stretch goal, not a committed detector or a dependency for P0–P5, the workbench or remediation. Product integration requires a separately reviewed specification and reproducible validation showing useful discrimination and acceptable false-positive limits. The current schema and detector contracts remain unchanged; Issue #17 should preserve room for distinct experimental result semantics without inventing them now.
+
 ## 6. Primary use cases
 
 | ID | Scenario | Required outcome |
@@ -245,7 +255,7 @@ Consider concealed content, tracking/provenance identifiers, agent-instruction c
 
 Threat surfaces include hostile files/archives, malformed parser inputs, resource exhaustion, path aliases, external relationships/URLs, malicious report strings, imported rules and misleading provenance assertions. Mitigations require inert handling, bounded work, source verification, distinct trust decisions and explicit coverage when inspection fails.
 
-Aletharsis is not a general text editor, malware sandbox, universal covert-channel detector, AI-authorship classifier, malicious-intent judge, in-place sanitizer, OCR platform, or automatic arbitrary-document rewriter. It cannot prove a document safe, guarantee a downstream agent will resist injection, or automatically trust instructions discovered in a repository.
+Aletharsis is not a general text editor, malware sandbox, universal covert-channel detector, general-purpose AI-authorship classifier, malicious-intent judge, in-place sanitizer, OCR platform, or automatic arbitrary-document rewriter. It cannot prove a document safe, guarantee a downstream agent will resist injection, or automatically trust instructions discovered in a repository.
 
 ## 17. Security, privacy and operational requirements
 
@@ -281,7 +291,7 @@ Use **P0–P7** for this parent roadmap to avoid renaming historical M0–M4 bac
 | P3 — PDF | Born-digital structural/metadata evidence and separately declared OCR-derived limits | Bounded extraction, object/page locations and conservative visibility claims; no implicit OCR service |
 | P4 — Review/rule backend | Review decisions, declarative rules, scope matching, frozen sets | Accepted adapter contracts, stale-source rejection, bulk approval identity and F0/F1 alignment |
 | P5 — Provenance adapters | Prioritized C2PA feasibility/verification; statistical adapters when access exists | P0 contracts; tested trust/coverage semantics; actual vendor contract and consent before remote analysis |
-| P6 — Advanced analysis | Vetted new steganographic/statistical/cross-format detectors | Stated detection assumptions, positive/negative controls, measured error limits and honest unsupported cases |
+| P6 — Advanced analysis | Vetted new steganographic/statistical/cross-format detectors; optional intrinsic model fingerprint research (§5.5) | Stated detection assumptions, positive/negative controls, measured error limits and honest unsupported cases; fingerprint integration requires separate specification and held-out validation |
 | P7 — Controlled derivatives | Text and later format-aware writers, dry run, confirmed plans, manifests/re-audit | Independent writer/integrity tests; full source/plan revalidation and reviewed failure handling |
 
 P5 C2PA discovery/design can proceed after P0 without waiting for all PDF/UI work. Vendor API availability cannot block local structural functionality. P4/F0 inspection and review do not require P7. No office writer is implied by successful office parsing. Non-Linux acquisition remains a separate capability gate, not an automatic consequence of cross-compilation.
