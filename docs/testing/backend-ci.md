@@ -1,6 +1,6 @@
 # Backend CI foundation
 
-This guide covers the CI foundation, focused unit contracts, and compiled-CLI integration workstreams of [Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7). Acquisition fault injection, fuzzing, performance, and platform validation remain separate workstreams.
+This guide covers the CI foundation, focused unit contracts, and compiled-CLI integration workstreams of [Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7). The acquisition fault tests are described below; fuzzing, performance, and platform validation remain separate workstreams.
 
 ## Checks and scope
 
@@ -73,14 +73,14 @@ The focused unit suite supplements migration parity with independently stated ex
 
 Run these with `go test ./internal/parsers ./internal/analyzers ./internal/evidence ./internal/reporters`, or use the full CI commands above. Expected decoding bytes and normalization strings are written explicitly; the new tests do not import Python, read golden reports, or generate expected output by calling the implementation under test. Pattern input generators construct counts/gaps, while expected detection boundaries are stated independently.
 
-Negative controls establish behavior for those inputs, not a guarantee that all legitimate Unicode is free of suspicious patterns. Statement coverage is diagnostic, not proof of branch coverage or correctness. Acquisition fault injection, fuzzing, resource characterization and platform validation remain separate Issue #7 workstreams.
+Negative controls establish behavior for those inputs, not a guarantee that all legitimate Unicode is free of suspicious patterns. Statement coverage is diagnostic, not proof of branch coverage or correctness. Fuzzing, resource characterization and platform validation remain separate Issue #7 workstreams.
 
 
 ## Compiled executable and live report contract
 
 `integration/` launches only the explicit `--aletharsis-binary` candidate. There is no PATH fallback, no in-process `cli.Run` call, and no import of the Python auditor. Missing candidates fail setup. This test harness uses the existing pinned pytest/jsonschema test dependencies; it can remain after retiring the Python application.
 
-The suite currently contains 188 Linux cases:
+The original executable-contract suite contains 188 Linux cases; acquisition checks add five more below:
 
 - All 37 frozen inputs through audit, unicode, metadata, and structure: live-schema validation, complete retained evidence, expected finding subsets, recalculated summaries, process exit status, and byte-identical repeated output.
 - Spaces, Unicode and leading-hyphen paths, explicit end-of-options, usage errors, help/version, and JSON versus human-readable output.
@@ -91,3 +91,22 @@ The suite currently contains 188 Linux cases:
 Every candidate process has a 10-second timeout; CI caps the suite at 180 seconds and retains its JUnit report and console diagnostics with the other artifacts. Run on Linux: native non-Linux acquisition remains unsupported. The forced file-size limit applies only to the child process, not the test runner. Close-only failures and acquisition races are not exercised by this suite and remain candidates for the fault-injection workstream.
 
 Migration comparisons retain the documented implementation-version/finding-order/native-error-prose exceptions; strict-schema validation itself has no such exclusions. New path/permission/error tests use directly stated contracts independently of the Python reports. Do not relax the schema or rewrite frozen reports to make the executable pass.
+
+
+## Acquisition integrity and deterministic faults
+
+`internal/audit/faults_linux_test.go` uses small private, per-call dependency seams around opening a snapshot and invoking its reader. Production acquisition still uses the same syscall flags, bounded read, before/after stat checks, and failure reporting. No exported API or mutable global hook is introduced.
+
+The tests verify:
+
+- EACCES, EPERM, unsupported no-atime-style opening, and symlink-loop errors are propagated after exactly one open attempt. The required read-only/no-atime/no-follow/nonblocking flags are asserted; fallback opening is forbidden.
+- First/second stat failures and a read that returns bytes plus EIO discard partial data. Every successfully opened descriptor is closed exactly once, including preflight failures.
+- Size, modification-time and change-time differences independently reject a snapshot. Synthetic stat pairs avoid timestamp-resolution assumptions. A real-file hook also performs a deliberate same-size external edit during a read, with explicit distinct timestamps, to exercise rejection without sleeps.
+- Oversized/nonregular preflight failures do not read content; accepted sizes and limit-plus-one enforcement are tested. A reader that grows beyond its initial size cannot bypass the read bound.
+- Acquisition failures publish no source digest, size, parser, or extracted text, even if a failing reader returned partial bytes.
+
+`internal/cli/concurrent_test.go` runs 16 independent input/output pairs, including malformed inputs, under the race detector. It checks each report against its own source identity/content, repeats the audit for deterministic output, and verifies source stat snapshots and bytes remain unchanged.
+
+`integration/test_acquisition.py` exercises native directory, FIFO, Unix-domain socket, symlink, and denied-permission inputs through the compiled binary and live schema. Its child timeout makes a blocking FIFO open a failure. Run on Linux with local filesystem support for those fixtures. A sandbox that forbids Unix-domain sockets cannot validate that case; do not interpret such a setup failure as an auditor result. The mode-000 permission test explicitly skips root, which can bypass the mode; injected EACCES/EPERM cases still run. Hosted CI runs as its ordinary unprivileged runner user.
+
+Denied `O_NOATIME`/unsupported filesystem behavior is injected deterministically; it is not a claim that all filesystem implementations have been tested. Actual source-byte/timestamp checks cover representative native successes and failures. The deliberate external-edit test changes its own disposable fixture and checks detection, not preservation of bytes changed by another actor. Close-only report-output failures remain an untested follow-up; read-side close calls are checked for resource cleanup. These tests do not promise detection of every possible concurrent modification.
