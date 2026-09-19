@@ -1,6 +1,6 @@
 # Backend CI foundation
 
-This implements the first workstream of [Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7). It automates existing correctness and migration tests; it does not complete the remaining parser, executable-contract, fault-injection, fuzz, performance, or platform workstreams.
+This guide covers the CI foundation, focused unit contracts, and compiled-CLI integration workstreams of [Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7). Acquisition fault injection, fuzzing, performance, and platform validation remain separate workstreams.
 
 ## Checks and scope
 
@@ -13,7 +13,7 @@ Each job checks Go formatting, module integrity, `go vet`, uncached tests, combi
 
 Python is a temporary testing oracle, not a dependency of the Go executable. Retirement of the Python application is separate work after these gates are established. Frozen reports, schemas, fixtures, and Unicode data remain useful to Go-only tests.
 
-The existing Python suite validates the report schema, but this first CI PR does not yet automate strict-schema validation of every Go CLI view. That belongs to workstream 3. Neither parity nor statement coverage proves independent correctness; there is no percentage gate in this initial workflow.
+The executable integration suite validates every supported Go CLI view against the live `schemas/report.schema.json` contract. Frozen reference schemas remain immutable migration artifacts, not substitutes for the live contract. Neither parity nor statement coverage proves independent correctness; there is no percentage gate.
 
 ## Reproduction
 
@@ -34,6 +34,7 @@ go test -count=1 -timeout=2m -coverpkg=./internal/... -coverprofile=artifacts/co
 go tool cover -func=artifacts/coverage.out
 go test -count=1 -race -timeout=2m ./...
 go build -trimpath -o bin/aletharsis ./cmd/aletharsis
+python -m pytest -q integration --aletharsis-binary=bin/aletharsis
 python -m pytest -q
 python scripts/check_parity.py bin/aletharsis
 python scripts/check_differential.py bin/aletharsis
@@ -72,4 +73,21 @@ The focused unit suite supplements migration parity with independently stated ex
 
 Run these with `go test ./internal/parsers ./internal/analyzers ./internal/evidence ./internal/reporters`, or use the full CI commands above. Expected decoding bytes and normalization strings are written explicitly; the new tests do not import Python, read golden reports, or generate expected output by calling the implementation under test. Pattern input generators construct counts/gaps, while expected detection boundaries are stated independently.
 
-Negative controls establish behavior for those inputs, not a guarantee that all legitimate Unicode is free of suspicious patterns. Statement coverage is diagnostic, not proof of branch coverage or correctness. Executable/strict-schema integration, acquisition fault injection, fuzzing, resource characterization and platform validation remain separate Issue #7 workstreams.
+Negative controls establish behavior for those inputs, not a guarantee that all legitimate Unicode is free of suspicious patterns. Statement coverage is diagnostic, not proof of branch coverage or correctness. Acquisition fault injection, fuzzing, resource characterization and platform validation remain separate Issue #7 workstreams.
+
+
+## Compiled executable and live report contract
+
+`integration/` launches only the explicit `--aletharsis-binary` candidate. There is no PATH fallback, no in-process `cli.Run` call, and no import of the Python auditor. Missing candidates fail setup. This test harness uses the existing pinned pytest/jsonschema test dependencies; it can remain after retiring the Python application.
+
+The suite currently contains 188 Linux cases:
+
+- All 37 frozen inputs through audit, unicode, metadata, and structure: live-schema validation, complete retained evidence, expected finding subsets, recalculated summaries, process exit status, and byte-identical repeated output.
+- Spaces, Unicode and leading-hyphen paths, explicit end-of-options, usage errors, help/version, and JSON versus human-readable output.
+- Structured verbose logs confined to stderr; malformed/missing sources yield schema-valid failed reports instead of successful partial evidence.
+- New reports match stdout JSON and use mode 0600 even under umask 000. Existing reports, sources, hardlinks and symlinks are preserved on rejected writes.
+- Nonexistent output parents, stdout write failures via `/dev/full`, and deterministic partial-file cleanup using a child-only `RLIMIT_FSIZE` limit. Source bytes and nanosecond timestamps are checked around representative success/failure operations.
+
+Every candidate process has a 10-second timeout; CI caps the suite at 180 seconds and retains its JUnit report and console diagnostics with the other artifacts. Run on Linux: native non-Linux acquisition remains unsupported. The forced file-size limit applies only to the child process, not the test runner. Close-only failures and acquisition races are not exercised by this suite and remain candidates for the fault-injection workstream.
+
+Migration comparisons retain the documented implementation-version/finding-order/native-error-prose exceptions; strict-schema validation itself has no such exclusions. New path/permission/error tests use directly stated contracts independently of the Python reports. Do not relax the schema or rewrite frozen reports to make the executable pass.

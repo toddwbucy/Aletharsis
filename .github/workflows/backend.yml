@@ -74,6 +74,8 @@ jobs:
         run: timeout 300s go test -count=1 -race -timeout=2m -json ./... | tee artifacts/go-race.jsonl
       - name: Build executable
         run: timeout 180s go build -trimpath -o bin/aletharsis ./cmd/aletharsis
+      - name: Compiled Go CLI and live report contract
+        run: timeout 180s python -m pytest -q integration --aletharsis-binary=bin/aletharsis --junitxml=artifacts/go-cli-tests.xml 2>&1 | tee artifacts/go-cli-tests.txt
       - name: Retained Python and reference-tool tests
         run: timeout 180s python -m pytest -q --junitxml=artifacts/python-tests.xml 2>&1 | tee artifacts/python-tests.txt
       - name: Frozen report parity and deterministic output
