@@ -1,0 +1,69 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 0,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "nfc_text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "nfkc_text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "raw_text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 0
+        },
+        "normalization": {
+          "formatting_removed_count": 0,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": ""
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "empty.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "reference/python-behavior/inputs/empty.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "size": 0
+  },
+  "findings": [],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 0,
+    "findings": 0,
+    "high": 0,
+    "info": 0,
+    "low": 0,
+    "medium": 0
+  }
+}

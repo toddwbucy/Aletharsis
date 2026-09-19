@@ -1,0 +1,276 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 96,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          1,
+          2,
+          3,
+          6,
+          7,
+          8,
+          9,
+          12,
+          13,
+          14,
+          15,
+          18,
+          19,
+          20,
+          21,
+          24,
+          25,
+          26,
+          27,
+          30,
+          31,
+          32,
+          33,
+          36,
+          37,
+          38,
+          39,
+          42,
+          43,
+          44,
+          45,
+          48,
+          49,
+          50,
+          51,
+          54,
+          55,
+          56,
+          57,
+          60,
+          61,
+          62,
+          63,
+          66,
+          67,
+          68,
+          69,
+          72,
+          73,
+          74,
+          75,
+          78,
+          79,
+          80,
+          81,
+          84,
+          85,
+          86,
+          87,
+          90,
+          91,
+          92,
+          93,
+          96
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "64e5925b57a6618d001c586809104b547db40ab995faf68b25a2abe0b5d1acda",
+          "nfc_text_sha256": "4fcc28360ba354400cbc713f9b2d48b69520e894d1347885ff02d12a6ac5e142",
+          "nfkc_text_sha256": "4fcc28360ba354400cbc713f9b2d48b69520e894d1347885ff02d12a6ac5e142",
+          "raw_text_sha256": "4fcc28360ba354400cbc713f9b2d48b69520e894d1347885ff02d12a6ac5e142"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 0
+        },
+        "normalization": {
+          "formatting_removed_count": 16,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "abc\u200babc\u200babc\u200babc\u200babc\u200babc\u200babc\u200babc\u200babc\u200babc\u200babc\u200babc\u200babc\u200babc\u200babc\u200babc\u200b"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "periodic.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "tests/fixtures/periodic.txt",
+    "sha256": "4fcc28360ba354400cbc713f9b2d48b69520e894d1347885ff02d12a6ac5e142",
+    "size": 96
+  },
+  "findings": [
+    {
+      "category": "possible_steganography",
+      "classification": "suspicious_pattern",
+      "confidence": 0.7,
+      "description": "Invisible formatting characters recur at an exact character interval. Formatting conventions may also produce this pattern.",
+      "evidence": {
+        "character_interval": 4,
+        "count": 16,
+        "minimum_count": 12
+      },
+      "id": "pattern.periodic_insertion",
+      "location": {
+        "byte_offsets": [
+          3,
+          9,
+          15,
+          21,
+          27,
+          33,
+          39,
+          45,
+          51,
+          57,
+          63,
+          69,
+          75,
+          81,
+          87,
+          93
+        ],
+        "character_offsets": [
+          3,
+          7,
+          11,
+          15,
+          19,
+          23,
+          27,
+          31,
+          35,
+          39,
+          43,
+          47,
+          51,
+          55,
+          59,
+          63
+        ],
+        "source": "file"
+      },
+      "severity": "MEDIUM",
+      "title": "Periodic invisible-character insertion"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200B",
+        "contexts": [
+          {
+            "character_offset": 3,
+            "escaped_text": "abc\\u200babc\\u200babc\\u200babc\\u200babc\\u200b"
+          },
+          {
+            "character_offset": 7,
+            "escaped_text": "abc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200b"
+          },
+          {
+            "character_offset": 11,
+            "escaped_text": "abc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200b"
+          },
+          {
+            "character_offset": 15,
+            "escaped_text": "abc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200b"
+          },
+          {
+            "character_offset": 19,
+            "escaped_text": "\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200b"
+          },
+          {
+            "character_offset": 23,
+            "escaped_text": "\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200b"
+          },
+          {
+            "character_offset": 27,
+            "escaped_text": "\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200b"
+          },
+          {
+            "character_offset": 31,
+            "escaped_text": "\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200babc\\u200b"
+          }
+        ],
+        "contexts_omitted": 8,
+        "count": 16,
+        "leading_bom": false,
+        "name": "ZERO WIDTH SPACE"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          3,
+          9,
+          15,
+          21,
+          27,
+          33,
+          39,
+          45,
+          51,
+          57,
+          63,
+          69,
+          75,
+          81,
+          87,
+          93
+        ],
+        "character_offsets": [
+          3,
+          7,
+          11,
+          15,
+          19,
+          23,
+          27,
+          31,
+          35,
+          39,
+          43,
+          47,
+          51,
+          55,
+          59,
+          63
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+200B ZERO WIDTH SPACE detected"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 2,
+    "findings": 2,
+    "high": 0,
+    "info": 0,
+    "low": 1,
+    "medium": 1
+  }
+}

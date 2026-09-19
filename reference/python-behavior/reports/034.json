@@ -1,0 +1,141 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 42,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "594bc8caf3bde2032affbb8b15912ae7f80cf3a84a8bdfc97782b12018ca7ab0",
+          "nfc_text_sha256": "0a5e9b678c90efa7d03d823b2a1b562eb3933763c345e6ac3299ec2af7bd8c0e",
+          "nfkc_text_sha256": "0a5e9b678c90efa7d03d823b2a1b562eb3933763c345e6ac3299ec2af7bd8c0e",
+          "raw_text_sha256": "0a5e9b678c90efa7d03d823b2a1b562eb3933763c345e6ac3299ec2af7bd8c0e"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 1
+        },
+        "normalization": {
+          "formatting_removed_count": 1,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "<?xml version=\"1.0\"?><root>text\u2063</root>\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".xml",
+    "filename": "source.xml",
+    "format": "text",
+    "identification_basis": "XML declaration; source text inspection",
+    "mime": "application/xml",
+    "parser": "text-source-v1",
+    "path": "tests/fixtures/source.xml",
+    "sha256": "0a5e9b678c90efa7d03d823b2a1b562eb3933763c345e6ac3299ec2af7bd8c0e",
+    "size": 42
+  },
+  "findings": [
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+2063",
+        "contexts": [
+          {
+            "character_offset": 31,
+            "escaped_text": "1.0\"?><root>text\\u2063</root>\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "INVISIBLE SEPARATOR"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          31
+        ],
+        "character_offsets": [
+          31
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+2063 INVISIBLE SEPARATOR detected"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 1,
+    "findings": 1,
+    "high": 0,
+    "info": 0,
+    "low": 1,
+    "medium": 0
+  }
+}

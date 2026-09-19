@@ -1,0 +1,181 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 91,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "93762cc700bf4c577ad0cb6217f11d7f075818820c5042ae605d6d036b09fa06",
+          "nfc_text_sha256": "93762cc700bf4c577ad0cb6217f11d7f075818820c5042ae605d6d036b09fa06",
+          "nfkc_text_sha256": "93762cc700bf4c577ad0cb6217f11d7f075818820c5042ae605d6d036b09fa06",
+          "raw_text_sha256": "93762cc700bf4c577ad0cb6217f11d7f075818820c5042ae605d6d036b09fa06"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 3
+        },
+        "normalization": {
+          "formatting_removed_count": 0,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "\u00e912345678-1234-1234-1234-123456789abc\n x12345678-1234-1234-1234-123456789abc\n author: yes\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "boundary.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "reference/python-behavior/inputs/boundary.txt",
+    "sha256": "93762cc700bf4c577ad0cb6217f11d7f075818820c5042ae605d6d036b09fa06",
+    "size": 91
+  },
+  "findings": [
+    {
+      "category": "provenance",
+      "classification": "observed_fact",
+      "confidence": 0.9,
+      "description": "The source contains a provenance-related label, possibly in a comment. The statement is unverified and could be an example or ordinary prose.",
+      "evidence": {
+        "escaped_marker": "author: yes"
+      },
+      "id": "provenance.text_marker",
+      "location": {
+        "byte_offsets": [
+          79
+        ],
+        "character_offsets": [
+          78
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Explicit provenance or identifier label detected"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 1,
+    "findings": 1,
+    "high": 0,
+    "info": 0,
+    "low": 1,
+    "medium": 0
+  }
+}

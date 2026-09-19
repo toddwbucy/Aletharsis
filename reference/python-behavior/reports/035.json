@@ -1,0 +1,807 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 100,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          11,
+          15,
+          19,
+          23,
+          27,
+          31,
+          35,
+          39,
+          43,
+          47,
+          51,
+          55,
+          59,
+          63,
+          67,
+          71,
+          75,
+          79,
+          83,
+          87,
+          91,
+          95,
+          99,
+          100
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "e8e5188dc84fb47c65ef098ffb8e610a65c2321b7cd9dbe6492d931dfa97ac1b",
+          "nfc_text_sha256": "c116a05945ea4d50fc7b89e4b8635293c324a620430cbc92bea9688dcbd35982",
+          "nfkc_text_sha256": "c116a05945ea4d50fc7b89e4b8635293c324a620430cbc92bea9688dcbd35982",
+          "raw_text_sha256": "c116a05945ea4d50fc7b89e4b8635293c324a620430cbc92bea9688dcbd35982"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 1
+        },
+        "normalization": {
+          "formatting_removed_count": 23,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "Visible\udb40\udc70\udb40\udc72\udb40\udc6f\udb40\udc76\udb40\udc65\udb40\udc6e\udb40\udc61\udb40\udc6e\udb40\udc63\udb40\udc65\udb40\udc2d\udb40\udc69\udb40\udc64\udb40\udc2d\udb40\udc31\udb40\udc32\udb40\udc33\udb40\udc34\udb40\udc35\udb40\udc36\udb40\udc37\udb40\udc38\udb40\udc7f\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "tags.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "tests/fixtures/tags.txt",
+    "sha256": "c116a05945ea4d50fc7b89e4b8635293c324a620430cbc92bea9688dcbd35982",
+    "size": 100
+  },
+  "findings": [
+    {
+      "category": "possible_steganography",
+      "classification": "suspicious_pattern",
+      "confidence": 0.75,
+      "description": "This run is consistent with encoded character data. Tags and variation selectors also have legitimate uses; interpretation requires review.",
+      "evidence": {
+        "alphabet_size": 20,
+        "ascii_projection": "provenance-id-12345678",
+        "count": 23,
+        "minimum_run": 16
+      },
+      "id": "pattern.tag_run",
+      "location": {
+        "byte_offsets": [
+          7,
+          11,
+          15,
+          19,
+          23,
+          27,
+          31,
+          35,
+          39,
+          43,
+          47,
+          51,
+          55,
+          59,
+          63,
+          67,
+          71,
+          75,
+          79,
+          83,
+          87,
+          91,
+          95
+        ],
+        "character_offsets": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "source": "file"
+      },
+      "severity": "MEDIUM",
+      "title": "Long contiguous tag sequence"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0076",
+        "contexts": [
+          {
+            "character_offset": 10,
+            "escaped_text": "Visible\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER V"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          19
+        ],
+        "character_offsets": [
+          10
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0076 TAG LATIN SMALL LETTER V detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0065",
+        "contexts": [
+          {
+            "character_offset": 11,
+            "escaped_text": "Visible\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037"
+          },
+          {
+            "character_offset": 16,
+            "escaped_text": "Visible\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 2,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER E"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          23,
+          43
+        ],
+        "character_offsets": [
+          11,
+          16
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0065 TAG LATIN SMALL LETTER E detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E006E",
+        "contexts": [
+          {
+            "character_offset": 12,
+            "escaped_text": "Visible\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038"
+          },
+          {
+            "character_offset": 14,
+            "escaped_text": "Visible\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 2,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER N"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          27,
+          35
+        ],
+        "character_offsets": [
+          12,
+          14
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E006E TAG LATIN SMALL LETTER N detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0061",
+        "contexts": [
+          {
+            "character_offset": 13,
+            "escaped_text": "Visible\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER A"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          31
+        ],
+        "character_offsets": [
+          13
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0061 TAG LATIN SMALL LETTER A detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0063",
+        "contexts": [
+          {
+            "character_offset": 15,
+            "escaped_text": "Visible\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER C"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          39
+        ],
+        "character_offsets": [
+          15
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0063 TAG LATIN SMALL LETTER C detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E002D",
+        "contexts": [
+          {
+            "character_offset": 17,
+            "escaped_text": "isible\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          },
+          {
+            "character_offset": 20,
+            "escaped_text": "ble\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 2,
+        "leading_bom": false,
+        "name": "TAG HYPHEN-MINUS"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          47,
+          59
+        ],
+        "character_offsets": [
+          17,
+          20
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E002D TAG HYPHEN-MINUS detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0069",
+        "contexts": [
+          {
+            "character_offset": 18,
+            "escaped_text": "sible\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER I"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          51
+        ],
+        "character_offsets": [
+          18
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0069 TAG LATIN SMALL LETTER I detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0064",
+        "contexts": [
+          {
+            "character_offset": 19,
+            "escaped_text": "ible\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER D"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          55
+        ],
+        "character_offsets": [
+          19
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0064 TAG LATIN SMALL LETTER D detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0031",
+        "contexts": [
+          {
+            "character_offset": 21,
+            "escaped_text": "le\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG DIGIT ONE"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          63
+        ],
+        "character_offsets": [
+          21
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0031 TAG DIGIT ONE detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0032",
+        "contexts": [
+          {
+            "character_offset": 22,
+            "escaped_text": "e\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG DIGIT TWO"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          67
+        ],
+        "character_offsets": [
+          22
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0032 TAG DIGIT TWO detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0033",
+        "contexts": [
+          {
+            "character_offset": 23,
+            "escaped_text": "\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG DIGIT THREE"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          71
+        ],
+        "character_offsets": [
+          23
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0033 TAG DIGIT THREE detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0034",
+        "contexts": [
+          {
+            "character_offset": 24,
+            "escaped_text": "\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG DIGIT FOUR"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          75
+        ],
+        "character_offsets": [
+          24
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0034 TAG DIGIT FOUR detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0035",
+        "contexts": [
+          {
+            "character_offset": 25,
+            "escaped_text": "\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG DIGIT FIVE"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          79
+        ],
+        "character_offsets": [
+          25
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0035 TAG DIGIT FIVE detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0036",
+        "contexts": [
+          {
+            "character_offset": 26,
+            "escaped_text": "\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG DIGIT SIX"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          83
+        ],
+        "character_offsets": [
+          26
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0036 TAG DIGIT SIX detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0037",
+        "contexts": [
+          {
+            "character_offset": 27,
+            "escaped_text": "\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG DIGIT SEVEN"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          87
+        ],
+        "character_offsets": [
+          27
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0037 TAG DIGIT SEVEN detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0038",
+        "contexts": [
+          {
+            "character_offset": 28,
+            "escaped_text": "\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG DIGIT EIGHT"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          91
+        ],
+        "character_offsets": [
+          28
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0038 TAG DIGIT EIGHT detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E007F",
+        "contexts": [
+          {
+            "character_offset": 29,
+            "escaped_text": "\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035\\U000e0036\\U000e0037\\U000e0038\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "CANCEL TAG"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          95
+        ],
+        "character_offsets": [
+          29
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E007F CANCEL TAG detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0070",
+        "contexts": [
+          {
+            "character_offset": 7,
+            "escaped_text": "Visible\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER P"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          7
+        ],
+        "character_offsets": [
+          7
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0070 TAG LATIN SMALL LETTER P detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0072",
+        "contexts": [
+          {
+            "character_offset": 8,
+            "escaped_text": "Visible\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER R"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          11
+        ],
+        "character_offsets": [
+          8
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0072 TAG LATIN SMALL LETTER R detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E006F",
+        "contexts": [
+          {
+            "character_offset": 9,
+            "escaped_text": "Visible\\U000e0070\\U000e0072\\U000e006f\\U000e0076\\U000e0065\\U000e006e\\U000e0061\\U000e006e\\U000e0063\\U000e0065\\U000e002d\\U000e0069\\U000e0064\\U000e002d\\U000e0031\\U000e0032\\U000e0033\\U000e0034\\U000e0035"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER O"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          15
+        ],
+        "character_offsets": [
+          9
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E006F TAG LATIN SMALL LETTER O detected"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 2,
+    "findings": 21,
+    "high": 0,
+    "info": 0,
+    "low": 20,
+    "medium": 1
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 26,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          24,
+          25,
+          26
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "e3f4864f1fe874fb049a1edbfaa47a3e56fdf5346d955eb4902d58fde3c4b20c",
+          "nfc_text_sha256": "2bdd3a3a34a8b089e7655b1af206e92dc1b4ad47ff7da97e2732a2cfd9261b08",
+          "nfkc_text_sha256": "9db832a5bb165e356a38382e40446ea7596982713d64d71d109390a38e66c62d",
+          "raw_text_sha256": "e3f4864f1fe874fb049a1edbfaa47a3e56fdf5346d955eb4902d58fde3c4b20c"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 1
+        },
+        "normalization": {
+          "formatting_removed_count": 0,
+          "hash_encoding": "utf-8",
+          "nfc_changed": true,
+          "nfkc_changed": true,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "Cafe\u0301 and fullwidth \uff21.\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "normalization.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "tests/fixtures/normalization.txt",
+    "sha256": "e3f4864f1fe874fb049a1edbfaa47a3e56fdf5346d955eb4902d58fde3c4b20c",
+    "size": 26
+  },
+  "findings": [
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+0301",
+        "contexts": [
+          {
+            "character_offset": 4,
+            "escaped_text": "Cafe\\u0301 and fullwidth \\uff21"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "COMBINING ACUTE ACCENT"
+      },
+      "id": "unicode.combining",
+      "location": {
+        "byte_offsets": [
+          4
+        ],
+        "character_offsets": [
+          4
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+0301 COMBINING ACUTE ACCENT detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Canonical or compatibility equivalents differ. This is common in normal text and does not imply a watermark.",
+      "evidence": {
+        "nfc_changed": true,
+        "nfkc_changed": true
+      },
+      "id": "unicode.normalization",
+      "location": {
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "Unicode normalization changes extracted text"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 1,
+    "findings": 2,
+    "high": 0,
+    "info": 2,
+    "low": 0,
+    "medium": 0
+  }
+}

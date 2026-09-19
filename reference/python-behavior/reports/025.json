@@ -1,0 +1,102 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 8,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "2ae4523860ffad0901a06e613e9b574a81f410d6ccff2d4482d0907cedad9233",
+          "nfc_text_sha256": "2ae4523860ffad0901a06e613e9b574a81f410d6ccff2d4482d0907cedad9233",
+          "nfkc_text_sha256": "2ae4523860ffad0901a06e613e9b574a81f410d6ccff2d4482d0907cedad9233",
+          "raw_text_sha256": "2ae4523860ffad0901a06e613e9b574a81f410d6ccff2d4482d0907cedad9233"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 1
+        },
+        "normalization": {
+          "formatting_removed_count": 0,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "p\u0430ypal\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "mixed_script.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "tests/fixtures/mixed_script.txt",
+    "sha256": "2ae4523860ffad0901a06e613e9b574a81f410d6ccff2d4482d0907cedad9233",
+    "size": 8
+  },
+  "findings": [
+    {
+      "category": "unicode",
+      "classification": "suspicious_pattern",
+      "confidence": 0.6,
+      "description": "Mixed scripts can contain visually similar letters, but can also be intentional. This is not a comprehensive confusables detector.",
+      "evidence": {
+        "escaped_token": "p\\u0430ypal",
+        "scripts": [
+          "CYRILLIC",
+          "LATIN"
+        ]
+      },
+      "id": "text.mixed_script",
+      "location": {
+        "byte_offsets": [
+          0
+        ],
+        "character_offsets": [
+          0
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Mixed Latin and Greek/Cyrillic letters within a token"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 1,
+    "findings": 1,
+    "high": 0,
+    "info": 0,
+    "low": 1,
+    "medium": 0
+  }
+}

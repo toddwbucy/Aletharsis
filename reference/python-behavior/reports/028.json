@@ -1,0 +1,97 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 44,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          1,
+          2,
+          3,
+          5,
+          6,
+          7,
+          8,
+          9,
+          11,
+          12,
+          13,
+          14,
+          15,
+          17,
+          19,
+          21,
+          23,
+          25,
+          27,
+          29,
+          31,
+          32,
+          33,
+          36,
+          39,
+          42,
+          43,
+          44
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "25bf36bfba515f584d31641588eccbe4bf453dc12881eb06421efb8c263814da",
+          "nfc_text_sha256": "25bf36bfba515f584d31641588eccbe4bf453dc12881eb06421efb8c263814da",
+          "nfkc_text_sha256": "25bf36bfba515f584d31641588eccbe4bf453dc12881eb06421efb8c263814da",
+          "raw_text_sha256": "25bf36bfba515f584d31641588eccbe4bf453dc12881eb06421efb8c263814da"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 1
+        },
+        "normalization": {
+          "formatting_removed_count": 0,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "Caf\u00e9, na\u00efve, \u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac, \u65e5\u672c\u8a9e.\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "normal_utf8.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "tests/fixtures/normal_utf8.txt",
+    "sha256": "25bf36bfba515f584d31641588eccbe4bf453dc12881eb06421efb8c263814da",
+    "size": 44
+  },
+  "findings": [],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 0,
+    "findings": 0,
+    "high": 0,
+    "info": 0,
+    "low": 0,
+    "medium": 0
+  }
+}

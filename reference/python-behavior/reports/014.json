@@ -1,0 +1,189 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 24,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": "0000feff",
+        "byte_offsets": [
+          0,
+          4,
+          8,
+          12,
+          16,
+          20,
+          24
+        ],
+        "encoding": "utf-32-be",
+        "hashes": {
+          "formatting_removed_sha256": "69d059ae7fd854bfffbeed5fd08e63f947ed98010f35178f35ba08a6cf396e24",
+          "nfc_text_sha256": "e2fa8b8c66076d49541b6bc464eb8155192407cb366530d13e1f8379048f2f05",
+          "nfkc_text_sha256": "e2fa8b8c66076d49541b6bc464eb8155192407cb366530d13e1f8379048f2f05",
+          "raw_text_sha256": "e2fa8b8c66076d49541b6bc464eb8155192407cb366530d13e1f8379048f2f05"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 1,
+          "lf": 0
+        },
+        "normalization": {
+          "formatting_removed_count": 2,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "\ufeff\u00e9\ud83d\ude00\u200b\r\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "utf-32-be.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "reference/python-behavior/inputs/utf-32-be.txt",
+    "sha256": "2808ce6b7819869d9e9ee714211dc7dd35aa62d22d05955e77c7378aa986cb18",
+    "size": 24
+  },
+  "findings": [
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F600",
+        "contexts": [
+          {
+            "character_offset": 2,
+            "escaped_text": "\\ufeff\\xe9\\U0001f600\\u200b\\r\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "GRINNING FACE",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          8
+        ],
+        "character_offsets": [
+          2
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+1F600 GRINNING FACE detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200B",
+        "contexts": [
+          {
+            "character_offset": 3,
+            "escaped_text": "\\ufeff\\xe9\\U0001f600\\u200b\\r\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "ZERO WIDTH SPACE"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          12
+        ],
+        "character_offsets": [
+          3
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+200B ZERO WIDTH SPACE detected"
+    },
+    {
+      "category": "document_structure",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "An initial BOM is an ordinary encoding marker.",
+      "evidence": {
+        "encoding": "utf-32-be",
+        "hex": "0000feff"
+      },
+      "id": "text.bom",
+      "location": {
+        "byte_offset": 0,
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "Byte order mark detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+FEFF",
+        "contexts": [
+          {
+            "character_offset": 0,
+            "escaped_text": "\\ufeff\\xe9\\U0001f600\\u200b\\r\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": true,
+        "name": "ZERO WIDTH NO-BREAK SPACE"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          0
+        ],
+        "character_offsets": [
+          0
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+FEFF ZERO WIDTH NO-BREAK SPACE detected"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 1,
+    "findings": 4,
+    "high": 0,
+    "info": 2,
+    "low": 2,
+    "medium": 0
+  }
+}

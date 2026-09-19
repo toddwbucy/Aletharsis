@@ -1,0 +1,590 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 47,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          2,
+          5,
+          8,
+          11,
+          14,
+          17,
+          20,
+          23,
+          26,
+          29,
+          31,
+          33,
+          36,
+          39,
+          43,
+          44,
+          46,
+          47
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "6dd8c6041e5169d2b772053ff48b34a7383ae156c18066d9079242500582f658",
+          "nfc_text_sha256": "d9b37c9003d5d7060cd22af31abfecfd63418cff1b62ade244c893be3d84e6fe",
+          "nfkc_text_sha256": "e27dc448f72594bf6a5466195a72f29b4c96b8ac068552e75623d970b0445e1c",
+          "raw_text_sha256": "5bc2f7036a7945d11678cfeefe2c14eca55b22c5de99ea45b86ff4ec8446ce68"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 1
+        },
+        "normalization": {
+          "formatting_removed_count": 11,
+          "hash_encoding": "utf-8",
+          "nfc_changed": true,
+          "nfkc_changed": true,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "\u00e9\u200b\u200c\u200d\u2060\u2061\u2062\u2063\u2064\ufeff\u00ad\u00a0\u202f\u2009\udb40\udd00e\u0301\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "unicode.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "reference/python-behavior/inputs/unicode.txt",
+    "sha256": "5bc2f7036a7945d11678cfeefe2c14eca55b22c5de99ea45b86ff4ec8446ce68",
+    "size": 47
+  },
+  "findings": [
+    {
+      "category": "document_structure",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Possible concatenated text or embedded formatting marker.",
+      "evidence": {
+        "count": 1
+      },
+      "id": "text.embedded_bom",
+      "location": {
+        "byte_offsets": [
+          26
+        ],
+        "character_offsets": [
+          9
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Embedded BOM character detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200B",
+        "contexts": [
+          {
+            "character_offset": 1,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "ZERO WIDTH SPACE"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          2
+        ],
+        "character_offsets": [
+          1
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+200B ZERO WIDTH SPACE detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200C",
+        "contexts": [
+          {
+            "character_offset": 2,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "ZERO WIDTH NON-JOINER"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          5
+        ],
+        "character_offsets": [
+          2
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+200C ZERO WIDTH NON-JOINER detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200D",
+        "contexts": [
+          {
+            "character_offset": 3,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "ZERO WIDTH JOINER"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          8
+        ],
+        "character_offsets": [
+          3
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+200D ZERO WIDTH JOINER detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+2060",
+        "contexts": [
+          {
+            "character_offset": 4,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "WORD JOINER"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          11
+        ],
+        "character_offsets": [
+          4
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+2060 WORD JOINER detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+2061",
+        "contexts": [
+          {
+            "character_offset": 5,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "FUNCTION APPLICATION"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          14
+        ],
+        "character_offsets": [
+          5
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+2061 FUNCTION APPLICATION detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+2062",
+        "contexts": [
+          {
+            "character_offset": 6,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "INVISIBLE TIMES"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          17
+        ],
+        "character_offsets": [
+          6
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+2062 INVISIBLE TIMES detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+2063",
+        "contexts": [
+          {
+            "character_offset": 7,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "INVISIBLE SEPARATOR"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          20
+        ],
+        "character_offsets": [
+          7
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+2063 INVISIBLE SEPARATOR detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+2064",
+        "contexts": [
+          {
+            "character_offset": 8,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "INVISIBLE PLUS"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          23
+        ],
+        "character_offsets": [
+          8
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+2064 INVISIBLE PLUS detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+FEFF",
+        "contexts": [
+          {
+            "character_offset": 9,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "ZERO WIDTH NO-BREAK SPACE"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          26
+        ],
+        "character_offsets": [
+          9
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+FEFF ZERO WIDTH NO-BREAK SPACE detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+0301",
+        "contexts": [
+          {
+            "character_offset": 16,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "COMBINING ACUTE ACCENT"
+      },
+      "id": "unicode.combining",
+      "location": {
+        "byte_offsets": [
+          44
+        ],
+        "character_offsets": [
+          16
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+0301 COMBINING ACUTE ACCENT detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Canonical or compatibility equivalents differ. This is common in normal text and does not imply a watermark.",
+      "evidence": {
+        "nfc_changed": true,
+        "nfkc_changed": true
+      },
+      "id": "unicode.normalization",
+      "location": {
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "Unicode normalization changes extracted text"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+00AD",
+        "contexts": [
+          {
+            "character_offset": 10,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "SOFT HYPHEN"
+      },
+      "id": "unicode.soft_hyphen",
+      "location": {
+        "byte_offsets": [
+          29
+        ],
+        "character_offsets": [
+          10
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+00AD SOFT HYPHEN detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+00A0",
+        "contexts": [
+          {
+            "character_offset": 11,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "NO-BREAK SPACE"
+      },
+      "id": "unicode.unusual_whitespace",
+      "location": {
+        "byte_offsets": [
+          31
+        ],
+        "character_offsets": [
+          11
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+00A0 NO-BREAK SPACE detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+202F",
+        "contexts": [
+          {
+            "character_offset": 12,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "NARROW NO-BREAK SPACE"
+      },
+      "id": "unicode.unusual_whitespace",
+      "location": {
+        "byte_offsets": [
+          33
+        ],
+        "character_offsets": [
+          12
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+202F NARROW NO-BREAK SPACE detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+2009",
+        "contexts": [
+          {
+            "character_offset": 13,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "THIN SPACE"
+      },
+      "id": "unicode.unusual_whitespace",
+      "location": {
+        "byte_offsets": [
+          36
+        ],
+        "character_offsets": [
+          13
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+2009 THIN SPACE detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0100",
+        "contexts": [
+          {
+            "character_offset": 14,
+            "escaped_text": "\\xe9\\u200b\\u200c\\u200d\\u2060\\u2061\\u2062\\u2063\\u2064\\ufeff\\xad\\xa0\\u202f\\u2009\\U000e0100e\\u0301\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "VARIATION SELECTOR-17"
+      },
+      "id": "unicode.variation_selector",
+      "location": {
+        "byte_offsets": [
+          39
+        ],
+        "character_offsets": [
+          14
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+E0100 VARIATION SELECTOR-17 detected"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 1,
+    "findings": 17,
+    "high": 0,
+    "info": 7,
+    "low": 10,
+    "medium": 0
+  }
+}

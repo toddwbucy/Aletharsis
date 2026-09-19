@@ -1,0 +1,164 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 34,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          3,
+          6,
+          9,
+          10,
+          13,
+          14,
+          17,
+          18,
+          21,
+          22,
+          24,
+          25,
+          28,
+          31,
+          33,
+          34
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "19954bd34b52c3e0498d4c70a27614c70e355fcbd37b84c295c47b656f801054",
+          "nfc_text_sha256": "65025a8dfa19c47558dadbcecd781b5ad2f95eaf8d9fd3b81d3276ae277cc39a",
+          "nfkc_text_sha256": "bfc737b698acd0308739818eb53afe10912e8e1a829c5431405f4eb090ae7847",
+          "raw_text_sha256": "19954bd34b52c3e0498d4c70a27614c70e355fcbd37b84c295c47b656f801054"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 1
+        },
+        "normalization": {
+          "formatting_removed_count": 0,
+          "hash_encoding": "utf-8",
+          "nfc_changed": true,
+          "nfkc_changed": true,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "\u1100\u1161\u11a8 \u212b \ufb03 \uff21 \u0344 \u2126\u1e9b\u0323\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "normalization.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "reference/python-behavior/inputs/normalization.txt",
+    "sha256": "19954bd34b52c3e0498d4c70a27614c70e355fcbd37b84c295c47b656f801054",
+    "size": 34
+  },
+  "findings": [
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+0344",
+        "contexts": [
+          {
+            "character_offset": 10,
+            "escaped_text": "\\u1100\\u1161\\u11a8 \\u212b \\ufb03 \\uff21 \\u0344 \\u2126\\u1e9b\\u0323\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "COMBINING GREEK DIALYTIKA TONOS"
+      },
+      "id": "unicode.combining",
+      "location": {
+        "byte_offsets": [
+          22
+        ],
+        "character_offsets": [
+          10
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+0344 COMBINING GREEK DIALYTIKA TONOS detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+0323",
+        "contexts": [
+          {
+            "character_offset": 14,
+            "escaped_text": "\\u1100\\u1161\\u11a8 \\u212b \\ufb03 \\uff21 \\u0344 \\u2126\\u1e9b\\u0323\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "COMBINING DOT BELOW"
+      },
+      "id": "unicode.combining",
+      "location": {
+        "byte_offsets": [
+          31
+        ],
+        "character_offsets": [
+          14
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+0323 COMBINING DOT BELOW detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Canonical or compatibility equivalents differ. This is common in normal text and does not imply a watermark.",
+      "evidence": {
+        "nfc_changed": true,
+        "nfkc_changed": true
+      },
+      "id": "unicode.normalization",
+      "location": {
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "Unicode normalization changes extracted text"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 1,
+    "findings": 3,
+    "high": 0,
+    "info": 3,
+    "low": 0,
+    "medium": 0
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 15,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": "efbbbf",
+        "byte_offsets": [
+          0,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "0ec08042c3e76c2a44b20ae9a92e050fba9cebd36383a612028d146e4fc3e87c",
+          "nfc_text_sha256": "31ef8c6c5b0e6536c1fc314e4ded8c1d2c1028a6da2c07741fc58fcaa6b5514b",
+          "nfkc_text_sha256": "31ef8c6c5b0e6536c1fc314e4ded8c1d2c1028a6da2c07741fc58fcaa6b5514b",
+          "raw_text_sha256": "31ef8c6c5b0e6536c1fc314e4ded8c1d2c1028a6da2c07741fc58fcaa6b5514b"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 1
+        },
+        "normalization": {
+          "formatting_removed_count": 2,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "\ufeffstart\ufeffend\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "bom.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "tests/fixtures/bom.txt",
+    "sha256": "31ef8c6c5b0e6536c1fc314e4ded8c1d2c1028a6da2c07741fc58fcaa6b5514b",
+    "size": 15
+  },
+  "findings": [
+    {
+      "category": "document_structure",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Possible concatenated text or embedded formatting marker.",
+      "evidence": {
+        "count": 1
+      },
+      "id": "text.embedded_bom",
+      "location": {
+        "byte_offsets": [
+          8
+        ],
+        "character_offsets": [
+          6
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Embedded BOM character detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+FEFF",
+        "contexts": [
+          {
+            "character_offset": 0,
+            "escaped_text": "\\ufeffstart\\ufeffend\\n"
+          },
+          {
+            "character_offset": 6,
+            "escaped_text": "\\ufeffstart\\ufeffend\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 2,
+        "leading_bom": false,
+        "name": "ZERO WIDTH NO-BREAK SPACE"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          0,
+          8
+        ],
+        "character_offsets": [
+          0,
+          6
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+FEFF ZERO WIDTH NO-BREAK SPACE detected"
+    },
+    {
+      "category": "document_structure",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "An initial BOM is an ordinary encoding marker.",
+      "evidence": {
+        "encoding": "utf-8",
+        "hex": "efbbbf"
+      },
+      "id": "text.bom",
+      "location": {
+        "byte_offset": 0,
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "Byte order mark detected"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 1,
+    "findings": 3,
+    "high": 0,
+    "info": 1,
+    "low": 2,
+    "medium": 0
+  }
+}
