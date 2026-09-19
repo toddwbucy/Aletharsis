@@ -1,6 +1,6 @@
 # Backend CI foundation
 
-This guide covers the CI foundation, focused unit contracts, and compiled-CLI integration workstreams of [Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7). The acquisition fault tests are described below; fuzzing, performance, and platform validation remain separate workstreams.
+This guide covers the CI foundation, focused unit contracts, and compiled-CLI integration workstreams of [Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7). Acquisition fault tests are described below, and the [bounded fuzzing guide](fuzzing.md) covers property targets and scheduled searches. Performance and platform validation remain separate workstreams.
 
 ## Checks and scope
 
@@ -73,7 +73,7 @@ The focused unit suite supplements migration parity with independently stated ex
 
 Run these with `go test ./internal/parsers ./internal/analyzers ./internal/evidence ./internal/reporters`, or use the full CI commands above. Expected decoding bytes and normalization strings are written explicitly; the new tests do not import Python, read golden reports, or generate expected output by calling the implementation under test. Pattern input generators construct counts/gaps, while expected detection boundaries are stated independently.
 
-Negative controls establish behavior for those inputs, not a guarantee that all legitimate Unicode is free of suspicious patterns. Statement coverage is diagnostic, not proof of branch coverage or correctness. Fuzzing, resource characterization and platform validation remain separate Issue #7 workstreams.
+Negative controls establish behavior for those inputs, not a guarantee that all legitimate Unicode is free of suspicious patterns. Statement coverage is diagnostic, not proof of branch coverage or correctness. The [fuzzing workstream](fuzzing.md) adds bounded property searches; resource characterization and platform validation remain separate Issue #7 workstreams.
 
 
 ## Compiled executable and live report contract
