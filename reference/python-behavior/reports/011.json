@@ -1,0 +1,52 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {},
+    "texts": []
+  },
+  "file": {
+    "extension": ".pdf",
+    "filename": "unsupported.pdf",
+    "format": "pdf",
+    "identification_basis": "PDF signature",
+    "mime": "application/pdf",
+    "parser": null,
+    "path": "reference/python-behavior/inputs/unsupported.pdf",
+    "sha256": "0716f9264c9fe19f5d7455276107f3ddcc1d3497f63d60689a73558ae8a1bf5e",
+    "size": 9
+  },
+  "findings": [
+    {
+      "category": "parser",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "The file was not fully analyzed. Review the error before interpreting findings.",
+      "evidence": {
+        "error_type": "ValueError",
+        "message": "Unsupported format: pdf; M0/M1 support Unicode text source files"
+      },
+      "id": "parser.failure",
+      "location": {},
+      "severity": "INFO",
+      "title": "Audit could not complete"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "failed",
+  "summary": {
+    "exit_code": 4,
+    "findings": 1,
+    "high": 0,
+    "info": 1,
+    "low": 0,
+    "medium": 0
+  }
+}

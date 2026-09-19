@@ -1,0 +1,297 @@
+{
+  "cases": [
+    {
+      "exit_code": 4,
+      "input": "reference/python-behavior/inputs/bad16.txt",
+      "report": "reports/000.json",
+      "report_sha256": "2360e8531dcc0e203d47d5efc8ec4bd9d20135268a4ef21c9f2a9df3caeaf0a1",
+      "sha256": "9a3dfc4ebac913021d75fd93382c29818f41c16331358a96d3f83d6ef337d0a9"
+    },
+    {
+      "exit_code": 1,
+      "input": "reference/python-behavior/inputs/boundary.txt",
+      "report": "reports/001.json",
+      "report_sha256": "e95cfca8a404988df3ddc0a748a711c80e4422ba0d9c5fa11986b56fcf8c592d",
+      "sha256": "93762cc700bf4c577ad0cb6217f11d7f075818820c5042ae605d6d036b09fa06"
+    },
+    {
+      "exit_code": 4,
+      "input": "reference/python-behavior/inputs/disguised.txt",
+      "report": "reports/002.json",
+      "report_sha256": "0a9d449cd17a2f77a916d2f7d3796516c65a7738ce1897406f14a1604c23a99b",
+      "sha256": "0716f9264c9fe19f5d7455276107f3ddcc1d3497f63d60689a73558ae8a1bf5e"
+    },
+    {
+      "exit_code": 1,
+      "input": "reference/python-behavior/inputs/emoji.py",
+      "report": "reports/003.json",
+      "report_sha256": "761b9ac27df5c04f044e29961e33ac8db0585c8c02efa9ff80cb0ba6072378f7",
+      "sha256": "0faaa6842eafa23f636cfca30e3643eea0ba9a9a578f1f3b08ca3deeae90f17c"
+    },
+    {
+      "exit_code": 0,
+      "input": "reference/python-behavior/inputs/empty.txt",
+      "report": "reports/004.json",
+      "report_sha256": "c23f99d11ad94c20b20faf87d80a58bb567e4ccd5b839ed2ffbef3fea2b01cbb",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "exit_code": 1,
+      "input": "reference/python-behavior/inputs/encoded.txt",
+      "report": "reports/005.json",
+      "report_sha256": "e1161514888592d0227213cf15f18ed3ee03e206db936718eafa1ee99706ca5e",
+      "sha256": "1b7fce9993e1fca10b801b39d052b2d3366508fe84bb7b5f77a852eab1081501"
+    },
+    {
+      "exit_code": 4,
+      "input": "reference/python-behavior/inputs/invalid_controls.bin",
+      "report": "reports/006.json",
+      "report_sha256": "0df7ef8c422d7cca6b83bf4087815fef295cbc0868f703da310fdb1a05ef1238",
+      "sha256": "0679246d6c4216de0daa08e5523fb2674db2b6599c3b72ff946b488a15290b62"
+    },
+    {
+      "exit_code": 1,
+      "input": "reference/python-behavior/inputs/long_marks.txt",
+      "report": "reports/007.json",
+      "report_sha256": "61bbe7f7ae78f307e3d6b999b03cc365b5069cfa214dd0347017e21d026edb44",
+      "sha256": "872f1697b8974015cec2da00515eb9006b87eaa85fb466addde3758645f3444a"
+    },
+    {
+      "exit_code": 1,
+      "input": "reference/python-behavior/inputs/normalization.txt",
+      "report": "reports/008.json",
+      "report_sha256": "973e1eadabfbafad9854cb0b94c6f7ba659b2ab71f6e85c57ca36103b7e34949",
+      "sha256": "19954bd34b52c3e0498d4c70a27614c70e355fcbd37b84c295c47b656f801054"
+    },
+    {
+      "exit_code": 4,
+      "input": "reference/python-behavior/inputs/truncated32.txt",
+      "report": "reports/009.json",
+      "report_sha256": "fe6be90aeef960453dac5421425cb4dd25eaab5c0764c4e08cded142eab630e2",
+      "sha256": "68d5dc3a2a1ac0d20f1151f2fc28a4c87143554405ebb64ea9feaca8c39c107f"
+    },
+    {
+      "exit_code": 1,
+      "input": "reference/python-behavior/inputs/unicode.txt",
+      "report": "reports/010.json",
+      "report_sha256": "5a27a5c552d50a9ad577ef2e9eec8f8920dd159d0214af3ae650c34e4288933c",
+      "sha256": "5bc2f7036a7945d11678cfeefe2c14eca55b22c5de99ea45b86ff4ec8446ce68"
+    },
+    {
+      "exit_code": 4,
+      "input": "reference/python-behavior/inputs/unsupported.pdf",
+      "report": "reports/011.json",
+      "report_sha256": "0c4c826d7c768623ae3f202efb9c38f3d5e7742072193f728cb15f02463af4ff",
+      "sha256": "0716f9264c9fe19f5d7455276107f3ddcc1d3497f63d60689a73558ae8a1bf5e"
+    },
+    {
+      "exit_code": 1,
+      "input": "reference/python-behavior/inputs/utf-16-be.txt",
+      "report": "reports/012.json",
+      "report_sha256": "1fe901191fe8aeea47bd239e2937be557e59b461efb35153c1378217eec9e45d",
+      "sha256": "20771764aad6703055cf8bb901f28e3158cfdbef1312e99d4ef3ae2c5065e3be"
+    },
+    {
+      "exit_code": 1,
+      "input": "reference/python-behavior/inputs/utf-16-le.txt",
+      "report": "reports/013.json",
+      "report_sha256": "007f6531f810e6064dd888f030d42af07ea7dab8a1ae8288ab15d35d41b1e1a8",
+      "sha256": "4f8641e4f239f3069fb3d1bdc7ef62d58657516426034ff77a7b2b74c8d57b3e"
+    },
+    {
+      "exit_code": 1,
+      "input": "reference/python-behavior/inputs/utf-32-be.txt",
+      "report": "reports/014.json",
+      "report_sha256": "19314e1c9d0a6f1d716a9e00338cf68c9c0b447139f8513ad46e5b4d64dd6a3f",
+      "sha256": "2808ce6b7819869d9e9ee714211dc7dd35aa62d22d05955e77c7378aa986cb18"
+    },
+    {
+      "exit_code": 1,
+      "input": "reference/python-behavior/inputs/utf-32-le.txt",
+      "report": "reports/015.json",
+      "report_sha256": "68833baf2f5515d9745fd03d689b4e7186b917a41b4a5fad392fe52a51bdca91",
+      "sha256": "0686c199ae207237f68e46a594204b45483922717174c33f577bf696736ecf0e"
+    },
+    {
+      "exit_code": 1,
+      "input": "tests/fixtures/bidi.txt",
+      "report": "reports/016.json",
+      "report_sha256": "6d6abb3ff89955e721cf9014c08fce51d15964e11232f7639235136839b1036c",
+      "sha256": "8d4808477a9aef82b379a3edb7efa6017e1b23170bbf05acf1ca782d692f9560"
+    },
+    {
+      "exit_code": 3,
+      "input": "tests/fixtures/binary_zero_width.txt",
+      "report": "reports/017.json",
+      "report_sha256": "3d40cd418fe01d38b9ada66f246e7dbd181eb894bdb5683e2907ca577b3e2642",
+      "sha256": "ba294cd82318821110ff59d8677318c1a84f3d462a1365b369eced80087d127c"
+    },
+    {
+      "exit_code": 1,
+      "input": "tests/fixtures/bom.txt",
+      "report": "reports/018.json",
+      "report_sha256": "89c2961d60c728d244efaebbb603c2fba9dd933577dd3d745d87b8be4528fa7a",
+      "sha256": "31ef8c6c5b0e6536c1fc314e4ded8c1d2c1028a6da2c07741fc58fcaa6b5514b"
+    },
+    {
+      "exit_code": 0,
+      "input": "tests/fixtures/clean_ascii.txt",
+      "report": "reports/019.json",
+      "report_sha256": "5fa911bee55933886a8a9d1592ea26766058f3de2143bf6240d69708d59bf850",
+      "sha256": "1d0d5e404f224d3fb3adfd664d0e7a17efcfba0f0e9282f7501b2952e26dc9d6"
+    },
+    {
+      "exit_code": 2,
+      "input": "tests/fixtures/control.txt",
+      "report": "reports/020.json",
+      "report_sha256": "abaab51d822f6b0f3f44f9c59072cfbefef059eb11b5390363c226b966c79a82",
+      "sha256": "6f2bce8781fcde2af84b316568b515641bb2cf897891be3b488063a7edcc3a18"
+    },
+    {
+      "exit_code": 2,
+      "input": "tests/fixtures/identifiers.md",
+      "report": "reports/021.json",
+      "report_sha256": "01bd03210bb4986decd444427a9dfc83499e60cecbc7c038bf29868773a531ed",
+      "sha256": "bc0189a7d0d04a3a633fcf15b0cff09cc570fbb954e029f9d56995d0c33454ce"
+    },
+    {
+      "exit_code": 4,
+      "input": "tests/fixtures/invalid_utf8.txt",
+      "report": "reports/022.json",
+      "report_sha256": "c7d3fca05bb86a27da253c2aaee37f08ef94d36f94c577b34aaf9d658b0c50b0",
+      "sha256": "921648899fbe42a4a1d2d253c41c088d9a9ab897989ab3b1b6e2e4a9a6299362"
+    },
+    {
+      "exit_code": 1,
+      "input": "tests/fixtures/isolated_zwsp.txt",
+      "report": "reports/023.json",
+      "report_sha256": "39f1bb4c67ccb93725e0cc8172dbb23d5bf610f07d5110ddff3029df85a244ff",
+      "sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a"
+    },
+    {
+      "exit_code": 1,
+      "input": "tests/fixtures/mixed_endings.csv",
+      "report": "reports/024.json",
+      "report_sha256": "7acc405589dac9caa634a8b7870cce51d7bcfcf8dc4507ce0a2dccfbdadc35b0",
+      "sha256": "bd9c7791a4e3a0f145cd3ae7d8ec5885e91d1987e1fb645f834a332527cbef41"
+    },
+    {
+      "exit_code": 1,
+      "input": "tests/fixtures/mixed_script.txt",
+      "report": "reports/025.json",
+      "report_sha256": "3e8c6b8a1591648ecaba8691acd77d63b1bdef7eab2bf8fac638f9286cbb457b",
+      "sha256": "2ae4523860ffad0901a06e613e9b574a81f410d6ccff2d4482d0907cedad9233"
+    },
+    {
+      "exit_code": 1,
+      "input": "tests/fixtures/normal_emoji.txt",
+      "report": "reports/026.json",
+      "report_sha256": "54bf646194d01f6b5dfc4bac9feb03d011fe630d5f445856befdda066cf5066a",
+      "sha256": "bd8033ccad738b7df126e5562741387d1c60714524ef6331d60aa6ef6f54a04c"
+    },
+    {
+      "exit_code": 1,
+      "input": "tests/fixtures/normal_persian.txt",
+      "report": "reports/027.json",
+      "report_sha256": "11452a93d6ce903ad4458a673ada8f9f34838316ad76adb76c827271fdf53233",
+      "sha256": "46128f76ee3b113b5087280dee7c5d66e0db73fc5de581d5f9469e4b02a1fdb7"
+    },
+    {
+      "exit_code": 0,
+      "input": "tests/fixtures/normal_utf8.txt",
+      "report": "reports/028.json",
+      "report_sha256": "b03a87d9d671f7522eb7f3e57cd6bf5b385a9f8e1386aa68c2447d314f6c1190",
+      "sha256": "25bf36bfba515f584d31641588eccbe4bf453dc12881eb06421efb8c263814da"
+    },
+    {
+      "exit_code": 1,
+      "input": "tests/fixtures/normalization.txt",
+      "report": "reports/029.json",
+      "report_sha256": "6fa6b0d4eaf219be5b5aef07a2e375a1b1be12351a959e39d339bc8fc4dacd85",
+      "sha256": "e3f4864f1fe874fb049a1edbfaa47a3e56fdf5346d955eb4902d58fde3c4b20c"
+    },
+    {
+      "exit_code": 2,
+      "input": "tests/fixtures/periodic.txt",
+      "report": "reports/030.json",
+      "report_sha256": "7143cdcbe617f27402c41f54b4c58c1a0ac96dc4139c70f397f2a200d953c983",
+      "sha256": "4fcc28360ba354400cbc713f9b2d48b69520e894d1347885ff02d12a6ac5e142"
+    },
+    {
+      "exit_code": 1,
+      "input": "tests/fixtures/source.html",
+      "report": "reports/031.json",
+      "report_sha256": "588aceb123454d2fd2bee4014047ec5137a5dc6ff2b97a39142aeb619dae69d3",
+      "sha256": "fdad7982ae64659efc10af375cfa92135ad9beb6a16763d84d1e528929683726"
+    },
+    {
+      "exit_code": 1,
+      "input": "tests/fixtures/source.json",
+      "report": "reports/032.json",
+      "report_sha256": "6b7c2d46b3e19a16227071e756ff30a363fef67d73f7a5608ab5f512ad5cc7b9",
+      "sha256": "4789b6b02c46f69ae6eebc99940de75a309746c1fd521ed291e99a121239c5f7"
+    },
+    {
+      "exit_code": 0,
+      "input": "tests/fixtures/source.rst",
+      "report": "reports/033.json",
+      "report_sha256": "f2205f75691846751fea373d93c99f914fa4b4d1fafb474a65c78360ae379551",
+      "sha256": "2bafb95525b8641a5fcf3b7c45b19b0f13a9324d1402106ba88b8e64fe3a0780"
+    },
+    {
+      "exit_code": 1,
+      "input": "tests/fixtures/source.xml",
+      "report": "reports/034.json",
+      "report_sha256": "44874decc78dbccfb806ee56c1229052794b7c3c00a05c0064a0694840cfe07b",
+      "sha256": "0a5e9b678c90efa7d03d823b2a1b562eb3933763c345e6ac3299ec2af7bd8c0e"
+    },
+    {
+      "exit_code": 2,
+      "input": "tests/fixtures/tags.txt",
+      "report": "reports/035.json",
+      "report_sha256": "4066852a167f7ecd42b44b045462c403d7a071ef8c129165c5445c8191d3b3f2",
+      "sha256": "c116a05945ea4d50fc7b89e4b8635293c324a620430cbc92bea9688dcbd35982"
+    },
+    {
+      "exit_code": 2,
+      "input": "tests/fixtures/variation_selectors.txt",
+      "report": "reports/036.json",
+      "report_sha256": "39641f15458d958803c301618e5411bb17e02f4224cb08994ea4f2d1cdf01cca",
+      "sha256": "7c3619be5c1d4a1090abb084120ac065d56d5050fd44679b2bfcdb5f0eb643e3"
+    }
+  ],
+  "emoji_version": "17.0",
+  "files": {
+    "pyproject.toml": "55d4253c06a8674ac3a992153289dad7b446232c302147f75aa8d0489d3ba9c1",
+    "src/aletharsis/__init__.py": "f0abd7e5c519a51525dc196a590265d3d4f4ba4142996e48b5421d28ac301754",
+    "src/aletharsis/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "src/aletharsis/analyzers/__init__.py": "0620a0aa690f07dc112083a04efd01fe379e6ec696a2ccfd6ba316f44c44b44e",
+    "src/aletharsis/analyzers/base.py": "efdfda0cf5760bf279109cb37e707ae2bc2cf3cb7195c6bbfc172d1e0c8a262f",
+    "src/aletharsis/analyzers/emoji.py": "f13632e222a6b693d4453ce177ae318ab1c172b620bd4ae5a24241c52168e87e",
+    "src/aletharsis/analyzers/identifiers.py": "60598bfa549ab246ba4e676aa558d473c39105f9ee877a112ecc80181cae0bf8",
+    "src/aletharsis/analyzers/metadata.py": "3678010c6e310f854848d2e9f0de674c93d8994a7489072a5596d4ff3c313061",
+    "src/aletharsis/analyzers/patterns.py": "d32a890ef29e8447b69f301e3e8ea3b2ab59ed8020678db49a764113944e9300",
+    "src/aletharsis/analyzers/statistical/__init__.py": "10aa7458ce26ea595906cf3526b132869d2b5793511184b0cba5c6bb5b1d1f7c",
+    "src/aletharsis/analyzers/text.py": "5c0fa80436efe233d53d7452e5cfa0ccb8c882bcc7df03e1db044ac09b123a57",
+    "src/aletharsis/analyzers/unicode.py": "0e636d01f5eb800bc1cb7479daa7222a3f7c0605fec7b9a793d242f1433bb869",
+    "src/aletharsis/audit.py": "7dd80a47e0c299a72b52f71644eedf646f8007c5c5e227f3b88baa925e7d8600",
+    "src/aletharsis/cli.py": "f28c7084d14ff538850bffccd2cddec163825e3a6694be084c2102500aaa87d5",
+    "src/aletharsis/data/UNICODE-LICENSE.txt": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96",
+    "src/aletharsis/data/emoji-17.0.txt": "116c6b662e3c47dfafeb11fbeb4f98f9fe76500b5e55077a142d1dae1e5f972b",
+    "src/aletharsis/identify.py": "a5f771eccde7378799b533de537b13485fddaaeaced32232ba172aa974f9029f",
+    "src/aletharsis/models.py": "237afa95eb8fff60d50c3a3ed320c26717899e5b98beaeeb38483be18c619b26",
+    "src/aletharsis/parsers/__init__.py": "9cdcb574e79d1f4f7b5598d0edab3c14958f92bf783c1c58a1b59f34880b6942",
+    "src/aletharsis/parsers/base.py": "70500b129ab2d80c955f9ea49b7a2cd83e50a9e2746576d2e4fa0fb5c074605e",
+    "src/aletharsis/parsers/text.py": "6bcfbab0df66d6ac4a2e853cd530febf3f1a7ad16a1235d3de5c9c23f598ec01",
+    "src/aletharsis/reporters/__init__.py": "66beb257f2db432c3e18499caf7aad4d9eeda6d62dc3c44190230505a70da7c2",
+    "src/aletharsis/reporters/console.py": "6134704799fb3a15c60726b847bcf4c9f4d9464cd67e9f031fdb6c1519ad6871",
+    "src/aletharsis/reporters/json.py": "6a9df5f76876a1b0cd5ad14759e30fcb0f986b28ac79ec86e3e0c297be93baaa",
+    "src/aletharsis/safety.py": "7fb6e6a213f31bf77bdd3d8efa86fcf6a6ed4da79c1ee39e9a05be73ae2fc21f"
+  },
+  "python_commit": "a0401f93e948b334b51f7332a5729df7647eab24",
+  "python_version": "3.12.13",
+  "schema_commit": "36c88ee18e65154e8694e117f6db06d40c2b36ec",
+  "schema_sha256": "e362654f810beb2c68207643a8f56ca1d63d0b1dca04d3b8e5c932c1abf0b40a",
+  "unicode_oracle_sha256": "26125f63383958f0434482ba46f2a1ce15c667954a40596d0d9d9be8ff742c7b",
+  "unicode_version": "15.0.0"
+}

@@ -1,4 +1,7 @@
 # Forensic fixtures must retain their exact bytes across checkouts.
-tests/fixtures/* -text
+reference/python-behavior/** -text
+pyproject.toml -text
+src/aletharsis/** -text
+tests/fixtures/** -text
 # CR and CRLF endings in this fixture are intentional test evidence.
 tests/fixtures/mixed_endings.csv whitespace=-blank-at-eol

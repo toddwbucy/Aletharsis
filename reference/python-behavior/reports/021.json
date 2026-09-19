@@ -1,0 +1,213 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 97,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "bc0189a7d0d04a3a633fcf15b0cff09cc570fbb954e029f9d56995d0c33454ce",
+          "nfc_text_sha256": "bc0189a7d0d04a3a633fcf15b0cff09cc570fbb954e029f9d56995d0c33454ce",
+          "nfkc_text_sha256": "bc0189a7d0d04a3a633fcf15b0cff09cc570fbb954e029f9d56995d0c33454ce",
+          "raw_text_sha256": "bc0189a7d0d04a3a633fcf15b0cff09cc570fbb954e029f9d56995d0c33454ce"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 2
+        },
+        "normalization": {
+          "formatting_removed_count": 0,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "document-id: 12345678-1234-1234-1234-123456789abc\nRepeated: 12345678-1234-1234-1234-123456789abc\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".md",
+    "filename": "identifiers.md",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/markdown",
+    "parser": "text-source-v1",
+    "path": "tests/fixtures/identifiers.md",
+    "sha256": "bc0189a7d0d04a3a633fcf15b0cff09cc570fbb954e029f9d56995d0c33454ce",
+    "size": 97
+  },
+  "findings": [
+    {
+      "category": "identifier",
+      "classification": "observed_fact",
+      "confidence": 0.99,
+      "description": "A UUID-shaped value may serve as a persistent identifier. Its persistence, uniqueness, purpose and origin cannot be inferred from syntax alone.",
+      "evidence": {
+        "count": 2,
+        "repeated": true,
+        "value": "12345678-1234-1234-1234-123456789abc"
+      },
+      "id": "identifier.uuid",
+      "location": {
+        "byte_offsets": [
+          13,
+          60
+        ],
+        "character_offsets": [
+          13,
+          60
+        ],
+        "source": "file"
+      },
+      "severity": "MEDIUM",
+      "title": "UUID-like identifier present"
+    },
+    {
+      "category": "provenance",
+      "classification": "observed_fact",
+      "confidence": 0.9,
+      "description": "The source contains a provenance-related label, possibly in a comment. The statement is unverified and could be an example or ordinary prose.",
+      "evidence": {
+        "escaped_marker": "document-id: 12345678-1234-1234-1234-123456789abc"
+      },
+      "id": "provenance.text_marker",
+      "location": {
+        "byte_offsets": [
+          0
+        ],
+        "character_offsets": [
+          0
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Explicit provenance or identifier label detected"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 2,
+    "findings": 2,
+    "high": 0,
+    "info": 0,
+    "low": 1,
+    "medium": 1
+  }
+}

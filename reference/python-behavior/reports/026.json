@@ -1,0 +1,521 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 83,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          12,
+          15,
+          19,
+          22,
+          26,
+          29,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          44,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          58,
+          62,
+          66,
+          70,
+          74,
+          78,
+          82,
+          83
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "eaed0e8155106a5a2c3f07fad7c63c9139d341f7b044ff5517597ad314517e32",
+          "nfc_text_sha256": "bd8033ccad738b7df126e5562741387d1c60714524ef6331d60aa6ef6f54a04c",
+          "nfkc_text_sha256": "bd8033ccad738b7df126e5562741387d1c60714524ef6331d60aa6ef6f54a04c",
+          "raw_text_sha256": "bd8033ccad738b7df126e5562741387d1c60714524ef6331d60aa6ef6f54a04c"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 1
+        },
+        "normalization": {
+          "formatting_removed_count": 10,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "Family: \ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d\udc66 Heart: \u2764\ufe0f Flag: \ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "normal_emoji.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "tests/fixtures/normal_emoji.txt",
+    "sha256": "bd8033ccad738b7df126e5562741387d1c60714524ef6331d60aa6ef6f54a04c",
+    "size": 83
+  },
+  "findings": [
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F467",
+        "contexts": [
+          {
+            "character_offset": 12,
+            "escaped_text": "Family: \\U0001f469\\u200d\\U0001f469\\u200d\\U0001f467\\u200d\\U0001f466 Heart: \\u2764\\ufe0f Fla"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "GIRL",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          22
+        ],
+        "character_offsets": [
+          12
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+1F467 GIRL detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F466",
+        "contexts": [
+          {
+            "character_offset": 14,
+            "escaped_text": "Family: \\U0001f469\\u200d\\U0001f469\\u200d\\U0001f467\\u200d\\U0001f466 Heart: \\u2764\\ufe0f Flag:"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "BOY",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          29
+        ],
+        "character_offsets": [
+          14
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+1F466 BOY detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+2764",
+        "contexts": [
+          {
+            "character_offset": 23,
+            "escaped_text": " \\U0001f469\\u200d\\U0001f469\\u200d\\U0001f467\\u200d\\U0001f466 Heart: \\u2764\\ufe0f Flag: \\U0001f3f4\\U000e0067\\U000e0062\\U000e0065\\U000e006e\\U000e0067\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "HEAVY BLACK HEART",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          41
+        ],
+        "character_offsets": [
+          23
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+2764 HEAVY BLACK HEART detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F3F4",
+        "contexts": [
+          {
+            "character_offset": 32,
+            "escaped_text": "Heart: \\u2764\\ufe0f Flag: \\U0001f3f4\\U000e0067\\U000e0062\\U000e0065\\U000e006e\\U000e0067\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "WAVING BLACK FLAG",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          54
+        ],
+        "character_offsets": [
+          32
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+1F3F4 WAVING BLACK FLAG detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F469",
+        "contexts": [
+          {
+            "character_offset": 8,
+            "escaped_text": "Family: \\U0001f469\\u200d\\U0001f469\\u200d\\U0001f467\\u200d\\U0001f466 Heart: \\u2764\\ufe0f"
+          },
+          {
+            "character_offset": 10,
+            "escaped_text": "Family: \\U0001f469\\u200d\\U0001f469\\u200d\\U0001f467\\u200d\\U0001f466 Heart: \\u2764\\ufe0f F"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 2,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "WOMAN",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          8,
+          15
+        ],
+        "character_offsets": [
+          8,
+          10
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+1F469 WOMAN detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0067",
+        "contexts": [
+          {
+            "character_offset": 33,
+            "escaped_text": "eart: \\u2764\\ufe0f Flag: \\U0001f3f4\\U000e0067\\U000e0062\\U000e0065\\U000e006e\\U000e0067\\U000e007f\\n"
+          },
+          {
+            "character_offset": 37,
+            "escaped_text": ": \\u2764\\ufe0f Flag: \\U0001f3f4\\U000e0067\\U000e0062\\U000e0065\\U000e006e\\U000e0067\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 2,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER G"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          58,
+          74
+        ],
+        "character_offsets": [
+          33,
+          37
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0067 TAG LATIN SMALL LETTER G detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0062",
+        "contexts": [
+          {
+            "character_offset": 34,
+            "escaped_text": "art: \\u2764\\ufe0f Flag: \\U0001f3f4\\U000e0067\\U000e0062\\U000e0065\\U000e006e\\U000e0067\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER B"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          62
+        ],
+        "character_offsets": [
+          34
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0062 TAG LATIN SMALL LETTER B detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0065",
+        "contexts": [
+          {
+            "character_offset": 35,
+            "escaped_text": "rt: \\u2764\\ufe0f Flag: \\U0001f3f4\\U000e0067\\U000e0062\\U000e0065\\U000e006e\\U000e0067\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER E"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          66
+        ],
+        "character_offsets": [
+          35
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0065 TAG LATIN SMALL LETTER E detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E006E",
+        "contexts": [
+          {
+            "character_offset": 36,
+            "escaped_text": "t: \\u2764\\ufe0f Flag: \\U0001f3f4\\U000e0067\\U000e0062\\U000e0065\\U000e006e\\U000e0067\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER N"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          70
+        ],
+        "character_offsets": [
+          36
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E006E TAG LATIN SMALL LETTER N detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E007F",
+        "contexts": [
+          {
+            "character_offset": 38,
+            "escaped_text": " \\u2764\\ufe0f Flag: \\U0001f3f4\\U000e0067\\U000e0062\\U000e0065\\U000e006e\\U000e0067\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "CANCEL TAG"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          78
+        ],
+        "character_offsets": [
+          38
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E007F CANCEL TAG detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200D",
+        "contexts": [
+          {
+            "character_offset": 9,
+            "escaped_text": "Family: \\U0001f469\\u200d\\U0001f469\\u200d\\U0001f467\\u200d\\U0001f466 Heart: \\u2764\\ufe0f "
+          },
+          {
+            "character_offset": 11,
+            "escaped_text": "Family: \\U0001f469\\u200d\\U0001f469\\u200d\\U0001f467\\u200d\\U0001f466 Heart: \\u2764\\ufe0f Fl"
+          },
+          {
+            "character_offset": 13,
+            "escaped_text": "Family: \\U0001f469\\u200d\\U0001f469\\u200d\\U0001f467\\u200d\\U0001f466 Heart: \\u2764\\ufe0f Flag"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 3,
+        "leading_bom": false,
+        "name": "ZERO WIDTH JOINER"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          12,
+          19,
+          26
+        ],
+        "character_offsets": [
+          9,
+          11,
+          13
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+200D ZERO WIDTH JOINER detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+FE0F",
+        "contexts": [
+          {
+            "character_offset": 24,
+            "escaped_text": "\\U0001f469\\u200d\\U0001f469\\u200d\\U0001f467\\u200d\\U0001f466 Heart: \\u2764\\ufe0f Flag: \\U0001f3f4\\U000e0067\\U000e0062\\U000e0065\\U000e006e\\U000e0067\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "VARIATION SELECTOR-16"
+      },
+      "id": "unicode.variation_selector",
+      "location": {
+        "byte_offsets": [
+          44
+        ],
+        "character_offsets": [
+          24
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+FE0F VARIATION SELECTOR-16 detected"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 1,
+    "findings": 12,
+    "high": 0,
+    "info": 1,
+    "low": 11,
+    "medium": 0
+  }
+}

@@ -1,0 +1,521 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 80,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          1,
+          2,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          19,
+          22,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          54,
+          58,
+          59,
+          63,
+          67,
+          68,
+          69,
+          72,
+          75,
+          76,
+          78,
+          79,
+          80
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "e6cf337964b026cf39d0e02c1e2f41130daadb9ce0553cfb00838447128a5575",
+          "nfc_text_sha256": "0faaa6842eafa23f636cfca30e3643eea0ba9a9a578f1f3b08ca3deeae90f17c",
+          "nfkc_text_sha256": "0faaa6842eafa23f636cfca30e3643eea0ba9a9a578f1f3b08ca3deeae90f17c",
+          "raw_text_sha256": "0faaa6842eafa23f636cfca30e3643eea0ba9a9a578f1f3b08ca3deeae90f17c"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 3
+        },
+        "normalization": {
+          "formatting_removed_count": 2,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "# \ud83d\ude00 note\n\"\"\"\ud83d\udc69\u200d\ud83d\udcbb docstring\"\"\"\nstatus = \"\ud83d\udc4d\ud83c\udffd \ud83c\uddec\ud83c\udde7 1\ufe0f\u20e3 \u00a9\"\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".py",
+    "filename": "emoji.py",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "reference/python-behavior/inputs/emoji.py",
+    "sha256": "0faaa6842eafa23f636cfca30e3643eea0ba9a9a578f1f3b08ca3deeae90f17c",
+    "size": 80
+  },
+  "findings": [
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F469",
+        "contexts": [
+          {
+            "character_offset": 12,
+            "escaped_text": "# \\U0001f600 note\\n\"\"\"\\U0001f469\\u200d\\U0001f4bb docstring\"\"\"\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "WOMAN",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          15
+        ],
+        "character_offsets": [
+          12
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+1F469 WOMAN detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F4BB",
+        "contexts": [
+          {
+            "character_offset": 14,
+            "escaped_text": "# \\U0001f600 note\\n\"\"\"\\U0001f469\\u200d\\U0001f4bb docstring\"\"\"\\nst"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "PERSONAL COMPUTER",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          22
+        ],
+        "character_offsets": [
+          14
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+1F4BB PERSONAL COMPUTER detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F600",
+        "contexts": [
+          {
+            "character_offset": 2,
+            "escaped_text": "# \\U0001f600 note\\n\"\"\"\\U0001f469\\u200d\\U0001f4bb doc"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "GRINNING FACE",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          2
+        ],
+        "character_offsets": [
+          2
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+1F600 GRINNING FACE detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F44D",
+        "contexts": [
+          {
+            "character_offset": 39,
+            "escaped_text": "ng\"\"\"\\nstatus = \"\\U0001f44d\\U0001f3fd \\U0001f1ec\\U0001f1e7 1\\ufe0f\\u20e3 \\xa9\"\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "THUMBS UP SIGN",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          50
+        ],
+        "character_offsets": [
+          39
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+1F44D THUMBS UP SIGN detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F3FD",
+        "contexts": [
+          {
+            "character_offset": 40,
+            "escaped_text": "g\"\"\"\\nstatus = \"\\U0001f44d\\U0001f3fd \\U0001f1ec\\U0001f1e7 1\\ufe0f\\u20e3 \\xa9\"\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "EMOJI MODIFIER FITZPATRICK TYPE-4",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          54
+        ],
+        "character_offsets": [
+          40
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+1F3FD EMOJI MODIFIER FITZPATRICK TYPE-4 detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F1EC",
+        "contexts": [
+          {
+            "character_offset": 42,
+            "escaped_text": "\"\"\\nstatus = \"\\U0001f44d\\U0001f3fd \\U0001f1ec\\U0001f1e7 1\\ufe0f\\u20e3 \\xa9\"\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "REGIONAL INDICATOR SYMBOL LETTER G",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          59
+        ],
+        "character_offsets": [
+          42
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+1F1EC REGIONAL INDICATOR SYMBOL LETTER G detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F1E7",
+        "contexts": [
+          {
+            "character_offset": 43,
+            "escaped_text": "\"\\nstatus = \"\\U0001f44d\\U0001f3fd \\U0001f1ec\\U0001f1e7 1\\ufe0f\\u20e3 \\xa9\"\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "REGIONAL INDICATOR SYMBOL LETTER B",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          63
+        ],
+        "character_offsets": [
+          43
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+1F1E7 REGIONAL INDICATOR SYMBOL LETTER B detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+0031",
+        "contexts": [
+          {
+            "character_offset": 45,
+            "escaped_text": "status = \"\\U0001f44d\\U0001f3fd \\U0001f1ec\\U0001f1e7 1\\ufe0f\\u20e3 \\xa9\"\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "keycap_base",
+        "name": "DIGIT ONE",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          68
+        ],
+        "character_offsets": [
+          45
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+0031 DIGIT ONE detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+00A9",
+        "contexts": [
+          {
+            "character_offset": 49,
+            "escaped_text": "us = \"\\U0001f44d\\U0001f3fd \\U0001f1ec\\U0001f1e7 1\\ufe0f\\u20e3 \\xa9\"\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "COPYRIGHT SIGN",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          76
+        ],
+        "character_offsets": [
+          49
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+00A9 COPYRIGHT SIGN detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200D",
+        "contexts": [
+          {
+            "character_offset": 13,
+            "escaped_text": "# \\U0001f600 note\\n\"\"\"\\U0001f469\\u200d\\U0001f4bb docstring\"\"\"\\ns"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "ZERO WIDTH JOINER"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          19
+        ],
+        "character_offsets": [
+          13
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+200D ZERO WIDTH JOINER detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+20E3",
+        "contexts": [
+          {
+            "character_offset": 47,
+            "escaped_text": "atus = \"\\U0001f44d\\U0001f3fd \\U0001f1ec\\U0001f1e7 1\\ufe0f\\u20e3 \\xa9\"\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "COMBINING ENCLOSING KEYCAP"
+      },
+      "id": "unicode.combining",
+      "location": {
+        "byte_offsets": [
+          72
+        ],
+        "character_offsets": [
+          47
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+20E3 COMBINING ENCLOSING KEYCAP detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+FE0F",
+        "contexts": [
+          {
+            "character_offset": 46,
+            "escaped_text": "tatus = \"\\U0001f44d\\U0001f3fd \\U0001f1ec\\U0001f1e7 1\\ufe0f\\u20e3 \\xa9\"\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "VARIATION SELECTOR-16"
+      },
+      "id": "unicode.variation_selector",
+      "location": {
+        "byte_offsets": [
+          69
+        ],
+        "character_offsets": [
+          46
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+FE0F VARIATION SELECTOR-16 detected"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 1,
+    "findings": 12,
+    "high": 0,
+    "info": 2,
+    "low": 10,
+    "medium": 0
+  }
+}

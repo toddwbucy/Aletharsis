@@ -1,0 +1,55 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {},
+    "texts": []
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "bad16.txt",
+    "format": "text",
+    "identification_basis": "text extension; decoding requires validation",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "reference/python-behavior/inputs/bad16.txt",
+    "sha256": "9a3dfc4ebac913021d75fd93382c29818f41c16331358a96d3f83d6ef337d0a9",
+    "size": 6
+  },
+  "findings": [
+    {
+      "category": "parser",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "The file was not fully analyzed. Review the error before interpreting findings.",
+      "evidence": {
+        "byte_end": 4,
+        "byte_start": 2,
+        "error_type": "UnicodeDecodeError",
+        "message": "'utf-16-le' codec can't decode bytes in position 2-3: illegal UTF-16 surrogate",
+        "reason": "illegal UTF-16 surrogate"
+      },
+      "id": "parser.failure",
+      "location": {},
+      "severity": "INFO",
+      "title": "Audit could not complete"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "failed",
+  "summary": {
+    "exit_code": 4,
+    "findings": 1,
+    "high": 0,
+    "info": 1,
+    "low": 0,
+    "medium": 0
+  }
+}

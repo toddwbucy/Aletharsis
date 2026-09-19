@@ -1,0 +1,129 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 41,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          2,
+          4,
+          5,
+          7,
+          9,
+          12,
+          14,
+          16,
+          18,
+          19,
+          21,
+          22,
+          24,
+          26,
+          29,
+          31,
+          33,
+          35,
+          37,
+          39,
+          40,
+          41
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "b4830363199c3f313f8ed45adcfb1684baa80cd2478b544562f3105b309d50ae",
+          "nfc_text_sha256": "46128f76ee3b113b5087280dee7c5d66e0db73fc5de581d5f9469e4b02a1fdb7",
+          "nfkc_text_sha256": "46128f76ee3b113b5087280dee7c5d66e0db73fc5de581d5f9469e4b02a1fdb7",
+          "raw_text_sha256": "46128f76ee3b113b5087280dee7c5d66e0db73fc5de581d5f9469e4b02a1fdb7"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 1
+        },
+        "normalization": {
+          "formatting_removed_count": 2,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "\u0645\u0646 \u0645\u06cc\u200c\u0631\u0648\u0645 \u0648 \u0645\u06cc\u200c\u062e\u0648\u0627\u0646\u0645.\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "normal_persian.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "tests/fixtures/normal_persian.txt",
+    "sha256": "46128f76ee3b113b5087280dee7c5d66e0db73fc5de581d5f9469e4b02a1fdb7",
+    "size": 41
+  },
+  "findings": [
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200C",
+        "contexts": [
+          {
+            "character_offset": 5,
+            "escaped_text": "\\u0645\\u0646 \\u0645\\u06cc\\u200c\\u0631\\u0648\\u0645 \\u0648 \\u0645\\u06cc\\u200c\\u062e\\u0648\\u0627\\u0646\\u0645.\\n"
+          },
+          {
+            "character_offset": 14,
+            "escaped_text": "\\u0645\\u0646 \\u0645\\u06cc\\u200c\\u0631\\u0648\\u0645 \\u0648 \\u0645\\u06cc\\u200c\\u062e\\u0648\\u0627\\u0646\\u0645.\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 2,
+        "leading_bom": false,
+        "name": "ZERO WIDTH NON-JOINER"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          9,
+          26
+        ],
+        "character_offsets": [
+          5,
+          14
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+200C ZERO WIDTH NON-JOINER detected"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 1,
+    "findings": 1,
+    "high": 0,
+    "info": 0,
+    "low": 1,
+    "medium": 0
+  }
+}

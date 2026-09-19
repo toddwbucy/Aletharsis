@@ -1,0 +1,121 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 22,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "55af284cc8007ce9fda83cf8abf0b5a86e4c86199e145cfaa66835c74957099d",
+          "nfc_text_sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a",
+          "nfkc_text_sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a",
+          "raw_text_sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 1
+        },
+        "normalization": {
+          "formatting_removed_count": 1,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "An isolated\u200b space.\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "isolated_zwsp.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "tests/fixtures/isolated_zwsp.txt",
+    "sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a",
+    "size": 22
+  },
+  "findings": [
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200B",
+        "contexts": [
+          {
+            "character_offset": 11,
+            "escaped_text": "An isolated\\u200b space.\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "ZERO WIDTH SPACE"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          11
+        ],
+        "character_offsets": [
+          11
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+200B ZERO WIDTH SPACE detected"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 1,
+    "findings": 1,
+    "high": 0,
+    "info": 0,
+    "low": 1,
+    "medium": 0
+  }
+}

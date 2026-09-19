@@ -1,0 +1,188 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 56,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "6f2bce8781fcde2af84b316568b515641bb2cf897891be3b488063a7edcc3a18",
+          "nfc_text_sha256": "6f2bce8781fcde2af84b316568b515641bb2cf897891be3b488063a7edcc3a18",
+          "nfkc_text_sha256": "6f2bce8781fcde2af84b316568b515641bb2cf897891be3b488063a7edcc3a18",
+          "raw_text_sha256": "6f2bce8781fcde2af84b316568b515641bb2cf897891be3b488063a7edcc3a18"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 1
+        },
+        "normalization": {
+          "formatting_removed_count": 0,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "ordinary text with an unexpected \u0000 byte\u001b and more prose\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "control.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "tests/fixtures/control.txt",
+    "sha256": "6f2bce8781fcde2af84b316568b515641bb2cf897891be3b488063a7edcc3a18",
+    "size": 56
+  },
+  "findings": [
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+0000",
+        "contexts": [
+          {
+            "character_offset": 33,
+            "escaped_text": "h an unexpected \\x00 byte\\x1b and more "
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "UNNAMED CONTROL"
+      },
+      "id": "unicode.control",
+      "location": {
+        "byte_offsets": [
+          33
+        ],
+        "character_offsets": [
+          33
+        ],
+        "source": "file"
+      },
+      "severity": "MEDIUM",
+      "title": "U+0000 UNNAMED CONTROL detected"
+    },
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+001B",
+        "contexts": [
+          {
+            "character_offset": 39,
+            "escaped_text": "nexpected \\x00 byte\\x1b and more prose\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "UNNAMED CONTROL"
+      },
+      "id": "unicode.control",
+      "location": {
+        "byte_offsets": [
+          39
+        ],
+        "character_offsets": [
+          39
+        ],
+        "source": "file"
+      },
+      "severity": "MEDIUM",
+      "title": "U+001B UNNAMED CONTROL detected"
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "1.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 2,
+    "findings": 2,
+    "high": 0,
+    "info": 0,
+    "low": 0,
+    "medium": 2
+  }
+}
