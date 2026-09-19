@@ -6,6 +6,16 @@ with the Python 0.1.0 implementation retained as a frozen behavior reference.
 
 > A suspicious artifact is not necessarily a watermark. Aletharsis reports observable evidence and structural patterns; intent and provenance may require additional investigation.
 
+## Product direction
+
+The [draft parent product PRD](docs/product/aletharsis-PRD.md) describes Aletharsis
+as a forensic document signal auditor and separates current capabilities from
+planned structural, cryptographic and statistical analysis. The
+[Evidence Review Workbench PRD](docs/product/frontend-PRD.md) is a draft rewrite;
+its previously approved v1.0 baseline is archived alongside it. Both drafts
+require product review before implementation specifications are finalized. These
+documents describe future scope, not additional functionality in this release.
+
 ## Installation
 
 Build with Go 1.24+; the resulting binary requires no Python runtime. Auditing
