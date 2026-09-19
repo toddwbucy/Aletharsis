@@ -116,7 +116,8 @@ Pattern rules are deliberately inspectable:
   at least 10%, and at least 75% adjacent pairs or constant spacing. Reports counts,
   adjacency and exact sequence periods up to 32 characters (at least three repeats).
 - Periodic insertion: at least 12 zero-width characters at the same interval greater
-  than one character. The initial BOM is excluded.
+  than one character. The initial BOM and U+200D (ZWJ) are excluded from this
+  heuristic; joiners remain visible in the Unicode inventory.
 - Contiguous variation-selector runs of at least 8, or tag runs of at least 16.
   Tag ASCII projection is evidence of character values, not proof of a payload.
 - UUID-shaped values (including repeated occurrences), explicit provenance labels,
