@@ -1,0 +1,40 @@
+ALETHARSIS FORENSIC AUDIT
+
+File
+  Path: tests/fixtures/binary_zero_width.txt
+  Type: text (text/plain)
+  Size: 212 bytes
+  SHA256: ba294cd82318821110ff59d8677318c1a84f3d462a1365b369eced80087d127c
+  Parser: text-source-v1
+  Status: completed
+
+Summary: 3 findings; exit code 3
+  HIGH 1  MEDIUM 0  LOW 2  INFO 0
+
+[HIGH] Possible zero-width binary encoding
+  ID: pattern.zero_width_binary | Category: possible_steganography | suspicious_pattern
+  Confidence: 0.80
+  A two-symbol ZWSP/ZWNJ alphabet forms a long contiguous or regularly spaced sequence. This is consistent with an invisible encoding scheme; no payload, author or watermark intent is confirmed.
+  Occurrences: 64
+  Byte offsets (first 8): [14, 17, 20, 23, 26, 29, 32, 35]
+
+[LOW] U+200B ZERO WIDTH SPACE detected
+  ID: unicode.zero_width | Category: unicode | observed_fact
+  Confidence: 1.00
+  Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.
+  Occurrences: 34
+  Byte offsets (first 8): [14, 23, 26, 29, 32, 38, 50, 56]
+
+[LOW] U+200C ZERO WIDTH NON-JOINER detected
+  ID: unicode.zero_width | Category: unicode | observed_fact
+  Confidence: 1.00
+  Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.
+  Occurrences: 30
+  Byte offsets (first 8): [17, 20, 35, 41, 44, 47, 53, 59]
+
+Limitations
+  - A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.
+  - Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.
+  - M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.
+  - DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.
+  - Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent.

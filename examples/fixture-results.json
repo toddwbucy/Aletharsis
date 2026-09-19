@@ -1,0 +1,128 @@
+[
+  {
+    "fixture": "bidi.txt",
+    "exit_code": 1,
+    "findings": 4,
+    "status": "completed"
+  },
+  {
+    "fixture": "binary_zero_width.txt",
+    "exit_code": 3,
+    "findings": 3,
+    "status": "completed"
+  },
+  {
+    "fixture": "bom.txt",
+    "exit_code": 1,
+    "findings": 3,
+    "status": "completed"
+  },
+  {
+    "fixture": "clean_ascii.txt",
+    "exit_code": 0,
+    "findings": 0,
+    "status": "completed"
+  },
+  {
+    "fixture": "control.txt",
+    "exit_code": 2,
+    "findings": 2,
+    "status": "completed"
+  },
+  {
+    "fixture": "identifiers.md",
+    "exit_code": 2,
+    "findings": 2,
+    "status": "completed"
+  },
+  {
+    "fixture": "invalid_utf8.txt",
+    "exit_code": 4,
+    "findings": 1,
+    "status": "failed"
+  },
+  {
+    "fixture": "isolated_zwsp.txt",
+    "exit_code": 1,
+    "findings": 1,
+    "status": "completed"
+  },
+  {
+    "fixture": "mixed_endings.csv",
+    "exit_code": 1,
+    "findings": 1,
+    "status": "completed"
+  },
+  {
+    "fixture": "mixed_script.txt",
+    "exit_code": 1,
+    "findings": 1,
+    "status": "completed"
+  },
+  {
+    "fixture": "normal_emoji.txt",
+    "exit_code": 1,
+    "findings": 7,
+    "status": "completed"
+  },
+  {
+    "fixture": "normal_persian.txt",
+    "exit_code": 1,
+    "findings": 1,
+    "status": "completed"
+  },
+  {
+    "fixture": "normal_utf8.txt",
+    "exit_code": 0,
+    "findings": 0,
+    "status": "completed"
+  },
+  {
+    "fixture": "normalization.txt",
+    "exit_code": 1,
+    "findings": 2,
+    "status": "completed"
+  },
+  {
+    "fixture": "periodic.txt",
+    "exit_code": 2,
+    "findings": 2,
+    "status": "completed"
+  },
+  {
+    "fixture": "source.html",
+    "exit_code": 1,
+    "findings": 2,
+    "status": "completed"
+  },
+  {
+    "fixture": "source.json",
+    "exit_code": 1,
+    "findings": 1,
+    "status": "completed"
+  },
+  {
+    "fixture": "source.rst",
+    "exit_code": 0,
+    "findings": 0,
+    "status": "completed"
+  },
+  {
+    "fixture": "source.xml",
+    "exit_code": 1,
+    "findings": 1,
+    "status": "completed"
+  },
+  {
+    "fixture": "tags.txt",
+    "exit_code": 2,
+    "findings": 21,
+    "status": "completed"
+  },
+  {
+    "fixture": "variation_selectors.txt",
+    "exit_code": 2,
+    "findings": 3,
+    "status": "completed"
+  }
+]
