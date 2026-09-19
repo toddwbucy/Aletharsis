@@ -73,3 +73,33 @@ func TestMissingOutputArgument(t *testing.T) {
 		}
 	}
 }
+
+func TestReportFilePermissions(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("Linux-only reader")
+	}
+	dir := t.TempDir()
+	source := filepath.Join(dir, "source.txt")
+	if err := os.WriteFile(source, []byte("Ordinary text.\n"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	output := filepath.Join(dir, "report.json")
+	var stdout, stderr bytes.Buffer
+	if code := Run([]string{"audit", source, "--output", output}, &stdout, &stderr); code != 0 {
+		t.Fatalf("exit %d: %s", code, stderr.String())
+	}
+	info, err := os.Stat(output)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if info.Mode().Perm()&0077 != 0 {
+		t.Fatalf("report grants group/other permissions: %04o", info.Mode().Perm())
+	}
+	data, err := os.ReadFile(output)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !json.Valid(data) {
+		t.Fatal("report is not valid JSON")
+	}
+}

@@ -127,7 +127,7 @@ func Run(args []string, out, errout io.Writer) int {
 		rendered = reporters.Console(r, verbose)
 	}
 	if output != "" {
-		f, err := os.OpenFile(output, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0666)
+		f, err := os.OpenFile(output, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
 		if err != nil {
 			return failure("could not create report: " + err.Error())
 		}
