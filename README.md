@@ -102,6 +102,29 @@ emoji, variation selectors, bidi controls, combining marks, typography and multi
 text can produce findings. Mixed-script checks flag Latin with Greek/Cyrillic in
 one token; they are not a comprehensive Unicode confusables implementation.
 
+Literal emoji-capable characters produce `unicode.emoji` findings at LOW severity
+in every supported text file, including source code. Comments, docstrings, string
+literals and test data are all inspected; their location does not automatically
+justify an exemption. Reviewers must determine whether the content is needed for
+the application or document. No automatic approval, removal, or language-semantic
+analysis is performed.
+
+Detection uses bundled [Unicode 17.0 Emoji property data](https://www.unicode.org/Public/17.0.0/ucd/emoji/emoji-data.txt)
+with no runtime network access or extra dependency. Ordinary ASCII digits, `#`
+and `*` are excluded unless part of a keycap sequence. Text/emoji-capable symbols
+such as copyright marks are reported as candidates even with text presentation;
+their appearance depends on presentation selectors and rendering. Counts and
+offsets refer to individual code points, not complete rendered emoji. Flags,
+skin-tone modifiers and joined emoji can therefore contribute multiple code
+points. Joiners, tags and selectors remain separately inventoried. Code-point
+names use Python's Unicode database and may be unavailable for newer characters,
+but detection still uses the pinned table. The bundled data's source hash and
+Unicode license are included in `src/aletharsis/data/`.
+
+This is literal-source inspection: an ASCII escape such as `\\U0001F600` is not
+decoded into an emoji, and Emojicode or other language semantics are not analyzed.
+Emoji findings indicate a review obligation, not a confirmed threat or watermark.
+
 The Unicode inventory reports code point, name, count, **all** positions and up to
 eight escaped context samples per character. Context omission counts are explicit.
 Normalization checks use NFC and NFKC. Text hashes use UTF-8 encoding of the exact

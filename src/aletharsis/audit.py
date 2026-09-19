@@ -7,6 +7,7 @@ import stat
 
 from . import __version__
 from .analyzers.base import Analyzer
+from .analyzers.emoji import EmojiAnalyzer
 from .analyzers.identifiers import IdentifierAnalyzer
 from .analyzers.metadata import MetadataAnalyzer
 from .analyzers.patterns import PatternAnalyzer
@@ -19,7 +20,7 @@ from .parsers.text import TextParser
 
 MAX_BYTES = 8 * 1024 * 1024
 PARSERS: dict[str, Parser] = {"text": TextParser()}
-ANALYZERS: tuple[Analyzer, ...] = (UnicodeAnalyzer(), TextAnalyzer(), PatternAnalyzer(),
+ANALYZERS: tuple[Analyzer, ...] = (UnicodeAnalyzer(), EmojiAnalyzer(), TextAnalyzer(), PatternAnalyzer(),
                                   IdentifierAnalyzer(), MetadataAnalyzer())
 LIMITATIONS = [
     "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
