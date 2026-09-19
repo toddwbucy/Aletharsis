@@ -5,7 +5,7 @@
 | Status | Draft rewrite for product review; not frozen |
 | Document version | 1.1 |
 | Date | 2026-09-19 |
-| Parent | [Aletharsis — Forensic Document Signal Auditor, draft v0.1](aletharsis-PRD.md) |
+| Parent | [Aletharsis — Forensic Document Signal Auditor, v0.1](aletharsis-PRD.md) |
 | Backend baseline | Go CLI 0.2.0, report schema 1.0; main `20d5bdc` |
 | Product owner | Todd W. Bucy |
 | Prior baseline | [Approved v1.0](frontend-PRD-v1.0.md), preserved unchanged; new requirements need approval |
@@ -15,7 +15,7 @@
 
 The Evidence Review Workbench is the local human-review interface for Aletharsis. Its central job is to make evidence, interpretation and analysis coverage understandable together. Some evidence has exact characters to reveal; some has a signed credential to inspect; some is a detector result over a sample. The workbench must present each honestly without forcing every mechanism into a text highlight or deletion range.
 
-This v1.1 draft rewrites the product framing against the proposed parent PRD. It retains v1.0's identity, coordinate, review and apply safeguards while extending the requirements for profiles, capability coverage and cryptographic/statistical evidence. It is not approved merely because v1.0 was frozen. The archived baseline remains historical; parent/child requirements and technical contracts must be reconciled through review before implementation.
+This v1.1 draft rewrites the product framing against the approved parent PRD. It retains v1.0's identity, coordinate, review and apply safeguards while extending the requirements for profiles, capability coverage and cryptographic/statistical evidence. It is not approved merely because v1.0 was frozen. The archived baseline remains historical; parent/child requirements and technical contracts must be reconciled through review before implementation.
 
 > A suspicious artifact is not necessarily a watermark. Aletharsis reports observable evidence and structural patterns; intent and provenance may require additional investigation.
 

@@ -12,8 +12,9 @@ The [draft parent product PRD](docs/product/aletharsis-PRD.md) describes Alethar
 as a forensic document signal auditor and separates current capabilities from
 planned structural, cryptographic and statistical analysis. The
 [Evidence Review Workbench PRD](docs/product/frontend-PRD.md) is a draft rewrite;
-its previously approved v1.0 baseline is archived alongside it. Both drafts
-require product review before implementation specifications are finalized. These
+its previously approved v1.0 baseline is archived alongside it. The parent
+architecture is approved; changed child requirements still require product review
+before implementation specifications are finalized. These
 documents describe future scope, not additional functionality in this release.
 
 ## Installation

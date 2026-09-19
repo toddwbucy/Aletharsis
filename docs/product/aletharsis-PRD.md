@@ -2,7 +2,7 @@
 
 | Attribute | Value |
 | --- | --- |
-| Status | Draft parent product PRD; proposed for product review, not frozen |
+| Status | Product architecture approved; review clarifications incorporated; further detail belongs in specifications |
 | Document version | 0.1 |
 | Date | 2026-09-19 |
 | Product owner | Todd W. Bucy |
@@ -21,9 +21,10 @@ Aletharsis is a forensic instrument for exposing and characterizing information 
 
 **Detection establishes what is present. Evidence review establishes what it means in context. Explicit apply determines what, if anything, should change in a new derivative.**
 
-This document is the proposed parent product definition. Once approved, it governs common scope, invariants and release gates. The frontend PRD specifies the review experience within those boundaries; backend and frontend technical specifications define implementation contracts. Neither a technical specification nor an implementation PR may silently relax a product invariant.
+This document is the approved parent product definition. It governs common scope, invariants and release gates. The frontend PRD specifies the review experience within those boundaries; backend and frontend technical specifications define implementation contracts. Neither a technical specification nor an implementation PR may silently relax a product invariant.
 
-The frontend PRD is being rewritten as draft v1.1 to align with this product definition. Its previously approved v1.0 baseline, derived from v0.4 requirements, is preserved byte-for-byte in [frontend-PRD-v1.0.md](frontend-PRD-v1.0.md). That historical document describes the former Python baseline; current implementation status is recorded here and in the revised child. Neither draft inherits approval from v1.0. Product review must approve the parent/child relationship and any changed requirements explicitly before the technical specs treat them as accepted.
+The frontend PRD is being rewritten as draft v1.1 to align with this product definition. Its previously approved v1.0 baseline, derived from v0.4 requirements, is preserved byte-for-byte in [frontend-PRD-v1.0.md](frontend-PRD-v1.0.md). That historical document describes the former Python baseline; current implementation status is recorded here and in the revised child. The parent architecture and parent/child relationship are approved following product review. The revised child does not inherit approval from v1.0; its changed requirements remain subject to explicit review before technical specifications treat them as accepted.
+
 ## 2. Problem, users and desired outcome
 
 Documents carry information in visible text, encodings, formatting, metadata, relationships, signed assertions and generation-time choices. Ordinary viewers can conceal these layers; editors may alter them. A reviewer needs to distinguish normal format mechanics from evidence requiring investigation without treating everything unusual as malicious.
@@ -79,6 +80,8 @@ Examples include invisible Unicode, bidi controls, variation selectors, tags, un
 
 Locations may be original text byte/scalar spans, package part + node/run identifiers, or page/object/rendering locations. OOXML extracted-text coordinates are not ZIP compressed-byte edit instructions. A parser must declare exact, derived, approximate or unavailable correspondence where applicable. Future writers need a verified format-specific mapping, not a guessed conversion from a displayed selection.
 
+Structured-format technical specifications must define identities and digests for extracted package parts, streams or objects where practical, retaining their relationship to the source identity and structural locator. Evidence must remain independently identifiable across parsing stages; the specification must state which representation is identified or hashed and disclose unavailable identity guarantees.
+
 ### 5.2 Cryptographic provenance
 
 C2PA/Content Credentials is a planned priority. Anthropic describes credentials for supported generated file types separately from its text watermark; this does not establish credentials in any particular file or promise support for every format. [Anthropic description](https://www.anthropic.com/news/claude-text-watermark).
@@ -87,7 +90,7 @@ Separate credential discovery, parsing, signature verification, asset binding, s
 
 ### 5.3 Statistical generative watermarks
 
-Anthropic describes keyed SynthID-Text-family sampling without added hidden characters; its article describes private-preview detector access and a staged rollout. Short, constrained or lightly edited samples may supply weak signal. These statements describe the announced mechanism, not verified watermark status of a locally inspected file. [Anthropic description, updated September 1, 2026](https://www.anthropic.com/news/claude-text-watermark).
+Anthropic describes keyed SynthID-Text-family sampling without added hidden characters; its article describes private-preview detector access and a staged rollout. Detection is weaker on small samples and on text where the model made relatively few token choices, such as factual passages, proofreading, light editing of human-written text, and much code. Conversely, light subsequent editing of already watermarked generated text may leave the watermark detectable; extensive rewriting can reduce or eliminate detectability. These statements describe the announced mechanism, not verified watermark status of a locally inspected file. [Anthropic description, updated September 1, 2026](https://www.anthropic.com/news/claude-text-watermark).
 
 Google describes SynthID text watermarking through generation-time token probability adjustments. [Google DeepMind](https://deepmind.google/models/synthid/).
 
@@ -99,7 +102,7 @@ Initially, the proposed Anthropic capability is `unavailable_without_detector_ac
 
 Controlled-environment reviewers may investigate suspected information transfer through representational choices or keyed token selection. This is a research and configured-detection use case, not a claim that arbitrary covert channels can be inferred from prose.
 
-Distinguish a validated known-watermark match, an explicitly justified anomaly, a known keyed-channel match and insufficient evidence. Every proposed analyzer needs stated assumptions, suitable positive/negative controls and measured false-positive limits. Unusual vocabulary alone is not evidence of steganography. Channel generation and exploitation are outside this detection scope.
+Distinguish a validated known-watermark match, an explicitly justified anomaly, a known keyed-channel match and insufficient evidence. Every proposed analyzer needs stated assumptions, suitable positive/negative controls and measured false-positive limits. Unusual vocabulary alone is not evidence of steganography. Aletharsis may decode a known observed carrier when necessary to characterize evidence, such as extracting the ASCII projection of Unicode tags, but does not provide tooling to construct or operationalize covert channels. Channel generation and exploitation are outside this detection scope.
 
 ## 6. Primary use cases
 
@@ -119,6 +122,8 @@ Instructions can also be ordinary visible comments, docstrings or Markdown. Sour
 ## 7. Known-good format profiles
 
 Versioned, immutable expected-artifact profiles provide contextual assessments. Planned targets include plain text, source contexts, DOCX/OOXML, ODT/ODF, HTML/XML and separately scoped born-digital/OCR-derived PDF extraction. A profile cannot substitute for a parser or imply semantic support the parser lacks.
+
+Expected does not mean trusted: an expected document structure can contain malicious content. Cryptographic trust is a separate assessment and does not establish the truth of credential assertions.
 
 Rules may reference format/version, parser identity, package location, character/object type, relationships, surrounding structure, frequency/placement, rationale and rule revision. They must be inert data, not executable hooks. Do not implement blanket character whitelists or promise an unmeasured percentage of expected-format coverage.
 
@@ -316,6 +321,6 @@ The next specification focus is the **Go detection/evidence engine and mechanism
 4. C2PA adapter feasibility and trust-policy design, independently of private detector access.
 5. Approve the revised child PRD for the new evidence classes; F0 large-report/Unicode spike before viewer choice; finalize F0/F1 specs only after required contracts and evidence exist.
 
-Product review must resolve the draft's authority and the rewritten child's requirements, near-term delivery priorities, resource budgets and retirement timing. Technical review must resolve precise wire fields, optional-detector failure/exit policy, profile conflict handling and structured-format location fidelity. This draft records these dependencies rather than claiming they are implemented or approved.
+The parent product architecture is approved with the review clarifications incorporated. Further detail belongs in specification files, starting with the mechanism/capability/execution/result model and schema migration under Issue #17. The revised child's requirements, delivery priorities, resource budgets and Python retirement timing retain their separate review gates. Technical review must resolve precise wire fields, optional-detector failure/exit policy, profile conflict handling and structured-format location fidelity; architecture approval does not imply those contracts are implemented or approved.
 
 Related tracking: [#14 expected-artifact profiles](https://github.com/toddwbucy/Aletharsis/issues/14), [#15 reveal/diff](https://github.com/toddwbucy/Aletharsis/issues/15), [#17 mechanism classes](https://github.com/toddwbucy/Aletharsis/issues/17). The [draft frontend PRD](frontend-PRD.md) is the proposed aligned UI definition; its approved v1.0 predecessor remains archived.
