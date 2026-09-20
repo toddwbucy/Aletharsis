@@ -1,0 +1,116 @@
+{"Time":"2026-09-20T18:17:34.723652353Z","Action":"start","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text"}
+{"Time":"2026-09-20T18:17:34.725451918Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestExtractManifestOffsetsAreNFCUtf8ByteOffsets"}
+{"Time":"2026-09-20T18:17:34.725481836Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestExtractManifestOffsetsAreNFCUtf8ByteOffsets","Output":"=== RUN   TestExtractManifestOffsetsAreNFCUtf8ByteOffsets\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725514393Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestExtractManifestOffsetsAreNFCUtf8ByteOffsets","Output":"--- PASS: TestExtractManifestOffsetsAreNFCUtf8ByteOffsets (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725530971Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestExtractManifestOffsetsAreNFCUtf8ByteOffsets","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725545275Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestExtractManifestMultipleWrappersErrors"}
+{"Time":"2026-09-20T18:17:34.725548658Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestExtractManifestMultipleWrappersErrors","Output":"=== RUN   TestExtractManifestMultipleWrappersErrors\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725555809Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestExtractManifestMultipleWrappersErrors","Output":"--- PASS: TestExtractManifestMultipleWrappersErrors (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725559655Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestExtractManifestMultipleWrappersErrors","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725563183Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextPlainNoWrapper"}
+{"Time":"2026-09-20T18:17:34.72556645Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextPlainNoWrapper","Output":"=== RUN   TestValidateTextPlainNoWrapper\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725571058Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextPlainNoWrapper","Output":"--- PASS: TestValidateTextPlainNoWrapper (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725575021Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextPlainNoWrapper","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725577906Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextSingleValidWrapper"}
+{"Time":"2026-09-20T18:17:34.725581779Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextSingleValidWrapper","Output":"=== RUN   TestValidateTextSingleValidWrapper\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725585908Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextSingleValidWrapper","Output":"--- PASS: TestValidateTextSingleValidWrapper (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725588569Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextSingleValidWrapper","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725591319Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextMultipleWrappers"}
+{"Time":"2026-09-20T18:17:34.725593384Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextMultipleWrappers","Output":"=== RUN   TestValidateTextMultipleWrappers\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725597151Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextMultipleWrappers","Output":"--- PASS: TestValidateTextMultipleWrappers (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725603238Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextMultipleWrappers","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725606057Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextBadVersion"}
+{"Time":"2026-09-20T18:17:34.725608118Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextBadVersion","Output":"=== RUN   TestValidateTextBadVersion\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725612151Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextBadVersion","Output":"--- PASS: TestValidateTextBadVersion (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725613925Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextBadVersion","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725615016Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextLengthMismatch"}
+{"Time":"2026-09-20T18:17:34.725615928Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextLengthMismatch","Output":"=== RUN   TestValidateTextLengthMismatch\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725617099Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextLengthMismatch","Output":"--- PASS: TestValidateTextLengthMismatch (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725617933Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextLengthMismatch","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725618739Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextTrailingPaddingAccepted"}
+{"Time":"2026-09-20T18:17:34.725619407Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextTrailingPaddingAccepted","Output":"=== RUN   TestValidateTextTrailingPaddingAccepted\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725621284Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextTrailingPaddingAccepted","Output":"--- PASS: TestValidateTextTrailingPaddingAccepted (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725622342Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextTrailingPaddingAccepted","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725623391Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextNFCNormalization"}
+{"Time":"2026-09-20T18:17:34.725624242Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextNFCNormalization","Output":"=== RUN   TestValidateTextNFCNormalization\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725625264Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextNFCNormalization","Output":"--- PASS: TestValidateTextNFCNormalization (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725626117Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextNFCNormalization","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725626848Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextBadMagicIgnored"}
+{"Time":"2026-09-20T18:17:34.72562757Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextBadMagicIgnored","Output":"=== RUN   TestValidateTextBadMagicIgnored\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725628794Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextBadMagicIgnored","Output":"--- PASS: TestValidateTextBadMagicIgnored (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725630421Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestValidateTextBadMagicIgnored","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725631254Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestOnlyRegisteredCodesEmitted"}
+{"Time":"2026-09-20T18:17:34.725631995Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestOnlyRegisteredCodesEmitted","Output":"=== RUN   TestOnlyRegisteredCodesEmitted\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725632969Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestOnlyRegisteredCodesEmitted","Output":"--- PASS: TestOnlyRegisteredCodesEmitted (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725633847Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestOnlyRegisteredCodesEmitted","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725634789Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLBuilders"}
+{"Time":"2026-09-20T18:17:34.725635642Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLBuilders","Output":"=== RUN   TestHTMLBuilders\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725637509Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLBuilders","Output":"--- PASS: TestHTMLBuilders (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725638684Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLBuilders","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725639447Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLInline"}
+{"Time":"2026-09-20T18:17:34.72564011Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLInline","Output":"=== RUN   TestHTMLInline\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725641154Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLInline","Output":"--- PASS: TestHTMLInline (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725641951Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLInline","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725642686Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLInlineNoHead"}
+{"Time":"2026-09-20T18:17:34.725643371Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLInlineNoHead","Output":"=== RUN   TestHTMLInlineNoHead\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725644675Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLInlineNoHead","Output":"--- PASS: TestHTMLInlineNoHead (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725645466Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLInlineNoHead","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725646272Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLReference"}
+{"Time":"2026-09-20T18:17:34.725646929Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLReference","Output":"=== RUN   TestHTMLReference\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725710685Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLReference","Output":"--- PASS: TestHTMLReference (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725714476Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLReference","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725715704Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLExtractNone"}
+{"Time":"2026-09-20T18:17:34.725734259Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLExtractNone","Output":"=== RUN   TestHTMLExtractNone\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725744448Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLExtractNone","Output":"--- PASS: TestHTMLExtractNone (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725746372Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLExtractNone","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725748369Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLMultipleManifests"}
+{"Time":"2026-09-20T18:17:34.725749448Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLMultipleManifests","Output":"=== RUN   TestHTMLMultipleManifests\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725761534Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLMultipleManifests","Output":"--- PASS: TestHTMLMultipleManifests (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725766244Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLMultipleManifests","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725767708Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLGoldenVectors"}
+{"Time":"2026-09-20T18:17:34.725771478Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLGoldenVectors","Output":"=== RUN   TestHTMLGoldenVectors\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725773047Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLGoldenVectors","Output":"--- PASS: TestHTMLGoldenVectors (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725774124Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestHTMLGoldenVectors","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725778556Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestStructuredDataURIRoundTrip"}
+{"Time":"2026-09-20T18:17:34.725779669Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestStructuredDataURIRoundTrip","Output":"=== RUN   TestStructuredDataURIRoundTrip\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725781125Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestStructuredDataURIRoundTrip","Output":"--- PASS: TestStructuredDataURIRoundTrip (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725782233Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestStructuredDataURIRoundTrip","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725786879Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestStructuredBlockFormat"}
+{"Time":"2026-09-20T18:17:34.725787968Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestStructuredBlockFormat","Output":"=== RUN   TestStructuredBlockFormat\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725789319Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestStructuredBlockFormat","Output":"--- PASS: TestStructuredBlockFormat (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725790321Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestStructuredBlockFormat","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.72579128Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestEmbedStructuredStart"}
+{"Time":"2026-09-20T18:17:34.725792106Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestEmbedStructuredStart","Output":"=== RUN   TestEmbedStructuredStart\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725793374Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestEmbedStructuredStart","Output":"--- PASS: TestEmbedStructuredStart (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725795097Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestEmbedStructuredStart","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725797275Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestEmbedStructuredEnd"}
+{"Time":"2026-09-20T18:17:34.725798528Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestEmbedStructuredEnd","Output":"=== RUN   TestEmbedStructuredEnd\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725799911Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestEmbedStructuredEnd","Output":"--- PASS: TestEmbedStructuredEnd (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725800852Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestEmbedStructuredEnd","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725801766Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestEmbedExtractDataURI"}
+{"Time":"2026-09-20T18:17:34.725802608Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestEmbedExtractDataURI","Output":"=== RUN   TestEmbedExtractDataURI\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725803981Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestEmbedExtractDataURI","Output":"--- PASS: TestEmbedExtractDataURI (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725805927Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestEmbedExtractDataURI","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725807335Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestExtractErrors"}
+{"Time":"2026-09-20T18:17:34.725808376Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestExtractErrors","Output":"=== RUN   TestExtractErrors\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725811418Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestExtractErrors","Output":"--- PASS: TestExtractErrors (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725812476Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestExtractErrors","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725813391Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestFrontMatterExtract"}
+{"Time":"2026-09-20T18:17:34.725814598Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestFrontMatterExtract","Output":"=== RUN   TestFrontMatterExtract\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725816029Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestFrontMatterExtract","Output":"--- PASS: TestFrontMatterExtract (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725818181Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestFrontMatterExtract","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725819202Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestRecommendedMethod"}
+{"Time":"2026-09-20T18:17:34.725820102Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestRecommendedMethod","Output":"=== RUN   TestRecommendedMethod\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.72582151Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestRecommendedMethod","Output":"--- PASS: TestRecommendedMethod (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725822497Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestRecommendedMethod","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725824387Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestCommentSyntax"}
+{"Time":"2026-09-20T18:17:34.725825223Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestCommentSyntax","Output":"=== RUN   TestCommentSyntax\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725826623Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestCommentSyntax","Output":"--- PASS: TestCommentSyntax (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725828968Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestCommentSyntax","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.72583009Z","Action":"run","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestGoldenVectors"}
+{"Time":"2026-09-20T18:17:34.72583091Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestGoldenVectors","Output":"=== RUN   TestGoldenVectors\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725898628Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestGoldenVectors","Output":"--- PASS: TestGoldenVectors (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.725900872Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Test":"TestGoldenVectors","Elapsed":0}
+{"Time":"2026-09-20T18:17:34.725902317Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Output":"PASS\n","OutputType":"frame"}
+{"Time":"2026-09-20T18:17:34.726300728Z","Action":"output","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Output":"ok  \tgithub.com/encypherai/c2pa-text/go/v3/c2pa_text\t0.002s\n"}
+{"Time":"2026-09-20T18:17:34.726311317Z","Action":"pass","Package":"github.com/encypherai/c2pa-text/go/v3/c2pa_text","Elapsed":0.003}

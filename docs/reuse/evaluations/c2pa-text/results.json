@@ -1,0 +1,858 @@
+{
+  "case_count": 39,
+  "cases": [
+    {
+      "differences": [],
+      "expected": {
+        "clean_sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        "length": 77,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 3
+      },
+      "id": "vs_ascii",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        "error": "",
+        "length": 77,
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 3,
+        "source_bytes": 80,
+        "source_sha256": "728a0d717570a17fc724b1ce636d84f98780c39324137089678510c165b7fe09",
+        "validation_codes": []
+      },
+      "rationale": "Extract payload and preserve raw UTF-8 source coordinates; clean text is a separate NFC derivative.",
+      "source_bytes": 80,
+      "source_sha256": "728a0d717570a17fc724b1ce636d84f98780c39324137089678510c165b7fe09"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "clean_sha256": "1c28dc3f1f804a1ad9c9b4b4cf5e2658d16ad4ed08e3020d04a8d2865018947c",
+        "length": 77,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 6
+      },
+      "id": "vs_bom",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "1c28dc3f1f804a1ad9c9b4b4cf5e2658d16ad4ed08e3020d04a8d2865018947c",
+        "error": "",
+        "length": 77,
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 6,
+        "source_bytes": 83,
+        "source_sha256": "30e5a0b5c154d014f9f52b7d46d8c7e6cba0d12f48a0868eb01839db5bb5d020",
+        "validation_codes": []
+      },
+      "rationale": "Extract payload and preserve raw UTF-8 source coordinates; clean text is a separate NFC derivative.",
+      "source_bytes": 83,
+      "source_sha256": "30e5a0b5c154d014f9f52b7d46d8c7e6cba0d12f48a0868eb01839db5bb5d020"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "clean_sha256": "28e66175821bf0ad8d7c8008061930de7daf248c28814ad41a0541449257bcf7",
+        "length": 77,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 5
+      },
+      "id": "vs_emoji",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "28e66175821bf0ad8d7c8008061930de7daf248c28814ad41a0541449257bcf7",
+        "error": "",
+        "length": 77,
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 5,
+        "source_bytes": 82,
+        "source_sha256": "b16a8dffd66037481c409f553f0fdad9c8805a187a12358ae55d8bd8cc72bcf0",
+        "validation_codes": []
+      },
+      "rationale": "Extract payload and preserve raw UTF-8 source coordinates; clean text is a separate NFC derivative.",
+      "source_bytes": 82,
+      "source_sha256": "b16a8dffd66037481c409f553f0fdad9c8805a187a12358ae55d8bd8cc72bcf0"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "clean_sha256": "4a99557e4033c3539de2eb65472017cad5f9557f7a0625a09f1c3f6e2ba69c4c",
+        "length": 77,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 3
+      },
+      "id": "vs_decomposed",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "4a99557e4033c3539de2eb65472017cad5f9557f7a0625a09f1c3f6e2ba69c4c",
+        "error": "",
+        "length": 77,
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 3,
+        "source_bytes": 80,
+        "source_sha256": "e19929153fc73384048ab1919c16a2d120077629ade8c651db19e8d484037078",
+        "validation_codes": []
+      },
+      "rationale": "Extract payload and preserve raw UTF-8 source coordinates; clean text is a separate NFC derivative.",
+      "source_bytes": 80,
+      "source_sha256": "e19929153fc73384048ab1919c16a2d120077629ade8c651db19e8d484037078"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "clean_sha256": "c692b2a36ca8876c2e0aa77f96b5dc0fb1e4bd3e3b60f00bf125909976979612",
+        "length": 77,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 5
+      },
+      "id": "vs_combining_reorder",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "c692b2a36ca8876c2e0aa77f96b5dc0fb1e4bd3e3b60f00bf125909976979612",
+        "error": "",
+        "length": 77,
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 5,
+        "source_bytes": 82,
+        "source_sha256": "710ff039be07ec9406ad4787053369f1449df898f6540b13a00973c365fee02d",
+        "validation_codes": []
+      },
+      "rationale": "Extract payload and preserve raw UTF-8 source coordinates; clean text is a separate NFC derivative.",
+      "source_bytes": 82,
+      "source_sha256": "710ff039be07ec9406ad4787053369f1449df898f6540b13a00973c365fee02d"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "clean_sha256": "7a481f8dd64383e5c6d7c7dd12a88d3594eed36da128736ebf4ffecb48f06cac",
+        "length": 77,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 7
+      },
+      "id": "vs_mixed_endings",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "7a481f8dd64383e5c6d7c7dd12a88d3594eed36da128736ebf4ffecb48f06cac",
+        "error": "",
+        "length": 77,
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 7,
+        "source_bytes": 84,
+        "source_sha256": "ef462a230df984ee4da8bd64a7342227abde86e1d6639dd4e0af43c099b3ce5a",
+        "validation_codes": []
+      },
+      "rationale": "Extract payload and preserve raw UTF-8 source coordinates; clean text is a separate NFC derivative.",
+      "source_bytes": 84,
+      "source_sha256": "ef462a230df984ee4da8bd64a7342227abde86e1d6639dd4e0af43c099b3ce5a"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "manifest_present": false
+      },
+      "id": "vs_absent",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "351585fde8502035042832aeba0c12a8ad84a771f0da52259688fe572df6a7dc",
+        "error": "",
+        "length": -1,
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "offset": -1,
+        "source_bytes": 14,
+        "source_sha256": "351585fde8502035042832aeba0c12a8ad84a771f0da52259688fe572df6a7dc",
+        "validation_codes": []
+      },
+      "rationale": "No carrier present.",
+      "source_bytes": 14,
+      "source_sha256": "351585fde8502035042832aeba0c12a8ad84a771f0da52259688fe572df6a7dc"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "manifest_present": false
+      },
+      "id": "vs_truncated",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "be9b844965bc3457c472d1bb554d14a4640ff084d823694642e3abfe1d324b80",
+        "error": "",
+        "length": -1,
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "offset": -1,
+        "source_bytes": 74,
+        "source_sha256": "be9b844965bc3457c472d1bb554d14a4640ff084d823694642e3abfe1d324b80",
+        "validation_codes": [
+          "manifest.text.corruptedWrapper"
+        ]
+      },
+      "rationale": "Truncated payload must not be extracted as complete.",
+      "source_bytes": 74,
+      "source_sha256": "be9b844965bc3457c472d1bb554d14a4640ff084d823694642e3abfe1d324b80"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "manifest_present": false
+      },
+      "id": "vs_bad_version",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "93178a61bd7f8b35a7666fb0bc02f43f02ceb6e0a1c889a3639159a9c6d79b9d",
+        "error": "",
+        "length": -1,
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "offset": -1,
+        "source_bytes": 77,
+        "source_sha256": "93178a61bd7f8b35a7666fb0bc02f43f02ceb6e0a1c889a3639159a9c6d79b9d",
+        "validation_codes": [
+          "manifest.text.corruptedWrapper"
+        ]
+      },
+      "rationale": "Unsupported wrapper version.",
+      "source_bytes": 77,
+      "source_sha256": "93178a61bd7f8b35a7666fb0bc02f43f02ceb6e0a1c889a3639159a9c6d79b9d"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "manifest_present": false
+      },
+      "id": "vs_large_declared",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "5c62f51bdf55b8bdda35f9d6c98c89f160bb8f1a07052962651bb57eeef0e0b6",
+        "error": "",
+        "length": -1,
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "offset": -1,
+        "source_bytes": 81,
+        "source_sha256": "5c62f51bdf55b8bdda35f9d6c98c89f160bb8f1a07052962651bb57eeef0e0b6",
+        "validation_codes": [
+          "manifest.text.corruptedWrapper"
+        ]
+      },
+      "rationale": "Huge declared length, small actual input.",
+      "source_bytes": 81,
+      "source_sha256": "5c62f51bdf55b8bdda35f9d6c98c89f160bb8f1a07052962651bb57eeef0e0b6"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "manifest_present": false
+      },
+      "id": "vs_missing_prefix",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "71a01504140a686bf75cc46dd24b9f8413359c1c741ec8388e60da861a4092aa",
+        "error": "",
+        "length": -1,
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "offset": -1,
+        "source_bytes": 74,
+        "source_sha256": "71a01504140a686bf75cc46dd24b9f8413359c1c741ec8388e60da861a4092aa",
+        "validation_codes": []
+      },
+      "rationale": "Missing required wrapper prefix; Unicode inventory still retains selectors.",
+      "source_bytes": 74,
+      "source_sha256": "71a01504140a686bf75cc46dd24b9f8413359c1c741ec8388e60da861a4092aa"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "error": "multiple C2PA wrappers detected"
+      },
+      "id": "vs_multiple",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "df6096ff25f9d8e65108ccdd411eeab885406d0fd4ce937704a39aacaa722d4c",
+        "error": "multiple C2PA wrappers detected",
+        "length": -1,
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "offset": -1,
+        "source_bytes": 155,
+        "source_sha256": "df6096ff25f9d8e65108ccdd411eeab885406d0fd4ce937704a39aacaa722d4c",
+        "validation_codes": [
+          "manifest.text.multipleWrappers"
+        ]
+      },
+      "rationale": "Upstream must expose ambiguity; selecting among exclusions needs G1.",
+      "source_bytes": 155,
+      "source_sha256": "df6096ff25f9d8e65108ccdd411eeab885406d0fd4ce937704a39aacaa722d4c"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 3
+      },
+      "id": "vs_mid_text",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "21612566bdb1c59a578985dfb33471f77e30529a392e5c14b91b38aaa187d469",
+        "error": "",
+        "length": 77,
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 3,
+        "source_bytes": 84,
+        "source_sha256": "1d9f460b74f6f94ae6fff622a2809ac8c9a74bf471dca8aaa39521400aeb890e",
+        "validation_codes": []
+      },
+      "rationale": "Non-final position remains observable; placement at end is recommended, not mandatory.",
+      "source_bytes": 84,
+      "source_sha256": "1d9f460b74f6f94ae6fff622a2809ac8c9a74bf471dca8aaa39521400aeb890e"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa"
+      },
+      "id": "html_double",
+      "method": "html",
+      "observed": {
+        "association": true,
+        "error": "",
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "method": "inline",
+        "reference": "",
+        "source_bytes": 107,
+        "source_sha256": "d2716d524fd66e01faab80f27ece26659c1312a3a7fff8489d109488215628ca"
+      },
+      "rationale": "Semantically equivalent HTML script element should expose the same inline carrier.",
+      "source_bytes": 107,
+      "source_sha256": "d2716d524fd66e01faab80f27ece26659c1312a3a7fff8489d109488215628ca"
+    },
+    {
+      "differences": [
+        "manifest_sha256"
+      ],
+      "expected": {
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa"
+      },
+      "id": "html_single",
+      "method": "html",
+      "observed": {
+        "association": false,
+        "error": "",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "source_bytes": 107,
+        "source_sha256": "315bf72dc95e60fa7b4a1d858f93c72c3a85ff98b7e49abb0cedba2556a70990"
+      },
+      "rationale": "Semantically equivalent HTML script element should expose the same inline carrier.",
+      "source_bytes": 107,
+      "source_sha256": "315bf72dc95e60fa7b4a1d858f93c72c3a85ff98b7e49abb0cedba2556a70990"
+    },
+    {
+      "differences": [
+        "manifest_sha256"
+      ],
+      "expected": {
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa"
+      },
+      "id": "html_upper",
+      "method": "html",
+      "observed": {
+        "association": false,
+        "error": "",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "source_bytes": 107,
+        "source_sha256": "905d824cc8839974a4d63dab495f9eeba3b2300042bb8aee9e10fbdc807a6844"
+      },
+      "rationale": "Semantically equivalent HTML script element should expose the same inline carrier.",
+      "source_bytes": 107,
+      "source_sha256": "905d824cc8839974a4d63dab495f9eeba3b2300042bb8aee9e10fbdc807a6844"
+    },
+    {
+      "differences": [
+        "manifest_sha256"
+      ],
+      "expected": {
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa"
+      },
+      "id": "html_attribute_space",
+      "method": "html",
+      "observed": {
+        "association": false,
+        "error": "",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "source_bytes": 109,
+        "source_sha256": "065303a8caadd5f603b8fa8052fbf30738e1b3c0ef0f8917349ddbbe63bc3843"
+      },
+      "rationale": "Semantically equivalent HTML script element should expose the same inline carrier.",
+      "source_bytes": 109,
+      "source_sha256": "065303a8caadd5f603b8fa8052fbf30738e1b3c0ef0f8917349ddbbe63bc3843"
+    },
+    {
+      "differences": [
+        "association"
+      ],
+      "expected": {
+        "association": false
+      },
+      "id": "html_comment",
+      "method": "html",
+      "observed": {
+        "association": true,
+        "error": "",
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "method": "inline",
+        "reference": "",
+        "source_bytes": 114,
+        "source_sha256": "4709a2a95eb80889fb1268f8db972f0990340ad85cdb539cfc600532d0bd7a93"
+      },
+      "rationale": "A comment is not an HTML manifest association; preserve its literal content separately.",
+      "source_bytes": 114,
+      "source_sha256": "4709a2a95eb80889fb1268f8db972f0990340ad85cdb539cfc600532d0bd7a93"
+    },
+    {
+      "differences": [
+        "association"
+      ],
+      "expected": {
+        "association": false
+      },
+      "id": "html_data_type",
+      "method": "html",
+      "observed": {
+        "association": true,
+        "error": "",
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "method": "inline",
+        "reference": "",
+        "source_bytes": 112,
+        "source_sha256": "705e3c3010064eccc4ca24e606fc20a6a1cdeb9a75db71ec04a4a88b329c7034"
+      },
+      "rationale": "data-type is not the required type attribute.",
+      "source_bytes": 112,
+      "source_sha256": "705e3c3010064eccc4ca24e606fc20a6a1cdeb9a75db71ec04a4a88b329c7034"
+    },
+    {
+      "differences": [
+        "association"
+      ],
+      "expected": {
+        "association": false
+      },
+      "id": "html_prefix_tag",
+      "method": "html",
+      "observed": {
+        "association": true,
+        "error": "",
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "method": "inline",
+        "reference": "",
+        "source_bytes": 110,
+        "source_sha256": "9bf3e2200100d96f98e5afce211d96fc467b265aa293685b701120bd177b2ad8"
+      },
+      "rationale": "A different tag name is not script.",
+      "source_bytes": 110,
+      "source_sha256": "9bf3e2200100d96f98e5afce211d96fc467b265aa293685b701120bd177b2ad8"
+    },
+    {
+      "differences": [
+        "association"
+      ],
+      "expected": {
+        "association": false
+      },
+      "id": "html_body",
+      "method": "html",
+      "observed": {
+        "association": true,
+        "error": "",
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "method": "inline",
+        "reference": "",
+        "source_bytes": 92,
+        "source_sha256": "2357d046700de877a6e3b0489e5ccfb6e040a418d0622fb26e3c5438a10096e9"
+      },
+      "rationale": "C2PA association belongs in head; a misplaced carrier remains separate forensic evidence.",
+      "source_bytes": 92,
+      "source_sha256": "2357d046700de877a6e3b0489e5ccfb6e040a418d0622fb26e3c5438a10096e9"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "error": "manifest.html.multipleManifests"
+      },
+      "id": "html_multiple",
+      "method": "html",
+      "observed": {
+        "association": false,
+        "error": "manifest.html.multipleManifests",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "source_bytes": 160,
+        "source_sha256": "689556c9f6e7250c9f26005e4ac707bc15a83af9b26519f48cb6e5704f7a7535"
+      },
+      "rationale": "Multiple associations are explicit ambiguity.",
+      "source_bytes": 160,
+      "source_sha256": "689556c9f6e7250c9f26005e4ac707bc15a83af9b26519f48cb6e5704f7a7535"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "association": true,
+        "manifest_present": false
+      },
+      "id": "html_bad_base64",
+      "method": "html",
+      "observed": {
+        "association": true,
+        "error": "",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "method": "inline",
+        "reference": "",
+        "source_bytes": 96,
+        "source_sha256": "8e498e1172b5e36409e9370f63d3bf98efca52b1149971e51b6ba1fb3399c607"
+      },
+      "rationale": "Carrier is observable even when its payload cannot decode; must not imply a verified credential.",
+      "source_bytes": 96,
+      "source_sha256": "8e498e1172b5e36409e9370f63d3bf98efca52b1149971e51b6ba1fb3399c607"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "association": false
+      },
+      "id": "html_truncated",
+      "method": "html",
+      "observed": {
+        "association": false,
+        "error": "",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "source_bytes": 98,
+        "source_sha256": "28e6d4b036209c590d02d544385be4d210b957e9315bc39dc8f1ddcc2149e7bb"
+      },
+      "rationale": "Missing closing script tag; raw evidence still retained.",
+      "source_bytes": 98,
+      "source_sha256": "28e6d4b036209c590d02d544385be4d210b957e9315bc39dc8f1ddcc2149e7bb"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "reference": "https://example.invalid/test.c2pa"
+      },
+      "id": "html_reference",
+      "method": "html",
+      "observed": {
+        "association": true,
+        "error": "",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "method": "reference",
+        "reference": "https://example.invalid/test.c2pa",
+        "source_bytes": 121,
+        "source_sha256": "186a2ff1eb1aeb4f5053d118696bb9127394c448a2f91de5059f9a966b0b9359"
+      },
+      "rationale": "Discover external association without any network request.",
+      "source_bytes": 121,
+      "source_sha256": "186a2ff1eb1aeb4f5053d118696bb9127394c448a2f91de5059f9a966b0b9359"
+    },
+    {
+      "differences": [
+        "reference"
+      ],
+      "expected": {
+        "reference": "https://example.invalid/test.c2pa"
+      },
+      "id": "html_reference_single",
+      "method": "html",
+      "observed": {
+        "association": false,
+        "error": "",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "source_bytes": 121,
+        "source_sha256": "137377eda00ec862f0710f2d2cc44e82f1b5548ed20a35d6ee8d6791fb779952"
+      },
+      "rationale": "Discover external association without any network request.",
+      "source_bytes": 121,
+      "source_sha256": "137377eda00ec862f0710f2d2cc44e82f1b5548ed20a35d6ee8d6791fb779952"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa"
+      },
+      "id": "structured_comment",
+      "method": "structured",
+      "observed": {
+        "error": "",
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "reference": "data:application/c2pa;base64,AAAACGp1bWI=",
+        "source_bytes": 108,
+        "source_sha256": "f805b5c76b337457c06ce8a633b32529a4102a80d4d247ce1ff76dfc4173e6a1"
+      },
+      "rationale": "Extract bytes; API supplies no source span or host-syntax validation.",
+      "source_bytes": 108,
+      "source_sha256": "f805b5c76b337457c06ce8a633b32529a4102a80d4d247ce1ff76dfc4173e6a1"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa"
+      },
+      "id": "structured_front_matter",
+      "method": "structured",
+      "observed": {
+        "error": "",
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "reference": "data:application/c2pa;base64,AAAACGp1bWI=",
+        "source_bytes": 112,
+        "source_sha256": "24175aefe52e5401338a14ab9c5d92d2794b5e568f63fa910df76ecf3d509b95"
+      },
+      "rationale": "Extract bytes; API supplies no source span or host-syntax validation.",
+      "source_bytes": 112,
+      "source_sha256": "24175aefe52e5401338a14ab9c5d92d2794b5e568f63fa910df76ecf3d509b95"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa"
+      },
+      "id": "structured_mixed_endings",
+      "method": "structured",
+      "observed": {
+        "error": "",
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "reference": "data:application/c2pa;base64,AAAACGp1bWI=",
+        "source_bytes": 110,
+        "source_sha256": "ba60fe5d3c9502cbfd1eb2a9334d5663a4146dbc32b31a7cee02a867559b7915"
+      },
+      "rationale": "Extract bytes; API supplies no source span or host-syntax validation.",
+      "source_bytes": 110,
+      "source_sha256": "ba60fe5d3c9502cbfd1eb2a9334d5663a4146dbc32b31a7cee02a867559b7915"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "error": "manifest.structuredText.noManifest"
+      },
+      "id": "structured_absent",
+      "method": "structured",
+      "observed": {
+        "error": "manifest.structuredText.noManifest",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "reference": "",
+        "source_bytes": 5,
+        "source_sha256": "5d5a2f99dc823ee5357501a9a7f36c05c75ae708616f943ebcc21530b9d998cc"
+      },
+      "rationale": "No delimited block.",
+      "source_bytes": 5,
+      "source_sha256": "5d5a2f99dc823ee5357501a9a7f36c05c75ae708616f943ebcc21530b9d998cc"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "error": "manifest.structuredText.multipleReferences"
+      },
+      "id": "structured_multiple",
+      "method": "structured",
+      "observed": {
+        "error": "manifest.structuredText.multipleReferences",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "reference": "",
+        "source_bytes": 198,
+        "source_sha256": "b9d3fb35cd0757d5e339ad1a14cce95d614cbecb3d92d375a25ad8fadf098576"
+      },
+      "rationale": "Multiple blocks must remain ambiguous.",
+      "source_bytes": 198,
+      "source_sha256": "b9d3fb35cd0757d5e339ad1a14cce95d614cbecb3d92d375a25ad8fadf098576"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "error": "manifest.structuredText.noManifest"
+      },
+      "id": "structured_truncated",
+      "method": "structured",
+      "observed": {
+        "error": "manifest.structuredText.noManifest",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "reference": "",
+        "source_bytes": 31,
+        "source_sha256": "354643ac8d78b10fc7006f71cdba967a1cb48b52f3eab613ab83ed50cbe3a833"
+      },
+      "rationale": "Incomplete delimiter pair cannot yield a complete association.",
+      "source_bytes": 31,
+      "source_sha256": "354643ac8d78b10fc7006f71cdba967a1cb48b52f3eab613ab83ed50cbe3a833"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "error": "manifest.structuredText.emptyReference"
+      },
+      "id": "structured_empty",
+      "method": "structured",
+      "observed": {
+        "error": "manifest.structuredText.emptyReference",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "reference": "",
+        "source_bytes": 57,
+        "source_sha256": "6214f252c8f8ac4029dacaf33522925b73913264a2f920ff4f25166ca69af420"
+      },
+      "rationale": "Empty reference.",
+      "source_bytes": 57,
+      "source_sha256": "6214f252c8f8ac4029dacaf33522925b73913264a2f920ff4f25166ca69af420"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "manifest_present": false
+      },
+      "id": "structured_invalid_base64",
+      "method": "structured",
+      "observed": {
+        "error": "",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "reference": "data:application/c2pa;base64,!",
+        "source_bytes": 88,
+        "source_sha256": "370b4869a67a1f9a372842a8d7fe51019d572314417f26b8df47fb7a6facdf2b"
+      },
+      "rationale": "Bad base64 is an observed malformed reference, not absence of a carrier.",
+      "source_bytes": 88,
+      "source_sha256": "370b4869a67a1f9a372842a8d7fe51019d572314417f26b8df47fb7a6facdf2b"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa"
+      },
+      "id": "structured_uncommented",
+      "method": "structured",
+      "observed": {
+        "error": "",
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "reference": "data:application/c2pa;base64,AAAACGp1bWI=",
+        "source_bytes": 99,
+        "source_sha256": "5cd406d8573d349c484393e7a6805d81bf550b8d6853ce62d19a8344d9178071"
+      },
+      "rationale": "Lexical API accepts bare delimiters; a format-aware caller must separately enforce host placement.",
+      "source_bytes": 99,
+      "source_sha256": "5cd406d8573d349c484393e7a6805d81bf550b8d6853ce62d19a8344d9178071"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "reference": "https://example.invalid/test.c2pa"
+      },
+      "id": "structured_reference",
+      "method": "structured",
+      "observed": {
+        "error": "",
+        "manifest_bytes": 0,
+        "manifest_present": false,
+        "reference": "https://example.invalid/test.c2pa",
+        "source_bytes": 93,
+        "source_sha256": "1bf1c35d33cca763648a8e656375191b05bc3b93dc54518ad32de24714517537"
+      },
+      "rationale": "Discover reference; never fetch it during scan.",
+      "source_bytes": 93,
+      "source_sha256": "1bf1c35d33cca763648a8e656375191b05bc3b93dc54518ad32de24714517537"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "failure": "invalid_utf8"
+      },
+      "id": "invalid_utf8",
+      "method": "vs",
+      "observed": {
+        "failure": "invalid_utf8",
+        "source_bytes": 1,
+        "source_sha256": "a8100ae6aa1940d0b663bb31cd466142ebbdbd5187131b92d93818987832eb89"
+      },
+      "rationale": "Probe refuses lossy UTF-8 decoding before upstream sees the sample.",
+      "source_bytes": 1,
+      "source_sha256": "a8100ae6aa1940d0b663bb31cd466142ebbdbd5187131b92d93818987832eb89"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 8388608
+      },
+      "id": "large_valid",
+      "method": "vs",
+      "observed": {
+        "clean_sha256": "ad97f87076920684e2ca66fc44e5d322797dc9d64706b174e51b5d0828937043",
+        "error": "",
+        "length": 77,
+        "manifest_bytes": 8,
+        "manifest_present": true,
+        "manifest_sha256": "ebdbde7f37a7c22ff8c5394aa7555b653468ace26d9b3c7d0512f2f14345fdaa",
+        "offset": 8388608,
+        "source_bytes": 8388685,
+        "source_sha256": "1dbc59015c98ca38af7cccded53eae21b6e1b3deae40a262f759d7ed12c40857",
+        "validation_codes": []
+      },
+      "rationale": "Bounded large input with complete small carrier.",
+      "source_bytes": 8388685,
+      "source_sha256": "1dbc59015c98ca38af7cccded53eae21b6e1b3deae40a262f759d7ed12c40857"
+    },
+    {
+      "differences": [],
+      "expected": {
+        "failure": "input_limit"
+      },
+      "id": "oversized",
+      "method": "vs",
+      "observed": {
+        "failure": "input_limit"
+      },
+      "rationale": "Probe rejects input above the issue's 16 MiB ceiling.",
+      "source_bytes": 16777217,
+      "source_sha256": "422a9e5e816110dadfa124eb2cf93a83fba87ab1cf10596fd9c4037aa6891503"
+    }
+  ],
+  "execution_failures": 0,
+  "expectation_mismatches": 8
+}

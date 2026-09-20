@@ -1,0 +1,22 @@
+{
+  "upstream_commit": "ad4eaee3705ea5edb610ab37041be496d012e583",
+  "archive_sha256": "e66fb4ff79e9807104620ae4797b6ad2ed17d097b85f9001eb086a81e487ce26",
+  "golden_vectors_sha256": "2d1dcfa8eae018b320856a5cd10837a044c09a299e1f18d994044206e3e42ffc",
+  "go": "go1.27.1 linux/amd64",
+  "python": "3.14.7",
+  "platform": "Linux-7.2.2-1-cachyos-x86_64-with-glibc2.44",
+  "fixture_origin": "independent synthetic cases.py; eight-byte JUMBF placeholder, not signed credentials",
+  "redistributed_upstream_vectors": false,
+  "measured_files": {
+    "build.stderr": "22a157b26651ec28cf9478fccb64e50c5d2461b6138db6bad9d8356d6a6a41b8",
+    "cases.stderr": "7d520017dd43f199226be3b312a547bbb9699b9db33cb94295709ad0a47f0d5f",
+    "reproduction-build.stderr": "073877b89331a5c9e2d11db7b55028391e251159419bd079e256799185305806",
+    "reproduction-cases.stderr": "7ea65e99d93f3ecebcbfb39fb18ab8dbb376a1de07ea29637aa4651e4f9b0459",
+    "results.json": "b24579a87fb100deddeabfd813c4ee651f7c50740778f34ef81273667e9ba3d5",
+    "upstream-tests.jsonl": "0d0ec5994ddcd44cb8f5d531a3229ba1356bc862a9576fcca41d53989963264c"
+  },
+  "binary_sha256": "dd34a3322ca9ea86c455d62888ff94fa3f5fceb1e5449138de5c1351ebd9c497",
+  "binary_size": 4396577,
+  "reproduction_identical_results": true,
+  "reproduction_identical_binary": true
+}
