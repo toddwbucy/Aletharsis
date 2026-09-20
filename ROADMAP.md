@@ -28,9 +28,12 @@ removal, and new matches never inherit a previous frozen-set approval.
 | --- | --- |
 | Go implementation of the original M0/M1 framework and Unicode/text analysis | [Migration record](docs/migration/go-backend-migration.md), [frozen reference](reference/python-behavior/README.md) |
 | Console/JSON CLI, strict schema 1.0, source identity and coordinate evidence | [Text audit reference](docs/text-audit-reference.md), [schema](schemas/report.schema.json) |
-| Direct unit/property tests, compiled-CLI integration, acquisition fault/integrity checks and CI | Closed [Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7), [CI guide](docs/testing/backend-ci.md) |
+| Direct unit/property tests, compiled-CLI integration, acquisition fault/integrity checks and CI | Delivered work within open [Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7), [CI guide](docs/testing/backend-ci.md) |
 | Bounded fuzzing, resource characterization and platform verification | [Fuzzing](docs/testing/fuzzing.md), [performance](docs/testing/performance.md), [platforms](docs/testing/platforms.md) |
 | Parent product architecture and revised frontend draft | [Parent PRD](docs/product/aletharsis-PRD.md), [frontend PRD](docs/product/frontend-PRD.md) |
+
+Issue #7 remains open until its full validation scope is complete. The delivered
+checks listed here do not mark that tracker complete.
 
 Completed tests establish the current scope, not universal safety or unimplemented
 end-to-end workflows. Acquisition is functional on supported Linux systems;
@@ -63,6 +66,43 @@ does not complete its implementation.
 The Python application has been retired with its reference reports, schemas,
 fixtures and Unicode data preserved. Test-only Python utilities remain; P0 mechanism
 and capability design is still outstanding. Retirement does not complete that track.
+
+## Gated detector reuse program
+
+[Epic #21](https://github.com/toddwbucy/Aletharsis/issues/21) coordinates upstream
+reuse across Aletharsis, WeaverTools and isolated comparison/sidecar environments.
+Its principle is **reuse detectors; own the evidence**. The epic is a plan, not
+approval to install dependencies, change external repositories or claim new
+capabilities. It complements #17's contract work and #7's ongoing validation.
+
+| Gate | Decision or deliverable | Dependency / required evidence |
+| --- | --- | --- |
+| **G0 — Policy and inventory** | Reuse ADR, component registry, bounded child issues and named implementer/reviewer roles | Pinned revisions, license/data provenance, redistribution/runtime implications, budgets and separate adoption status |
+| **G1 — Evidence and execution contracts** | Mechanism, capability, execution/result, input identity, coordinate and side-effect contracts | P0 / #17; reviewed schema migration, unavailable/partial states and contract fixtures |
+| **G2 — C2PA feasibility** | Independently evaluate c2pa-text extraction and encypher-c2pa verification | Spikes after G0; production adoption requires G1, interoperability, normalized/original coordinate mapping, resource/platform evidence and control of trust/telemetry defaults |
+| **G3 — Structural comparison corpora** | Unicode first; Office/PDF comparisons as parsers arrive | Independently expected and licensed fixtures; disagreements classified by inventory, parsing, offsets, policy and coverage; P2/P3 gates for structured formats |
+| **G4 — Optional statistical sidecar** | Protocol first, then a selected configured detector | G1; pinned environment, actual score semantics, bounded process lifecycle and tests with runtime/access absent |
+| **G5 — Weaver interoperability and research** | Portable baseline exporter/consumer contract and optional fingerprint experiment | Accepted corpus identities, linked producer/consumer issues and compatibility tests; blind/open-set validation before any fingerprint claim |
+| **G6 — Release and lifecycle** | Per-component release, maintenance and rollback decision | #7 validation evidence, native supported-platform checks, conformance corpus, dependency notices and reviewed upgrade semantics |
+
+C2PA is the first adoption evaluation, not an already selected production
+dependency. Feasibility can inform G1 without bypassing its acceptance gate.
+Unicode comparisons can proceed independently; Office/PDF comparisons wait for
+their parser contracts. Optional statistical and fingerprint work cannot block
+validated local structural releases. G6 applies to each adopted component.
+
+Aletharsis owns the evidence and consumer adapters. Weaver owns controlled
+creation and eventual corpus export. Upstream tools remain pinned components or
+isolated comparators; their outputs do not define Aletharsis' wire contract.
+Cross-repository work requires linked issues, versioned compatibility fixtures,
+producer/consumer validation and a rollout order before implementation. Repository
+owners and independent reviewers must be identified at the relevant gate.
+
+The epic holds the full candidate matrix, tests, gate decisions and completion
+checklist. Each gate needs linked reproducible evidence and a reviewed go, revise,
+reject or explicitly deferred disposition. Upstream updates cannot silently alter
+result semantics. Neither a completed spike nor creation of child issues closes
+the program; optional deferrals require an explicit product-owner decision.
 
 ## Product delivery tracks
 
