@@ -8,6 +8,12 @@ on:
     paths:
       - '.github/workflows/fuzz.yml'
       - 'internal/**/*fuzz*'
+      - 'internal/audit/**'
+      - 'internal/capability/**'
+      - 'internal/evidence/v2/**'
+      - 'internal/identity/**'
+      - 'internal/wire/**'
+      - 'schemas/**'
       - 'internal/**/testdata/fuzz/**'
 
 permissions:
@@ -34,6 +40,8 @@ jobs:
             target: FuzzAnalyzerEvidence
           - package: reporters
             target: FuzzJSONEvidence
+          - package: audit
+            target: FuzzNativeV2
     env:
       GOTOOLCHAIN: local
       FUZZ_TIME: ${{ github.event_name == 'pull_request' && '10s' || '60s' }}

@@ -3,16 +3,19 @@
 package capability
 
 import (
+	"encoding/json"
 	"errors"
 	"runtime"
 	"sort"
 
+	"github.com/toddwbucy/Aletharsis/internal/analyzers"
 	v2 "github.com/toddwbucy/Aletharsis/internal/evidence/v2"
 	"github.com/toddwbucy/Aletharsis/internal/failure"
 	"github.com/toddwbucy/Aletharsis/internal/identity"
+	u "github.com/toddwbucy/Aletharsis/internal/unicoderef"
 )
 
-const CatalogVersion = "aletharsis.native-text/1"
+const CatalogVersion = "aletharsis.native-text/2"
 
 // Native operation IDs are shared with the audit coordinator.
 const (
@@ -37,6 +40,10 @@ func forPlatform(version string, maxBytes uint64, platform string) ([]v2.Capabil
 	if version == "" || maxBytes == 0 || maxBytes > identity.MaxSafeInteger {
 		return nil, errors.New("invalid native catalog configuration")
 	}
+	data, err := nativeData()
+	if err != nil {
+		return nil, err
+	}
 	result := make([]v2.Capability, 0, 11)
 	for _, entry := range []struct {
 		id   string
@@ -51,8 +58,8 @@ func forPlatform(version string, maxBytes uint64, platform string) ([]v2.Capabil
 		if entry.role != v2.Analyzer {
 			kinds = []string{"source"}
 		}
-		c := v2.Capability{ID: entry.id, Revision: "1", Role: entry.role, Participation: v2.Required,
-			Implementation: &v2.Implementation{ID: entry.id, Version: version, Data: []v2.DataIdentity{}},
+		c := v2.Capability{ID: entry.id, Revision: "2", Role: entry.role, Participation: v2.Required,
+			Implementation: &v2.Implementation{ID: entry.id, Version: version, Data: append([]v2.DataIdentity{}, data...)},
 			Availability:   v2.Availability{State: "available"}, SupportedScope: v2.SupportedScope{Kinds: kinds, Formats: []string{"text"}}, Limits: v2.Limits{InputBytes: ptr(maxBytes)}}
 		if entry.role == v2.Analyzer {
 			c.Mechanism = ptr(v2.Structural)
@@ -115,3 +122,34 @@ func NonExecutionReason(c v2.Capability, prerequisiteOK, supported, policyAllowe
 	return nil, nil
 }
 func ptr[T any](v T) *T { return &v }
+
+func nativeData() ([]v2.DataIdentity, error) {
+	hashes, err := analyzers.EmbeddedDataDigests()
+	if err != nil {
+		return nil, err
+	}
+	return []v2.DataIdentity{
+		{ID: "aletharsis.emoji", Version: "17.0", SHA256: hashes["emoji-17.0.txt"]},
+		{ID: "aletharsis.limitations", Version: "1", SHA256: hashes["limitations.json"]},
+		{ID: "aletharsis.messages", Version: "1", SHA256: hashes["messages.json"]},
+		{ID: "aletharsis.unicode.categories", Version: u.Version, SHA256: u.CategoryDataSHA256()},
+	}, nil
+}
+
+// NativeDataRevision binds configuration identity to the ordered compiled data
+// manifest. It is not a claim to identify the compiler or every dependency byte.
+func NativeDataRevision() (string, error) {
+	data, err := nativeData()
+	if err != nil {
+		return "", err
+	}
+	raw, err := json.Marshal(data)
+	if err != nil {
+		return "", err
+	}
+	canonical, err := identity.Canonicalize(raw, v2.RecordLimits())
+	if err != nil {
+		return "", err
+	}
+	return "native-data/1:" + identity.ExactBytes(canonical), nil
+}

@@ -216,3 +216,32 @@ func TestSelectionPreservesDisjointBoundaries(t *testing.T) {
 		seen[hash] = true
 	}
 }
+
+func TestVerifiedTextOwnsItsBoundaryMap(t *testing.T) {
+	source := []byte("a\u200bb")
+	doc, err := (parsers.TextParser{}).Parse(source)
+	if err != nil {
+		t.Fatal(err)
+	}
+	text := doc.Texts[0]
+	spans := []identity.TextSpan{{Scalar: identity.Region{Start: 1, End: 2}, Byte: identity.Region{Start: 1, End: 4}}}
+	want, err := identity.TextSelectionDigest(source, text, spans, len(source), budget)
+	if err != nil {
+		t.Fatal(err)
+	}
+	verified, err := identity.VerifyText(source, text, len(source))
+	if err != nil {
+		t.Fatal(err)
+	}
+	text.Text = "changed"
+	text.ByteOffsets[1] = 99
+	source[1] = 'x'
+	got, err := verified.SelectionDigest(spans, budget)
+	if err != nil || got != want {
+		t.Fatal("verified mapping aliased caller state", err)
+	}
+	var empty identity.VerifiedText
+	if _, err := empty.SelectionDigest(spans, budget); err == nil {
+		t.Fatal("unverified zero value made selection")
+	}
+}

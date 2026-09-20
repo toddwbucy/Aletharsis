@@ -71,7 +71,9 @@ and [execution records, catalog and native failure boundaries](docs/specs/go-v2-
 The [evidence graph and coverage validation](docs/specs/go-v2-evidence-graph.md)
 continues this implementation, followed by the
 [report envelope and exact-byte import](docs/specs/go-v2-report-import.md).
-The complete coordinator and opt-in emitter follow.
+The [native coordinator](docs/specs/go-v2-native-assembly.md) now assembles fresh
+audits with deterministic references and verified source mappings. These increments
+remain subject to review; opt-in CLI emission and human coverage reporting follow.
 The production CLI continues
 to emit schema 1.0 pending implementation and release review.
 

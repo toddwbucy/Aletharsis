@@ -142,3 +142,43 @@ func TestBadCatalogConfiguration(t *testing.T) {
 		t.Fatal("invalid descriptor accepted")
 	}
 }
+
+func TestNativeDataManifestIsBoundAndIndependent(t *testing.T) {
+	first, err := Native("test", 128)
+	if err != nil {
+		t.Fatal(err)
+	}
+	revision, err := NativeDataRevision()
+	if err != nil || revision == "" {
+		t.Fatal(err)
+	}
+	for _, c := range first {
+		if c.Implementation != nil && len(c.Implementation.Data) != 4 {
+			t.Fatal("compiled data identity missing")
+		}
+	}
+	first[0].Implementation.Data[0].SHA256 = "tampered"
+	var parser *v2.Implementation
+	for _, c := range first {
+		if c.ID == ParseTextID {
+			parser = c.Implementation
+		}
+	}
+	if parser == nil {
+		t.Fatal("parser capability missing")
+	}
+	if parser.Data[0].SHA256 == "tampered" {
+		t.Fatal("descriptors share data slices")
+	}
+	second, err := Native("test", 128)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if second[0].Implementation.Data[0].SHA256 == "tampered" {
+		t.Fatal("catalog shares data")
+	}
+	again, err := NativeDataRevision()
+	if err != nil || again != revision {
+		t.Fatal("data revision is unstable", err)
+	}
+}

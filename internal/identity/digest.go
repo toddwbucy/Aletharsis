@@ -84,6 +84,37 @@ type TextSpan struct {
 	Byte   Region `json:"byte"`
 }
 
+// VerifiedText owns a verified native scalar/byte map. Its fields are private so
+// later caller mutations cannot change the selections it identifies.
+type VerifiedText struct {
+	scalars []rune
+	offsets []int
+}
+
+// VerifyText compares the complete native text and boundary map with source bytes.
+// It owns the decoded representation; it never retains the caller's mutable slices.
+func VerifyText(source []byte, text *evidence.Text, sourceLimit int) (*VerifiedText, error) {
+	if sourceLimit <= 0 || len(source) > sourceLimit {
+		return nil, fmt.Errorf("%w: source bytes", ErrLimit)
+	}
+	if text == nil {
+		return nil, errors.New("text segment required")
+	}
+	switch text.Encoding {
+	case "utf-8", "utf-16-le", "utf-16-be", "utf-32-le", "utf-32-be":
+	default:
+		return nil, errors.New("unsupported text selection encoding")
+	}
+	decoded, offsets, err := parsers.Decode(source, text.Encoding)
+	if err != nil {
+		return nil, errors.New("text selection source cannot be decoded")
+	}
+	if decoded != text.Text || !slices.Equal(offsets, text.ByteOffsets) {
+		return nil, errors.New("text selection does not match source and boundary map")
+	}
+	return &VerifiedText{scalars: []rune(decoded), offsets: offsets}, nil
+}
+
 // TextSelectionDigest verifies text and its full boundary map against supplied
 // source bytes using the native literal-text decoder, then hashes ordered exact
 // selections. It supports the existing UTF-8/16/32 encodings only. Normalized,
@@ -94,28 +125,25 @@ func TextSelectionDigest(source []byte, text *evidence.Text, spans []TextSpan, s
 	if err := limits.validate(); err != nil {
 		return "", err
 	}
-	if sourceLimit <= 0 || len(source) > sourceLimit {
-		return "", fmt.Errorf("%w: source bytes", ErrLimit)
+	verified, err := VerifyText(source, text, sourceLimit)
+	if err != nil {
+		return "", err
 	}
-	if text == nil || len(spans) == 0 {
+	return verified.SelectionDigest(spans, limits)
+}
+
+// SelectionDigest hashes exact spans against the privately owned verified map.
+func (v *VerifiedText) SelectionDigest(spans []TextSpan, limits Limits) (string, error) {
+	if err := limits.validate(); err != nil {
+		return "", err
+	}
+	if v == nil || len(spans) == 0 {
 		return "", errors.New("text selection requires a segment and spans")
 	}
 	if len(spans) > limits.Nodes {
 		return "", fmt.Errorf("%w: selection count", ErrLimit)
 	}
-	switch text.Encoding {
-	case "utf-8", "utf-16-le", "utf-16-be", "utf-32-le", "utf-32-be":
-	default:
-		return "", errors.New("unsupported text selection encoding")
-	}
-	decoded, offsets, err := parsers.Decode(source, text.Encoding)
-	if err != nil {
-		return "", errors.New("text selection source cannot be decoded")
-	}
-	if decoded != text.Text || !slices.Equal(offsets, text.ByteOffsets) {
-		return "", errors.New("text selection does not match source and boundary map")
-	}
-	scalars := []rune(decoded)
+	scalars, offsets := v.scalars, v.offsets
 	previous := uint64(0)
 	// Serialize incrementally so selection JSON cannot grow past the input budget
 	// before Digest checks it. json.Marshal is only an intermediate valid encoding;

@@ -52,7 +52,9 @@ producer claims. Unknown diagnostic codes remain failure information, not succes
 
 The native audit's six analyzer registrations share catalog IDs; a test prevents
 missing, duplicate or unused native analyzer declarations. Catalog revision is
-`aletharsis.native-text/1`; implementation version is supplied by the owning service.
+`aletharsis.native-text/2`; implementation version is supplied by the owning service.
+Revision 2 native descriptors record digests for the embedded Unicode category,
+emoji, message and limitation data. Declaration-only descriptors remain revision 1.
 Returned slices, pointers and nested structures do not share mutable catalog state.
 
 Availability describes implementation readiness, not success on a particular input.
@@ -68,8 +70,9 @@ The source byte bound is declared for acquisition and parsing. Analyzer limit fi
 are null because these operations do not independently enforce an input byte limit;
 they depend on bounded acquisition. A UTF-16/32 source's decoded UTF-8 byte length
 is a distinct quantity. Null does not assert unlimited safe operation or complete
-resource isolation. Output/time/expanded-byte limits, per-adapter pinned data
-identities and complete resource accounting require the coordinator/adapter gates.
+resource isolation. The [native coordinator](go-v2-native-assembly.md) adds report
+budgets and compiled data identities. Hard time/heap limits, expanded-container
+budgets and per-adapter resource accounting remain separate gates.
 
 Catalog construction reads no PATH entries, preferences, credentials or files and
 contacts no services. `NonExecutionReason` takes explicit prerequisite, support and
