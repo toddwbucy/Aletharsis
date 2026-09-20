@@ -1,0 +1,54 @@
+{
+  "contract_version": "1",
+  "request": {
+    "version": "1",
+    "request_id": "9e49ea5f09e52f0aede6029a4b9e6f1c03d19d3fab8e7465b01e78fbec0b9570",
+    "operation": "extract",
+    "source": {
+      "sha256": "6f67545726c29eb00d2a783fa89438ed77faeb5399560728184e946ff679fcbc",
+      "byte_length": 15
+    },
+    "input": {
+      "sha256": "6f67545726c29eb00d2a783fa89438ed77faeb5399560728184e946ff679fcbc",
+      "byte_length": 15
+    },
+    "input_kind": "source",
+    "transforms": [],
+    "adapter": {
+      "id": "fixture.extract",
+      "version": "1",
+      "executable_sha256": "1c64b81b9e5aca8f6de685cc363f732c3b215121310afd62cc71a1a8c41c4a6a",
+      "upstream_commit": "0000000000000000000000000000000000000000"
+    },
+    "config": {
+      "sha256": "6ebded45d353e834658ff3bb45d6dfd0b113dfc2acd919d4b15f221d7900f9ab",
+      "byte_length": 19
+    },
+    "policy": {
+      "sha256": "06917acde08dda2cb5167e5424a4088a9d95c2e18dd4aae0f7db4cbb8ff756b5",
+      "byte_length": 36
+    },
+    "trust": null,
+    "validation_time": "2026-09-20T00:00:00Z",
+    "limits": {
+      "wall_ms": 1000,
+      "cpu_ms": 1000,
+      "memory_bytes": 67108864,
+      "input_bytes": 1024,
+      "output_bytes": 4096,
+      "scratch_bytes": 4096
+    }
+  },
+  "response": null,
+  "outcome": {
+    "state": "failed",
+    "reason": "timeout"
+  },
+  "cleanup": "complete",
+  "blobs": {
+    "6f67545726c29eb00d2a783fa89438ed77faeb5399560728184e946ff679fcbc": "65cc81efbbbfe2808bf09f98800d0a",
+    "6ebded45d353e834658ff3bb45d6dfd0b113dfc2acd919d4b15f221d7900f9ab": "7b2274656c656d65747279223a66616c73657d",
+    "06917acde08dda2cb5167e5424a4088a9d95c2e18dd4aae0f7db4cbb8ff756b5": "7b226e6574776f726b223a2264656e79222c2272657461696e5f726177223a747275657d",
+    "a8198524f58e72b56283ab71ebddada22840f108b46ef7165bb3fca9919c5558": "7b2273796e746865746963223a747275657d"
+  }
+}

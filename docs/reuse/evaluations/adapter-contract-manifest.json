@@ -1,0 +1,25 @@
+{
+  "contract": "DA-001/1",
+  "artifact_kind": "repository file",
+  "serialization": "exact file bytes; Git text conversion disabled",
+  "fixture_origin": "independently constructed synthetic data; no upstream code or vectors",
+  "files": {
+    "docs/specs/detector-adapter-v1.md": "9f82bca8b605949e8e77c373d6ce3dfd7d99b80049a3959ae354a4b050dc9ca6",
+    "schemas/adapter-exchange-v1.schema.json": "b2e86c9787103e9aa4be00ce7c6138025d6014833204fc7377218735f3020f41",
+    "tests/adapters/adapter_support.py": "004f59f99e4b9cb16a8a81b235fec78c8d37241659c311a31de9576c0ad91f75",
+    "tests/adapters/fixtures/canceled.json": "b5afe0139a6920d474cf3926c2ca2f272f5c7b1cac3dd29308539968a8257083",
+    "tests/adapters/fixtures/cleanup_failed.json": "1c9de771b85f9ec2aed8d5a752f2e484e760ce7a2ac1646beac78b1334237584",
+    "tests/adapters/fixtures/credential-absent.json": "070821f61824a9f7b97bf6766e6785f8132d220a84fdb6ebf0ff260d25d422f5",
+    "tests/adapters/fixtures/extracted.json": "9ad2330322d4b63904b7b58cb0ff534738a031985293819f5601c421370a3fc2",
+    "tests/adapters/fixtures/malformed_output.json": "a43cc4b5a5db47254dbdf90e3496d1aa6bdd6c8702b175f45e7148ee053f2a06",
+    "tests/adapters/fixtures/oversized_output.json": "766cd38e9f9555aaa1abcf2eca60547fa74e8cfb8ced8ebf15e60561d3435adc",
+    "tests/adapters/fixtures/partial.json": "02f7f718483424199837e2df890d50676ea009bef607833d09fec6becc245e35",
+    "tests/adapters/fixtures/provider_failure.json": "ebb32e4c3228e9bdb0a47530bf9afdcfa5b869fc0d1171544e2f72879230d02e",
+    "tests/adapters/fixtures/source_mismatch.json": "a2392448dc08c42a8a61f6afb23ae61fbe8f7b47098c633ba41578225f85b2c6",
+    "tests/adapters/fixtures/statistical.json": "e0252c2d70186e19a1626d86799f3a8dabb7a8748afbe650779b9327d2a65f8b",
+    "tests/adapters/fixtures/timeout.json": "e675bdc37e72ac1efc29b01b9462824253ee0e94f60a9c68ff18fff1af7c6ac2",
+    "tests/adapters/fixtures/unavailable.json": "abe95555a4c977680179f4be4f9baba50f8c81632b0bb08c1b93df6b27327726",
+    "tests/adapters/fixtures/verification.json": "382cd4dd0c2523ecca5fe9b68a1d64bf45c3e973d8eddc77eb13a7db9dca1c5b",
+    "tests/adapters/test_adapter_contract.py": "c7b3b2f87783c5cccfd776243ef90e182326f84ee8727885546ccbd523e3a34d"
+  }
+}

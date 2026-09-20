@@ -71,3 +71,12 @@ To update: use a PR to record the new exact revision and license bytes/hash,
 assessment date, changes in dependencies/data rights and side effects; link the
 bounded issue and gate evidence. Re-run validation and relevant adoption-specific
 conformance. Do not use inventory refreshes to silently approve an upstream update.
+
+## Adapter contract review
+
+[DA-001](../specs/detector-adapter-v1.md) proposes the bounded local exchange,
+source/derived identities, raw-result retention, trust dimensions and worker
+lifecycle under #36, informed by merged studies #47/#48. Its schema and offline
+fixtures are design conformance tools. Production report schema 2.0 and dependency
+approval remain unchanged; the report migration and G6 enforcement are separate
+review gates.
