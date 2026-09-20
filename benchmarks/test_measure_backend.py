@@ -62,5 +62,53 @@ raise SystemExit(1)
         self.run_case(True)
 
 
+class V2ValidationTests(unittest.TestCase):
+    def test_v2_measurement_requires_wire_and_semantic_contract(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('measurement', ROOT / 'scripts/measure_backend.py')
+        harness = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(harness)
+        report = json.loads((ROOT / 'tests/contracts/fixtures/clean-unavailable.json').read_text())
+        harness.validate_v2_report(report)
+        report['executions'][0]['capability_ref'] = 'missing-capability'
+        with self.assertRaises(ValueError):
+            harness.validate_v2_report(report)
+        with self.assertRaises(ValueError):
+            harness.validate_v2_report({'status': 'completed'})
+
+
+@unittest.skipUnless(sys.platform == 'linux', 'GNU time measurement requires Linux')
+class V2RejectionTests(unittest.TestCase):
+    def test_rejection_is_measured_but_never_a_valid_report(self):
+        cases = json.loads((ROOT / 'benchmarks/corpus.json').read_text())['cases']
+        for partial in (False, True):
+            with self.subTest(partial=partial), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                binary = root / 'candidate'
+                binary.write_text(f"""#!{sys.executable}
+import sys
+assert '--schema-version=2.0' in sys.argv
+if {partial!r}: print('{{')
+print('aletharsis: execution.resource_limit: could not assemble a complete report', file=sys.stderr)
+raise SystemExit(4)
+""")
+                binary.chmod(0o700)
+                output = root / 'measurement'
+                run = subprocess.run([sys.executable, str(ROOT / 'scripts/measure_backend.py'),
+                    '--binary', str(binary), '--output', str(output), '--go', '/bin/echo',
+                    '--schema-version', '2.0', '--sizes', '16', '--concurrency-size', '16',
+                    '--repeats', '1', '--workers', '1', '--timeout', '1'],
+                    capture_output=True, text=True, timeout=20)
+                self.assertEqual(run.returncode, int(partial), run.stderr)
+                result = json.loads((output / 'results.json').read_text())
+                self.assertEqual(result['environment']['report_schema_version'], '2.0')
+                rows = result['runs'] + result['concurrency'][0]['runs']
+                self.assertEqual(len(rows), len(cases) * 3)
+                for row in rows:
+                    self.assertFalse(row['valid_report'])
+                    self.assertEqual(row['resource_rejected'], not partial)
+                    self.assertEqual(row['measurement_valid'], not partial)
+
+
 if __name__ == '__main__':
     unittest.main()

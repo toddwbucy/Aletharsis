@@ -72,3 +72,16 @@ Before choosing a frontend viewer/editor, the mandatory large-report/Unicode-coo
 5. Measure the combined browser/backend memory envelope. The backend RSS figures exclude frontend report copies, parent decoders and any service process. Preserve the Occurrence/location-adapter contract and exact evidence even if the visual view is abbreviated.
 
 No PRD or frontend requirement is relaxed by these measurements. Any compact-coordinate schema, streaming service, output limit or algorithm optimization should be proposed separately and pass the existing coordinate, parity, schema and integrity gates.
+
+## Opt-in schema 2.0 probe
+
+The harness accepts `--schema-version 2.0`, records that choice and validates
+completed reports against the independent wire/semantic oracle. It separately
+records an exact, empty-output `execution.resource_limit` rejection as a valid
+measurement with `valid_report=false`; timeouts, malformed/partial reports and
+other failures remain invalid measurements. Rejections must never be counted as
+successful audits. Schema 1.0 remains the default measurement path.
+
+The [initial v2 probe](../../benchmarks/baselines/v2-097b35e-linux-amd64/README.md)
+exposes restrictive evidence budgets and expensive late rejection. It is retained
+as acceptance evidence requiring further work, not a passing release benchmark.

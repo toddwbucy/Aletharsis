@@ -14,6 +14,7 @@ on:
       - 'benchmarks/**'
       - 'internal/benchmarks/**'
       - 'scripts/measure_backend.py'
+      - 'scripts/requirements-ci.txt'
 
 permissions:
   contents: read
@@ -57,13 +58,21 @@ jobs:
           printf 'ALETHARSIS_BENCH_SIZES=%s\nREPEATS=%s\nWORKERS=%s\n' "$sizes" "$repeats" "$workers" >> "$GITHUB_ENV"
           { go version; python --version; git rev-parse HEAD; uname -sm; } > artifacts/environment.txt
       - name: Check harness failure accounting
-        run: timeout 60s python -m unittest discover -s benchmarks -p 'test_*.py' -v
+        run: |
+          timeout 180s python -m pip install --disable-pip-version-check -r scripts/requirements-ci.txt
+          timeout 60s python -m unittest discover -s benchmarks -p 'test_*.py' -v
       - name: Measure executable and separate concurrency batches
         run: |
           timeout --kill-after=10s 900s python scripts/measure_backend.py \
             --binary bin/aletharsis --output artifacts/measurement \
             --sizes "$ALETHARSIS_BENCH_SIZES" --repeats "$REPEATS" \
             --workers "$WORKERS" --timeout 120 2>&1 | tee artifacts/processes.txt
+      - name: Measure opt-in v2 quick corpus separately
+        run: |
+          timeout --kill-after=10s 180s python scripts/measure_backend.py \
+            --binary bin/aletharsis --output artifacts/measurement-v2 \
+            --schema-version 2.0 --sizes 65536 --repeats 1 \
+            --workers 1 --timeout 30 2>&1 | tee artifacts/processes-v2.txt
       - name: Measure stages after executable measurements finish
         run: |
           timeout --kill-after=10s 1200s go test ./internal/benchmarks -run='^$' \
@@ -80,5 +89,9 @@ jobs:
             artifacts/measurement/corpus-manifest.json
             artifacts/measurement/reports/*.stderr
             artifacts/measurement/reports/*.time
+            artifacts/measurement-v2/results.json
+            artifacts/measurement-v2/corpus-manifest.json
+            artifacts/measurement-v2/reports/*.stderr
+            artifacts/measurement-v2/reports/*.time
           if-no-files-found: warn
           retention-days: 14

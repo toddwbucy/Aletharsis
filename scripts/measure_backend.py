@@ -13,6 +13,7 @@ import platform
 import re
 import signal
 import statistics
+import sys
 import subprocess
 import threading
 import time
@@ -37,6 +38,19 @@ def generate(case, size):
     return prefix + repeat * (remaining // len(repeat)) + b' ' * (remaining % len(repeat)) + suffix
 
 
+def validate_v2_report(report):
+    # Validation is outside child timings. Use the independent test-only oracle;
+    # neither the production importer nor an untrusted report supplies checks.
+    from jsonschema import Draft202012Validator, ValidationError
+    sys.path.insert(0, str(ROOT / "tests/contracts"))
+    from support import schema, validate_semantics
+    try:
+        Draft202012Validator(schema("2.0")).validate(report)
+        validate_semantics(report)
+    except ValidationError as exc:
+        raise ValueError("invalid v2 wire report") from exc
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary', required=True, type=Path)
@@ -49,6 +63,7 @@ def main():
     parser.add_argument('--workers', default='1,2,4')
     parser.add_argument('--concurrency-size', type=int, default=65536)
     parser.add_argument('--keep-reports', action='store_true')
+    parser.add_argument('--schema-version', choices=('1.0', '2.0'), default='1.0')
     args = parser.parse_args()
     sizes = [int(s) for s in args.sizes.split(',')]
     workers = [int(s) for s in args.workers.split(',')]
@@ -86,6 +101,7 @@ def main():
         'python': platform.python_version(), 'platform': platform.platform(), 'cpu_model': cpu,
         'logical_cpus': os.cpu_count(), 'gomaxprocs_per_child': 2, 'gnu_time': time_version,
         'timeout_seconds': args.timeout, 'repeats': args.repeats,
+        'report_schema_version': args.schema_version,
         'sizes': sizes, 'workers': workers, 'concurrency_size': args.concurrency_size,
         'timing_scope': 'CLI process including GNU time wrapper, warm filesystem cache; JSON inspection excluded',
         'rss_scope': 'GNU time maximum resident set of each child, Linux KiB; excludes Python parent',
@@ -134,6 +150,8 @@ def main():
         stderr_path = reports / (label + '.stderr')
         command = [args.time, '-q', '-f', '%e %U %S %M', '-o', str(stats_path),
                    str(binary), 'audit', identity['filename'], '--json']
+        if args.schema_version == '2.0':
+            command += ['--schema-version=2.0']
         started = time.perf_counter()
         timed_out = False
         with report_path.open('xb') as report_file, stderr_path.open('xb') as stderr:
@@ -179,13 +197,19 @@ def main():
                     and report['file']['sha256'] == identity['sha256']
                     and report['file']['size'] == identity['bytes']
                     and report['summary']['exit_code'] == code)
+                if args.schema_version == '2.0':
+                    validate_v2_report(report)
                 row['findings'] = report['summary']['findings']
                 row['text_offset_entries'] = sum(len(t['byte_offsets']) for t in report['evidence']['texts'])
                 row['finding_offset_entries'] = sum(len(f['location'].get('byte_offsets', [])) for f in report['findings'])
             except (ValueError, KeyError, TypeError):
                 row['valid_report'] = False
-        row['measurement_valid'] = row['valid_report'] and row['peak_rss_kib'] is not None
         row['stderr'] = stderr_path.read_text(errors='backslashreplace')
+        row['resource_rejected'] = (args.schema_version == '2.0' and not timed_out
+            and code == 4 and row['output_bytes'] == 0
+            and row['stderr'] == 'aletharsis: execution.resource_limit: could not assemble a complete report\n')
+        row['measurement_valid'] = ((row['valid_report'] or row['resource_rejected'])
+            and row['peak_rss_kib'] is not None)
         if row['valid_report'] and not args.keep_reports:
             report_path.unlink()
         return row
