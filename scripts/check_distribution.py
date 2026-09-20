@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import platform
 import subprocess
+import sys
 import tempfile
 
 import jsonschema
@@ -35,6 +36,10 @@ def main():
     validator_type = jsonschema.validators.validator_for(schema)
     validator_type.check_schema(schema)
     validator = validator_type(schema)
+    v2_schema = json.loads((ROOT / 'schemas/report-v2.schema.json').read_bytes())
+    v2_validator = jsonschema.Draft202012Validator(v2_schema)
+    sys.path.insert(0, str(ROOT / 'tests/contracts'))
+    from support import validate_semantics
     results = {'system': system, 'machine': platform.machine(), 'checks': [],
                'acquisition': 'supported' if system == 'Linux' else 'fails_closed'}
     with tempfile.TemporaryDirectory(prefix='aletharsis-distribution-') as directory:
@@ -68,37 +73,49 @@ def main():
             candidates = sources if system == 'Linux' else sources + [root / 'missing.txt', root]
             for source in candidates:
                 for view in ('audit', 'unicode', 'metadata', 'structure'):
-                    command = [str(binary), view, str(source), '--json']
-                    first = run(command, env=runtime_env)
-                    second = run(command, env=runtime_env)
-                    require((first.returncode, first.stdout, first.stderr) ==
-                            (second.returncode, second.stdout, second.stderr), 'Nondeterministic process output')
-                    require(not first.stderr, 'Unexpected audit stderr')
-                    report = json.loads(first.stdout)
-                    validator.validate(report)
-                    require(first.returncode == report['summary']['exit_code'], 'Exit/report mismatch')
-                    if system != 'Linux':
-                        require(first.returncode == 4 and report['status'] == 'failed', 'Unsupported host audited source')
-                        require(all(report['file'][k] is None for k in ('sha256', 'size', 'parser')), 'Partial identity leaked')
-                        require(report['evidence'] == {'texts': [], 'metadata': {}, 'structure': {}}, 'Partial evidence leaked')
-                        require(len(report['findings']) == 1 and report['findings'][0]['id'] == 'parser.failure',
-                                'Missing acquisition failure')
-                        # A test of the current explicit diagnostic, not a new error-code protocol.
-                        require('verified no-atime reader' in report['findings'][0]['evidence']['message'],
-                                'Failure was unrelated to unsupported acquisition')
-                    elif source == malformed:
-                        require(first.returncode == 4 and report['status'] == 'failed', 'Malformed bytes accepted')
-                    else:
-                        require(report['status'] == 'completed', 'Linux acquisition failed')
-                        require(report['file']['sha256'] == hashlib.sha256(expected[source]).hexdigest(), 'Wrong source digest')
-                        text = report['evidence']['texts'][0]
-                        require(text['text'].encode() == expected[source], 'Extracted text changed')
-                        if source == unicode_file:
-                            require(text['byte_offsets'] == [0, 1, 5, 8, 9, 10, 11], 'Scalar/byte coordinates changed')
+                    for version in ('1.0', '2.0'):
+                        command = [str(binary), view, str(source), '--json']
+                        if version == '2.0':
+                            command.append('--schema-version=2.0')
+                        first = run(command, env=runtime_env)
+                        second = run(command, env=runtime_env)
+                        require((first.returncode, first.stdout, first.stderr) ==
+                                (second.returncode, second.stdout, second.stderr), 'Nondeterministic process output')
+                        require(not first.stderr, 'Unexpected audit stderr')
+                        report = json.loads(first.stdout)
+                        (validator if version == '1.0' else v2_validator).validate(report)
+                        if version == '2.0':
+                            validate_semantics(report)
+                        require(first.returncode == report['summary']['exit_code'], 'Exit/report mismatch')
+                        if system != 'Linux':
+                            require(first.returncode == 4 and report['status'] == 'failed', 'Unsupported host audited source')
+                            require(all(report['file'][k] is None for k in ('sha256', 'size', 'parser')), 'Partial identity leaked')
+                            require(report['evidence'] == {'texts': [], 'metadata': {}, 'structure': {}}, 'Partial evidence leaked')
+                            if version == '1.0':
+                                require(len(report['findings']) == 1 and report['findings'][0]['id'] == 'parser.failure',
+                                        'Missing acquisition failure')
+                                # A test of the current explicit diagnostic, not a new error-code protocol.
+                                require('verified no-atime reader' in report['findings'][0]['evidence']['message'],
+                                        'Failure was unrelated to unsupported acquisition')
+                            else:
+                                require(not report['findings'] and not report['results'], 'Unrun reader produced findings/results')
+                                acquire = next(e for e in report['executions'] if e['capability_ref'] == 'aletharsis.acquire')
+                                require(acquire['state'] == 'not_run' and acquire['reason_code'] == 'integrity.no_atime_unavailable',
+                                        'Unavailable reader was invoked or misreported')
+                                require(all(e['state'] == 'not_run' for e in report['executions']), 'Unsupported platform ran analysis')
+                        elif source == malformed:
+                            require(first.returncode == 4 and report['status'] == 'failed', 'Malformed bytes accepted')
                         else:
-                            require(first.returncode == 0 and not report['findings'], 'Clean text reported findings')
-                    results['checks'].append({'binary': 'built' if binary == built else 'installed',
-                                              'source': source.name, 'view': view, 'exit_code': first.returncode})
+                            require(report['status'] == 'completed', 'Linux acquisition failed')
+                            require(report['file']['sha256'] == hashlib.sha256(expected[source]).hexdigest(), 'Wrong source digest')
+                            text = report['evidence']['texts'][0]
+                            require(text['text'].encode() == expected[source], 'Extracted text changed')
+                            if source == unicode_file:
+                                require(text['byte_offsets'] == [0, 1, 5, 8, 9, 10, 11], 'Scalar/byte coordinates changed')
+                            else:
+                                require(first.returncode == 0 and not report['findings'], 'Clean text reported findings')
+                        results['checks'].append({'binary': 'built' if binary == built else 'installed',
+                                                  'source': source.name, 'view': view, 'schema_version': version, 'exit_code': first.returncode})
         # Stat before validation reads: reading fixtures in the test can update atime.
         for source in sources:
             after = source.stat()
