@@ -76,8 +76,8 @@ audits with deterministic references and verified source mappings. These increme
 remain subject to review. [Opt-in CLI emission and human coverage](docs/specs/go-v2-cli.md)
 use `--schema-version 2.0`; the default remains unchanged pending a separate
 release decision. Consumer/resource acceptance and review gates remain open.
-The production CLI continues
-to emit schema 1.0 pending implementation and release review.
+The production CLI defaults to schema 1.0; schema 2.0 is available by explicit
+opt-in. Any default-version switch requires a separate release decision.
 
 Acceptance requires reviewed wire contracts, migration and compatibility fixtures,
 and explicit unsupported/failure semantics. Existing strict finding variants and
