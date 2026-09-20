@@ -548,7 +548,8 @@
               }
             ]
           },
-          "maxItems": 4096
+          "maxItems": 1,
+          "minItems": 1
         },
         "raw_provider_result": {
           "$ref": "#/$defs/identity"

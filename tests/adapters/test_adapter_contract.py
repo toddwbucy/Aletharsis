@@ -62,7 +62,7 @@ def test_schema_is_valid_and_fixed_objects_are_closed():
     ('unavailable', ['cleanup'], 'complete', 'unavailable worker started'),
     ('timeout', ['response'], load()['response'], 'failure cannot promote'),
     ('extracted', ['response', 'raw_provider_result', 'byte_length'], 0, 'blob length'),
-    ('extracted', ['response', 'results'], [], 'without outcome'),
+    ('extracted', ['response', 'results'], [], 'not valid under any'),
 ])
 def test_reject_false_claims(name, path, value, message):
     """Invalid evidence is rejected rather than downgraded into a negative result."""
@@ -206,3 +206,14 @@ def test_retained_contract_and_fixture_digests():
     assert set(manifest['files']) == expected_paths
     for name, expected in manifest['files'].items():
         assert sha256((root / name).read_bytes()).hexdigest() == expected
+
+
+@pytest.mark.parametrize('count', [0, 2])
+def test_schema_requires_one_aggregate_result(count):
+    """Schema-only consumers reject missing or multiple aggregate results."""
+    record = load()
+    record['response']['results'] *= count
+    with pytest.raises(ValidationError) as error:
+        Draft202012Validator(SCHEMA).validate(record)
+    assert any(child.validator == ('minItems' if count == 0 else 'maxItems')
+               and list(child.path) == ['results'] for child in error.value.context)
