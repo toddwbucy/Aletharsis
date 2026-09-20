@@ -1,6 +1,6 @@
 # Issue #17 acceptance evidence
 
-This checklist maps the issue's original acceptance criteria to inspectable implementation and tests. It covers the opt-in schema 2.0 candidate stack, not a claim that all of it is merged or release-approved. The default remains schema 1.0. Review/merge acceptance must be checked against live PR state before closing #17 or Epic #21 G1.
+This checklist maps the issue's original acceptance criteria to inspectable implementation and tests. PRs #23–33 are reviewed and merged. The final implementation tree at `80aaa0a` matches the reviewed PR #33 tree. The default remains schema 1.0; no default-version switch is approved. This acceptance does not close unrelated Epic #21 or frontend gates.
 
 | #17 requirement | Evidence in the candidate | Scope / remaining gate |
 | --- | --- | --- |
@@ -33,3 +33,9 @@ This checklist maps the issue's original acceptance criteria to inspectable impl
 4. Update #17 and Epic #21 G1 only with accepted evidence. Keep #7, concrete detector adoption, profiles, reveal, frontend design/component work and remediation gates open where their scopes remain incomplete.
 
 This document is an acceptance map. It does not replace any missing implementation, test, third-party review or user merge decision.
+
+## Recorded implementation acceptance
+
+PRs #27–33 merged in dependency order after passing applicable CI and substantive CodeRabbit reviews. The sole actionable inline review comment on #30 was corrected in d8c027e. Nonblocking bot docstring-coverage warnings were not treated as functional failures. Final native CI logs confirm 80 build/install cases each on Darwin/arm64 and Windows/AMD64; local Linux validation confirms 48, with Linux amd64/arm64 backend CI also passing.
+
+The accepted resource disposition is bounded opt-in v2 support with explicit report rejection and retained schema 1.0 default, not a promise that every acquired 8 MiB document fits a report. Default switching, browser performance, actual adapter implementations and non-Linux acquisition remain separate work. The twelve original issue criteria are supported by the implementation/test evidence above within that scope.

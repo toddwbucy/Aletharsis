@@ -5,8 +5,8 @@ The PRD governs product scope and invariants; technical specifications define th
 contracts; issues and PRs track implementation. This roadmap records dependencies
 and acceptance gates, not promised dates or functionality available today.
 
-Baseline: **Go CLI 0.2.0 / schema 1.0**, after the parent PRD merge in
-[PR #18](https://github.com/toddwbucy/Aletharsis/pull/18). See the
+Baseline: **Go CLI 0.2.0 / schema 1.0 by default, schema 2.0 by opt-in**,
+following the reviewed P0 implementation in PRs #23–33. See the
 [README](README.md) for supported commands and current limitations.
 
 ## Destination
@@ -42,51 +42,39 @@ readers. The [Python application retirement](docs/migration/python-retirement.md
 preserves frozen evidence and replaces live comparisons with 210 captured cases;
 Python test harnesses remain.
 
-## Next: P0 evidence and capability specifications
+## Delivered: P0 evidence and capability contracts
 
-[Issue #17](https://github.com/toddwbucy/Aletharsis/issues/17) is the next design
-focus. P0 has an accepted design direction, not a completed mechanism model.
+[Issue #17](https://github.com/toddwbucy/Aletharsis/issues/17) now has a reviewed
+and merged implementation through PRs #23–33. The
+[acceptance map](docs/testing/issue-17-acceptance.md) links the original criteria
+to code, fixtures and validation. This delivers the mechanism/capability substrate;
+it does not implement C2PA, statistical detection, profiles or a frontend.
 
-[ADR-0001](docs/adr/0001-evidence-capability-contract.md) and
-[EC-001](docs/specs/evidence-contract-v2.md) were accepted through PR #23.
-The schema/conformance gate was accepted through PR #24; Go implementation and
-release review remain.
-Schema 1.0 and current CLI behavior remain unchanged.
+- [ADR-0001](docs/adr/0001-evidence-capability-contract.md),
+  [EC-001](docs/specs/evidence-contract-v2.md) and the
+  [versioned wire/import contract](docs/specs/report-v2-wire-and-import.md)
+  separate mechanism, capability, execution, result and finding semantics.
+- [Identity primitives](docs/specs/go-v2-identity.md),
+  [execution records](docs/specs/go-v2-records-registry.md),
+  [graph validation](docs/specs/go-v2-evidence-graph.md) and
+  [exact-byte import](docs/specs/go-v2-report-import.md) preserve source/report
+  identity, typed locations and explicit unavailable/partial/failed coverage.
+- The [native coordinator](docs/specs/go-v2-native-assembly.md) and
+  [CLI](docs/specs/go-v2-cli.md) expose `--schema-version 2.0` with deterministic
+  references, source-verified anchors and coverage before findings.
+- [Consumer alignment](docs/specs/v2-consumer-alignment.md),
+  [resource measurements](docs/testing/performance.md) and
+  [native platform checks](docs/testing/platforms.md) document the tested scope.
+  Report limits can reject inputs below the 8 MiB acquisition cap; rejection never
+  means a completed audit or truncated evidence.
 
-The specification and implementation gates cover:
+Schema **1.0 remains the default**. A future default-version switch requires a
+separate release decision. Frozen findings, coordinates and migration artifacts
+remain protected. The F0 Occurrence schema/component spike and concrete adapter
+adoption continue under their own gates; P0 acceptance does not complete them.
 
-- Mechanism, capability, execution outcome and typed detector result as separate
-  concepts; severity, confidence, profile expectedness and human judgment stay distinct.
-- Stable machine-readable failure codes and deliberate schema migration from 1.0,
-  including interpretation of legacy reports and unavailable analysis.
-- Exact source/report identity, text coordinates, structural anchors, extracted
-  object identities and statistical sample scope without invented precision.
-- Analyzer/profile boundaries: expected-artifact assessment must preserve evidence
-  and cannot stop independent analyzers from examining it.
-
-The accepted [EC-001 design](docs/specs/evidence-contract-v2.md) and
-[wire/schema and legacy-import gate](docs/specs/report-v2-wire-and-import.md) now
-lead into [Go identity primitives](docs/specs/go-v2-identity.md), accepted in PR #25,
-and [execution records, catalog and native failure boundaries](docs/specs/go-v2-records-registry.md), accepted in PR #26.
-The [evidence graph and coverage validation](docs/specs/go-v2-evidence-graph.md)
-continues this implementation, followed by the
-[report envelope and exact-byte import](docs/specs/go-v2-report-import.md).
-The [native coordinator](docs/specs/go-v2-native-assembly.md) now assembles fresh
-audits with deterministic references and verified source mappings. These increments
-remain subject to review. [Opt-in CLI emission and human coverage](docs/specs/go-v2-cli.md)
-use `--schema-version 2.0`; the default remains unchanged pending a separate
-release decision. Consumer/resource acceptance and review gates remain open.
-The production CLI defaults to schema 1.0; schema 2.0 is available by explicit
-opt-in. Any default-version switch requires a separate release decision.
-
-Acceptance requires reviewed wire contracts, migration and compatibility fixtures,
-and explicit unsupported/failure semantics. Existing strict finding variants and
-frozen reference artifacts must not be silently rewritten. Approving a specification
-does not complete its implementation.
-
-The Python application has been retired with its reference reports, schemas,
-fixtures and Unicode data preserved. Test-only Python utilities remain; P0 mechanism
-and capability implementation is still outstanding. Retirement does not complete that track.
+The Python application is retired. Frozen reports, schemas, fixtures and Unicode
+data remain as evidence, and Python utilities are test-only.
 
 ## Gated detector reuse program
 
