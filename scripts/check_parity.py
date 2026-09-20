@@ -42,17 +42,35 @@ def differences(expected, actual, path=''):
         yield f'{path}: {expected!r} != {actual!r}'
 
 
+def verify_references():
+    """Verify retained evidence; retired source hashes remain historical provenance."""
+    root = Path('reference/python-behavior')
+    manifest_bytes = (root / 'manifest.json').read_bytes()
+    manifest = json.loads(manifest_bytes)
+    retirement = json.loads(Path('reference/python-retirement.json').read_bytes())
+    assert hashlib.sha256(manifest_bytes).hexdigest() == retirement['original_manifest_sha256'], 'Original manifest changed'
+    assert manifest['files'] == retirement['historical_source_files'], 'Historical source inventory changed'
+    for name, digest in manifest['files'].items():
+        # Absence is authorized only for the exact retired inventory above.
+        if Path(name).exists():
+            assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest, f'Historical source changed: {name}'
+    for name, key in [('report.schema.json', 'schema_sha256'), ('unicode.json', 'unicode_oracle_sha256')]:
+        assert hashlib.sha256((root/name).read_bytes()).hexdigest() == manifest[key], f'Reference changed: {name}'
+    for case in manifest['cases']:
+        assert hashlib.sha256(Path(case['input']).read_bytes()).hexdigest() == case['sha256'], f'Input changed: {case["input"]}'
+        assert hashlib.sha256((root/case['report']).read_bytes()).hexdigest() == case['report_sha256'], f'Report changed: {case["report"]}'
+    for name, digest in retirement['artifacts'].items():
+        assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest, f'Retirement artifact changed: {name}'
+    return manifest, retirement
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('binary', type=Path)
     args = parser.parse_args()
     binary = args.binary.resolve()
     root = Path('reference/python-behavior')
-    manifest = json.loads((root/'manifest.json').read_text())
-    for name, key in [('report.schema.json', 'schema_sha256'), ('unicode.json', 'unicode_oracle_sha256')]:
-        assert hashlib.sha256((root/name).read_bytes()).hexdigest() == manifest[key], f'Reference changed: {name}'
-    for name, digest in manifest['files'].items():
-        assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest, f'Python reference changed: {name}'
+    manifest, _ = verify_references()
     failures = []
     for case in manifest['cases']:
         assert hashlib.sha256(Path(case['input']).read_bytes()).hexdigest() == case['sha256']

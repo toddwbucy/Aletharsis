@@ -11,4 +11,3 @@ pytest==9.1.1
 referencing==0.37.0
 rpds-py==2026.6.3
 typing_extensions==4.16.0
-setuptools==84.0.0

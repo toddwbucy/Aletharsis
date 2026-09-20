@@ -10,9 +10,9 @@ This guide covers the CI foundation, focused unit contracts, and compiled-CLI in
 - **Backend / Go 1.27.1** checks the pinned development compiler on amd64.
 - **Backend / Go 1.27.1 / arm64** runs the same gates on native arm64.
 
-Each job checks Go formatting, module integrity, `go vet`, uncached tests, combined internal-package statement coverage, race tests, and a built executable. Python 3.12.13 / Unicode 15.0.0 runs retained Python tests, 37 frozen report comparisons (including hashes and repeated-output determinism), and 210 seeded differential cases. The workflow installs pinned test dependencies and the retained Python application solely to exercise its installed-entry-point test; it never regenerates references. Go comparisons explicitly execute `bin/aletharsis`, avoiding ambiguity with the Python entry point. `GOTOOLCHAIN=local` prevents an automatic compiler upgrade from defeating minimum-version testing.
+Each job checks Go formatting, module integrity, `go vet`, uncached tests, combined internal-package statement coverage, race tests, and a built executable. Python 3.12.13 runs schema/reference-tool tests, 37 frozen report comparisons (including hashes and repeated-output determinism), and 210 frozen seeded cases. Only pinned test dependencies are installed; there is no Python auditor package or entry point. Comparisons explicitly execute `bin/aletharsis`. `GOTOOLCHAIN=local` prevents an automatic compiler upgrade from defeating minimum-version testing.
 
-Python is a temporary testing oracle, not a dependency of the Go executable. Retirement of the Python application is separate work after these gates are established. Frozen reports, schemas, fixtures, and Unicode data remain useful to Go-only tests.
+The Python application is retired. Frozen reports, schemas, fixtures and Unicode data remain; the original capture runtime is provenance, not a live oracle requirement. The [retirement record](../migration/python-retirement.md) describes source recovery and preserved coverage.
 
 The executable integration suite validates every supported Go CLI view against the live `schemas/report.schema.json` contract. Frozen reference schemas remain immutable migration artifacts, not substitutes for the live contract. Neither parity nor statement coverage proves independent correctness; there is no percentage gate.
 
@@ -24,8 +24,7 @@ Use a supported Linux filesystem and a user allowed to perform `O_NOATIME` reads
 python3.12 -m venv .venv
 . .venv/bin/activate
 python -m pip install -r scripts/requirements-ci.txt
-python -m pip install --no-deps --no-build-isolation -e .
-export PYTHONPATH=src PYTHONHASHSEED=0 GOTOOLCHAIN=local
+export PYTHONHASHSEED=0 GOTOOLCHAIN=local
 mkdir -p artifacts bin
 git ls-files -z '*.go' | xargs -0 gofmt -l
 go mod download
@@ -38,14 +37,14 @@ go build -trimpath -o bin/aletharsis ./cmd/aletharsis
 python -m pytest -q integration --aletharsis-binary=bin/aletharsis
 python -m pytest -q
 python scripts/check_parity.py bin/aletharsis
-python scripts/check_differential.py bin/aletharsis
+python scripts/check_seeded.py bin/aletharsis
 ```
 
 The formatting command must print no paths. CI enforces that requirement. CI additionally wraps long commands in GNU `timeout`, uses Bash pipeline failure propagation, and caps each job at 20 minutes. The comparison scripts also cap individual candidate executions at 30 seconds.
 
 ## Evidence and failures
 
-Each job retains an artifact named `backend-go-<version>-<runner>-<attempt>` for 14 days, including toolchain information, Go test/race JSON logs, coverage profile/summary, Python test results, and comparison diagnostics produced before a failure. Upload runs after ordinary failures; cancellation or abrupt runner termination can prevent collection. No audited user documents, application secrets, or release binaries are uploaded. The workflow uses read-only repository permissions and does not persist checkout credentials.
+Each job retains an artifact named `backend-go-<version>-<runner>-<attempt>` for 14 days, including toolchain information, Go test/race JSON logs, coverage profile/summary, schema/reference-tool test results, and comparison diagnostics produced before a failure. Upload runs after ordinary failures; cancellation or abrupt runner termination can prevent collection. No audited user documents, application secrets, or release binaries are uploaded. The workflow uses read-only repository permissions and does not persist checkout credentials.
 
 Tests may halt a job before later gates run. A red job is never evidence that unexecuted gates passed. Frozen-artifact integrity checks run after ordinary failures as well.
 
@@ -79,7 +78,7 @@ Negative controls establish behavior for those inputs, not a guarantee that all 
 
 ## Compiled executable and live report contract
 
-`integration/` launches only the explicit `--aletharsis-binary` candidate. There is no PATH fallback, no in-process `cli.Run` call, and no import of the Python auditor. Missing candidates fail setup. This test harness uses the existing pinned pytest/jsonschema test dependencies; it can remain after retiring the Python application.
+`integration/` launches only the explicit `--aletharsis-binary` candidate. There is no PATH fallback, no in-process `cli.Run` call, and no import of the Python auditor. Missing candidates fail setup. This test harness uses the existing pinned pytest/jsonschema test dependencies; it remains independent of the retired Python application.
 
 The original executable-contract suite contains 188 Linux cases; acquisition checks add five more below:
 

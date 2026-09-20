@@ -1,16 +1,20 @@
 """Validate emitted evidence and reject malformed nested report contracts."""
 
 from copy import deepcopy
-from dataclasses import asdict
 import json
 from pathlib import Path
 
 import pytest
 from jsonschema import Draft202012Validator
 
-from aletharsis.analyzers.metadata import MetadataAnalyzer
-from aletharsis.audit import audit
-from aletharsis.models import DocumentEvidence, Finding
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def reference_report(name):
+    root = ROOT / "reference/python-behavior"
+    cases = json.loads((root / "manifest.json").read_bytes())["cases"]
+    case = next(c for c in cases if c["input"] == f"tests/fixtures/{name}")
+    return json.loads((root / case["report"]).read_bytes())
 
 
 @pytest.fixture(scope="module")
@@ -28,29 +32,9 @@ def finding_validator(schema):
 
 
 @pytest.fixture
-def findings(fixtures, tmp_path):
-    """Cover every current rule with emitted evidence and PR #4's contract."""
-    observed = {}
-    for path in sorted(fixtures.iterdir()):
-        for finding in audit(path).findings:
-            observed.setdefault(finding.id, asdict(finding))
-    extra = tmp_path / "extra.txt"
-    extra.write_text("ordinary prose\u00ad\u00a0 e\u0301\n"
-                     "cHJvdmVuYW5jZS1pZC0xMjM0NTY3ODkwYWJjZGVm\n", encoding="utf-8")
-    for finding in audit(extra).findings:
-        observed.setdefault(finding.id, asdict(finding))
-    metadata, = MetadataAnalyzer().analyze(DocumentEvidence(metadata={"creator": "Reviewer"}))
-    observed[metadata.id] = asdict(metadata)
-    # PR #4 is independently mergeable. Exercise its known wire contract even
-    # before that analyzer is on this branch; when present, use its real output.
-    observed.setdefault("unicode.emoji", asdict(Finding(
-        "unicode.emoji", "LOW", 1.0, "unicode", "observed_fact", "Emoji detected", "Review context.",
-        {"code_point": "U+1F600", "name": "GRINNING FACE", "count": 1,
-         "emoji_data_version": "17.0", "match_basis": "unicode_emoji_property",
-         "count_unit": "code_point", "requires_context_review": True,
-         "contexts": [{"character_offset": 0, "escaped_text": "\\U0001f600"}], "contexts_omitted": 0},
-        {"source": "file", "character_offsets": [0], "byte_offsets": [0]})))
-    return observed
+def findings():
+    """Frozen positive examples; compiled Go emission is tested in integration/."""
+    return json.loads((ROOT / "tests/schema-cases.json").read_bytes())["findings"]
 
 
 def object_paths(value, path=()):
@@ -151,10 +135,10 @@ def test_binary_and_emoji_nested_types(finding_validator, findings):
         assert not finding_validator.is_valid(finding)
 
 
-def test_metadata_and_structure_contracts(schema, fixtures):
+def test_metadata_and_structure_contracts(schema):
     """Optional normalized metadata and complete text structure have fixed keys."""
     validator = Draft202012Validator(schema)
-    report = audit(fixtures / "clean_ascii.txt").to_dict()
+    report = reference_report("clean_ascii.txt")
     assert validator.is_valid(report)
     report["evidence"]["metadata"] = {"creator": "Reviewer", "revision": "3"}
     assert validator.is_valid(report)
@@ -169,16 +153,16 @@ def test_metadata_and_structure_contracts(schema, fixtures):
         assert not validator.is_valid(malformed), (section, value)
 
 
-def test_failure_variants_preserve_required_decode_details(schema, fixtures):
+def test_failure_variants_preserve_required_decode_details(schema):
     """Read failures allow empty structure; decode failures require byte detail."""
     validator = Draft202012Validator(schema)
-    for path in (fixtures / "missing", fixtures / "invalid_utf8.txt"):
-        report = audit(path).to_dict()
+    missing = json.loads((ROOT / "tests/schema-cases.json").read_bytes())["read_failure"]
+    for report in (missing, reference_report("invalid_utf8.txt")):
         assert validator.is_valid(report)
         malformed = deepcopy(report)
         malformed["findings"][0]["location"] = {"source": "file"}
         assert not validator.is_valid(malformed)
-    malformed = audit(fixtures / "invalid_utf8.txt").to_dict()
+    malformed = reference_report("invalid_utf8.txt")
     del malformed["findings"][0]["evidence"]["byte_start"]
     assert not validator.is_valid(malformed)
 

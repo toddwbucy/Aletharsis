@@ -1,0 +1,967 @@
+{
+  "findings": {
+    "identifier.uuid": {
+      "category": "identifier",
+      "classification": "observed_fact",
+      "confidence": 0.99,
+      "description": "A UUID-shaped value may serve as a persistent identifier. Its persistence, uniqueness, purpose and origin cannot be inferred from syntax alone.",
+      "evidence": {
+        "count": 2,
+        "repeated": true,
+        "value": "12345678-1234-1234-1234-123456789abc"
+      },
+      "id": "identifier.uuid",
+      "location": {
+        "byte_offsets": [
+          13,
+          60
+        ],
+        "character_offsets": [
+          13,
+          60
+        ],
+        "source": "file"
+      },
+      "severity": "MEDIUM",
+      "title": "UUID-like identifier present"
+    },
+    "metadata.present": {
+      "category": "metadata",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Metadata is evidence, not proof of watermarking.",
+      "evidence": {
+        "key": "creator",
+        "value": "Reviewer"
+      },
+      "id": "metadata.present",
+      "location": {},
+      "severity": "INFO",
+      "title": "creator metadata present"
+    },
+    "parser.failure": {
+      "category": "parser",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "The file was not fully analyzed. Review the error before interpreting findings.",
+      "evidence": {
+        "byte_end": 13,
+        "byte_start": 12,
+        "error_type": "UnicodeDecodeError",
+        "message": "'utf-8' codec can't decode byte 0xff in position 12: invalid start byte",
+        "reason": "invalid start byte"
+      },
+      "id": "parser.failure",
+      "location": {},
+      "severity": "INFO",
+      "title": "Audit could not complete"
+    },
+    "pattern.periodic_insertion": {
+      "category": "possible_steganography",
+      "classification": "suspicious_pattern",
+      "confidence": 0.7,
+      "description": "Invisible formatting characters recur at an exact character interval. Formatting conventions may also produce this pattern.",
+      "evidence": {
+        "character_interval": 4,
+        "count": 16,
+        "minimum_count": 12
+      },
+      "id": "pattern.periodic_insertion",
+      "location": {
+        "byte_offsets": [
+          3,
+          9,
+          15,
+          21,
+          27,
+          33,
+          39,
+          45,
+          51,
+          57,
+          63,
+          69,
+          75,
+          81,
+          87,
+          93
+        ],
+        "character_offsets": [
+          3,
+          7,
+          11,
+          15,
+          19,
+          23,
+          27,
+          31,
+          35,
+          39,
+          43,
+          47,
+          51,
+          55,
+          59,
+          63
+        ],
+        "source": "file"
+      },
+      "severity": "MEDIUM",
+      "title": "Periodic invisible-character insertion"
+    },
+    "pattern.tag_run": {
+      "category": "possible_steganography",
+      "classification": "suspicious_pattern",
+      "confidence": 0.75,
+      "description": "This run is consistent with encoded character data. Tags and variation selectors also have legitimate uses; interpretation requires review.",
+      "evidence": {
+        "alphabet_size": 20,
+        "ascii_projection": "provenance-id-12345678",
+        "count": 23,
+        "minimum_run": 16
+      },
+      "id": "pattern.tag_run",
+      "location": {
+        "byte_offsets": [
+          7,
+          11,
+          15,
+          19,
+          23,
+          27,
+          31,
+          35,
+          39,
+          43,
+          47,
+          51,
+          55,
+          59,
+          63,
+          67,
+          71,
+          75,
+          79,
+          83,
+          87,
+          91,
+          95
+        ],
+        "character_offsets": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "source": "file"
+      },
+      "severity": "MEDIUM",
+      "title": "Long contiguous tag sequence"
+    },
+    "pattern.variation_selector_run": {
+      "category": "possible_steganography",
+      "classification": "suspicious_pattern",
+      "confidence": 0.75,
+      "description": "This run is consistent with encoded character data. Tags and variation selectors also have legitimate uses; interpretation requires review.",
+      "evidence": {
+        "alphabet_size": 2,
+        "count": 16,
+        "minimum_run": 8
+      },
+      "id": "pattern.variation_selector_run",
+      "location": {
+        "byte_offsets": [
+          1,
+          4,
+          7,
+          10,
+          13,
+          16,
+          19,
+          22,
+          25,
+          28,
+          31,
+          34,
+          37,
+          40,
+          43,
+          46
+        ],
+        "character_offsets": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "source": "file"
+      },
+      "severity": "MEDIUM",
+      "title": "Long contiguous variation selector sequence"
+    },
+    "pattern.zero_width_binary": {
+      "category": "possible_steganography",
+      "classification": "suspicious_pattern",
+      "confidence": 0.8,
+      "description": "A two-symbol ZWSP/ZWNJ alphabet forms a long contiguous or regularly spaced sequence. This is consistent with an invisible encoding scheme; no payload, author or watermark intent is confirmed.",
+      "evidence": {
+        "adjacent_fraction": 1.0,
+        "alphabet": {
+          "U+200B": 34,
+          "U+200C": 30
+        },
+        "constant_spacing": true,
+        "count": 64,
+        "sequence_period": null,
+        "thresholds": {
+          "minimum_adjacent_fraction_or_constant_spacing": 0.75,
+          "minimum_count": 32,
+          "minimum_minority_fraction": 0.1
+        }
+      },
+      "id": "pattern.zero_width_binary",
+      "location": {
+        "byte_offsets": [
+          14,
+          17,
+          20,
+          23,
+          26,
+          29,
+          32,
+          35,
+          38,
+          41,
+          44,
+          47,
+          50,
+          53,
+          56,
+          59,
+          62,
+          65,
+          68,
+          71,
+          74,
+          77,
+          80,
+          83,
+          86,
+          89,
+          92,
+          95,
+          98,
+          101,
+          104,
+          107,
+          110,
+          113,
+          116,
+          119,
+          122,
+          125,
+          128,
+          131,
+          134,
+          137,
+          140,
+          143,
+          146,
+          149,
+          152,
+          155,
+          158,
+          161,
+          164,
+          167,
+          170,
+          173,
+          176,
+          179,
+          182,
+          185,
+          188,
+          191,
+          194,
+          197,
+          200,
+          203
+        ],
+        "character_offsets": [
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77
+        ],
+        "source": "file"
+      },
+      "severity": "HIGH",
+      "title": "Possible zero-width binary encoding"
+    },
+    "provenance.text_marker": {
+      "category": "provenance",
+      "classification": "observed_fact",
+      "confidence": 0.9,
+      "description": "The source contains a provenance-related label, possibly in a comment. The statement is unverified and could be an example or ordinary prose.",
+      "evidence": {
+        "escaped_marker": "document-id: 12345678-1234-1234-1234-123456789abc"
+      },
+      "id": "provenance.text_marker",
+      "location": {
+        "byte_offsets": [
+          0
+        ],
+        "character_offsets": [
+          0
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Explicit provenance or identifier label detected"
+    },
+    "text.bom": {
+      "category": "document_structure",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "An initial BOM is an ordinary encoding marker.",
+      "evidence": {
+        "encoding": "utf-8",
+        "hex": "efbbbf"
+      },
+      "id": "text.bom",
+      "location": {
+        "byte_offset": 0,
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "Byte order mark detected"
+    },
+    "text.embedded_bom": {
+      "category": "document_structure",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Possible concatenated text or embedded formatting marker.",
+      "evidence": {
+        "count": 1
+      },
+      "id": "text.embedded_bom",
+      "location": {
+        "byte_offsets": [
+          8
+        ],
+        "character_offsets": [
+          6
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Embedded BOM character detected"
+    },
+    "text.encoded_candidate": {
+      "category": "embedded_content",
+      "classification": "suspicious_pattern",
+      "confidence": 0.5,
+      "description": "This alphanumeric token is syntactically valid Base64; hashes, identifiers and ordinary application data can match. Decoded content is not executed or recursively analyzed.",
+      "evidence": {
+        "base64_decoded_bytes": 30,
+        "character_count": 40,
+        "value": "cHJvdmVuYW5jZS1pZC0xMjM0NTY3ODkwYWJjZGVm"
+      },
+      "id": "text.encoded_candidate",
+      "location": {
+        "byte_offsets": [
+          23
+        ],
+        "character_offsets": [
+          20
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "Long encoding-compatible token detected"
+    },
+    "text.line_endings": {
+      "category": "document_structure",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Line-ending differences can result from ordinary editing or platform conversion.",
+      "evidence": {
+        "cr": 1,
+        "crlf": 1,
+        "lf": 1
+      },
+      "id": "text.line_endings",
+      "location": {
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Mixed or legacy line endings detected"
+    },
+    "text.mixed_script": {
+      "category": "unicode",
+      "classification": "suspicious_pattern",
+      "confidence": 0.6,
+      "description": "Mixed scripts can contain visually similar letters, but can also be intentional. This is not a comprehensive confusables detector.",
+      "evidence": {
+        "escaped_token": "p\\u0430ypal",
+        "scripts": [
+          "CYRILLIC",
+          "LATIN"
+        ]
+      },
+      "id": "text.mixed_script",
+      "location": {
+        "byte_offsets": [
+          0
+        ],
+        "character_offsets": [
+          0
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Mixed Latin and Greek/Cyrillic letters within a token"
+    },
+    "unicode.bidi_control": {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+202C",
+        "contexts": [
+          {
+            "character_offset": 14,
+            "escaped_text": "Read \\u202ereversed\\u202c and \\u2067isolated\\u2069."
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "POP DIRECTIONAL FORMATTING"
+      },
+      "id": "unicode.bidi_control",
+      "location": {
+        "byte_offsets": [
+          16
+        ],
+        "character_offsets": [
+          14
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+202C POP DIRECTIONAL FORMATTING detected"
+    },
+    "unicode.combining": {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+0301",
+        "contexts": [
+          {
+            "character_offset": 4,
+            "escaped_text": "Cafe\\u0301 and fullwidth \\uff21"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "COMBINING ACUTE ACCENT"
+      },
+      "id": "unicode.combining",
+      "location": {
+        "byte_offsets": [
+          4
+        ],
+        "character_offsets": [
+          4
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+0301 COMBINING ACUTE ACCENT detected"
+    },
+    "unicode.control": {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+0000",
+        "contexts": [
+          {
+            "character_offset": 33,
+            "escaped_text": "h an unexpected \\x00 byte\\x1b and more "
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "UNNAMED CONTROL"
+      },
+      "id": "unicode.control",
+      "location": {
+        "byte_offsets": [
+          33
+        ],
+        "character_offsets": [
+          33
+        ],
+        "source": "file"
+      },
+      "severity": "MEDIUM",
+      "title": "U+0000 UNNAMED CONTROL detected"
+    },
+    "unicode.emoji": {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F467",
+        "contexts": [
+          {
+            "character_offset": 12,
+            "escaped_text": "Family: \\U0001f469\\u200d\\U0001f469\\u200d\\U0001f467\\u200d\\U0001f466 Heart: \\u2764\\ufe0f Fla"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "GIRL",
+        "requires_context_review": true
+      },
+      "id": "unicode.emoji",
+      "location": {
+        "byte_offsets": [
+          22
+        ],
+        "character_offsets": [
+          12
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "Emoji-capable U+1F467 GIRL detected"
+    },
+    "unicode.normalization": {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Canonical or compatibility equivalents differ. This is common in normal text and does not imply a watermark.",
+      "evidence": {
+        "nfc_changed": true,
+        "nfkc_changed": true
+      },
+      "id": "unicode.normalization",
+      "location": {
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "Unicode normalization changes extracted text"
+    },
+    "unicode.soft_hyphen": {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+00AD",
+        "contexts": [
+          {
+            "character_offset": 14,
+            "escaped_text": "ordinary prose\\xad\\xa0 e\\u0301\\ncHJvdmVuYW5"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "SOFT HYPHEN"
+      },
+      "id": "unicode.soft_hyphen",
+      "location": {
+        "byte_offsets": [
+          14
+        ],
+        "character_offsets": [
+          14
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+00AD SOFT HYPHEN detected"
+    },
+    "unicode.tag": {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0067",
+        "contexts": [
+          {
+            "character_offset": 33,
+            "escaped_text": "eart: \\u2764\\ufe0f Flag: \\U0001f3f4\\U000e0067\\U000e0062\\U000e0065\\U000e006e\\U000e0067\\U000e007f\\n"
+          },
+          {
+            "character_offset": 37,
+            "escaped_text": ": \\u2764\\ufe0f Flag: \\U0001f3f4\\U000e0067\\U000e0062\\U000e0065\\U000e006e\\U000e0067\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 2,
+        "leading_bom": false,
+        "name": "TAG LATIN SMALL LETTER G"
+      },
+      "id": "unicode.tag",
+      "location": {
+        "byte_offsets": [
+          58,
+          74
+        ],
+        "character_offsets": [
+          33,
+          37
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+E0067 TAG LATIN SMALL LETTER G detected"
+    },
+    "unicode.unusual_whitespace": {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+00A0",
+        "contexts": [
+          {
+            "character_offset": 15,
+            "escaped_text": "ordinary prose\\xad\\xa0 e\\u0301\\ncHJvdmVuYW5j"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "NO-BREAK SPACE"
+      },
+      "id": "unicode.unusual_whitespace",
+      "location": {
+        "byte_offsets": [
+          16
+        ],
+        "character_offsets": [
+          15
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+00A0 NO-BREAK SPACE detected"
+    },
+    "unicode.variation_selector": {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+FE0F",
+        "contexts": [
+          {
+            "character_offset": 24,
+            "escaped_text": "\\U0001f469\\u200d\\U0001f469\\u200d\\U0001f467\\u200d\\U0001f466 Heart: \\u2764\\ufe0f Flag: \\U0001f3f4\\U000e0067\\U000e0062\\U000e0065\\U000e006e\\U000e0067\\U000e007f\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "VARIATION SELECTOR-16"
+      },
+      "id": "unicode.variation_selector",
+      "location": {
+        "byte_offsets": [
+          44
+        ],
+        "character_offsets": [
+          24
+        ],
+        "source": "file"
+      },
+      "severity": "INFO",
+      "title": "U+FE0F VARIATION SELECTOR-16 detected"
+    },
+    "unicode.zero_width": {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200B",
+        "contexts": [
+          {
+            "character_offset": 14,
+            "escaped_text": "Visible text. \\u200b\\u200c\\u200c\\u200b\\u200b\\u200b\\u200b\\u200c\\u200b\\u200c\\u200c\\u200c\\u200b\\u200c\\u200b\\u200c\\u200b"
+          },
+          {
+            "character_offset": 17,
+            "escaped_text": "isible text. \\u200b\\u200c\\u200c\\u200b\\u200b\\u200b\\u200b\\u200c\\u200b\\u200c\\u200c\\u200c\\u200b\\u200c\\u200b\\u200c\\u200b\\u200c\\u200c\\u200b"
+          },
+          {
+            "character_offset": 18,
+            "escaped_text": "sible text. \\u200b\\u200c\\u200c\\u200b\\u200b\\u200b\\u200b\\u200c\\u200b\\u200c\\u200c\\u200c\\u200b\\u200c\\u200b\\u200c\\u200b\\u200c\\u200c\\u200b\\u200b"
+          },
+          {
+            "character_offset": 19,
+            "escaped_text": "ible text. \\u200b\\u200c\\u200c\\u200b\\u200b\\u200b\\u200b\\u200c\\u200b\\u200c\\u200c\\u200c\\u200b\\u200c\\u200b\\u200c\\u200b\\u200c\\u200c\\u200b\\u200b\\u200c"
+          },
+          {
+            "character_offset": 20,
+            "escaped_text": "ble text. \\u200b\\u200c\\u200c\\u200b\\u200b\\u200b\\u200b\\u200c\\u200b\\u200c\\u200c\\u200c\\u200b\\u200c\\u200b\\u200c\\u200b\\u200c\\u200c\\u200b\\u200b\\u200c\\u200b"
+          },
+          {
+            "character_offset": 22,
+            "escaped_text": "e text. \\u200b\\u200c\\u200c\\u200b\\u200b\\u200b\\u200b\\u200c\\u200b\\u200c\\u200c\\u200c\\u200b\\u200c\\u200b\\u200c\\u200b\\u200c\\u200c\\u200b\\u200b\\u200c\\u200b\\u200b\\u200b"
+          },
+          {
+            "character_offset": 26,
+            "escaped_text": "xt. \\u200b\\u200c\\u200c\\u200b\\u200b\\u200b\\u200b\\u200c\\u200b\\u200c\\u200c\\u200c\\u200b\\u200c\\u200b\\u200c\\u200b\\u200c\\u200c\\u200b\\u200b\\u200c\\u200b\\u200b\\u200b\\u200c\\u200c\\u200b\\u200c"
+          },
+          {
+            "character_offset": 28,
+            "escaped_text": ". \\u200b\\u200c\\u200c\\u200b\\u200b\\u200b\\u200b\\u200c\\u200b\\u200c\\u200c\\u200c\\u200b\\u200c\\u200b\\u200c\\u200b\\u200c\\u200c\\u200b\\u200b\\u200c\\u200b\\u200b\\u200b\\u200c\\u200c\\u200b\\u200c\\u200b\\u200b"
+          }
+        ],
+        "contexts_omitted": 26,
+        "count": 34,
+        "leading_bom": false,
+        "name": "ZERO WIDTH SPACE"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "byte_offsets": [
+          14,
+          23,
+          26,
+          29,
+          32,
+          38,
+          50,
+          56,
+          62,
+          71,
+          74,
+          80,
+          83,
+          86,
+          95,
+          101,
+          104,
+          110,
+          122,
+          128,
+          131,
+          134,
+          137,
+          143,
+          152,
+          158,
+          167,
+          173,
+          176,
+          182,
+          191,
+          194,
+          200,
+          203
+        ],
+        "character_offsets": [
+          14,
+          17,
+          18,
+          19,
+          20,
+          22,
+          26,
+          28,
+          30,
+          33,
+          34,
+          36,
+          37,
+          38,
+          41,
+          43,
+          44,
+          46,
+          50,
+          52,
+          53,
+          54,
+          55,
+          57,
+          60,
+          62,
+          65,
+          67,
+          68,
+          70,
+          73,
+          74,
+          76,
+          77
+        ],
+        "source": "file"
+      },
+      "severity": "LOW",
+      "title": "U+200B ZERO WIDTH SPACE detected"
+    }
+  },
+  "read_failure": {
+    "aletharsis_version": "0.1.0",
+    "evidence": {
+      "metadata": {},
+      "structure": {},
+      "texts": []
+    },
+    "file": {
+      "extension": "",
+      "filename": "missing",
+      "format": "unknown",
+      "identification_basis": "unavailable",
+      "mime": "application/octet-stream",
+      "parser": null,
+      "path": "missing",
+      "sha256": null,
+      "size": null
+    },
+    "findings": [
+      {
+        "category": "parser",
+        "classification": "observed_fact",
+        "confidence": 1.0,
+        "description": "The file was not fully analyzed. Review the error before interpreting findings.",
+        "evidence": {
+          "error_type": "FileNotFoundError",
+          "message": "[Errno 2] No such file or directory: 'missing'"
+        },
+        "id": "parser.failure",
+        "location": {},
+        "severity": "INFO",
+        "title": "Audit could not complete"
+      }
+    ],
+    "limitations": [
+      "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+      "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+      "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+      "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+      "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+    ],
+    "schema_version": "1.0",
+    "status": "failed",
+    "summary": {
+      "exit_code": 4,
+      "findings": 1,
+      "high": 0,
+      "info": 1,
+      "low": 0,
+      "medium": 0
+    }
+  }
+}

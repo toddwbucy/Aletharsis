@@ -39,7 +39,7 @@ Success is a defensible explanation, not a universal “watermark found” or �
 
 ## 3. Current capabilities versus target scope
 
-The production backend is already Go; this is not a proposal to restart the port. The Python application is retained as a temporary migration oracle. Its retirement requires preserving useful reference artifacts and replacing any remaining live-oracle dependency deliberately; it is not permission to discard validation evidence.
+The production backend is already Go; this is not a proposal to restart the port. The Python application has been retired with its original reference artifacts preserved and live differential comparisons replaced by frozen cases. Test-only harnesses remain; see the [retirement record](../migration/python-retirement.md).
 
 | Capability | Current baseline | Target / release dependency |
 | --- | --- | --- |
@@ -291,7 +291,7 @@ Use **P0–P7** for this parent roadmap to avoid renaming historical M0–M4 bac
 
 | Track | Deliverable | Exit gate / dependency |
 | --- | --- | --- |
-| P0 — Evidence/capability foundation | Accept the tested Go baseline; define mechanism, capability, failure and location contracts; deliberate Python retirement plan | Issue #17 design, versioned schema compatibility, preserved fixtures/tests; no invented detector results |
+| P0 — Evidence/capability foundation | Accept the tested Go baseline; define mechanism, capability, failure and location contracts; preserved Python retirement evidence | Issue #17 design, versioned schema compatibility, preserved fixtures/tests; no invented detector results |
 | P1 — Corpus/reveal CLI | Bounded directory scans, JSONL/aggregate coverage, mapped reveal artifacts and faithful diffs | Issue #15 tests, deterministic paths, output safety, cancellation/accounting and unchanged sources |
 | P2 — Profiles and office containers | Context profiles; DOCX first, ODT in a separately scoped increment | Issue #14; bounded package parsing, exact part/object evidence, profile non-suppression and unsupported coverage tests |
 | P3 — PDF | Born-digital structural/metadata evidence and separately declared OCR-derived limits | Bounded extraction, object/page locations and conservative visibility claims; no implicit OCR service |
@@ -337,6 +337,6 @@ The next specification focus is the **Go detection/evidence engine and mechanism
 4. C2PA adapter feasibility and trust-policy design, independently of private detector access.
 5. Approve the revised child PRD for the new evidence classes; F0 large-report/Unicode spike before viewer choice; finalize F0/F1 specs only after required contracts and evidence exist.
 
-The parent product architecture is approved with the review clarifications incorporated. Further detail belongs in specification files, starting with the mechanism/capability/execution/result model and schema migration under Issue #17. The revised child's requirements, delivery priorities, resource budgets and Python retirement timing retain their separate review gates. Technical review must resolve precise wire fields, optional-detector failure/exit policy, profile conflict handling and structured-format location fidelity; architecture approval does not imply those contracts are implemented or approved.
+The parent product architecture is approved with the review clarifications incorporated. Further detail belongs in specification files, starting with the mechanism/capability/execution/result model and schema migration under Issue #17. The revised child's requirements, delivery priorities, resource budgets and future test-oracle changes retain their separate review gates. Technical review must resolve precise wire fields, optional-detector failure/exit policy, profile conflict handling and structured-format location fidelity; architecture approval does not imply those contracts are implemented or approved.
 
 Related tracking: [#14 expected-artifact profiles](https://github.com/toddwbucy/Aletharsis/issues/14), [#15 reveal/diff](https://github.com/toddwbucy/Aletharsis/issues/15), [#17 mechanism classes](https://github.com/toddwbucy/Aletharsis/issues/17). The [draft frontend PRD](frontend-PRD.md) is the proposed aligned UI definition; its approved v1.0 predecessor remains archived.

@@ -99,7 +99,7 @@ No general-purpose editor, automatic intent/AI-authorship judge, browser waterma
 | C2PA/statistical | No implemented verifier or vendor adapter | Display unavailable/unassessed capability, no guessed negative |
 | Workspace, rules, review, reveal/apply | Backend capabilities not implemented | Separate contracts and release gates; current CLI is not a UI service |
 
-References: [Go evidence](../../internal/evidence/model.go), [audit](../../internal/audit/audit.go), [schema](../../schemas/report.schema.json), [platform validation](../testing/platforms.md), [parent PRD](aletharsis-PRD.md). Python is a temporary migration oracle, not the frontend adapter or production engine.
+References: [Go evidence](../../internal/evidence/model.go), [audit](../../internal/audit/audit.go), [schema](../../schemas/report.schema.json), [platform validation](../testing/platforms.md), [parent PRD](aletharsis-PRD.md). The Python application is retired; frozen reference data and test harnesses remain. The frontend adapter and production engine use Go.
 
 ## 5. Delivery model and priorities
 

@@ -44,7 +44,7 @@ skin-tone modifiers and joined emoji can therefore contribute multiple code
 points. Joiners, tags and selectors remain separately inventoried. Code-point
 names use pinned Unicode 15.0.0 data matching the Python reference and may be unavailable for newer characters,
 but detection still uses the pinned table. The bundled data's source hash and
-Unicode license are included in `internal/analyzers/data/` and in the frozen Python source.
+Unicode license are included in `internal/analyzers/data/`; the historical Python copy is recoverable from the recorded source revision.
 
 This is literal-source inspection: an ASCII escape such as `\\U0001F600` is not
 decoded into an emoji, and Emojicode or other language semantics are not analyzed.

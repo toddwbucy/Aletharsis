@@ -2,7 +2,6 @@
 import importlib
 import json
 from pathlib import Path
-import platform
 import runpy
 import subprocess
 import sys
@@ -56,7 +55,7 @@ def test_frozen_timeout_is_case_failure(parity, monkeypatch, capsys, timeout_run
 
 
 def test_seeded_timeout_is_case_failure(parity, monkeypatch, capsys):
-    monkeypatch.setattr(sys, 'argv', ['check_differential.py', '/unused/candidate'])
+    monkeypatch.setattr(sys, 'argv', ['check_seeded.py', '/unused/candidate'])
     calls = []
 
     def run(command, **kwargs):
@@ -66,17 +65,71 @@ def test_seeded_timeout_is_case_failure(parity, monkeypatch, capsys):
 
     monkeypatch.setattr(subprocess, 'run', run)
     with pytest.raises(SystemExit) as exc:
-        runpy.run_path(str(ROOT / 'scripts/check_differential.py'), run_name='__main__')
+        runpy.run_path(str(ROOT / 'scripts/check_seeded.py'), run_name='__main__')
     assert exc.value.code == 1
     assert len(calls) == 210
     output = capsys.readouterr().out
-    assert '0/210 seeded differential cases match.' in output
+    assert '0/210 frozen seeded cases match.' in output
     assert output.count('audit timed out after 30 seconds') == 210
 
 
-def test_capture_rejects_wrong_interpreter_before_writes(monkeypatch, tmp_path):
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setattr(platform, 'python_version', lambda: '3.12.12')
-    with pytest.raises(RuntimeError, match='requires Python 3.12.13'):
-        runpy.run_path(str(ROOT / 'scripts/freeze_python.py'), run_name='__main__')
-    assert list(tmp_path.iterdir()) == []
+def test_seeded_mismatch_is_failure(parity, monkeypatch, capsys):
+    monkeypatch.chdir(ROOT)
+    monkeypatch.setattr(sys, 'argv', ['check_seeded.py', '/unused/candidate'])
+    cases = [json.loads(line) for line in (ROOT / 'reference/seeded-python/cases.jsonl').read_text().splitlines()]
+
+    def run(command, **kwargs):
+        index = int(Path(command[2]).stem)
+        case = cases[index]
+        report = json.loads(json.dumps(case['report']))
+        assert (Path(kwargs['cwd']) / command[2]).read_bytes() == bytes.fromhex(case['input_hex'])
+        if index == 0:
+            report['file']['sha256'] = '0' * 64
+        return subprocess.CompletedProcess(command, report['summary']['exit_code'], json.dumps(report))
+
+    monkeypatch.setattr(subprocess, 'run', run)
+    with pytest.raises(SystemExit) as exc:
+        runpy.run_path(str(ROOT / 'scripts/check_seeded.py'), run_name='__main__')
+    assert exc.value.code == 1
+    assert '209/210 frozen seeded cases match.' in capsys.readouterr().out
+
+
+@pytest.mark.parametrize('target', [
+    'tests/fixtures/mixed_endings.csv',
+    'reference/python-behavior/reports/000.json',
+    'reference/python-behavior/manifest.json',
+    'reference/seeded-python/cases.jsonl',
+    'tests/schema-cases.json',
+])
+@pytest.mark.parametrize('missing', [False, True])
+def test_reference_integrity_rejects_missing_or_changed_evidence(parity, monkeypatch, target, missing):
+    monkeypatch.chdir(ROOT)
+    read_bytes = Path.read_bytes
+
+    def read(path):
+        if path == Path(target):
+            if missing:
+                raise FileNotFoundError(target)
+            return read_bytes(path) + b'\n'
+        return read_bytes(path)
+
+    monkeypatch.setattr(Path, 'read_bytes', read)
+    with pytest.raises((AssertionError, FileNotFoundError)):
+        parity.verify_references()
+
+
+def test_retired_source_inventory_is_not_a_general_missing_file_exception(parity, monkeypatch):
+    monkeypatch.chdir(ROOT)
+    read_bytes = Path.read_bytes
+
+    def read(path):
+        raw = read_bytes(path)
+        if path == Path('reference/python-retirement.json'):
+            record = json.loads(raw)
+            record['historical_source_files']['tests/fixtures/mixed_endings.csv'] = '0' * 64
+            return json.dumps(record).encode()
+        return raw
+
+    monkeypatch.setattr(Path, 'read_bytes', read)
+    with pytest.raises(AssertionError, match='Historical source inventory changed'):
+        parity.verify_references()

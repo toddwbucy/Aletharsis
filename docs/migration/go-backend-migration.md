@@ -1,6 +1,6 @@
 # Go backend migration
 
-Status: implemented for review; frontend F0/F1 specifications remain paused pending acceptance.
+Status: Go migration accepted; Python application retired. This document retains the migration rationale and historical validation. See the [retirement record](python-retirement.md) for current test dependencies; frontend design gates now follow [Issue #17](https://github.com/toddwbucy/Aletharsis/issues/17).
 
 ## Decision and boundaries
 
@@ -12,11 +12,11 @@ The frozen frontend PRD's evidence/coordinate and approval invariants remain req
 
 - Python source: merged commit `a0401f93e948b334b51f7332a5729df7647eab24`, including the explicit emoji analyzer.
 - Oracle runtime: CPython 3.12.13, Unicode 15.0.0; Emoji property data 17.0.
-- `reference/python-behavior/manifest.json` records hashes of the unchanged Python modules/data, packaging metadata, inputs and reports.
+- `reference/python-behavior/manifest.json` retains hashes of the historical Python modules/data and packaging metadata, plus unchanged inputs and reports.
 - 37 complete report oracles cover the existing deterministic fixtures plus source emoji, malformed encodings, UTF-16/32 byte offsets, long combining runs, normalization, boundaries and unsupported inputs.
 - `unicode.json` records exhaustive scalar-property/name/normalization digests and 155 seeded/edge normalization cases.
 - `report.schema.json` is a compatibility snapshot from PR #3 commit `36c88ee18e65154e8694e117f6db06d40c2b36ec`. Keeping it as a reference does not merge or freeze that PR.
-- The original Python source and tests remain in their existing paths. The new Go executable neither imports them nor launches Python. Reference generation scripts refuse to overwrite existing oracles.
+- The original Python source, application tests and generation scripts are recoverable from Git history. They were removed after acceptance; the [retirement record](python-retirement.md) identifies the exact source revision and replacement frozen cases.
 
 ## Preserved semantics
 
@@ -55,13 +55,12 @@ go test -race ./...
 go vet ./...
 go build -trimpath -o bin/aletharsis ./cmd/aletharsis
 python3 scripts/check_parity.py bin/aletharsis
-# Optional: Python 3.12 and retained source for a live oracle.
-PYTHONPATH=src python scripts/check_differential.py bin/aletharsis
+python3 scripts/check_seeded.py bin/aletharsis
 ```
 
-Go-only tests consume the frozen artifacts and therefore need no Python installation. Differential tests add 210 deterministic mixed Unicode, marker-whitespace and identifier-boundary cases. Negative/Unicode read failures retain detailed byte evidence. Acquisition tests assert original bytes and nanosecond access/modified/change timestamps remain identical. CLI tests cover output aliases, malformed options, filtered views and escaped console text. The frozen schema is used in an additional report-validation pass.
+Go-only tests consume the frozen artifacts and therefore need no Python installation. Frozen seeded comparisons retain the 210 deterministic mixed Unicode, marker-whitespace and identifier-boundary cases formerly tested against the live Python oracle. Negative/Unicode read failures retain detailed byte evidence. Acquisition tests assert original bytes and nanosecond access/modified/change timestamps remain identical. CLI tests cover output aliases, malformed options, filtered views and escaped console text. The frozen schema is used in an additional report-validation pass.
 
-Local validation on Linux/amd64 passed: all Go tests, race tests, `go vet`, 62 retained Python tests, 37/37 frozen report comparisons (including repeated-output checks), 210/210 live differential cases, and schema validation of all 37 Go reports. Static builds succeeded for Linux/amd64, Linux/arm64, Darwin/arm64 and Windows/amd64; only Linux/amd64 acquisition was exercised. No throughput or peak-memory improvement is claimed by these correctness checks.
+Historical port validation on Linux/amd64 passed: all Go tests, race tests, `go vet`, 62 retained Python tests, 37/37 frozen report comparisons (including repeated-output checks), 210/210 live differential cases, and schema validation of all 37 Go reports. Static builds succeeded for Linux/amd64, Linux/arm64, Darwin/arm64 and Windows/amd64; only Linux/amd64 acquisition was exercised. No throughput or peak-memory improvement is claimed by these correctness checks.
 
 Build cross-platform binaries explicitly with `CGO_ENABLED=0 GOOS=... GOARCH=... go build`. The module requires Go 1.24+; development validation used the checksum-verified Go 1.27.1 Linux/amd64 toolchain. Published binaries and build hashes should be attached to a release only after review; no release is published by this migration.
 
