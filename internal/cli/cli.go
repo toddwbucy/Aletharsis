@@ -20,6 +20,8 @@ Usage:
   aletharsis --version
   aletharsis --help
 
+Report schema: --schema-version 1.0|2.0 (default 1.0).
+Schema 2.0 includes capability and execution coverage, even with no findings.
 Exit codes: 0 no findings; 1 INFO/LOW; 2 MEDIUM; 3 HIGH; 4 failure.
 `
 
@@ -45,6 +47,7 @@ func Run(args []string, out, errout io.Writer) int {
 		return failure("unknown command: " + command)
 	}
 	path, output := "", ""
+	schemaVersion := "1.0"
 	jsonOutput, verbose, endFlags := false, false, false
 	for i := 1; i < len(args); i++ {
 		arg := args[i]
@@ -64,12 +67,26 @@ func Run(args []string, out, errout io.Writer) int {
 			case "--verbose":
 				verbose = true
 				continue
+			case "--schema-version":
+				if i+1 >= len(args) || (args[i+1] != "1.0" && args[i+1] != "2.0") {
+					return failure("--schema-version requires 1.0 or 2.0")
+				}
+				i++
+				schemaVersion = args[i]
+				continue
 			case "--output":
 				if i+1 >= len(args) || args[i+1] == "" || strings.HasPrefix(args[i+1], "-") {
 					return failure("--output requires a path")
 				}
 				i++
 				output = args[i]
+				continue
+			}
+			if strings.HasPrefix(arg, "--schema-version=") {
+				schemaVersion = strings.TrimPrefix(arg, "--schema-version=")
+				if schemaVersion != "1.0" && schemaVersion != "2.0" {
+					return failure("--schema-version requires 1.0 or 2.0")
+				}
 				continue
 			}
 			if strings.HasPrefix(arg, "--output=") {
@@ -90,6 +107,9 @@ func Run(args []string, out, errout io.Writer) int {
 	}
 	if path == "" {
 		return failure("a file is required")
+	}
+	if schemaVersion == "2.0" {
+		return runV2(command, path, output, jsonOutput, verbose, out, errout)
 	}
 	r := audit.Run(path)
 	if command != "audit" {

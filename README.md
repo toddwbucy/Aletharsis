@@ -14,7 +14,8 @@ workbench, and explicitly approved transformations into new files. See the
 
 ## What works today
 
-Go **0.2.0** emits deterministic console and JSON reports using **report schema 1.0**.
+Go **0.2.0** defaults to deterministic **report schema 1.0** output.
+Opt in to the new coverage contract with `--schema-version 2.0`.
 It audits one regular file at a time, up to **8 MiB**, on **Linux** with supported
 no-atime acquisition.
 
@@ -78,6 +79,7 @@ cross-compilation is not functional auditing support. See the
 aletharsis audit suspicious.txt
 aletharsis audit suspicious.txt --verbose
 aletharsis audit suspicious.txt --json
+aletharsis audit suspicious.txt --schema-version 2.0 --json
 aletharsis audit suspicious.txt --output report.json
 aletharsis unicode suspicious.txt
 aletharsis metadata suspicious.txt --json
@@ -123,8 +125,11 @@ The [text audit reference](docs/text-audit-reference.md) documents detector
 thresholds, Unicode versions, emoji behavior, normalization hashes and coordinate
 semantics. The [JSON schema](schemas/report.schema.json) defines the strict wire
 contract. Schema validation alone does not verify source identity or coordinate
-integrity. Stable machine-readable failure codes and mechanism-specific coverage
-remain planned contract work.
+integrity. The opt-in [schema 2.0 contract](schemas/report-v2.schema.json) adds
+capabilities, execution states, typed failures, artifact identities and verified
+anchors. Its console view displays coverage before findings. C2PA and statistical
+analysis remain disabled/unavailable declarations, not negative detector results.
+See the [v2 CLI contract](docs/specs/go-v2-cli.md) for migration and limits.
 
 No structural findings is **not** evidence that a statistical watermark is absent.
 Statistical analysis is currently unimplemented. Future configured detectors must
