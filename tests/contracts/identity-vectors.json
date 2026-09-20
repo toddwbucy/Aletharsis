@@ -1,0 +1,100 @@
+{
+  "contract": "aletharsis.identity-vectors/1",
+  "reference": "https://www.rfc-editor.org/rfc/rfc8785",
+  "identity_vectors": [
+    {
+      "id": "unicode-key-order",
+      "domain": "test/1",
+      "value": {
+        "\ue000": 1,
+        "\ud83d\ude00": 2
+      },
+      "canonical_utf8_hex": "7b22646f6d61696e223a22746573742f31222c2276616c7565223a7b22f09f9880223a322c22ee8080223a317d7d",
+      "sha256": "e1db2081828d9ec6b14b700bae85c70b3271851225e00d83939476f850d355ec"
+    },
+    {
+      "id": "decomposed",
+      "domain": "test/1",
+      "value": {
+        "text": "e\u0301"
+      },
+      "canonical_utf8_hex": "7b22646f6d61696e223a22746573742f31222c2276616c7565223a7b2274657874223a2265cc81227d7d",
+      "sha256": "e9d09c47b251caaf40e6f5f552cb62212f394a0c1286b1ce4c87986c7d0338e0"
+    },
+    {
+      "id": "composed",
+      "domain": "test/1",
+      "value": {
+        "text": "\u00e9"
+      },
+      "canonical_utf8_hex": "7b22646f6d61696e223a22746573742f31222c2276616c7565223a7b2274657874223a22c3a9227d7d",
+      "sha256": "c4ac19a776c9d3f9f821e9f50a7fc901a72aebadfb188feb2d804e5ed902d737"
+    },
+    {
+      "id": "controls",
+      "domain": "test/1",
+      "value": {
+        "text": "\u0000\t\n\\\"/"
+      },
+      "canonical_utf8_hex": "7b22646f6d61696e223a22746573742f31222c2276616c7565223a7b2274657874223a225c75303030305c745c6e5c5c5c222f227d7d",
+      "sha256": "a42cf7f4793bbe7c2bf84b3c94f4ef84471e03ae35439a45d1a824102f020acb"
+    },
+    {
+      "id": "safe-integer",
+      "domain": "test/1",
+      "value": {
+        "offset": 9007199254740991,
+        "absent": null,
+        "enabled": false
+      },
+      "canonical_utf8_hex": "7b22646f6d61696e223a22746573742f31222c2276616c7565223a7b22616273656e74223a6e756c6c2c22656e61626c6564223a66616c73652c226f6666736574223a393030373139393235343734303939317d7d",
+      "sha256": "eb94f1e00aed7d66b2a961b4633d4fa635b1a778ef51079063891a194bfe0d08"
+    },
+    {
+      "id": "ordered-regions",
+      "domain": "test/1",
+      "value": [
+        {
+          "start": 0,
+          "end": 1
+        },
+        {
+          "start": 3,
+          "end": 4
+        }
+      ],
+      "canonical_utf8_hex": "7b22646f6d61696e223a22746573742f31222c2276616c7565223a5b7b22656e64223a312c227374617274223a307d2c7b22656e64223a342c227374617274223a337d5d7d",
+      "sha256": "ed1529cd0e71ada5e9e9b290e9abec1126178af2c27804600e5dbe57690a69b7"
+    }
+  ],
+  "future_general_jcs_numbers": [
+    {
+      "input": "-0.0",
+      "canonical": "0"
+    },
+    {
+      "input": "1.0",
+      "canonical": "1"
+    },
+    {
+      "input": "1e-7",
+      "canonical": "1e-7"
+    },
+    {
+      "input": "1e-6",
+      "canonical": "0.000001"
+    },
+    {
+      "input": "1e20",
+      "canonical": "100000000000000000000"
+    },
+    {
+      "input": "1e21",
+      "canonical": "1e+21"
+    },
+    {
+      "input": "4.50",
+      "canonical": "4.5"
+    }
+  ]
+}

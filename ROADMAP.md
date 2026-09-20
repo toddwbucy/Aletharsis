@@ -45,14 +45,14 @@ Python test harnesses remain.
 ## Next: P0 evidence and capability specifications
 
 [Issue #17](https://github.com/toddwbucy/Aletharsis/issues/17) is the next design
-focus. P0 remains **planned specification work**, not a completed mechanism model.
+focus. P0 has an accepted design direction, not a completed mechanism model.
 
-The first review increment is [ADR-0001](docs/adr/0001-evidence-capability-contract.md)
-and [EC-001](docs/specs/evidence-contract-v2.md), with deterministic design examples.
-These are proposed contracts; schema 1.0 and current CLI behavior remain unchanged.
-Schema/conformance work follows acceptance, then Go implementation and release review.
+[ADR-0001](docs/adr/0001-evidence-capability-contract.md) and
+[EC-001](docs/specs/evidence-contract-v2.md) were accepted through PR #23.
+Schema/conformance review comes next, then Go implementation and release review.
+Schema 1.0 and current CLI behavior remain unchanged.
 
-The first reviewable specification must resolve:
+The specification and implementation gates cover:
 
 - Mechanism, capability, execution outcome and typed detector result as separate
   concepts; severity, confidence, profile expectedness and human judgment stay distinct.
@@ -63,6 +63,10 @@ The first reviewable specification must resolve:
 - Analyzer/profile boundaries: expected-artifact assessment must preserve evidence
   and cannot stop independent analyzers from examining it.
 
+The accepted [EC-001 design](docs/specs/evidence-contract-v2.md) now has a proposed
+[wire/schema and legacy-import gate](docs/specs/report-v2-wire-and-import.md).
+The production CLI continues to emit schema 1.0 pending that review and Go implementation.
+
 Acceptance requires reviewed wire contracts, migration and compatibility fixtures,
 and explicit unsupported/failure semantics. Existing strict finding variants and
 frozen reference artifacts must not be silently rewritten. Approving a specification
@@ -70,7 +74,7 @@ does not complete its implementation.
 
 The Python application has been retired with its reference reports, schemas,
 fixtures and Unicode data preserved. Test-only Python utilities remain; P0 mechanism
-and capability design is still outstanding. Retirement does not complete that track.
+and capability implementation is still outstanding. Retirement does not complete that track.
 
 ## Gated detector reuse program
 

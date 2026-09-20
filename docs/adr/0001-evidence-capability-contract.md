@@ -2,7 +2,7 @@
 
 | Attribute | Value |
 | --- | --- |
-| Status | Proposed; requires review before schema or production changes |
+| Status | Design direction accepted in PR #23; schema and production changes require separate review |
 | Decision scope | Issue [#17](https://github.com/toddwbucy/Aletharsis/issues/17), parent P0; prerequisite for Epic #21 G1 |
 | Baseline | Main `8035414`, Go 0.2.0, report schema 1.0 |
 | Companion specification | [Evidence contract design v0.1](../specs/evidence-contract-v2.md) |
@@ -20,7 +20,7 @@ that contract. The frontend requires exact imported-report identity, source
 coordinates and typed non-text anchors. Detector reuse adds upstream identities,
 partial results and side effects that the current interface cannot represent.
 
-## Proposed decision
+## Decision
 
 1. Introduce report schema **2.0** through a separate reviewed implementation;
    preserve the original schema 1.0 and all frozen references unchanged.

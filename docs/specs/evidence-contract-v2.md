@@ -3,14 +3,15 @@
 | Attribute | Value |
 | --- | --- |
 | Document | EC-001, design revision 0.1 |
-| Status | Proposed for technical review; not an implemented API or published schema |
+| Status | Design direction accepted in PR #23; wire contract and implementation gated separately |
 | Proposed report version | 2.0; current production remains 1.0 |
 | Decision | [ADR-0001](../adr/0001-evidence-capability-contract.md) |
 | Tracking | [#17](https://github.com/toddwbucy/Aletharsis/issues/17), [#21 G1](https://github.com/toddwbucy/Aletharsis/issues/21), [#7 validation](https://github.com/toddwbucy/Aletharsis/issues/7) |
 | Product authority | [Parent PRD](../product/aletharsis-PRD.md); [frontend contract requirements](../product/frontend-PRD.md#9-data-and-integration-contracts) |
 
-The field names and rules below are proposed contract decisions. Review precedes
-machine-readable schema work, then Go implementation. Nothing in this document
+The design direction below was accepted in PR #23. The proposed
+[wire and import contract](report-v2-wire-and-import.md) supplies its schema and
+conformance gate before Go implementation. Nothing in this document
 changes the live schema, frozen reports, current CLI syntax or implemented scope.
 Normative “must” statements describe the proposed v2 implementation.
 
