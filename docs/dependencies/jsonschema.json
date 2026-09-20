@@ -1,0 +1,22 @@
+{
+  "project": "santhosh-tekuri/jsonschema",
+  "repository": "https://github.com/santhosh-tekuri/jsonschema",
+  "revision": "b0fc661f4939578bc429f408c18202573dbafcc4",
+  "module": "github.com/santhosh-tekuri/jsonschema/v6",
+  "version": "v6.0.3",
+  "module_sum": "h1:1EYB5IzjZawrrnELUi78f9fPu57HuXjmddZPjrls/28=",
+  "license": "Apache-2.0",
+  "license_sha256": "c8858a5a76440bbca484e134cf7df46385d090dd18b2c58e650f939258802e5b",
+  "license_copy": "licenses/jsonschema-v6.0.3.txt",
+  "integration": "direct_dependency",
+  "purpose": ["bundled_report_schema_validation"],
+  "detector": false,
+  "redistribution": "compiled Go library when linked; no vendored implementation source",
+  "subprocess": false,
+  "network_at_validation": false,
+  "external_resource_loader": "always rejects",
+  "additional_runtime": false,
+  "runtime_modules": ["golang.org/x/text@v0.28.0 (already pinned)"],
+  "upstream_test_only_module": "github.com/dlclark/regexp2@v1.11.0",
+  "vectors": "Aletharsis-owned accepted v1/v2 fixtures and independent Python jsonschema conformance tests; no upstream vectors copied"
+}
