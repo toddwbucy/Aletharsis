@@ -23,3 +23,8 @@ internal/identity/testdata/*.jsonl -text
 docs/reuse/licenses/* -text whitespace=-blank-at-eol,-blank-at-eof
 # Retained feasibility transcripts/results are byte-hashed evidence.
 docs/reuse/evaluations/c2pa-text/* -text
+# Adapter contract fixtures retain their reviewed byte representation.
+tests/adapters/fixtures/*.json -text
+docs/specs/detector-adapter-v1.md -text
+schemas/adapter-exchange-v1.schema.json -text
+tests/adapters/*.py -text
