@@ -49,7 +49,8 @@ focus. P0 has an accepted design direction, not a completed mechanism model.
 
 [ADR-0001](docs/adr/0001-evidence-capability-contract.md) and
 [EC-001](docs/specs/evidence-contract-v2.md) were accepted through PR #23.
-Schema/conformance review comes next, then Go implementation and release review.
+The schema/conformance gate was accepted through PR #24; Go implementation and
+release review remain.
 Schema 1.0 and current CLI behavior remain unchanged.
 
 The specification and implementation gates cover:
@@ -63,9 +64,11 @@ The specification and implementation gates cover:
 - Analyzer/profile boundaries: expected-artifact assessment must preserve evidence
   and cannot stop independent analyzers from examining it.
 
-The accepted [EC-001 design](docs/specs/evidence-contract-v2.md) now has a proposed
-[wire/schema and legacy-import gate](docs/specs/report-v2-wire-and-import.md).
-The production CLI continues to emit schema 1.0 pending that review and Go implementation.
+The accepted [EC-001 design](docs/specs/evidence-contract-v2.md) and
+[wire/schema and legacy-import gate](docs/specs/report-v2-wire-and-import.md) now
+lead into [Go identity primitives](docs/specs/go-v2-identity.md), followed by the
+model/registry, failure boundaries and opt-in emitter. The production CLI continues
+to emit schema 1.0 pending implementation and release review.
 
 Acceptance requires reviewed wire contracts, migration and compatibility fixtures,
 and explicit unsupported/failure semantics. Existing strict finding variants and

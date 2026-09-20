@@ -3,7 +3,7 @@
 | Attribute | Value |
 | --- | --- |
 | Document | EC-002, revision 0.1 |
-| Status | Proposed schema and conformance gate; production still emits schema 1.0 |
+| Status | Schema and conformance gate accepted in PR #24; production still emits schema 1.0 |
 | Depends on | [EC-001](evidence-contract-v2.md), accepted design direction in [PR #23](https://github.com/toddwbucy/Aletharsis/pull/23) |
 | Tracking | [#17](https://github.com/toddwbucy/Aletharsis/issues/17), [#21 G1](https://github.com/toddwbucy/Aletharsis/issues/21), [#7](https://github.com/toddwbucy/Aletharsis/issues/7) |
 | Machine-readable contract | [report-v2.schema.json](../../schemas/report-v2.schema.json) |
@@ -221,8 +221,11 @@ Run locally:
 python -m pytest -q
 ```
 
-Review this schema and import contract before implementing the Go registry/emitter.
-The next PR must exercise the same fixture expectations through Go types, implement
+The schema and import contract were accepted in PR #24. The
+[first Go increment](go-v2-identity.md) implements canonical identities and verified
+text-selection hashes, exercising the portable vectors and fixture identities.
+Subsequent model/emitter work must exercise the same fixture expectations through
+Go types, implement
 stable failure codes at their typed boundaries, run native parity/integration tests,
 and test deterministic ordering/JCS. Neither #17 nor Epic #21 G1 is complete until
 that implementation and consumer compatibility evidence are accepted. A production
