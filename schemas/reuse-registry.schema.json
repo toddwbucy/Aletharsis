@@ -1,0 +1,740 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Aletharsis detector reuse registry 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "epic": {
+      "const": "https://github.com/toddwbucy/Aletharsis/issues/21"
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/component"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "epic",
+    "components"
+  ],
+  "$defs": {
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        },
+        "repository": {
+          "type": "string",
+          "pattern": "^https://github.com/[^/\\s]+/[^/\\s]+$"
+        },
+        "component": {
+          "type": "string",
+          "minLength": 1
+        },
+        "integration_class": {
+          "enum": [
+            "direct_dependency",
+            "external_adapter",
+            "reference_oracle",
+            "research_prior_art"
+          ]
+        },
+        "adoption_status": {
+          "enum": [
+            "proposed",
+            "evaluating",
+            "approved",
+            "rejected",
+            "retired",
+            "deferred"
+          ]
+        },
+        "evaluation_issue": {
+          "type": "string",
+          "pattern": "^https://github.com/toddwbucy/Aletharsis/issues/[1-9][0-9]*$"
+        },
+        "maintenance_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "implementer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "technical_reviewer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "acceptance_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pin": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "commit": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "source_tree_git_sha1": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "tag": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "artifact_sha256": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "commit",
+            "source_tree_git_sha1",
+            "tag",
+            "artifact_sha256"
+          ]
+        },
+        "license": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "spdx": {
+              "type": "string",
+              "minLength": 1
+            },
+            "upstream_path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_url": {
+              "type": "string",
+              "pattern": "^https://[^\\s]+$"
+            },
+            "retained_path": {
+              "type": "string",
+              "pattern": "^licenses/[a-z0-9._-]+\\.txt$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "scope": {
+              "type": "string",
+              "minLength": 1
+            },
+            "clearance": {
+              "enum": [
+                "pending",
+                "reviewed"
+              ]
+            }
+          },
+          "required": [
+            "spdx",
+            "upstream_path",
+            "source_url",
+            "retained_path",
+            "sha256",
+            "scope",
+            "clearance"
+          ]
+        },
+        "redistribution": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "upstream_code": {
+              "type": "boolean"
+            },
+            "fixtures": {
+              "type": "boolean"
+            },
+            "notes": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "upstream_code",
+            "fixtures",
+            "notes"
+          ]
+        },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "assessment": {
+              "enum": [
+                "unverified",
+                "verified"
+              ]
+            },
+            "dependencies": {
+              "type": "string",
+              "minLength": 1
+            },
+            "network_policy": {
+              "type": "string",
+              "minLength": 1
+            },
+            "side_effects": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "assessment",
+            "dependencies",
+            "network_policy",
+            "side_effects"
+          ]
+        },
+        "supported_scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "production": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "proposed": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "production",
+            "proposed"
+          ]
+        },
+        "vectors": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "enum": [
+                "not_imported",
+                "reviewed"
+              ]
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "origin": {
+                    "type": "string",
+                    "pattern": "^https://[^\\s]+$"
+                  },
+                  "license": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "artifact_kind": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "serialization": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "generator_revision": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "transformations": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "uniqueItems": true
+                  },
+                  "expected_evidence": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "origin",
+                  "license",
+                  "artifact_kind",
+                  "serialization",
+                  "sha256",
+                  "generator_revision",
+                  "transformations",
+                  "expected_evidence"
+                ]
+              }
+            },
+            "requirement": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "status",
+            "provenance",
+            "requirement"
+          ]
+        },
+        "assessment": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "observed_on": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+            },
+            "readme_url": {
+              "type": "string",
+              "pattern": "^https://[^\\s]+$"
+            },
+            "archived": {
+              "type": "boolean"
+            },
+            "last_push": {
+              "type": "string",
+              "minLength": 1
+            },
+            "release_tag": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "release_url": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^https://[^\\s]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "release_lookup": {
+              "enum": [
+                "found",
+                "github_latest_404"
+              ]
+            },
+            "security_policy_paths": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "build_paths": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "tree_listing_truncated": {
+              "type": "boolean"
+            },
+            "build_reproducibility": {
+              "enum": [
+                "not_tested",
+                "verified",
+                "failed"
+              ]
+            },
+            "vulnerability_review": {
+              "enum": [
+                "pending",
+                "reviewed"
+              ]
+            },
+            "maintenance_conclusion": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "observed_on",
+            "readme_url",
+            "archived",
+            "last_push",
+            "release_tag",
+            "release_url",
+            "release_lookup",
+            "security_policy_paths",
+            "build_paths",
+            "tree_listing_truncated",
+            "build_reproducibility",
+            "vulnerability_review",
+            "maintenance_conclusion"
+          ]
+        },
+        "disable_or_replace": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/decision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "repository",
+        "component",
+        "integration_class",
+        "adoption_status",
+        "evaluation_issue",
+        "maintenance_owner",
+        "implementer",
+        "technical_reviewer",
+        "acceptance_owner",
+        "pin",
+        "license",
+        "redistribution",
+        "runtime",
+        "supported_scope",
+        "vectors",
+        "assessment",
+        "disable_or_replace",
+        "decision"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "adoption_status": {
+                "const": "approved"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "decision": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/decision"
+                  },
+                  {
+                    "properties": {
+                      "disposition": {
+                        "const": "approve"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "adoption_status": {
+                "const": "rejected"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "decision": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/decision"
+                  },
+                  {
+                    "properties": {
+                      "disposition": {
+                        "const": "reject"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "adoption_status": {
+                "const": "retired"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "decision": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/decision"
+                  },
+                  {
+                    "properties": {
+                      "disposition": {
+                        "const": "retire"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "adoption_status": {
+                "const": "deferred"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "decision": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/decision"
+                  },
+                  {
+                    "properties": {
+                      "disposition": {
+                        "const": "defer"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "adoption_status": {
+                "enum": [
+                  "proposed",
+                  "evaluating"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "decision": {
+                "type": "null"
+              },
+              "supported_scope": {
+                "properties": {
+                  "production": {
+                    "maxItems": 0
+                  }
+                }
+              },
+              "redistribution": {
+                "properties": {
+                  "upstream_code": {
+                    "const": false
+                  },
+                  "fixtures": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "adoption_status": {
+                "const": "approved"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "license": {
+                "properties": {
+                  "clearance": {
+                    "const": "reviewed"
+                  }
+                }
+              },
+              "runtime": {
+                "properties": {
+                  "assessment": {
+                    "const": "verified"
+                  }
+                }
+              },
+              "assessment": {
+                "properties": {
+                  "vulnerability_review": {
+                    "const": "reviewed"
+                  },
+                  "build_reproducibility": {
+                    "const": "verified"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "vectors": {
+                "properties": {
+                  "status": {
+                    "const": "not_imported"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "vectors": {
+                "properties": {
+                  "provenance": {
+                    "maxItems": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "vectors": {
+                "properties": {
+                  "status": {
+                    "const": "reviewed"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "vectors": {
+                "properties": {
+                  "provenance": {
+                    "minItems": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "disposition": {
+          "enum": [
+            "approve",
+            "reject",
+            "retire",
+            "defer"
+          ]
+        },
+        "record": {
+          "type": "string",
+          "pattern": "^https://[^\\s]+$"
+        },
+        "reviewer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gates": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^https://[^\\s]+$"
+          }
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "disposition",
+        "record",
+        "reviewer",
+        "scope",
+        "gates",
+        "reason"
+      ]
+    }
+  }
+}
