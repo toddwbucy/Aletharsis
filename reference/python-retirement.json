@@ -1,0 +1,40 @@
+{
+  "artifacts": {
+    "reference/seeded-python/cases.jsonl": "93ac999a354cc1db72a73cfc4417df99f7a503dac2f94d7338e1d1153fab85fe",
+    "tests/schema-cases.json": "9c512d42f4b435b93f8b7a19e792c40365f1e0b4c87ce6110cbfe59bc6ea916e"
+  },
+  "historical_source_files": {
+    "pyproject.toml": "55d4253c06a8674ac3a992153289dad7b446232c302147f75aa8d0489d3ba9c1",
+    "src/aletharsis/__init__.py": "f0abd7e5c519a51525dc196a590265d3d4f4ba4142996e48b5421d28ac301754",
+    "src/aletharsis/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "src/aletharsis/analyzers/__init__.py": "0620a0aa690f07dc112083a04efd01fe379e6ec696a2ccfd6ba316f44c44b44e",
+    "src/aletharsis/analyzers/base.py": "efdfda0cf5760bf279109cb37e707ae2bc2cf3cb7195c6bbfc172d1e0c8a262f",
+    "src/aletharsis/analyzers/emoji.py": "f13632e222a6b693d4453ce177ae318ab1c172b620bd4ae5a24241c52168e87e",
+    "src/aletharsis/analyzers/identifiers.py": "60598bfa549ab246ba4e676aa558d473c39105f9ee877a112ecc80181cae0bf8",
+    "src/aletharsis/analyzers/metadata.py": "3678010c6e310f854848d2e9f0de674c93d8994a7489072a5596d4ff3c313061",
+    "src/aletharsis/analyzers/patterns.py": "d32a890ef29e8447b69f301e3e8ea3b2ab59ed8020678db49a764113944e9300",
+    "src/aletharsis/analyzers/statistical/__init__.py": "10aa7458ce26ea595906cf3526b132869d2b5793511184b0cba5c6bb5b1d1f7c",
+    "src/aletharsis/analyzers/text.py": "5c0fa80436efe233d53d7452e5cfa0ccb8c882bcc7df03e1db044ac09b123a57",
+    "src/aletharsis/analyzers/unicode.py": "0e636d01f5eb800bc1cb7479daa7222a3f7c0605fec7b9a793d242f1433bb869",
+    "src/aletharsis/audit.py": "7dd80a47e0c299a72b52f71644eedf646f8007c5c5e227f3b88baa925e7d8600",
+    "src/aletharsis/cli.py": "f28c7084d14ff538850bffccd2cddec163825e3a6694be084c2102500aaa87d5",
+    "src/aletharsis/data/UNICODE-LICENSE.txt": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96",
+    "src/aletharsis/data/emoji-17.0.txt": "116c6b662e3c47dfafeb11fbeb4f98f9fe76500b5e55077a142d1dae1e5f972b",
+    "src/aletharsis/identify.py": "a5f771eccde7378799b533de537b13485fddaaeaced32232ba172aa974f9029f",
+    "src/aletharsis/models.py": "237afa95eb8fff60d50c3a3ed320c26717899e5b98beaeeb38483be18c619b26",
+    "src/aletharsis/parsers/__init__.py": "9cdcb574e79d1f4f7b5598d0edab3c14958f92bf783c1c58a1b59f34880b6942",
+    "src/aletharsis/parsers/base.py": "70500b129ab2d80c955f9ea49b7a2cd83e50a9e2746576d2e4fa0fb5c074605e",
+    "src/aletharsis/parsers/text.py": "6bcfbab0df66d6ac4a2e853cd530febf3f1a7ad16a1235d3de5c9c23f598ec01",
+    "src/aletharsis/reporters/__init__.py": "66beb257f2db432c3e18499caf7aad4d9eeda6d62dc3c44190230505a70da7c2",
+    "src/aletharsis/reporters/console.py": "6134704799fb3a15c60726b847bcf4c9f4d9464cd67e9f031fdb6c1519ad6871",
+    "src/aletharsis/reporters/json.py": "6a9df5f76876a1b0cd5ad14759e30fcb0f986b28ac79ec86e3e0c297be93baaa",
+    "src/aletharsis/safety.py": "7fb6e6a213f31bf77bdd3d8efa86fcf6a6ed4da79c1ee39e9a05be73ae2fc21f"
+  },
+  "original_manifest_sha256": "a993734cbe9bdffd9316df7ac9be60928989cae28ed345dc9626da45005ef0c0",
+  "python_version": "3.12.13",
+  "seed": 1729,
+  "seeded_case_count": 210,
+  "seeded_generator_sha256": "ec4b561453f4ce58295c2254e4a028389dacb4b2cda6fd6a0697f753ef99a54a",
+  "source_commit": "90fb16c35e2cbcde4b8683b352655fc8bc963bc3",
+  "unicode_version": "15.0.0"
+}

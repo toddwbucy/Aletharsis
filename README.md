@@ -177,19 +177,22 @@ go test -race ./...
 go vet ./...
 go build -trimpath -o bin/aletharsis ./cmd/aletharsis
 python3 scripts/check_parity.py bin/aletharsis
+python3 scripts/check_seeded.py bin/aletharsis
 ```
 
 Go tests need no Python runtime. The optional parity command uses Python's standard
 library to compare frozen reports and verify reference hashes. CI also runs
-compiled-CLI integration tests, live Python differential comparisons, bounded
+compiled-CLI integration tests, frozen seeded comparisons, bounded
 fuzzing and platform checks; some run in separate workflows. Resource measurements
 are documented separately. These checks validate the shipped backend, not future
 GUI or remediation workflows.
 
-The Python application remains a temporary migration oracle. It is not the
-production CLI or a Go runtime dependency. Retirement must preserve fixtures and
-replace live-oracle dependencies through reviewed changes; do not regenerate
-reference artifacts to silence failures.
+The legacy Python application, packaging and live-oracle generators have been
+retired. Python remains only in development/test harnesses; it is not installed as
+an `aletharsis` command. The original 37 reports and Unicode oracle remain unchanged,
+and all 210 formerly live differential cases are now frozen references. See the
+[retirement record](docs/migration/python-retirement.md); do not regenerate reference
+artifacts to silence failures.
 
 - [Backend CI and integration tests](docs/testing/backend-ci.md)
 - [Fuzzing](docs/testing/fuzzing.md), [performance](docs/testing/performance.md), and [platform validation](docs/testing/platforms.md)

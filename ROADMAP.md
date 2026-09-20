@@ -35,7 +35,9 @@ removal, and new matches never inherit a previous frozen-set approval.
 Completed tests establish the current scope, not universal safety or unimplemented
 end-to-end workflows. Acquisition is functional on supported Linux systems;
 macOS/Windows have explicit refusal tests and cross-build checks, not supported
-readers. Python remains a temporary live oracle despite the completed Go port.
+readers. The [Python application retirement](docs/migration/python-retirement.md)
+preserves frozen evidence and replaces live comparisons with 210 captured cases;
+Python test harnesses remain.
 
 ## Next: P0 evidence and capability specifications
 
@@ -58,10 +60,9 @@ and explicit unsupported/failure semantics. Existing strict finding variants and
 frozen reference artifacts must not be silently rewritten. Approving a specification
 does not complete its implementation.
 
-Python application retirement is separate reviewed work within the foundation
-track: identify remaining live-oracle dependencies, replace or explicitly retain
-test harnesses, and preserve useful reference reports, schemas, fixtures and Unicode
-data. Retirement does not require removing every Python test utility.
+The Python application has been retired with its reference reports, schemas,
+fixtures and Unicode data preserved. Test-only Python utilities remain; P0 mechanism
+and capability design is still outstanding. Retirement does not complete that track.
 
 ## Product delivery tracks
 
