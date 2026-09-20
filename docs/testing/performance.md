@@ -85,3 +85,9 @@ successful audits. Schema 1.0 remains the default measurement path.
 The [initial v2 probe](../../benchmarks/baselines/v2-097b35e-linux-amd64/README.md)
 exposes restrictive evidence budgets and expensive late rejection. It is retained
 as acceptance evidence requiring further work, not a passing release benchmark.
+
+The [follow-up v2 probe](../../benchmarks/baselines/v2-96d2201-linux-amd64/README.md)
+records the corrected ordering-key/anchor budgets and early rejection check.
+All 64 KiB cases and four 1 MiB cases now complete without evidence truncation;
+remaining rejections and memory measurements are explicit. Review acceptance is
+still required, and the 16 MiB report cap does not promise all 8 MiB sources fit.
