@@ -13,3 +13,5 @@ internal/analyzers/data/** -text
 # Contract reports and identity vectors retain exact imported-byte identities.
 tests/contracts/fixtures/** -text
 tests/contracts/identity-vectors.json -text
+# Independently generated ECMAScript numeric identity oracle.
+internal/identity/testdata/*.jsonl -text
