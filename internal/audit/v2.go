@@ -31,7 +31,7 @@ type V2Output struct {
 }
 
 func DefaultV2Options() V2Options {
-	return V2Options{InputBytes: MaxBytes, ReportLimits: identity.Limits{InputBytes: 16 << 20, OutputBytes: 16 << 20, Nodes: 1000000, Depth: 64}, View: "audit"}
+	return V2Options{InputBytes: MaxBytes, ReportLimits: identity.Limits{InputBytes: 16 << 20, OutputBytes: 16 << 20, Nodes: 4 << 20, Depth: 64}, View: "audit"}
 }
 
 // RunV2 performs a fresh native audit. It never upgrades an imported v1 report
@@ -53,7 +53,7 @@ func runV2WithReader(ctx context.Context, path string, options V2Options, read f
 			return nil, err
 		}
 	}
-	trace := &nativeTrace{ctx: ctx, completed: map[string][]evidence.Finding{}}
+	trace := &nativeTrace{ctx: ctx, completed: map[string][]evidence.Finding{}, reportLimits: options.ReportLimits}
 	// The compiled platform capability is authoritative before acquisition; an
 	// unavailable no-atime reader is not called and reported as if it had run.
 	canAcquire := false
@@ -65,6 +65,9 @@ func runV2WithReader(ctx context.Context, path string, options V2Options, read f
 	outcome := Outcome{Report: newReport(path)}
 	if canAcquire {
 		outcome = inspectWithTrace(path, options.InputBytes, read, trace)
+		if trace.budgetErr != nil {
+			return nil, trace.budgetErr
+		}
 	}
 	report, err := assembleV2(outcome, trace, catalog, options)
 	if err != nil {
@@ -193,7 +196,7 @@ func assembleV2(outcome Outcome, trace *nativeTrace, catalog []v2.Capability, op
 		}
 		r.Artifacts = append(r.Artifacts, v2.Artifact{Ref: "artifact/1", Kind: "text", Representation: v2.Representation{Serialization: "unicode-scalars-utf8/1", Encoding: pointer("utf-8"), Normalization: "none", LineEndings: "preserved"}, SHA256: pointer(identity.ExactBytes([]byte(text.Text))), ByteLength: pointer(uint64(len(text.Text))), ContentRef: &v2.ContentRef{Kind: "report_pointer", Pointer: pointer("/evidence/texts/0/text")}, Parents: []string{"artifact/0"}, Transform: &v2.Transform{Operation: "decode", Version: *r.File.Parser, ConfigSHA256: configSHA, Inputs: []string{"artifact/0"}, Exclusions: []v2.Exclusion{}}, Mapping: nativeMapping()})
 	}
-	if err := assembleFindings(&r, outcome, trace, verified); err != nil {
+	if err := assembleFindings(&r, outcome, trace, verified, options.ReportLimits); err != nil {
 		return v2.Report{}, err
 	}
 	for i, e := range r.Executions {
@@ -234,10 +237,13 @@ func nativeMapping() v2.Mapping {
 
 // canonicalKey is used only on small bounded, trusted native ordering records.
 func canonicalKey(value any) (string, error) {
+	return canonicalKeyWithLimits(value, v2.RecordLimits())
+}
+func canonicalKeyWithLimits(value any, limits identity.Limits) (string, error) {
 	raw, err := json.Marshal(value)
 	if err != nil {
 		return "", err
 	}
-	canonical, err := identity.Canonicalize(raw, v2.RecordLimits())
+	canonical, err := identity.Canonicalize(raw, limits)
 	return string(canonical), err
 }

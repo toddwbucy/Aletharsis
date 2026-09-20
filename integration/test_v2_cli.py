@@ -114,7 +114,7 @@ def test_explicit_legacy_unchanged(run_cli, tmp_path):
 
 def test_v2_resource_failure_has_no_partial_report(run_cli, tmp_path):
     source = tmp_path / 'dense.txt'
-    source.write_text('\u200b' * 40000)
+    source.write_bytes(b'A' * (8 * 1024 * 1024))
     dest = tmp_path / 'report.json'
     result = run_cli('audit', source, '--schema-version=2.0', '--output', dest)
     assert result.returncode == 4

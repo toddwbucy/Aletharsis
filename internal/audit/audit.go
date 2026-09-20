@@ -111,6 +111,9 @@ func inspectWithTrace(path string, limit int, read func(string, int) ([]byte, er
 		return Outcome{Report: failed(r, typed), Failure: typed}
 	}
 	trace.complete(capability.ParseTextID, nil)
+	if !trace.textFits(r.Evidence) {
+		return Outcome{Report: r}
+	}
 	for _, check := range checks {
 		if !trace.before(check.id) {
 			return Outcome{Report: r}

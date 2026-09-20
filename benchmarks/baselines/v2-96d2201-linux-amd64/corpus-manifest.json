@@ -1,0 +1,128 @@
+[
+  {
+    "name": "ascii",
+    "filename": "ascii-65536.txt",
+    "bytes": 65536,
+    "sha256": "202b8cb51316123cd95aaa629f290b9393e61531f444e3e2f960e616603beaed",
+    "characters": 65536
+  },
+  {
+    "name": "ascii",
+    "filename": "ascii-1048576.txt",
+    "bytes": 1048576,
+    "sha256": "2f626ff573dc6a712cd43c4213f30913581731c19ca20f9682c58cd81117c72b",
+    "characters": 1048576
+  },
+  {
+    "name": "ascii",
+    "filename": "ascii-8388608.txt",
+    "bytes": 8388608,
+    "sha256": "19409d7a9145404cca09fd65c8582a69f9c56b4d4e11b95f949351588245c21a",
+    "characters": 8388608
+  },
+  {
+    "name": "multilingual",
+    "filename": "multilingual-65536.txt",
+    "bytes": 65536,
+    "sha256": "71e5aa80df0165c2ca98478f0a54d0a667f6c737cfc01ade061d5ba63542a83c",
+    "characters": 32308
+  },
+  {
+    "name": "multilingual",
+    "filename": "multilingual-1048576.txt",
+    "bytes": 1048576,
+    "sha256": "892fcaacac9d518fc771b0522d294571876b4dd535e32f89b55e6f7b8112ef18",
+    "characters": 516928
+  },
+  {
+    "name": "multilingual",
+    "filename": "multilingual-8388608.txt",
+    "bytes": 8388608,
+    "sha256": "76b76daa1701664e00bce069b46e1f0a62e67dbfcd2e9a08c2da6d472e6c41bf",
+    "characters": 4135244
+  },
+  {
+    "name": "source",
+    "filename": "source-65536.txt",
+    "bytes": 65536,
+    "sha256": "eccdc741f1a0cbf62fd200eb313384501acfc1289ca86389bbd52d126a5ed58d",
+    "characters": 63079
+  },
+  {
+    "name": "source",
+    "filename": "source-1048576.txt",
+    "bytes": 1048576,
+    "sha256": "8b33aef19d628b882da3749753be5d3d397af562f4388bec788cfdb721071e2e",
+    "characters": 1009255
+  },
+  {
+    "name": "source",
+    "filename": "source-8388608.txt",
+    "bytes": 8388608,
+    "sha256": "cbb1c09b41463b98c3310120d0795d3c99b459620780f6517be082949a6ea36f",
+    "characters": 8074037
+  },
+  {
+    "name": "zero_width",
+    "filename": "zero_width-65536.txt",
+    "bytes": 65536,
+    "sha256": "462f48324f7a62b0cadf112a69a5b20ac8082e48fbcd85878d2c2b512a1aa41a",
+    "characters": 21852
+  },
+  {
+    "name": "zero_width",
+    "filename": "zero_width-1048576.txt",
+    "bytes": 1048576,
+    "sha256": "7bbc45a30b4a858ccbf2c80bfa35a8c6bd21a99e5b781e289a8f7bab943daf2b",
+    "characters": 349532
+  },
+  {
+    "name": "zero_width",
+    "filename": "zero_width-8388608.txt",
+    "bytes": 8388608,
+    "sha256": "f85de85eca035678148325aa65b180017f299e3b22d8e67f3dfe6a95c8fde400",
+    "characters": 2796212
+  },
+  {
+    "name": "periodic",
+    "filename": "periodic-65536.txt",
+    "bytes": 65536,
+    "sha256": "15837ec9dfc9563f7f111db834125eef4c918e6da31c1692a9cc2cb64759c405",
+    "characters": 43692
+  },
+  {
+    "name": "periodic",
+    "filename": "periodic-1048576.txt",
+    "bytes": 1048576,
+    "sha256": "d7dc9a82ac80a6e70ddefc9c256289c8a93d835942392889e1f387448b0523af",
+    "characters": 699052
+  },
+  {
+    "name": "periodic",
+    "filename": "periodic-8388608.txt",
+    "bytes": 8388608,
+    "sha256": "ce9fea4e3db25b4471f43ef7a8fdea8fa35bfdb7e1a86459eb4ca457b309ee24",
+    "characters": 5592406
+  },
+  {
+    "name": "combining",
+    "filename": "combining-65536.txt",
+    "bytes": 65536,
+    "sha256": "2b676874182af4d4bf60a79f548ce8ab6d63ddb0a46e3a20b5b005a24725bf04",
+    "characters": 32769
+  },
+  {
+    "name": "combining",
+    "filename": "combining-1048576.txt",
+    "bytes": 1048576,
+    "sha256": "e8fb67a69fc622ca5499e5cfccf57e7196f8cd2afa315462d1c77c938d2aa982",
+    "characters": 524289
+  },
+  {
+    "name": "combining",
+    "filename": "combining-8388608.txt",
+    "bytes": 8388608,
+    "sha256": "0764479c16917ab751455fe4e88cf4a67bbf1a4f915acc2a5fbae53f3dc80030",
+    "characters": 4194305
+  }
+]
