@@ -21,7 +21,7 @@ component; IDs must be unique. Repository names do not define supported capabili
 | Fields | Meaning |
 | --- | --- |
 | `repository`, `component`, `integration_class` | Origin, separately evaluated surface/purpose and one of four ADR roles |
-| `adoption_status`, `decision` | Separate disposition; approve/reject/retire/defer requires reviewed record, reviewer, exact scope, gate links and reason |
+| `adoption_status`, `decision` | Separate disposition; approve/reject/retire/defer requires an Aletharsis PR record, reviewer, exact scope, gate links and reason |
 | `evaluation_issue`, ownership fields | Scoped work, accountable maintainer, implementer, technical reviewer and acceptance owner |
 | `pin` | Immutable commit and Git tree SHA-1; optional descriptive tag and exact archive/package SHA-256, explicitly null until acquired |
 | `license` | Root SPDX identification (or `NOASSERTION`), pinned source URL/path, retained exact-byte copy/digest, applicable scope and separate clearance state |
@@ -38,6 +38,10 @@ establish that a review occurred; reviewers must inspect linked evidence. Produc
 scope may remain empty for an approved dev-only oracle/research component. No
 source/vector redistribution while proposed/evaluating; isolated evaluation data
 are not automatically accepted for redistribution in this repository.
+
+Redistributed code or fixtures require reviewed license clearance in every status;
+redistributed fixtures also require reviewed vector provenance. Calendar dates and
+timestamps use JSON Schema formats, enforced by the test validator with FormatChecker.
 
 A missing GitHub latest release is recorded as `github_latest_404`, not proof that
 no tags, package releases or support exist. A policy-path inventory does not prove

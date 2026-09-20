@@ -327,7 +327,7 @@
           "properties": {
             "observed_on": {
               "type": "string",
-              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              "format": "date"
             },
             "readme_url": {
               "type": "string",
@@ -338,7 +338,7 @@
             },
             "last_push": {
               "type": "string",
-              "minLength": 1
+              "format": "date-time"
             },
             "release_tag": {
               "anyOf": [
@@ -686,6 +686,65 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "redistribution": {
+                "anyOf": [
+                  {
+                    "properties": {
+                      "upstream_code": {
+                        "const": true
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "fixtures": {
+                        "const": true
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "license": {
+                "properties": {
+                  "clearance": {
+                    "const": "reviewed"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "redistribution": {
+                "properties": {
+                  "fixtures": {
+                    "const": true
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "vectors": {
+                "properties": {
+                  "status": {
+                    "const": "reviewed"
+                  }
+                }
+              }
+            }
+          }
         }
       ]
     },
@@ -703,7 +762,7 @@
         },
         "record": {
           "type": "string",
-          "pattern": "^https://[^\\s]+$"
+          "pattern": "^https://github\\.com/toddwbucy/Aletharsis/pull/[1-9][0-9]*$"
         },
         "reviewer": {
           "type": "string",

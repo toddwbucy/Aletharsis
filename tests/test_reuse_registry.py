@@ -5,14 +5,14 @@ import hashlib
 import json
 from pathlib import Path
 
-from jsonschema import Draft202012Validator
+from jsonschema import Draft202012Validator, FormatChecker
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 DIRECTORY = ROOT / "docs/reuse"
 REGISTRY = json.loads((DIRECTORY / "candidates.json").read_bytes())
 SCHEMA = json.loads((ROOT / "schemas/reuse-registry.schema.json").read_bytes())
-VALIDATOR = Draft202012Validator(SCHEMA)
+VALIDATOR = Draft202012Validator(SCHEMA, format_checker=FormatChecker())
 EXPECTED_REPOSITORIES = {
     "encypherai/c2pa-text", "encypherai/encypher-c2pa",
     "juriku/hidden-characters-detector", "Hiberius/hiberius-unicode-toolkit",
@@ -80,7 +80,7 @@ def approved_example():
     record["runtime"]["assessment"] = "verified"
     record["assessment"].update(vulnerability_review="reviewed", build_reproducibility="verified")
     record["decision"] = {
-        "disposition": "approve", "record": "https://example.invalid/decision",
+        "disposition": "approve", "record": "https://github.com/toddwbucy/Aletharsis/pull/46",
         "reviewer": "test-reviewer", "scope": "synthetic extraction example",
         "gates": ["https://example.invalid/gate"], "reason": "schema test only",
     }
@@ -173,4 +173,62 @@ def test_nonadoption_disposition_requires_matching_decision(status, disposition)
     record["decision"]["disposition"] = disposition
     VALIDATOR.validate(document)
     record["decision"]["disposition"] = "approve"
+    assert not VALIDATOR.is_valid(document)
+
+
+@pytest.mark.parametrize("status,disposition", [
+    ("approved", "approve"), ("rejected", "reject"),
+    ("retired", "retire"), ("deferred", "defer"),
+])
+@pytest.mark.parametrize("field", ["upstream_code", "fixtures"])
+def test_redistribution_requires_reviewed_rights_and_vectors(status, disposition, field):
+    """Historical/rejected status does not bypass rights or fixture provenance."""
+    document, record = approved_example()
+    record["adoption_status"] = status
+    record["decision"]["disposition"] = disposition
+    record["redistribution"][field] = True
+    if field == "fixtures":
+        assert not VALIDATOR.is_valid(document)
+        record["vectors"].update(status="reviewed", provenance=[{
+            "origin": "https://example.invalid/fixture", "license": "MIT",
+            "artifact_kind": "raw_text", "serialization": "UTF-8, no BOM, LF",
+            "sha256": "b" * 64, "generator_revision": None,
+            "transformations": [], "expected_evidence": "clean ASCII",
+        }])
+    VALIDATOR.validate(document)
+    record["license"]["clearance"] = "pending"
+    assert not VALIDATOR.is_valid(document)
+
+
+@pytest.mark.parametrize("key,value", [
+    ("observed_on", "2026-99-99"), ("observed_on", "2026-02-29"),
+    ("observed_on", "2026-09-20T00:00:00Z"),
+    ("last_push", "yesterday"), ("last_push", "2026-02-30T10:50:27Z"),
+    ("last_push", "2026-09-20T25:00:00Z"),
+    ("last_push", "2026-09-20T10:00:00"),
+])
+def test_invalid_calendar_dates_and_timestamps(key, value):
+    """Formats are enforced, not silently treated as annotations."""
+    document, record = sample()
+    record["assessment"][key] = value
+    assert not VALIDATOR.is_valid(document)
+
+
+def test_valid_leap_date_and_offset_timestamp():
+    """Valid calendar and timezone representations remain accepted."""
+    document, record = sample()
+    record["assessment"].update(observed_on="2024-02-29", last_push="2024-02-29T12:00:00+05:30")
+    VALIDATOR.validate(document)
+
+
+@pytest.mark.parametrize("url", [
+    "https://example.invalid/decision", "https://github.com/other/repo/pull/46",
+    "https://github.com/toddwbucy/Aletharsis/issues/35",
+    "https://githubXcom/toddwbucy/Aletharsis/pull/46",
+    "https://github.com/toddwbucy/Aletharsis/pull/0",
+])
+def test_decisions_require_aletharsis_pull_request_url(url):
+    """Decision syntax identifies this repository's PRs, not arbitrary HTTPS."""
+    document, record = approved_example()
+    record["decision"]["record"] = url
     assert not VALIDATOR.is_valid(document)
