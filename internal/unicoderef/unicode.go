@@ -2,6 +2,7 @@
 package unicoderef
 
 import (
+	"crypto/sha256"
 	_ "embed"
 	"fmt"
 	"sort"
@@ -166,3 +167,6 @@ func Normalize(s string, compatibility bool) string {
 	}
 	return string(result)
 }
+
+// CategoryDataSHA256 identifies the exact embedded reference-category bytes.
+func CategoryDataSHA256() string { return fmt.Sprintf("%x", sha256.Sum256([]byte(categoryData))) }

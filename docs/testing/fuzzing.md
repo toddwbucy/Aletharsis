@@ -11,6 +11,8 @@ This is workstream 5 of [Issue #7](https://github.com/toddwbucy/Aletharsis/issue
 | `analyzers` / `FuzzAnalyzerEvidence` | Valid extracted text. Unicode, emoji, text, identifier and pattern analysis must retain original text/coordinates, be deterministic, serialize successfully, and produce ordered in-range locations/counts tied to the source. |
 | `reporters` / `FuzzJSONEvidence` | Valid extracted strings in structured evidence. JSON must be deterministic, ASCII-safe, parse successfully, and preserve values compared with standard JSON serialization. |
 
+| `audit` / `FuzzNativeV2` | Arbitrary source bytes through native v2 assembly and strict report import. Source hashes must match, accepted output must validate, and input bytes must remain unchanged. Uses a synthetic available reader to exercise decoding on every test platform. |
+
 Each invocation accepts at most 4,096 input bytes. Larger inputs are skipped; invalid UTF-8 is skipped only in targets whose contract is already-decoded text. The decoder target still explores malformed byte inputs. This is a fast search boundary, not a replacement for the 8 MiB application limit, a process-memory cap, or large-report performance testing.
 
 Seeds include malformed encodings, UTF-16/32 BOMs, non-BMP scalars, combining runs, supplementary tags, bidi controls, ZWJ emoji, zero-width binary alphabets, identifiers, and control-character serialization. Go's normal `go test ./...` runs committed seed cases on every PR, including the existing race jobs. No corpus is silently regenerated from application output.
@@ -34,9 +36,9 @@ Substitute the package/target pairs from the table to run the other searches. Th
 
 ## CI search budgets and artifacts
 
-`.github/workflows/fuzz.yml` uses Go 1.27.1 on Linux/amd64 and four isolated jobs:
+`.github/workflows/fuzz.yml` uses Go 1.27.1 on Linux/amd64 and five isolated jobs:
 
-- PRs changing the fuzz workflow, target files or committed corpus run 10-second searches per target.
+- PRs changing the fuzz workflow, target files, committed corpus, or the native v2 audit/capability/evidence/identity/schema boundary run 10-second searches per target.
 - Weekly scheduled runs (Monday 04:23 UTC) and manual dispatch run 60-second searches per target.
 - Each job uses two fuzz workers, a 10-second minimization-attempt budget, a three-minute Go test timeout, a four-minute outer process timeout, and a ten-minute job cap. Dependency compilation/setup is included in the outer/job caps where applicable.
 

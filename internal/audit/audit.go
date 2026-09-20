@@ -58,6 +58,9 @@ func withReader(path string, limit int, read func(string, int) ([]byte, error)) 
 }
 
 func inspectWithReader(path string, limit int, read func(string, int) ([]byte, error)) Outcome {
+	return inspectWithTrace(path, limit, read, nil)
+}
+func newReport(path string) *evidence.Report {
 	path = filepath.Clean(path)
 	name := filepath.Base(path)
 	if name == "." || name == string(filepath.Separator) {
@@ -68,6 +71,15 @@ func inspectWithReader(path string, limit int, read func(string, int) ([]byte, e
 		extension = u.Lower(name[i:])
 	}
 	r := &evidence.Report{Version: Version, Schema: "1.0", File: evidence.File{Path: path, Filename: name, Extension: extension, MIME: "application/octet-stream", Format: "unknown", Basis: "unavailable"}, Status: "completed", Evidence: evidence.EmptyDocument(), Findings: []evidence.Finding{}, Limitations: analyzers.Limitations()}
+	return r
+}
+func inspectWithTrace(path string, limit int, read func(string, int) ([]byte, error), trace *nativeTrace) Outcome {
+	r := newReport(path)
+	path = r.File.Path
+	if !trace.before(capability.AcquireID) {
+		return Outcome{Report: r}
+	}
+
 	data, err := read(path, limit)
 	if err != nil {
 		typed := failure.AcquisitionError(err)
@@ -76,7 +88,11 @@ func inspectWithReader(path string, limit int, read func(string, int) ([]byte, e
 	size, hash := len(data), evidence.Hash(data)
 	r.File.Size = &size
 	r.File.SHA256 = &hash
-	r.File.Format, r.File.MIME, r.File.Basis = parsers.Identify(data, extension)
+	trace.acquired(data)
+	if !trace.before(capability.ParseTextID) {
+		return Outcome{Report: r}
+	}
+	r.File.Format, r.File.MIME, r.File.Basis = parsers.Identify(data, r.File.Extension)
 	if r.File.Format != "text" {
 		typed := failure.Wrap(failure.Parsing, failure.UnsupportedFormat, fmt.Errorf("Unsupported format: %s; M0/M1 support Unicode text source files", r.File.Format))
 		return Outcome{Report: failed(r, typed), Failure: typed}
@@ -94,8 +110,14 @@ func inspectWithReader(path string, limit int, read func(string, int) ([]byte, e
 		typed := failure.Wrap(failure.Parsing, code, err)
 		return Outcome{Report: failed(r, typed), Failure: typed}
 	}
+	trace.complete(capability.ParseTextID, nil)
 	for _, check := range checks {
-		r.Findings = append(r.Findings, check.analyzer.Analyze(&r.Evidence)...)
+		if !trace.before(check.id) {
+			return Outcome{Report: r}
+		}
+		findings := check.analyzer.Analyze(&r.Evidence)
+		r.Findings = append(r.Findings, findings...)
+		trace.complete(check.id, findings)
 	}
 	sort.SliceStable(r.Findings, func(i, j int) bool {
 		a, b := r.Findings[i], r.Findings[j]
