@@ -17,7 +17,8 @@ workbench, and explicitly approved transformations into new files. See the
 Go **0.2.0** defaults to deterministic **report schema 1.0** output.
 Opt in to the new coverage contract with `--schema-version 2.0`.
 It audits one regular file at a time, up to **8 MiB**, on **Linux** with supported
-no-atime acquisition.
+no-atime acquisition. Schema 2.0 also enforces report and per-record budgets;
+some inputs below 8 MiB exceed those budgets and fail explicitly without a report.
 
 | Capability | Current behavior |
 | --- | --- |

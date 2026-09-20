@@ -1,10 +1,10 @@
 # Issue #17 acceptance evidence
 
-This checklist maps the issue's original acceptance criteria to inspectable implementation and tests. It covers the opt-in schema 2.0 candidate stack, not a claim that all of it is merged or release-approved. The default remains schema 1.0. Review/merge acceptance must be checked against live PR state before closing #17 or Epic #21 G1.
+This checklist maps the issue's original acceptance criteria to inspectable implementation and tests. PRs #23–33 are reviewed and merged. The final implementation tree at `80aaa0a` matches the reviewed PR #33 tree. The default remains schema 1.0; no default-version switch is approved. This acceptance does not close unrelated Epic #21 or frontend gates.
 
-| #17 requirement | Evidence in the candidate | Scope / remaining gate |
+| #17 requirement | Delivered evidence | Scope / remaining gate |
 | --- | --- | --- |
-| Independent mechanism, finding, capability and execution/result concepts | ADR-0001, EC-001, EC-002; accepted PRs #23–24 | Design accepted; implementation review follows |
+| Independent mechanism, finding, capability and execution/result concepts | ADR-0001, EC-001, EC-002; accepted PRs #23–24 | Design and implementation reviewed and merged |
 | Go/JSON coexisting mechanism classes preserve categories/evidence | `internal/capability/registry.go`, `internal/evidence/v2`, `TestNativeV2DeclaresUnavailableMechanisms`, frozen projection tests | All three mechanism declarations; only native structural results implemented |
 | Unavailable/unrun/failed/partial differs from completed negative | Eight complete contract fixtures; `TestAcceptedGraphsAndAggregates`, `TestV2ConsoleCoverageFixtures`; compiled v2 CLI cases | Disabled declarations do not imply a detector result; partial/failed status retains exit 4 |
 | Anthropic unavailable without access, no heuristics/network | Compiled declaration and `TestNativeV2DeclaresUnavailableMechanisms`; native dispatcher only contains six local analyzers | No endpoint, credentials or statistical execution implementation |
@@ -20,7 +20,7 @@ This checklist maps the issue's original acceptance criteria to inspectable impl
 ## Supporting validation
 
 - Identity and semantic tests validate exact report bytes separately from source bytes and domain-separated selected spans. Source, scalar and UTF-16 boundary expectations are independent in the consumer smoke test.
-- `scripts/check_distribution.py` now checks native built and installed binaries with empty PATH under **both** schemas. Linux has 48 cases; macOS/Windows have 80 refusal cases. Hosted CI execution is required before claiming those native results.
+- `scripts/check_distribution.py` now checks native built and installed binaries with empty PATH under **both** schemas. Linux has 48 cases; macOS/Windows have 80 refusal cases. Hosted PR #33 CI logs confirm the 80 cases on each refusal platform.
 - Go 1.24 and development-toolchain tests, race/vet, compiled CLI tests, frozen/reference contracts and bounded fuzzing remain applicable. Review test names and assertions, not only aggregate green status.
 - The resource probes at `097b35e` and `96d2201` preserve exact candidate/corpus/harness identities and both valid-report and rejection outcomes. Corrected budgets accept all 64 KiB corpus cases and four 1 MiB cases. Remaining report-budget rejection is explicit and does not claim complete analysis. Measurements are local single samples, not universal latency/RSS guarantees.
 - Consumer alignment is documented in [v2-consumer-alignment.md](../specs/v2-consumer-alignment.md). In particular, the backend's selected-span digest cannot be copied into a raw-text-hash field. The eventual F0 schema and viewer spike are separate deliverables; no component has been selected or UI implemented here.
@@ -33,3 +33,9 @@ This checklist maps the issue's original acceptance criteria to inspectable impl
 4. Update #17 and Epic #21 G1 only with accepted evidence. Keep #7, concrete detector adoption, profiles, reveal, frontend design/component work and remediation gates open where their scopes remain incomplete.
 
 This document is an acceptance map. It does not replace any missing implementation, test, third-party review or user merge decision.
+
+## Recorded implementation acceptance
+
+PRs #27–33 merged in dependency order after passing applicable CI and substantive CodeRabbit reviews. The sole actionable inline review comment on #30 was corrected in d8c027e. Nonblocking bot docstring-coverage warnings were not treated as functional failures. Final native CI logs confirm 80 build/install cases each on Darwin/arm64 and Windows/AMD64; local Linux validation confirms 48, with Linux amd64/arm64 backend CI also passing.
+
+The accepted resource disposition is bounded opt-in v2 support with explicit report rejection and retained schema 1.0 default, not a promise that every acquired 8 MiB document fits a report. Default switching, browser performance, actual adapter implementations and non-Linux acquisition remain separate work. The twelve original issue criteria are supported by the implementation/test evidence above within that scope.
