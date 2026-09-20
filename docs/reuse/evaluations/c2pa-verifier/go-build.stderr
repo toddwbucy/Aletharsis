@@ -1,0 +1,6 @@
+Running as unit: aletharsis-g2-verifier-go.service; invocation ID: 49a93fdcdca4483a93b10023c22b2a35
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 10.733s
+             CPU time consumed: 10.346s
+                   Memory peak: 349.4M (swap: 0B)

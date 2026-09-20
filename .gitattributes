@@ -1,3 +1,6 @@
+
+# Retained verifier feasibility artifacts use exact byte identities.
+docs/reuse/evaluations/c2pa-verifier/* -text
 # Forensic fixtures must retain their exact bytes across checkouts.
 reference/python-behavior/** -text
 reference/seeded-python/** -text

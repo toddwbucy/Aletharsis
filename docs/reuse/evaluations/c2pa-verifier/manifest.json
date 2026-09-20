@@ -1,0 +1,71 @@
+{
+  "upstream_commit": "da85f07f2e0d084854be30dd3dc89dc0d2a9cde9",
+  "archive_sha256": "9dcc42ea327ae057b7e8d3a2e338dbb540ddd005ed0042e2931cc6f8953aace8",
+  "cargo_lock_sha256": "8f58da98585515e087cbe6b1262b68acde75acad80cba35534ede3df2f90dca7",
+  "toolchains": {
+    "rust": "rustc 1.88.0 (6b00bc388 2025-06-23)",
+    "go": "go1.27.1 linux/amd64",
+    "python": "3.14.7",
+    "platform": "Linux-7.2.2-1-cachyos-x86_64-with-glibc2.44",
+    "c_compiler": "GCC 16.2.1 20260810"
+  },
+  "dependency_packages": 153,
+  "trust_snapshot": {
+    "c2pa-trust.pem": "5fc0f1571f9eb4dff7a242291e1b198d347a768709bd6915022e9b59d6d7769c",
+    "c2pa-tsa-trust.pem": "76788c4c36644ee24674f6d63e9ee6f0186c3e25e39ea80da67d1b6f35dbea62",
+    "cawg-mozilla-email-roots.pem": "96300d3f277722d613a8d5a8fbd5a6b07ccedd136fca6992a68b39ac20187775",
+    "encypher-c2pa-root.pem": "a5f459b908fc3716767f7d147219d0ef847c3e5650e0b42d85fabdab1c042794",
+    "encypher-identity-root.pem": "f9a538590ad2d9da3f43ce8d940d429736a0592f64ac8fdfe94cf8fcee49e248",
+    "encypher-tsa-issuing-ca.pem": "f52daeb4270d31fdc1643155bf33f0656ccc437018488b0f15fa4a379febab45",
+    "iptc-vnpl-anchors.pem": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "iptc-vnpl-end-entity.pem": "364a6d6bee6f1ce20c5c710976e57815c5538736c1bbc621733d92e22822303f",
+    "sources.json": "bf9276b5bf78b5912562f780b33bad6371495e19786ecc280285e6ed93927bf3"
+  },
+  "artifacts": {
+    "libencypher_c2pa_ffi.a": {
+      "bytes": 23697780,
+      "primary_sha256": "d647401210ea57499a4aff07b02a2bde1ca718374ecc2a3b863656ed80d9046e",
+      "reproduction_sha256": "d647401210ea57499a4aff07b02a2bde1ca718374ecc2a3b863656ed80d9046e",
+      "identical": true,
+      "fresh_driver_sha256": "d647401210ea57499a4aff07b02a2bde1ca718374ecc2a3b863656ed80d9046e"
+    },
+    "libencypher_c2pa_ffi.so": {
+      "bytes": 5063456,
+      "primary_sha256": "eedf9b36eb685429b3ea45ba1bbc7793f6358a40d9da83be55893383e106469a",
+      "reproduction_sha256": "eedf9b36eb685429b3ea45ba1bbc7793f6358a40d9da83be55893383e106469a",
+      "identical": true,
+      "fresh_driver_sha256": "eedf9b36eb685429b3ea45ba1bbc7793f6358a40d9da83be55893383e106469a"
+    },
+    "encypher-c2pa": {
+      "bytes": 5698664,
+      "primary_sha256": "32f5ab1e0e5fb252364280c762daf9d1cc8e83cebd47aabaf690c60f378c9306",
+      "reproduction_sha256": "32f5ab1e0e5fb252364280c762daf9d1cc8e83cebd47aabaf690c60f378c9306",
+      "identical": true,
+      "fresh_driver_sha256": "32f5ab1e0e5fb252364280c762daf9d1cc8e83cebd47aabaf690c60f378c9306"
+    },
+    "go_probe": {
+      "bytes": 11730128,
+      "primary_sha256": "4e051ad87ace24829701fee76bb6df7c99549c04efeed485088dc7e00db61bf3",
+      "reproduction_sha256": "4e051ad87ace24829701fee76bb6df7c99549c04efeed485088dc7e00db61bf3",
+      "identical": true
+    }
+  },
+  "measured_files": {
+    "build.stderr": "0d036e700837f1ccc06a9fbf365fc802144f55eab71433803dedc9e81af6fa4d",
+    "cases-final.stderr": "dc9eb7864ee8e88990da1917a5e394faa8fe81e386721f11e3f4a206ad17d313",
+    "dependencies.json": "701d48f99c4da1fec6ab8d6934874d17ef5413278c2fc0eebc00928494dd1cee",
+    "exploratory-results.json": "cf28823bcbe29b4e20f70359375fadbd670dc4f1143e268336270481d2955e08",
+    "go-build.stderr": "391ebb9f5d2b65eb89c5dee1768e44c13fc2220c625579dd5c1e1c5c6f5b3402",
+    "go-final.stderr": "08407149e5a41419bc2dd362f9f43a433b9364250f969a692e53f017dc176ee9",
+    "rebuild.stderr": "1a90e829d9d5e6b98abf6c9b87c4fe2bc87e9b5059fb4b193c650a422752d609",
+    "reproduction-build.stderr": "a19d5d963404d58d8066d0a61d8fae23247a564d8436162d0ff81272ba5a058d",
+    "reproduction-cases.stderr": "55fbc7cf8d1ac3616404fff60887ca8f9403690ee2beed0785a3f4fd8ffa0e91",
+    "reproduction-go-build.stderr": "ae7a4476d44dd5c3a9a865ec6b4a8d2b70989395a388e2bcf03ca0007d5032b9",
+    "results.json": "ec0fa096a5a78944719a0eedff376eddf16efb24e868febc6bb5f799e1a99b28"
+  },
+  "results": {
+    "primary_sha256": "ec0fa096a5a78944719a0eedff376eddf16efb24e868febc6bb5f799e1a99b28",
+    "reproduction_sha256": "ec0fa096a5a78944719a0eedff376eddf16efb24e868febc6bb5f799e1a99b28",
+    "identical": true
+  }
+}
