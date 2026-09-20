@@ -1,5 +1,5 @@
 // Package v2 defines validated producer records for the report-2.0 execution
-// model. It does not yet assemble reports, resolve artifact references or run
+// model and evidence graph. It does not yet assemble full reports or run
 // detectors. Explicit Decode functions are the bounded record-import boundary.
 package v2
 
@@ -58,7 +58,7 @@ const (
 
 var codePattern = regexp.MustCompile(`^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$`)
 var digestPattern = regexp.MustCompile(`^[a-f0-9]{64}$`)
-var localRefPattern = regexp.MustCompile(`^(exec|artifact|diagnostic)/(0|[1-9][0-9]*)$`)
+var localRefPattern = regexp.MustCompile(`^(exec|artifact|diagnostic|anchor|result|finding)/(0|[1-9][0-9]*)$`)
 
 // RecordLimits bound small native planning records, not whole report imports.
 // Whole-report budgets remain an independent integration gate.
