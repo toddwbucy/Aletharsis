@@ -9,3 +9,7 @@ tests/fixtures/mixed_endings.csv whitespace=-blank-at-eol
 # Embedded Unicode reference tables must match across native checkouts.
 internal/unicoderef/categories15.txt -text
 internal/analyzers/data/** -text
+
+# Contract reports and identity vectors retain exact imported-byte identities.
+tests/contracts/fixtures/** -text
+tests/contracts/identity-vectors.json -text
