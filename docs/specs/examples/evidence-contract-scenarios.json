@@ -1,0 +1,151 @@
+{
+  "document_kind": "design_test_vectors",
+  "design_revision": "EC-001/0.1",
+  "not_wire_reports": true,
+  "cases": [
+    {
+      "id": "EC-01",
+      "source": {
+        "encoding": "utf-8",
+        "input_hex": "61e2808b62",
+        "sha256": "8df62aef5f92e4c30c0c938497f55f60078c361a476e7e0448485194ad79f884",
+        "byte_length": 5,
+        "scalar_count": 3
+      },
+      "expected": {
+        "report_status": "completed",
+        "exit_code": 1,
+        "finding_id": "unicode.zero_width",
+        "severity": "LOW",
+        "character_offsets": [
+          1
+        ],
+        "byte_offsets": [
+          1
+        ],
+        "exact_scalar_spans": [
+          [
+            1,
+            2
+          ]
+        ],
+        "exact_source_byte_spans": [
+          [
+            1,
+            4
+          ]
+        ],
+        "source_byte_offsets": [
+          0,
+          1,
+          4,
+          5
+        ],
+        "structural_execution": "completed",
+        "statistical_execution": "not_run",
+        "statistical_results": []
+      }
+    },
+    {
+      "id": "EC-02",
+      "source": {
+        "encoding": "utf-8",
+        "input_hex": "706c61696e2041534349490a",
+        "sha256": "b88dc62d35051ea63bee8879a8800be63c562bda10e708f31918b3bb80cfeed6",
+        "byte_length": 12,
+        "scalar_count": 12
+      },
+      "expected": {
+        "report_status": "completed",
+        "exit_code": 0,
+        "native_findings": [],
+        "statistical_capability": "anthropic.claude_text_watermark",
+        "availability": "unavailable",
+        "availability_reason": "capability.detector_access_unavailable",
+        "participation": "disabled",
+        "execution_state": "not_run",
+        "execution_reason": "execution.disabled",
+        "analyzed_scope": [],
+        "statistical_results": []
+      }
+    },
+    {
+      "id": "EC-03",
+      "synthetic_contract_only": true,
+      "fixture_available": false,
+      "source": null,
+      "assumptions": [
+        "A future carrier extractor has independently established an exact carrier and extracted manifest bytes.",
+        "No credential verifier is available or requested."
+      ],
+      "expected": {
+        "carrier_observation_retained": true,
+        "manifest_identity_required": true,
+        "verification_execution": "not_run",
+        "verification_results": [],
+        "signature_conclusion": null,
+        "trust_conclusion": null,
+        "statistical_results": []
+      }
+    },
+    {
+      "id": "EC-04",
+      "source": {
+        "encoding": "utf-8",
+        "input_hex": "706c61696e2041534349490a",
+        "sha256": "b88dc62d35051ea63bee8879a8800be63c562bda10e708f31918b3bb80cfeed6",
+        "byte_length": 12,
+        "scalar_count": 12
+      },
+      "expected": {
+        "report_status": "partial",
+        "exit_code": 4,
+        "structural_execution": "completed",
+        "statistical_capability": "anthropic.claude_text_watermark",
+        "availability": "unavailable",
+        "participation": "required",
+        "execution_state": "not_run",
+        "execution_reason": "capability.detector_access_unavailable",
+        "statistical_results": []
+      }
+    },
+    {
+      "id": "EC-05",
+      "legacy_schema_version": "1.0",
+      "expected": {
+        "original_bytes_preserved": true,
+        "consumer_computes_report_artifact_sha256": true,
+        "historical_execution_coverage": "unknown",
+        "synthesized_executions": [],
+        "inferred_negative_statistical_result": false
+      }
+    },
+    {
+      "id": "EC-08",
+      "source": {
+        "encoding": "utf-8",
+        "input_hex": "65cc81e2808b",
+        "sha256": "498d566e35b80507d9d8229a3417ba10ac6a8c7ad358cea78f47b9d8afc23012",
+        "byte_length": 6,
+        "scalar_count": 3
+      },
+      "derived": {
+        "operation": "NFC",
+        "utf8_hex": "c3a9e2808b",
+        "sha256": "f25dd49a77632dce9b5dbd7a4e22788f8d8cfa94e796d103f94493d688b70290"
+      },
+      "expected": {
+        "source_zero_width_byte_span": [
+          3,
+          6
+        ],
+        "normalized_zero_width_byte_span": [
+          2,
+          5
+        ],
+        "normalization_is_not_one_to_one": true,
+        "automatic_edit_eligibility": false
+      }
+    }
+  ]
+}

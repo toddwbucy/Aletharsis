@@ -47,6 +47,11 @@ Python test harnesses remain.
 [Issue #17](https://github.com/toddwbucy/Aletharsis/issues/17) is the next design
 focus. P0 remains **planned specification work**, not a completed mechanism model.
 
+The first review increment is [ADR-0001](docs/adr/0001-evidence-capability-contract.md)
+and [EC-001](docs/specs/evidence-contract-v2.md), with deterministic design examples.
+These are proposed contracts; schema 1.0 and current CLI behavior remain unchanged.
+Schema/conformance work follows acceptance, then Go implementation and release review.
+
 The first reviewable specification must resolve:
 
 - Mechanism, capability, execution outcome and typed detector result as separate
