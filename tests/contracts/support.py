@@ -2,6 +2,7 @@
 from hashlib import sha256
 import json
 from pathlib import Path
+import re
 
 from jsonschema import Draft202012Validator
 
@@ -122,6 +123,8 @@ def validate_semantics(r):
         parts = p.split('/')
         require(parts[:3] == ['', 'evidence', 'texts'], 'unsupported content pointer')
         try:
+            require(re.fullmatch(r'0|[1-9][0-9]*', parts[3]) is not None,
+                    'invalid content pointer')
             item = r['evidence']['texts'][int(parts[3])]
             for key in parts[4:]:
                 item = item[key]

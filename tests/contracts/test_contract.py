@@ -21,13 +21,34 @@ def validate(r):
     validate_semantics(r)
 
 
-@pytest.mark.parametrize('path', sorted(FIXTURES.glob('*.json')), ids=lambda p:p.stem)
+FIXTURE_PATHS = sorted(FIXTURES.glob('*.json'))
+assert len(FIXTURE_PATHS) == 8, 'Expected exactly eight complete wire fixtures'
+
+
+@pytest.mark.parametrize('path', FIXTURE_PATHS, ids=lambda p:p.stem)
 def test_complete_wire_fixtures(path):
     raw = path.read_bytes()
     imported = import_report(raw)
     assert imported['status'] == 'validated'
     assert imported['report_artifact_sha256'] == sha256(raw).hexdigest()
     assert imported['report'] == json.loads(raw)
+
+
+@pytest.mark.parametrize('index', ['00', '01', '-1', '+0', ' 0', '0 ', '0\n', '\u0660', ''])
+def test_noncanonical_content_pointer_index_rejected(index):
+    r = report('clean-unavailable')
+    r['artifacts'][1]['content_ref']['pointer'] = f'/evidence/texts/{index}/text'
+    # Exercise the semantic guard even for forms already rejected by the schema.
+    with pytest.raises(ValueError, match='^invalid content pointer$'):
+        validate_semantics(r)
+
+
+def test_canonical_nonzero_content_pointer_preserves_nested_lookup():
+    r = report('clean-unavailable')
+    r['evidence']['texts'].append(deepcopy(r['evidence']['texts'][0]))
+    r['artifacts'][1]['content_ref']['pointer'] = '/evidence/texts/1/text'
+    r['artifacts'][1]['mapping']['data_ref'] = '/evidence/texts/1/byte_offsets'
+    validate(r)
 
 
 def test_schema_itself_and_v1_still_rejects_v2():
