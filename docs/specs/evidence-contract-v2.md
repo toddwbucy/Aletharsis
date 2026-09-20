@@ -360,8 +360,17 @@ boundary or remain unavailable. An adapter crash/invalid response must not corru
 retained native evidence. No runtime adapter loading or shell commands from input.
 
 Order capabilities by registered ID/revision; executions by stage dependency order,
-then capability ID and canonical scope. Sort artifacts by parent dependency and
-representation/locator, with canonical record content as a tie-breaker. Sort anchors
+then capability ID and canonical scope. Order artifacts by parent-before-child
+topological traversal. At each step choose the eligible artifact with the smallest
+key (`kind`, canonical `representation`, `sha256`, `byte_length`, canonical
+`content_ref`, `unavailable_reason`, canonical `parents`, canonical `transform`,
+canonical `mapping`). All these fields are defined for every artifact in Section 6;
+nullable values sort before non-null values, and byte lengths compare numerically.
+Preserve declared parent-list order when canonicalizing it; replace parent references
+with their already assigned traversal ordinals in ordering keys. No artifact's own
+`artifact_ref` participates in its key. The resulting traversal position determines
+its `artifact_ref` ordinal. A graph with no eligible node while nodes remain is
+invalid, not a reason to use insertion order. Sort anchors
 by (`execution_ref`, `artifact_ref`, `kind`, canonical `locator`, canonical `mapping`),
 with null references ordered first. Sort results by (`execution_ref`, `kind`,
 `contract_version`, canonical `anchor_refs`, canonical `payload`, canonical
