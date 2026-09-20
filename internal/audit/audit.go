@@ -11,7 +11,9 @@ import (
 	"strings"
 
 	"github.com/toddwbucy/Aletharsis/internal/analyzers"
+	"github.com/toddwbucy/Aletharsis/internal/capability"
 	"github.com/toddwbucy/Aletharsis/internal/evidence"
+	"github.com/toddwbucy/Aletharsis/internal/failure"
 	"github.com/toddwbucy/Aletharsis/internal/parsers"
 	u "github.com/toddwbucy/Aletharsis/internal/unicoderef"
 )
@@ -19,14 +21,43 @@ import (
 const Version = "0.2.0"
 const MaxBytes = 8 * 1024 * 1024
 
-var checks = []analyzers.Analyzer{analyzers.Unicode{}, analyzers.Emoji{}, analyzers.Text{}, analyzers.Patterns{}, analyzers.Identifiers{}, analyzers.Metadata{}}
+type nativeCheck struct {
+	id       string
+	analyzer analyzers.Analyzer
+}
+
+var checks = []nativeCheck{
+	{capability.UnicodeInventoryID, analyzers.Unicode{}},
+	{capability.EmojiID, analyzers.Emoji{}},
+	{capability.TextID, analyzers.Text{}},
+	{capability.PatternsID, analyzers.Patterns{}},
+	{capability.IdentifiersID, analyzers.Identifiers{}},
+	{capability.MetadataID, analyzers.Metadata{}},
+}
 
 func Run(path string) *evidence.Report { return WithLimit(path, MaxBytes) }
 func WithLimit(path string, limit int) *evidence.Report {
 	return withReader(path, limit, readSnapshot)
 }
 
+// Outcome retains the typed native failure alongside an unchanged schema-1 report.
+// It is an internal service result, not a new JSON report envelope.
+type Outcome struct {
+	Report  *evidence.Report
+	Failure *failure.Error
+}
+
+// Inspect executes a native audit with explicit input bounds and retains its cause.
+// No v2 fields are added to the legacy Report.
+func Inspect(path string, limit int) Outcome {
+	return inspectWithReader(path, limit, readSnapshot)
+}
+
 func withReader(path string, limit int, read func(string, int) ([]byte, error)) *evidence.Report {
+	return inspectWithReader(path, limit, read).Report
+}
+
+func inspectWithReader(path string, limit int, read func(string, int) ([]byte, error)) Outcome {
 	path = filepath.Clean(path)
 	name := filepath.Base(path)
 	if name == "." || name == string(filepath.Separator) {
@@ -39,24 +70,32 @@ func withReader(path string, limit int, read func(string, int) ([]byte, error)) 
 	r := &evidence.Report{Version: Version, Schema: "1.0", File: evidence.File{Path: path, Filename: name, Extension: extension, MIME: "application/octet-stream", Format: "unknown", Basis: "unavailable"}, Status: "completed", Evidence: evidence.EmptyDocument(), Findings: []evidence.Finding{}, Limitations: analyzers.Limitations()}
 	data, err := read(path, limit)
 	if err != nil {
-		return failed(r, err)
+		typed := failure.AcquisitionError(err)
+		return Outcome{Report: failed(r, typed), Failure: typed}
 	}
 	size, hash := len(data), evidence.Hash(data)
 	r.File.Size = &size
 	r.File.SHA256 = &hash
 	r.File.Format, r.File.MIME, r.File.Basis = parsers.Identify(data, extension)
 	if r.File.Format != "text" {
-		return failed(r, fmt.Errorf("Unsupported format: %s; M0/M1 support Unicode text source files", r.File.Format))
+		typed := failure.Wrap(failure.Parsing, failure.UnsupportedFormat, fmt.Errorf("Unsupported format: %s; M0/M1 support Unicode text source files", r.File.Format))
+		return Outcome{Report: failed(r, typed), Failure: typed}
 	}
 	parser := parsers.TextParser{}
 	parserName := parser.Name()
 	r.File.Parser = &parserName
 	r.Evidence, err = parser.Parse(data)
 	if err != nil {
-		return failed(r, err)
+		code := failure.AuditFailed
+		var decode *parsers.DecodeError
+		if errors.As(err, &decode) {
+			code = failure.DecodeFailed
+		}
+		typed := failure.Wrap(failure.Parsing, code, err)
+		return Outcome{Report: failed(r, typed), Failure: typed}
 	}
 	for _, check := range checks {
-		r.Findings = append(r.Findings, check.Analyze(&r.Evidence)...)
+		r.Findings = append(r.Findings, check.analyzer.Analyze(&r.Evidence)...)
 	}
 	sort.SliceStable(r.Findings, func(i, j int) bool {
 		a, b := r.Findings[i], r.Findings[j]
@@ -79,7 +118,7 @@ func withReader(path string, limit int, read func(string, int) ([]byte, error)) 
 		return a.Title < b.Title
 	})
 	r.Summarize()
-	return r
+	return Outcome{Report: r}
 }
 func locationKey(loc evidence.Object) string { b, _ := json.Marshal(loc); return string(b) }
 func failed(r *evidence.Report, err error) *evidence.Report {

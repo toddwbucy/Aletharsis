@@ -66,8 +66,9 @@ The specification and implementation gates cover:
 
 The accepted [EC-001 design](docs/specs/evidence-contract-v2.md) and
 [wire/schema and legacy-import gate](docs/specs/report-v2-wire-and-import.md) now
-lead into [Go identity primitives](docs/specs/go-v2-identity.md), followed by the
-model/registry, failure boundaries and opt-in emitter. The production CLI continues
+lead into [Go identity primitives](docs/specs/go-v2-identity.md), accepted in PR #25,
+and the next [execution records, catalog and native failure boundaries](docs/specs/go-v2-records-registry.md).
+The complete coordinator and opt-in emitter follow. The production CLI continues
 to emit schema 1.0 pending implementation and release review.
 
 Acceptance requires reviewed wire contracts, migration and compatibility fixtures,

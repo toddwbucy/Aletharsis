@@ -93,9 +93,10 @@ go test -run '^$' -fuzz FuzzCanonicalize -fuzztime=15s -parallel=2 ./internal/id
 
 ## Remaining implementation sequence
 
-1. Review this identity foundation.
-2. Implement the closed Go v2 model/registry, typed native failure codes and bounded
-   execution outcomes, including availability and coverage state transitions.
+1. Identity foundation accepted in PR #25.
+2. Review the [Go execution records, catalog and native failure boundaries](go-v2-records-registry.md).
+   Artifact/anchor/result assembly and cross-record state/coverage validation remain
+   part of the coordinator increment.
 3. Implement deterministic reference assignment and the opt-in v2 emitter/view
    reporting, preserving the default schema 1.0 behavior and parity fixtures.
 4. Validate emitted reports with the accepted schema and semantic contract;

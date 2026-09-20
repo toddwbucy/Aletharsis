@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/toddwbucy/Aletharsis/internal/failure"
 	"io"
 	"os"
 	"path/filepath"
@@ -66,6 +67,14 @@ func TestAcquisitionOpenFailureNeverRetries(t *testing.T) {
 				}
 				return nil, &os.PathError{Op: "open", Path: path, Err: err}
 			})
+			var typed *failure.Error
+			wantCode := failure.IOFailed
+			if errors.Is(err, os.ErrPermission) {
+				wantCode = failure.PermissionDenied
+			}
+			if !errors.As(got, &typed) || typed.Code() != wantCode {
+				t.Fatalf("wrong typed open failure: %v", got)
+			}
 			if calls != 1 || data != nil || !errors.Is(got, err) {
 				t.Fatalf("retried or swallowed error: calls=%d data=%q err=%v", calls, data, got)
 			}
@@ -106,6 +115,19 @@ func TestAcquisitionFaultsDiscardPartialEvidence(t *testing.T) {
 				want = "Only regular files"
 			}
 			data, err := readSnapshotWithOpen("source.txt", 4, func(string, int) (snapshotFile, error) { return f, nil })
+			wantCode := failure.ChangedDuringRead
+			switch name {
+			case "first_stat", "read", "second_stat":
+				wantCode = failure.IOFailed
+			case "oversized", "grew_past_limit":
+				wantCode = failure.TooLarge
+			case "nonregular":
+				wantCode = failure.NotRegular
+			}
+			var typed *failure.Error
+			if !errors.As(err, &typed) || typed.Code() != wantCode {
+				t.Fatalf("wrong typed snapshot failure: %v", err)
+			}
 			if err == nil || !strings.Contains(err.Error(), want) || data != nil {
 				t.Fatalf("partial acquisition accepted: %q %v", data, err)
 			}
