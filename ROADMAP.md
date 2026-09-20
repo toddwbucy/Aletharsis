@@ -69,7 +69,9 @@ The accepted [EC-001 design](docs/specs/evidence-contract-v2.md) and
 lead into [Go identity primitives](docs/specs/go-v2-identity.md), accepted in PR #25,
 and [execution records, catalog and native failure boundaries](docs/specs/go-v2-records-registry.md), accepted in PR #26.
 The [evidence graph and coverage validation](docs/specs/go-v2-evidence-graph.md)
-continues this implementation. The complete coordinator and opt-in emitter follow.
+continues this implementation, followed by the
+[report envelope and exact-byte import](docs/specs/go-v2-report-import.md).
+The complete coordinator and opt-in emitter follow.
 The production CLI continues
 to emit schema 1.0 pending implementation and release review.
 
