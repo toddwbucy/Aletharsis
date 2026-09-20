@@ -77,7 +77,7 @@
       "repository": "https://github.com/encypherai/encypher-c2pa",
       "component": "Verification candidate; in-process versus sidecar remains undecided.",
       "integration_class": "external_adapter",
-      "adoption_status": "proposed",
+      "adoption_status": "evaluating",
       "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/38",
       "maintenance_owner": "toddwbucy",
       "implementer": "Codex",
@@ -87,7 +87,7 @@
         "commit": "da85f07f2e0d084854be30dd3dc89dc0d2a9cde9",
         "source_tree_git_sha1": "ad0cd8c664fb1c5a31b6632a44ce2bce94b40a5d",
         "tag": null,
-        "artifact_sha256": null
+        "artifact_sha256": "9dcc42ea327ae057b7e8d3a2e338dbb540ddd005ed0042e2931cc6f8953aace8"
       },
       "license": {
         "spdx": "Apache-2.0",
@@ -105,9 +105,9 @@
       },
       "runtime": {
         "assessment": "unverified",
-        "dependencies": "Rust core and Go binding claimed; ABI, linked libraries and native builds unverified.",
+        "dependencies": "Rust 1.88.0, CGO and C compiler; pinned FFI+CLI Linux-filtered graph has 153 packages. Native Linux amd64 byte probe executed; dynamic system libraries remain required.",
         "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
-        "side_effects": "README documents interactive telemetry opt-in and persisted preferences; block adoption until explicit controls are tested."
+        "side_effects": "Default build includes telemetry. Explicit per-call false overrides conflicting enabled environment/preferences, including a PTY case; no prompt or config changes observed under network isolation. No in-process cancellation API; prefer bounded worker design."
       },
       "supported_scope": {
         "production": [],
@@ -135,9 +135,9 @@
           "Cargo.toml"
         ],
         "tree_listing_truncated": false,
-        "build_reproducibility": "not_tested",
+        "build_reproducibility": "verified",
         "vulnerability_review": "pending",
-        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+        "maintenance_conclusion": "Issue #38 Linux/amd64 study: eleven final byte/trust/side-effect cases pass; same-environment Rust rebuild hashes match. Recommend worker design under #36 before adoption; other native targets and independent-verifier/security validation remain open."
       },
       "disable_or_replace": "Disable verifier and report verification unavailable; preserve extracted credentials; alternative verifier needs same gates.",
       "decision": null
