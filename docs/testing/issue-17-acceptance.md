@@ -2,9 +2,9 @@
 
 This checklist maps the issue's original acceptance criteria to inspectable implementation and tests. PRs #23–33 are reviewed and merged. The final implementation tree at `80aaa0a` matches the reviewed PR #33 tree. The default remains schema 1.0; no default-version switch is approved. This acceptance does not close unrelated Epic #21 or frontend gates.
 
-| #17 requirement | Evidence in the candidate | Scope / remaining gate |
+| #17 requirement | Delivered evidence | Scope / remaining gate |
 | --- | --- | --- |
-| Independent mechanism, finding, capability and execution/result concepts | ADR-0001, EC-001, EC-002; accepted PRs #23–24 | Design accepted; implementation review follows |
+| Independent mechanism, finding, capability and execution/result concepts | ADR-0001, EC-001, EC-002; accepted PRs #23–24 | Design and implementation reviewed and merged |
 | Go/JSON coexisting mechanism classes preserve categories/evidence | `internal/capability/registry.go`, `internal/evidence/v2`, `TestNativeV2DeclaresUnavailableMechanisms`, frozen projection tests | All three mechanism declarations; only native structural results implemented |
 | Unavailable/unrun/failed/partial differs from completed negative | Eight complete contract fixtures; `TestAcceptedGraphsAndAggregates`, `TestV2ConsoleCoverageFixtures`; compiled v2 CLI cases | Disabled declarations do not imply a detector result; partial/failed status retains exit 4 |
 | Anthropic unavailable without access, no heuristics/network | Compiled declaration and `TestNativeV2DeclaresUnavailableMechanisms`; native dispatcher only contains six local analyzers | No endpoint, credentials or statistical execution implementation |
@@ -20,7 +20,7 @@ This checklist maps the issue's original acceptance criteria to inspectable impl
 ## Supporting validation
 
 - Identity and semantic tests validate exact report bytes separately from source bytes and domain-separated selected spans. Source, scalar and UTF-16 boundary expectations are independent in the consumer smoke test.
-- `scripts/check_distribution.py` now checks native built and installed binaries with empty PATH under **both** schemas. Linux has 48 cases; macOS/Windows have 80 refusal cases. Hosted CI execution is required before claiming those native results.
+- `scripts/check_distribution.py` now checks native built and installed binaries with empty PATH under **both** schemas. Linux has 48 cases; macOS/Windows have 80 refusal cases. Hosted PR #33 CI logs confirm the 80 cases on each refusal platform.
 - Go 1.24 and development-toolchain tests, race/vet, compiled CLI tests, frozen/reference contracts and bounded fuzzing remain applicable. Review test names and assertions, not only aggregate green status.
 - The resource probes at `097b35e` and `96d2201` preserve exact candidate/corpus/harness identities and both valid-report and rejection outcomes. Corrected budgets accept all 64 KiB corpus cases and four 1 MiB cases. Remaining report-budget rejection is explicit and does not claim complete analysis. Measurements are local single samples, not universal latency/RSS guarantees.
 - Consumer alignment is documented in [v2-consumer-alignment.md](../specs/v2-consumer-alignment.md). In particular, the backend's selected-span digest cannot be copied into a raw-text-hash field. The eventual F0 schema and viewer spike are separate deliverables; no component has been selected or UI implemented here.
