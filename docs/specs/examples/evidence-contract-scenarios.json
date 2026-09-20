@@ -121,6 +121,87 @@
       }
     },
     {
+      "id": "EC-07",
+      "synthetic_contract_only": true,
+      "source": {
+        "encoding": "utf-8",
+        "input_hex": "66697273740a7365636f6e640a",
+        "sha256": "dbea9325179efe46ea2add94f7b6b745ca983fabb208dc6d34aa064623d7ee23",
+        "byte_length": 13,
+        "scalar_count": 13
+      },
+      "assumptions": [
+        "A synthetic requested detector returns a valid scoped result for the first line before timing out on the second.",
+        "This is an execution-contract example, not a vendor detector result."
+      ],
+      "expected": {
+        "report_status": "partial",
+        "exit_code": 4,
+        "availability": "available",
+        "participation": "required",
+        "execution_state": "partial",
+        "execution_reason": "execution.timeout",
+        "requested_scope": {
+          "unit": "source_byte",
+          "regions": [
+            [
+              0,
+              13
+            ]
+          ]
+        },
+        "analyzed_scope": {
+          "unit": "source_byte",
+          "regions": [
+            [
+              0,
+              6
+            ]
+          ]
+        },
+        "exclusions": [
+          {
+            "unit": "source_byte",
+            "region": [
+              6,
+              13
+            ],
+            "reason_code": "execution.timeout"
+          }
+        ],
+        "preserved_results": [
+          {
+            "scope": {
+              "unit": "source_byte",
+              "regions": [
+                [
+                  0,
+                  6
+                ]
+              ]
+            },
+            "outcome": "synthetic_scoped_observation"
+          }
+        ],
+        "diagnostics": [
+          {
+            "stage": "analyzer",
+            "code": "execution.timeout",
+            "scope": {
+              "unit": "source_byte",
+              "regions": [
+                [
+                  6,
+                  13
+                ]
+              ]
+            }
+          }
+        ],
+        "whole_sample_negative_result": false
+      }
+    },
+    {
       "id": "EC-08",
       "source": {
         "encoding": "utf-8",

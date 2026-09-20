@@ -181,7 +181,8 @@ text. A source hash recorded in an imported report is a claim until independentl
 verified against the source.
 
 An artifact record has `artifact_ref`, `kind`, `representation`, nullable `sha256`,
-nullable `byte_length`, `content_ref`, `parents`, `transform` and `mapping`:
+nullable `byte_length`, `content_ref`, `unavailable_reason`, `parents`, `transform`
+and `mapping`:
 
 | Kind | Digest domain | Required relationship |
 | --- | --- | --- |
@@ -201,6 +202,17 @@ an explicit unavailable/retention reason. Never dereference a document URL or
 arbitrary local path on import. Null digest is permitted only for artifacts whose
 bytes cannot be obtained, with a reason; such an artifact cannot stand in for an
 exact submitted sample. Acquired sources and actual analyzed samples require hashes.
+
+`unavailable_reason` is a required nullable field with the closed values
+`not_acquired`, `extraction_unavailable`, `not_retained` and `redacted`. It must be
+non-null whenever `sha256` or `content_ref` is null, and null when both are present.
+A null `sha256` requires `not_acquired` or `extraction_unavailable`; these states
+also require null `content_ref`. `not_retained` and `redacted` describe unavailable
+retained content after hashing and require a non-null digest and null `content_ref`.
+Redacted bytes, if retained, are a separately identified derivative, never content
+matching the original artifact's digest. The next schema PR must encode these
+conditional rules and the closed enum explicitly; free-form explanations belong
+in diagnostics, not new reason values.
 
 `transform` records operation/version, nonsecret configuration identity, ordered
 input artifact references and exclusions. No transformation mutates the source.
@@ -223,8 +235,11 @@ requirement, not a selected verifier implementation. See the
 
 ## 7. Typed anchors and result boundaries
 
-Each anchor has `anchor_ref`, `kind`, artifact/execution references as appropriate,
-mapping quality and a versioned locator. The next schema PR must provide distinct
+Each anchor has `anchor_ref`, `kind`, `artifact_ref`, `execution_ref`, `mapping`
+and `locator`. `artifact_ref` and `execution_ref` identify its artifact and execution; they
+may be null only for a `legacy_unknown` anchor whose original report lacks that
+identity. `mapping` states mapping quality, and `locator` is a versioned closed
+variant containing the kind-specific location/scope described below. The next schema PR must provide distinct
 closed variants; it must not use an unrestricted location dictionary.
 
 | Anchor kind | Required evidence | Interpretation |
@@ -303,6 +318,8 @@ Report status becomes `completed`, `partial`, `failed` or `canceled`:
 - Acquisition or parsing failure: failed, exit 4; no invented decoded evidence.
 - Required operation failed/unavailable/unsupported/policy-denied: failed if it
   produced no usable analysis anywhere, otherwise partial; exit 4 either way.
+- Required operation with execution state `partial`: report status `partial`,
+  exit 4; preserve valid scoped results and explicit exclusions (EC-07).
 - Optional requested operation failed or is partial/unavailable: partial, exit 4.
   “Optional” permits retaining independent results, not a silent successful run.
 - Disabled optional declarations: not_run, no failure finding, do not alter status
@@ -344,11 +361,19 @@ retained native evidence. No runtime adapter loading or shell commands from inpu
 
 Order capabilities by registered ID/revision; executions by stage dependency order,
 then capability ID and canonical scope. Sort artifacts by parent dependency and
-representation/locator; use a canonical payload tie-breaker. Sort anchors/results
-by producer and canonical scope/payload. Findings retain current severity/rule/
-location ordering with a complete payload tie-breaker. Assign references after
-sorting; rewrite all references together and reject dangling or cyclic artifact
-lineage. Identical indistinguishable records get deterministic occurrence ordinals.
+representation/locator, with canonical record content as a tie-breaker. Sort anchors
+by (`execution_ref`, `artifact_ref`, `kind`, canonical `locator`, canonical `mapping`),
+with null references ordered first. Sort results by (`execution_ref`, `kind`,
+`contract_version`, canonical `anchor_refs`, canonical `payload`, canonical
+`limitations`). Scope is carried by the anchor's locator and its execution's
+requested/analyzed scope, not an undefined producer field. Canonical values use
+JCS bytes compared lexicographically. Reference-valued keys use the referenced
+record's deterministic ordering key until final IDs are assigned, never provisional
+worker IDs; a record's own reference is excluded from its ordering key. Findings
+retain current severity/rule/location ordering with a complete payload tie-breaker.
+Assign references after sorting; rewrite all references together and reject dangling
+or cyclic artifact lineage. Identical indistinguishable records get deterministic
+occurrence ordinals.
 Concurrent runs must not use global mutable state or completion time as an ID seed.
 
 For new configuration and composite identity digests, use SHA-256 over UTF-8 JCS
