@@ -303,6 +303,13 @@ func (g Graph) Validate(file evidence.File, d evidence.Document) error {
 	if len(planned) != len(x.caps) {
 		return errors.New("capability planning incomplete")
 	}
+	// Reuse segment projections only within this validation call. Imported or
+	// caller-owned reports may change between validations; no persistent cache.
+	type projection struct {
+		scalars     []rune
+		utf8Offsets []uint64
+	}
+	projections := map[string]projection{}
 	for _, a := range g.Anchors {
 		if a.ArtifactRef != nil {
 			if _, ok := x.artifacts[*a.ArtifactRef]; !ok {
@@ -327,7 +334,16 @@ func (g Graph) Validate(file evidence.File, d evidence.Document) error {
 			if art.Kind != "text" || art.ContentRef == nil || art.ContentRef.Kind != "report_pointer" || *art.ContentRef.Pointer != l.SegmentPointer+"/text" {
 				return errors.New("text anchor artifact mismatch")
 			}
-			scalars := []rune(t.Text)
+			p, exists := projections[l.SegmentPointer]
+			if !exists {
+				p.scalars = []rune(t.Text)
+				p.utf8Offsets = make([]uint64, len(p.scalars)+1)
+				for i, c := range p.scalars {
+					p.utf8Offsets[i+1] = p.utf8Offsets[i] + uint64(utf8.RuneLen(c))
+				}
+				projections[l.SegmentPointer] = p
+			}
+			scalars := p.scalars
 			selection := make([]struct {
 				Span identity.TextSpan `json:"span"`
 				Text string            `json:"text"`
@@ -343,10 +359,7 @@ func (g Graph) Validate(file evidence.File, d evidence.Document) error {
 			}
 			// Scope byte regions refer to UTF-8 artifact bytes, not the
 			// original-source byte coordinates stored on the locator.
-			utf8Offsets := make([]uint64, len(scalars)+1)
-			for i, c := range scalars {
-				utf8Offsets[i+1] = utf8Offsets[i] + uint64(utf8.RuneLen(c))
-			}
+			utf8Offsets := p.utf8Offsets
 			execution := x.executions[*a.ExecutionRef]
 			for _, span := range l.Spans {
 				covered := false

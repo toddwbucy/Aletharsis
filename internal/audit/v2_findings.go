@@ -19,7 +19,7 @@ type nativeFinding struct {
 	execution   int
 	payloadKey  string
 	locationKey string
-	anchorKey   string
+	anchorKeys  []string
 }
 type nativeAnchor struct {
 	anchor    v2.Anchor
@@ -27,7 +27,7 @@ type nativeAnchor struct {
 	key       string
 }
 
-func assembleFindings(r *v2.Report, outcome Outcome, trace *nativeTrace, verified *identity.VerifiedText) error {
+func assembleFindings(r *v2.Report, outcome Outcome, trace *nativeTrace, verified *identity.VerifiedText, limits identity.Limits) error {
 	items := []nativeFinding{}
 	anchors := map[string]nativeAnchor{}
 	var scalars []rune
@@ -46,7 +46,7 @@ func assembleFindings(r *v2.Report, outcome Outcome, trace *nativeTrace, verifie
 				f.Evidence = maps.Clone(old.Evidence)
 				f.Evidence["failure_code"] = string(outcome.Failure.Code())
 			}
-			payloadKey, err := canonicalKey(f.Finding)
+			payloadKey, err := canonicalKeyWithLimits(f.Finding, limits)
 			if err != nil {
 				return err
 			}
@@ -56,20 +56,21 @@ func assembleFindings(r *v2.Report, outcome Outcome, trace *nativeTrace, verifie
 				if err != nil {
 					return err
 				}
-				if len(spans) > 0 {
-					digest, err := verified.SelectionDigest(spans, v2.RecordLimits())
+				for _, group := range anchorGroups(spans) {
+					digest, err := verified.SelectionDigest(group, v2.RecordLimits())
 					if err != nil {
 						return err
 					}
-					locator := v2.TextLocator{Version: "1", SegmentPointer: "/evidence/texts/0", Spans: spans, SelectedTextSHA256: digest, DigestDomain: identity.SelectionDomain}
+					locator := v2.TextLocator{Version: "1", SegmentPointer: "/evidence/texts/0", Spans: group, SelectedTextSHA256: digest, DigestDomain: identity.SelectionDomain}
 					key, err := canonicalKey(locator)
 					if err != nil {
 						return err
 					}
 					// Every native anchor targets artifact/1 with the same text mapping/kind.
 					// The remaining EC-001 sort keys are execution order and canonical locator.
-					item.anchorKey = fmt.Sprintf("%020d:%s", i, key)
-					anchors[item.anchorKey] = nativeAnchor{anchor: v2.Anchor{Kind: "text", ArtifactRef: pointer("artifact/1"), ExecutionRef: pointer(e.Ref), Mapping: nativeMapping(), Locator: locator}, execution: i, key: key}
+					anchorKey := fmt.Sprintf("%020d:%s", i, key)
+					item.anchorKeys = append(item.anchorKeys, anchorKey)
+					anchors[anchorKey] = nativeAnchor{anchor: v2.Anchor{Kind: "text", ArtifactRef: pointer("artifact/1"), ExecutionRef: pointer(e.Ref), Mapping: nativeMapping(), Locator: locator}, execution: i, key: key}
 				}
 			}
 			items = append(items, item)
@@ -120,8 +121,8 @@ func assembleFindings(r *v2.Report, outcome Outcome, trace *nativeTrace, verifie
 	for _, item := range items {
 		f := item.finding
 		f.Ref = fmt.Sprintf("finding/%d", len(r.Findings))
-		if item.anchorKey != "" {
-			f.AnchorRefs = append(f.AnchorRefs, references[item.anchorKey])
+		for _, key := range item.anchorKeys {
+			f.AnchorRefs = append(f.AnchorRefs, references[key])
 		}
 		r.Findings = append(r.Findings, f)
 	}
@@ -186,7 +187,7 @@ func nativeSpans(f evidence.Finding, text *evidence.Text, scalars []rune) ([]ide
 		}
 		// Coalesce adjoining observed scalars; the finding retains each occurrence's
 		// coordinates while the selection identity preserves all gaps between runs.
-		if len(spans) > 0 && spans[len(spans)-1].Scalar.End == span.Scalar.Start {
+		if len(spans) > 0 && spans[len(spans)-1].Scalar.End == span.Scalar.Start && span.Scalar.End-spans[len(spans)-1].Scalar.Start <= 16384 {
 			spans[len(spans)-1].Scalar.End = span.Scalar.End
 			spans[len(spans)-1].Byte.End = span.Byte.End
 		} else {
@@ -194,4 +195,29 @@ func nativeSpans(f evidence.Finding, text *evidence.Text, scalars []rune) ([]ide
 		}
 	}
 	return spans, nil
+}
+
+// Bound disjoint locator groups without dropping or filling gaps. A contiguous
+// observed extent stays intact; the existing selection-byte limit still applies
+// to a single large extent. Finding offsets remain authoritative membership.
+func anchorGroups(spans []identity.TextSpan) [][]identity.TextSpan {
+	const maxSpans = 512
+	const maxScalars = 16384
+	groups := [][]identity.TextSpan{}
+	group := []identity.TextSpan{}
+	count := uint64(0)
+	for _, span := range spans {
+		size := span.Scalar.End - span.Scalar.Start
+		if len(group) > 0 && (len(group) == maxSpans || count+size > maxScalars) {
+			groups = append(groups, group)
+			group = nil
+			count = 0
+		}
+		group = append(group, span)
+		count += size
+	}
+	if len(group) > 0 {
+		groups = append(groups, group)
+	}
+	return groups
 }
