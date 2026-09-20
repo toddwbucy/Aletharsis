@@ -57,6 +57,8 @@ python -m pytest -q tests/test_reuse_registry.py
 The normal backend CI schema/reference step includes these tests. They check the
 schema, invalid status/approval mutations, exact license hashes, pinned URL
 identity, unique IDs, closure and complete initial inventory. No network is used.
+The retained license files preserve upstream trailing spaces/blank lines; their
+scoped Git whitespace attribute exempts only those exact-byte evidence copies.
 The Python test runner is not a production runtime dependency.
 
 To update: use a PR to record the new exact revision and license bytes/hash,

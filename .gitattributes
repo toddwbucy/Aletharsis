@@ -17,4 +17,4 @@ tests/contracts/identity-vectors.json -text
 internal/identity/testdata/*.jsonl -text
 
 # Exact upstream license evidence must retain original byte hashes.
-docs/reuse/licenses/* -text
+docs/reuse/licenses/* -text whitespace=-blank-at-eol,-blank-at-eof

@@ -11,7 +11,10 @@ acceptance when required; automation is not a substitute. These are workstream
 roles, not a claim that review has already happened. Changes outside Aletharsis
 require that repository's linked issue and producer/consumer review assignment.
 
-Budgets below cap the first increment. Each linked issue also specifies process
+Budgets below cap the first increment. G0 reserves up to three existing CI validation runs within
+its compute ceiling; runner temporary build space is governed by the existing CI
+jobs, while the 250 MiB G0 ceiling covers retained registry/evaluation evidence.
+Each linked issue also specifies process
 memory/time/output limits where execution is in scope, stopping rules, artifact
 requirements and exclusions. Hours mean engineering effort, CPU hours aggregate
 compute and GiB local disk ceiling. No GPU/API spending, live model calls or
@@ -20,7 +23,7 @@ exceeding it. No automatic continuation into the next gate after a spike.
 
 | Work | Dependency | Initial budget | Required output |
 | --- | --- | --- | --- |
-| [#35 G0 policy/registry](https://github.com/toddwbucy/Aletharsis/issues/35) | Native #17 delivered | 8 h / 0.5 CPU h / 250 MiB | Reviewed ADR, validated registry, desk assessment, child issues and roadmap |
+| [#35 G0 policy/registry](https://github.com/toddwbucy/Aletharsis/issues/35) | Native #17 delivered | 8 h / 2 CPU h / 250 MiB retained evidence | Reviewed ADR, validated registry, desk assessment, child issues and roadmap |
 | [#36 G1 adapter contracts](https://github.com/toddwbucy/Aletharsis/issues/36) | G0; informed by G2 | 12 h / 1 CPU h / 1 GiB | Input/binding maps, bounded raw responses, trust snapshots, isolation/lifecycle and conformance fixtures |
 | [#37 G2 carrier](https://github.com/toddwbucy/Aletharsis/issues/37) | G0; adoption also needs G1/G6 | 12 h / 2 CPU h / 2 GiB | Three claimed text carriers, normative/independent vectors, malformed limits, exact coordinates and adoption recommendation |
 | [#38 G2 verifier](https://github.com/toddwbucy/Aletharsis/issues/38) | G0; adoption also needs G1/G6 | 16 h / 4 CPU h / 8 GiB | Byte API, ABI/platform/size/resources, telemetry/preference isolation, signature/binding/trust and placement recommendation |

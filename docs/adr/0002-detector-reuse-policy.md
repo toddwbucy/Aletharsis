@@ -2,7 +2,7 @@
 
 | Attribute | Value |
 | --- | --- |
-| Status | Proposed for G0 acceptance through independent PR review |
+| Status | Proposed until reviewed PR #46 merges; accepted by that merge (G0 only) |
 | Scope | [Epic #21](https://github.com/toddwbucy/Aletharsis/issues/21), [G0 #35](https://github.com/toddwbucy/Aletharsis/issues/35) |
 | Prerequisite | Accepted native evidence contracts under #17; adapter-specific G1 remains open |
 | Artifacts | [Registry contract and inventory](../reuse/README.md), [work breakdown](../reuse/plan.md) |
