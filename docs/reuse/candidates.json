@@ -1,0 +1,750 @@
+{
+  "schema_version": "1.0",
+  "epic": "https://github.com/toddwbucy/Aletharsis/issues/21",
+  "components": [
+    {
+      "id": "encypherai--c2pa-text",
+      "repository": "https://github.com/encypherai/c2pa-text",
+      "component": "Text provenance carrier extraction only; no signing or cleanup.",
+      "integration_class": "direct_dependency",
+      "adoption_status": "proposed",
+      "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/37",
+      "maintenance_owner": "toddwbucy",
+      "implementer": "Codex",
+      "technical_reviewer": "coderabbitai",
+      "acceptance_owner": "toddwbucy",
+      "pin": {
+        "commit": "ad4eaee3705ea5edb610ab37041be496d012e583",
+        "source_tree_git_sha1": "3d02e892427fda36c7e799cdbbd521f80e3cf36c",
+        "tag": null,
+        "artifact_sha256": null
+      },
+      "license": {
+        "spdx": "MIT",
+        "upstream_path": "LICENSE",
+        "source_url": "https://github.com/encypherai/c2pa-text/blob/ad4eaee3705ea5edb610ab37041be496d012e583/LICENSE",
+        "retained_path": "licenses/encypherai--c2pa-text.txt",
+        "sha256": "69e809a12ae0fd3df05046880b9073cc4e72f4ccb26a3122f8ceb80d66ca3022",
+        "scope": "Top-level license only; component, dependency, fixture, dataset and model rights require evaluation.",
+        "clearance": "pending"
+      },
+      "redistribution": {
+        "upstream_code": false,
+        "fixtures": false,
+        "notes": "Only the license text is retained at G0. No executable source, vectors, model weights or datasets imported."
+      },
+      "runtime": {
+        "assessment": "unverified",
+        "dependencies": "Go submodule claimed by pinned README; exact transitive closure unverified.",
+        "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
+        "side_effects": "Carrier decoding/normalization may change representations; map to acquired bytes."
+      },
+      "supported_scope": {
+        "production": [],
+        "proposed": "Text provenance carrier extraction only; no signing or cleanup."
+      },
+      "vectors": {
+        "status": "not_imported",
+        "provenance": [],
+        "requirement": "Before use record origin/license, exact artifact bytes SHA-256, generator pin and raw/rendered/post-processed lineage with independent expected observations."
+      },
+      "assessment": {
+        "observed_on": "2026-09-20",
+        "readme_url": "https://github.com/encypherai/c2pa-text/blob/ad4eaee3705ea5edb610ab37041be496d012e583/README.md",
+        "archived": false,
+        "last_push": "2026-06-20T10:50:27Z",
+        "release_tag": null,
+        "release_url": null,
+        "release_lookup": "github_latest_404",
+        "security_policy_paths": [
+          "SECURITY.md"
+        ],
+        "build_paths": [
+          ".github/workflows/auto-assign.yaml",
+          ".github/workflows/c2pa-text.yaml",
+          ".github/workflows/sensitive-content-guard.yml"
+        ],
+        "tree_listing_truncated": false,
+        "build_reproducibility": "not_tested",
+        "vulnerability_review": "pending",
+        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+      },
+      "disable_or_replace": "Disable adapter and retain native Unicode observations; substitute independently validated carrier extractor.",
+      "decision": null
+    },
+    {
+      "id": "encypherai--encypher-c2pa",
+      "repository": "https://github.com/encypherai/encypher-c2pa",
+      "component": "Verification candidate; in-process versus sidecar remains undecided.",
+      "integration_class": "external_adapter",
+      "adoption_status": "proposed",
+      "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/38",
+      "maintenance_owner": "toddwbucy",
+      "implementer": "Codex",
+      "technical_reviewer": "coderabbitai",
+      "acceptance_owner": "toddwbucy",
+      "pin": {
+        "commit": "da85f07f2e0d084854be30dd3dc89dc0d2a9cde9",
+        "source_tree_git_sha1": "ad0cd8c664fb1c5a31b6632a44ce2bce94b40a5d",
+        "tag": null,
+        "artifact_sha256": null
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "upstream_path": "LICENSE",
+        "source_url": "https://github.com/encypherai/encypher-c2pa/blob/da85f07f2e0d084854be30dd3dc89dc0d2a9cde9/LICENSE",
+        "retained_path": "licenses/encypherai--encypher-c2pa.txt",
+        "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+        "scope": "Top-level license only; component, dependency, fixture, dataset and model rights require evaluation.",
+        "clearance": "pending"
+      },
+      "redistribution": {
+        "upstream_code": false,
+        "fixtures": false,
+        "notes": "Only the license text is retained at G0. No executable source, vectors, model weights or datasets imported."
+      },
+      "runtime": {
+        "assessment": "unverified",
+        "dependencies": "Rust core and Go binding claimed; ABI, linked libraries and native builds unverified.",
+        "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
+        "side_effects": "README documents interactive telemetry opt-in and persisted preferences; block adoption until explicit controls are tested."
+      },
+      "supported_scope": {
+        "production": [],
+        "proposed": "Verification candidate; in-process versus sidecar remains undecided."
+      },
+      "vectors": {
+        "status": "not_imported",
+        "provenance": [],
+        "requirement": "Before use record origin/license, exact artifact bytes SHA-256, generator pin and raw/rendered/post-processed lineage with independent expected observations."
+      },
+      "assessment": {
+        "observed_on": "2026-09-20",
+        "readme_url": "https://github.com/encypherai/encypher-c2pa/blob/da85f07f2e0d084854be30dd3dc89dc0d2a9cde9/README.md",
+        "archived": false,
+        "last_push": "2026-09-03T10:17:55Z",
+        "release_tag": "v1.0.5",
+        "release_url": "https://github.com/encypherai/encypher-c2pa/releases/tag/v1.0.5",
+        "release_lookup": "found",
+        "security_policy_paths": [
+          "SECURITY.md"
+        ],
+        "build_paths": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/release.yml",
+          "Cargo.toml"
+        ],
+        "tree_listing_truncated": false,
+        "build_reproducibility": "not_tested",
+        "vulnerability_review": "pending",
+        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+      },
+      "disable_or_replace": "Disable verifier and report verification unavailable; preserve extracted credentials; alternative verifier needs same gates.",
+      "decision": null
+    },
+    {
+      "id": "juriku--hidden-characters-detector",
+      "repository": "https://github.com/juriku/hidden-characters-detector",
+      "component": "Unicode inventory and legitimate-use comparison.",
+      "integration_class": "reference_oracle",
+      "adoption_status": "proposed",
+      "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/39",
+      "maintenance_owner": "toddwbucy",
+      "implementer": "Codex",
+      "technical_reviewer": "coderabbitai",
+      "acceptance_owner": "toddwbucy",
+      "pin": {
+        "commit": "c75a379a181750eab788cf2eb668109caa8b88e6",
+        "source_tree_git_sha1": "20628b514dd83b6ba8939b28e63e7fe48c37189c",
+        "tag": null,
+        "artifact_sha256": null
+      },
+      "license": {
+        "spdx": "MIT",
+        "upstream_path": "LICENSE",
+        "source_url": "https://github.com/juriku/hidden-characters-detector/blob/c75a379a181750eab788cf2eb668109caa8b88e6/LICENSE",
+        "retained_path": "licenses/juriku--hidden-characters-detector.txt",
+        "sha256": "3ddd8693eccbbd1e6200e0aa0e3b6342b66ef9caf05e4951f8383779f6d977aa",
+        "scope": "Top-level license only; component, dependency, fixture, dataset and model rights require evaluation.",
+        "clearance": "pending"
+      },
+      "redistribution": {
+        "upstream_code": false,
+        "fixtures": false,
+        "notes": "Only the license text is retained at G0. No executable source, vectors, model weights or datasets imported."
+      },
+      "runtime": {
+        "assessment": "unverified",
+        "dependencies": "Python requirements present; dependency closure unverified.",
+        "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
+        "side_effects": "README marks deprecated in favor of juriku/untrace; cleanup commands excluded. Successor needs its own pin/review."
+      },
+      "supported_scope": {
+        "production": [],
+        "proposed": "Unicode inventory and legitimate-use comparison."
+      },
+      "vectors": {
+        "status": "not_imported",
+        "provenance": [],
+        "requirement": "Before use record origin/license, exact artifact bytes SHA-256, generator pin and raw/rendered/post-processed lineage with independent expected observations."
+      },
+      "assessment": {
+        "observed_on": "2026-09-20",
+        "readme_url": "https://github.com/juriku/hidden-characters-detector/blob/c75a379a181750eab788cf2eb668109caa8b88e6/README.md",
+        "archived": false,
+        "last_push": "2026-08-17T09:05:06Z",
+        "release_tag": null,
+        "release_url": null,
+        "release_lookup": "github_latest_404",
+        "security_policy_paths": [],
+        "build_paths": [
+          ".github/workflows/test-pr.yml",
+          "requirements.txt"
+        ],
+        "tree_listing_truncated": false,
+        "build_reproducibility": "not_tested",
+        "vulnerability_review": "pending",
+        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+      },
+      "disable_or_replace": "Remove comparator from dev harness; retain licensed fixtures and independent expectations.",
+      "decision": null
+    },
+    {
+      "id": "hiberius--hiberius-unicode-toolkit",
+      "repository": "https://github.com/Hiberius/hiberius-unicode-toolkit",
+      "component": "Unicode legitimate-use and known-carrier comparison.",
+      "integration_class": "reference_oracle",
+      "adoption_status": "proposed",
+      "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/39",
+      "maintenance_owner": "toddwbucy",
+      "implementer": "Codex",
+      "technical_reviewer": "coderabbitai",
+      "acceptance_owner": "toddwbucy",
+      "pin": {
+        "commit": "1d86b8d951fca3cd7efbe637267f57e391dd7570",
+        "source_tree_git_sha1": "cda2c47a13702ea31b616ebd356e303f25f7e878",
+        "tag": null,
+        "artifact_sha256": null
+      },
+      "license": {
+        "spdx": "MIT",
+        "upstream_path": "LICENSE",
+        "source_url": "https://github.com/Hiberius/hiberius-unicode-toolkit/blob/1d86b8d951fca3cd7efbe637267f57e391dd7570/LICENSE",
+        "retained_path": "licenses/hiberius--hiberius-unicode-toolkit.txt",
+        "sha256": "ae3bda1c201785478bfb46574b1493467e2799b9ed8000ca44ae9979ff421d3b",
+        "scope": "Top-level license only; component, dependency, fixture, dataset and model rights require evaluation.",
+        "clearance": "pending"
+      },
+      "redistribution": {
+        "upstream_code": false,
+        "fixtures": false,
+        "notes": "Only the license text is retained at G0. No executable source, vectors, model weights or datasets imported."
+      },
+      "runtime": {
+        "assessment": "unverified",
+        "dependencies": "README claims standalone browser JavaScript; no runtime adopted.",
+        "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
+        "side_effects": "UI also exposes sanitization and encoding; evaluation must isolate read-only inspection."
+      },
+      "supported_scope": {
+        "production": [],
+        "proposed": "Unicode legitimate-use and known-carrier comparison."
+      },
+      "vectors": {
+        "status": "not_imported",
+        "provenance": [],
+        "requirement": "Before use record origin/license, exact artifact bytes SHA-256, generator pin and raw/rendered/post-processed lineage with independent expected observations."
+      },
+      "assessment": {
+        "observed_on": "2026-09-20",
+        "readme_url": "https://github.com/Hiberius/hiberius-unicode-toolkit/blob/1d86b8d951fca3cd7efbe637267f57e391dd7570/README.md",
+        "archived": false,
+        "last_push": "2026-09-18T01:44:21Z",
+        "release_tag": null,
+        "release_url": null,
+        "release_lookup": "github_latest_404",
+        "security_policy_paths": [
+          "SECURITY.md"
+        ],
+        "build_paths": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/codeql.yml"
+        ],
+        "tree_listing_truncated": false,
+        "build_reproducibility": "not_tested",
+        "vulnerability_review": "pending",
+        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+      },
+      "disable_or_replace": "Remove dev comparator; independent expected corpus remains usable.",
+      "decision": null
+    },
+    {
+      "id": "yeshan-jun--invisible-character-detector",
+      "repository": "https://github.com/yeshan-jun/invisible-character-detector",
+      "component": "Unicode catalog, boundary and reveal comparison.",
+      "integration_class": "reference_oracle",
+      "adoption_status": "proposed",
+      "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/39",
+      "maintenance_owner": "toddwbucy",
+      "implementer": "Codex",
+      "technical_reviewer": "coderabbitai",
+      "acceptance_owner": "toddwbucy",
+      "pin": {
+        "commit": "35bb1cb3a7ccbcd40fc88daab0a6add85f0b64be",
+        "source_tree_git_sha1": "b061f6a129cb5dfde1ec10bc3c0dd93dbdaf7329",
+        "tag": null,
+        "artifact_sha256": null
+      },
+      "license": {
+        "spdx": "MIT",
+        "upstream_path": "LICENSE",
+        "source_url": "https://github.com/yeshan-jun/invisible-character-detector/blob/35bb1cb3a7ccbcd40fc88daab0a6add85f0b64be/LICENSE",
+        "retained_path": "licenses/yeshan-jun--invisible-character-detector.txt",
+        "sha256": "6605374a263cfe09196ae6933ad96198356cf1cf4bbfaef6f3be69569c328fc2",
+        "scope": "Top-level license only; component, dependency, fixture, dataset and model rights require evaluation.",
+        "clearance": "pending"
+      },
+      "redistribution": {
+        "upstream_code": false,
+        "fixtures": false,
+        "notes": "Only the license text is retained at G0. No executable source, vectors, model weights or datasets imported."
+      },
+      "runtime": {
+        "assessment": "unverified",
+        "dependencies": "Browser application with build/deploy workflow; dependency closure unverified.",
+        "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
+        "side_effects": "Replacement/insertion UI is outside comparison scope."
+      },
+      "supported_scope": {
+        "production": [],
+        "proposed": "Unicode catalog, boundary and reveal comparison."
+      },
+      "vectors": {
+        "status": "not_imported",
+        "provenance": [],
+        "requirement": "Before use record origin/license, exact artifact bytes SHA-256, generator pin and raw/rendered/post-processed lineage with independent expected observations."
+      },
+      "assessment": {
+        "observed_on": "2026-09-20",
+        "readme_url": "https://github.com/yeshan-jun/invisible-character-detector/blob/35bb1cb3a7ccbcd40fc88daab0a6add85f0b64be/README.md",
+        "archived": false,
+        "last_push": "2026-07-25T17:13:36Z",
+        "release_tag": null,
+        "release_url": null,
+        "release_lookup": "github_latest_404",
+        "security_policy_paths": [],
+        "build_paths": [
+          ".github/workflows/deploy-page.yml"
+        ],
+        "tree_listing_truncated": false,
+        "build_reproducibility": "not_tested",
+        "vulnerability_review": "pending",
+        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+      },
+      "disable_or_replace": "Remove dev comparator; retain curated independent expectations.",
+      "decision": null
+    },
+    {
+      "id": "decalage2--oletools",
+      "repository": "https://github.com/decalage2/oletools",
+      "component": "Office metadata, package/embedded-object comparison.",
+      "integration_class": "reference_oracle",
+      "adoption_status": "proposed",
+      "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/40",
+      "maintenance_owner": "toddwbucy",
+      "implementer": "Codex",
+      "technical_reviewer": "coderabbitai",
+      "acceptance_owner": "toddwbucy",
+      "pin": {
+        "commit": "ec10260989dbc48b9109e3d05d22beee19cf2333",
+        "source_tree_git_sha1": "27181a0be0b8dce59a58d208f0e8f027ac11a4a9",
+        "tag": null,
+        "artifact_sha256": null
+      },
+      "license": {
+        "spdx": "NOASSERTION",
+        "upstream_path": "LICENSE.md",
+        "source_url": "https://github.com/decalage2/oletools/blob/ec10260989dbc48b9109e3d05d22beee19cf2333/LICENSE.md",
+        "retained_path": "licenses/decalage2--oletools.txt",
+        "sha256": "558732356f0c4fce779f9805dc946e9329b3e1753da13dc9f8c652f7ccebeb11",
+        "scope": "Top-level license only; component, dependency, fixture, dataset and model rights require evaluation.",
+        "clearance": "pending"
+      },
+      "redistribution": {
+        "upstream_code": false,
+        "fixtures": false,
+        "notes": "Only the license text is retained at G0. No executable source, vectors, model weights or datasets imported."
+      },
+      "runtime": {
+        "assessment": "unverified",
+        "dependencies": "Python requirements; thirdparty licensing and transitive closure unresolved.",
+        "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
+        "side_effects": "README mentions logged passwords and decryption output; use synthetic credentials and bounded read-only operations only."
+      },
+      "supported_scope": {
+        "production": [],
+        "proposed": "Office metadata, package/embedded-object comparison."
+      },
+      "vectors": {
+        "status": "not_imported",
+        "provenance": [],
+        "requirement": "Before use record origin/license, exact artifact bytes SHA-256, generator pin and raw/rendered/post-processed lineage with independent expected observations."
+      },
+      "assessment": {
+        "observed_on": "2026-09-20",
+        "readme_url": "https://github.com/decalage2/oletools/blob/ec10260989dbc48b9109e3d05d22beee19cf2333/README.md",
+        "archived": false,
+        "last_push": "2026-02-14T19:42:44Z",
+        "release_tag": "v0.60.2",
+        "release_url": "https://github.com/decalage2/oletools/releases/tag/v0.60.2",
+        "release_lookup": "found",
+        "security_policy_paths": [
+          "SECURITY.md"
+        ],
+        "build_paths": [
+          ".github/workflows/unittests.yml",
+          "requirements.txt"
+        ],
+        "tree_listing_truncated": false,
+        "build_reproducibility": "not_tested",
+        "vulnerability_review": "pending",
+        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+      },
+      "disable_or_replace": "Disable comparator; retain independent Office fixtures; select another licensed oracle if needed.",
+      "decision": null
+    },
+    {
+      "id": "ridpath--pdfscapel",
+      "repository": "https://github.com/ridpath/pdfscapel",
+      "component": "PDF object/stream/revision comparison.",
+      "integration_class": "reference_oracle",
+      "adoption_status": "proposed",
+      "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/41",
+      "maintenance_owner": "toddwbucy",
+      "implementer": "Codex",
+      "technical_reviewer": "coderabbitai",
+      "acceptance_owner": "toddwbucy",
+      "pin": {
+        "commit": "7d14ac520e3e14c52c1732f94d4251152b1a9544",
+        "source_tree_git_sha1": "8c926eab8eaab4d5b4c2255b3d15bc66b6b21d7c",
+        "tag": null,
+        "artifact_sha256": null
+      },
+      "license": {
+        "spdx": "MIT",
+        "upstream_path": "LICENSE",
+        "source_url": "https://github.com/ridpath/pdfscapel/blob/7d14ac520e3e14c52c1732f94d4251152b1a9544/LICENSE",
+        "retained_path": "licenses/ridpath--pdfscapel.txt",
+        "sha256": "8961c5c14cf4e3823a6aeb32b9cc8c8f55bef1fcba4d3108569e9af7d4b84a98",
+        "scope": "Top-level license only; component, dependency, fixture, dataset and model rights require evaluation.",
+        "clearance": "pending"
+      },
+      "redistribution": {
+        "upstream_code": false,
+        "fixtures": false,
+        "notes": "Only the license text is retained at G0. No executable source, vectors, model weights or datasets imported."
+      },
+      "runtime": {
+        "assessment": "unverified",
+        "dependencies": "Python pyproject present; optional executables/dependencies unverified.",
+        "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
+        "side_effects": "README includes repair/generate/solve commands; only reviewed inspection commands allowed."
+      },
+      "supported_scope": {
+        "production": [],
+        "proposed": "PDF object/stream/revision comparison."
+      },
+      "vectors": {
+        "status": "not_imported",
+        "provenance": [],
+        "requirement": "Before use record origin/license, exact artifact bytes SHA-256, generator pin and raw/rendered/post-processed lineage with independent expected observations."
+      },
+      "assessment": {
+        "observed_on": "2026-09-20",
+        "readme_url": "https://github.com/ridpath/pdfscapel/blob/7d14ac520e3e14c52c1732f94d4251152b1a9544/README.md",
+        "archived": false,
+        "last_push": "2026-02-03T20:14:16Z",
+        "release_tag": null,
+        "release_url": null,
+        "release_lookup": "github_latest_404",
+        "security_policy_paths": [],
+        "build_paths": [
+          "pyproject.toml"
+        ],
+        "tree_listing_truncated": false,
+        "build_reproducibility": "not_tested",
+        "vulnerability_review": "pending",
+        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+      },
+      "disable_or_replace": "Disable comparator without affecting native parser; use another independent implementation.",
+      "decision": null
+    },
+    {
+      "id": "thu-bpm--markllm",
+      "repository": "https://github.com/THU-BPM/MarkLLM",
+      "component": "One configured statistical detector; optional research oracle.",
+      "integration_class": "external_adapter",
+      "adoption_status": "proposed",
+      "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/42",
+      "maintenance_owner": "toddwbucy",
+      "implementer": "Codex",
+      "technical_reviewer": "coderabbitai",
+      "acceptance_owner": "toddwbucy",
+      "pin": {
+        "commit": "0a4fe8c642b31b8a8c4993615b1c70a0c300d918",
+        "source_tree_git_sha1": "dab37566abcc913278138783dbb1bb0ef60152f3",
+        "tag": null,
+        "artifact_sha256": null
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "upstream_path": "LICENSE",
+        "source_url": "https://github.com/THU-BPM/MarkLLM/blob/0a4fe8c642b31b8a8c4993615b1c70a0c300d918/LICENSE",
+        "retained_path": "licenses/thu-bpm--markllm.txt",
+        "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "scope": "Top-level license only; component, dependency, fixture, dataset and model rights require evaluation.",
+        "clearance": "pending"
+      },
+      "redistribution": {
+        "upstream_code": false,
+        "fixtures": false,
+        "notes": "Only the license text is retained at G0. No executable source, vectors, model weights or datasets imported."
+      },
+      "runtime": {
+        "assessment": "unverified",
+        "dependencies": "Python requirements; model/tokenizer/ML environment and GPU needs algorithm dependent, unverified.",
+        "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
+        "side_effects": "Model downloads, generation and key handling need explicit provisioning/isolation; not Claude detector access."
+      },
+      "supported_scope": {
+        "production": [],
+        "proposed": "One configured statistical detector; optional research oracle."
+      },
+      "vectors": {
+        "status": "not_imported",
+        "provenance": [],
+        "requirement": "Before use record origin/license, exact artifact bytes SHA-256, generator pin and raw/rendered/post-processed lineage with independent expected observations."
+      },
+      "assessment": {
+        "observed_on": "2026-09-20",
+        "readme_url": "https://github.com/THU-BPM/MarkLLM/blob/0a4fe8c642b31b8a8c4993615b1c70a0c300d918/README.md",
+        "archived": false,
+        "last_push": "2026-09-05T04:10:00Z",
+        "release_tag": null,
+        "release_url": null,
+        "release_lookup": "github_latest_404",
+        "security_policy_paths": [],
+        "build_paths": [
+          "requirements.txt"
+        ],
+        "tree_listing_truncated": false,
+        "build_reproducibility": "not_tested",
+        "vulnerability_review": "pending",
+        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+      },
+      "disable_or_replace": "Disable sidecar and report capability unavailable; core native auditing must still pass.",
+      "decision": null
+    },
+    {
+      "id": "pasquini-dario--llmmap",
+      "repository": "https://github.com/pasquini-dario/LLMmap",
+      "component": "Active generator probing comparator, not passive attribution.",
+      "integration_class": "research_prior_art",
+      "adoption_status": "proposed",
+      "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/44",
+      "maintenance_owner": "toddwbucy",
+      "implementer": "Codex",
+      "technical_reviewer": "coderabbitai",
+      "acceptance_owner": "toddwbucy",
+      "pin": {
+        "commit": "f661d550e3409d1bdf7e00b34bcec15296c5215e",
+        "source_tree_git_sha1": "68eb8608f113f5569cd2ccc769f7812b4f313b44",
+        "tag": null,
+        "artifact_sha256": null
+      },
+      "license": {
+        "spdx": "MIT",
+        "upstream_path": "LICENSE",
+        "source_url": "https://github.com/pasquini-dario/LLMmap/blob/f661d550e3409d1bdf7e00b34bcec15296c5215e/LICENSE",
+        "retained_path": "licenses/pasquini-dario--llmmap.txt",
+        "sha256": "5c1122acb8e96c6c44737c202210bb89381a2d18803c3cb377550bcbdfa85df5",
+        "scope": "Top-level license only; component, dependency, fixture, dataset and model rights require evaluation.",
+        "clearance": "pending"
+      },
+      "redistribution": {
+        "upstream_code": false,
+        "fixtures": false,
+        "notes": "Only the license text is retained at G0. No executable source, vectors, model weights or datasets imported."
+      },
+      "runtime": {
+        "assessment": "unverified",
+        "dependencies": "Python/model runtime; model/service dependencies unverified.",
+        "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
+        "side_effects": "README describes trust_remote_code=True in model loading; do not execute without separately reviewed isolation/configuration."
+      },
+      "supported_scope": {
+        "production": [],
+        "proposed": "Active generator probing comparator, not passive attribution."
+      },
+      "vectors": {
+        "status": "not_imported",
+        "provenance": [],
+        "requirement": "Before use record origin/license, exact artifact bytes SHA-256, generator pin and raw/rendered/post-processed lineage with independent expected observations."
+      },
+      "assessment": {
+        "observed_on": "2026-09-20",
+        "readme_url": "https://github.com/pasquini-dario/LLMmap/blob/f661d550e3409d1bdf7e00b34bcec15296c5215e/README.md",
+        "archived": false,
+        "last_push": "2025-07-24T13:07:49Z",
+        "release_tag": null,
+        "release_url": null,
+        "release_lookup": "github_latest_404",
+        "security_policy_paths": [],
+        "build_paths": [
+          "requirements.txt"
+        ],
+        "tree_listing_truncated": false,
+        "build_reproducibility": "not_tested",
+        "vulnerability_review": "pending",
+        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+      },
+      "disable_or_replace": "Drop research comparator; publish inconclusive outcome without changing production auditing.",
+      "decision": null
+    },
+    {
+      "id": "dreamor--llm-fingerprint",
+      "repository": "https://github.com/dreamor/llm-fingerprint",
+      "component": "Active fingerprint research comparator.",
+      "integration_class": "research_prior_art",
+      "adoption_status": "proposed",
+      "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/44",
+      "maintenance_owner": "toddwbucy",
+      "implementer": "Codex",
+      "technical_reviewer": "coderabbitai",
+      "acceptance_owner": "toddwbucy",
+      "pin": {
+        "commit": "133d40c117980b5c52d0873b8e25d5cc7616e043",
+        "source_tree_git_sha1": "1b667cdbe57d660fe2ba7295c26bba587fbfc049",
+        "tag": null,
+        "artifact_sha256": null
+      },
+      "license": {
+        "spdx": "MIT",
+        "upstream_path": "LICENSE",
+        "source_url": "https://github.com/dreamor/llm-fingerprint/blob/133d40c117980b5c52d0873b8e25d5cc7616e043/LICENSE",
+        "retained_path": "licenses/dreamor--llm-fingerprint.txt",
+        "sha256": "daf5fde3dd25f523e77edd5393d407c6f9c549d068fe56e7dbb58e4dcd3998da",
+        "scope": "Top-level license only; component, dependency, fixture, dataset and model rights require evaluation.",
+        "clearance": "pending"
+      },
+      "redistribution": {
+        "upstream_code": false,
+        "fixtures": false,
+        "notes": "Only the license text is retained at G0. No executable source, vectors, model weights or datasets imported."
+      },
+      "runtime": {
+        "assessment": "unverified",
+        "dependencies": "Node package/build workflow; services/datasets and transitive closure unverified.",
+        "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
+        "side_effects": "README distinguishes code MIT from research data CC-BY without resolving dataset version/rights; no data import yet."
+      },
+      "supported_scope": {
+        "production": [],
+        "proposed": "Active fingerprint research comparator."
+      },
+      "vectors": {
+        "status": "not_imported",
+        "provenance": [],
+        "requirement": "Before use record origin/license, exact artifact bytes SHA-256, generator pin and raw/rendered/post-processed lineage with independent expected observations."
+      },
+      "assessment": {
+        "observed_on": "2026-09-20",
+        "readme_url": "https://github.com/dreamor/llm-fingerprint/blob/133d40c117980b5c52d0873b8e25d5cc7616e043/README.md",
+        "archived": false,
+        "last_push": "2026-07-30T05:45:34Z",
+        "release_tag": "v0.4.0",
+        "release_url": "https://github.com/dreamor/llm-fingerprint/releases/tag/v0.4.0",
+        "release_lookup": "found",
+        "security_policy_paths": [],
+        "build_paths": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/publish-npm.yml",
+          "package.json"
+        ],
+        "tree_listing_truncated": false,
+        "build_reproducibility": "not_tested",
+        "vulnerability_review": "pending",
+        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+      },
+      "disable_or_replace": "Replace research comparator or stop experiment; no production capability affected.",
+      "decision": null
+    },
+    {
+      "id": "clevis22--stegzero",
+      "repository": "https://github.com/Clevis22/StegZero",
+      "component": "Prior art or external adversarial fixture generator only.",
+      "integration_class": "research_prior_art",
+      "adoption_status": "proposed",
+      "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/39",
+      "maintenance_owner": "toddwbucy",
+      "implementer": "Codex",
+      "technical_reviewer": "coderabbitai",
+      "acceptance_owner": "toddwbucy",
+      "pin": {
+        "commit": "bee97748dcf6044c88e0f03e1f52d292448477ce",
+        "source_tree_git_sha1": "1afef6bb21dd30087716cec7478e5f3867ef5e76",
+        "tag": null,
+        "artifact_sha256": null
+      },
+      "license": {
+        "spdx": "NOASSERTION",
+        "upstream_path": "LICENSE",
+        "source_url": "https://github.com/Clevis22/StegZero/blob/bee97748dcf6044c88e0f03e1f52d292448477ce/LICENSE",
+        "retained_path": "licenses/clevis22--stegzero.txt",
+        "sha256": "20b067f86de375aae6db0f283ab2e65de24d537733b89bd58432c101259d84cf",
+        "scope": "Top-level license only; component, dependency, fixture, dataset and model rights require evaluation.",
+        "clearance": "pending"
+      },
+      "redistribution": {
+        "upstream_code": false,
+        "fixtures": false,
+        "notes": "Only the license text is retained at G0. No executable source, vectors, model weights or datasets imported."
+      },
+      "runtime": {
+        "assessment": "unverified",
+        "dependencies": "JavaScript package; no runtime adopted.",
+        "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
+        "side_effects": "AGPL license text observed; source copying/redistribution not approved. External execution does not settle legal obligations."
+      },
+      "supported_scope": {
+        "production": [],
+        "proposed": "Prior art or external adversarial fixture generator only."
+      },
+      "vectors": {
+        "status": "not_imported",
+        "provenance": [],
+        "requirement": "Before use record origin/license, exact artifact bytes SHA-256, generator pin and raw/rendered/post-processed lineage with independent expected observations."
+      },
+      "assessment": {
+        "observed_on": "2026-09-20",
+        "readme_url": "https://github.com/Clevis22/StegZero/blob/bee97748dcf6044c88e0f03e1f52d292448477ce/README.md",
+        "archived": false,
+        "last_push": "2026-09-19T15:25:08Z",
+        "release_tag": null,
+        "release_url": null,
+        "release_lookup": "github_latest_404",
+        "security_policy_paths": [],
+        "build_paths": [
+          ".github/workflows/update-sitemap.yml",
+          "package.json"
+        ],
+        "tree_listing_truncated": false,
+        "build_reproducibility": "not_tested",
+        "vulnerability_review": "pending",
+        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+      },
+      "disable_or_replace": "Exclude tool; independently implement documented test vectors only after rights review.",
+      "decision": null
+    }
+  ]
+}

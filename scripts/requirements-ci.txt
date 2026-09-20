@@ -10,4 +10,7 @@ Pygments==2.21.0
 pytest==9.1.1
 referencing==0.37.0
 rpds-py==2026.6.3
+# Enforce JSON Schema date-time formats in the offline reuse registry tests.
+rfc3339-validator==0.1.4
+six==1.17.0
 typing_extensions==4.16.0

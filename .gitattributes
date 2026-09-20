@@ -15,3 +15,6 @@ tests/contracts/fixtures/** -text
 tests/contracts/identity-vectors.json -text
 # Independently generated ECMAScript numeric identity oracle.
 internal/identity/testdata/*.jsonl -text
+
+# Exact upstream license evidence must retain original byte hashes.
+docs/reuse/licenses/* -text whitespace=-blank-at-eol,-blank-at-eof

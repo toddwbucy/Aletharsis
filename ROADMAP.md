@@ -78,6 +78,13 @@ data remain as evidence, and Python utilities are test-only.
 
 ## Gated detector reuse program
 
+G0 planning is tracked in [#35](https://github.com/toddwbucy/Aletharsis/issues/35):
+[reuse policy](docs/adr/0002-detector-reuse-policy.md),
+[versioned candidate registry](docs/reuse/README.md),
+[maintenance assessment](docs/reuse/assessment.md) and
+[bounded work breakdown #36–45](docs/reuse/plan.md).
+These planning records do not approve any upstream detector.
+
 [Epic #21](https://github.com/toddwbucy/Aletharsis/issues/21) coordinates upstream
 reuse across Aletharsis, WeaverTools and isolated comparison/sidecar environments.
 Its principle is **reuse detectors; own the evidence**. The epic is a plan, not
