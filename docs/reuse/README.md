@@ -6,7 +6,9 @@ to execute tools. See [ADR-0002](../adr/0002-detector-reuse-policy.md),
 [assessment](assessment.md) and [bounded work plan](plan.md).
 
 `candidates.json` conforms to [registry schema 1.0](../../schemas/reuse-registry.schema.json).
-All eleven initial records are proposed, with no shipped code or imported vectors.
+The G0 snapshot recorded eleven proposed candidates. Current states are in the
+registry; no detector code or upstream vectors are shipped. See the first
+[c2pa-text feasibility study](evaluations/c2pa-text.md) for an evaluating candidate.
 The existing [JSON-schema utility dependency](../dependencies/README.md) has a
 separate adopted dependency record; this detector inventory neither reapproves nor
 replaces that record or `go.sum`.

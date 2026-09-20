@@ -1,0 +1,6 @@
+Running as unit: aletharsis-g2-carrier-build.service
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 24.016s
+             CPU time consumed: 23.945s
+                   Memory peak: 416.7M (swap: 0B)

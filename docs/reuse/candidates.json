@@ -7,7 +7,7 @@
       "repository": "https://github.com/encypherai/c2pa-text",
       "component": "Text provenance carrier extraction only; no signing or cleanup.",
       "integration_class": "direct_dependency",
-      "adoption_status": "proposed",
+      "adoption_status": "evaluating",
       "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/37",
       "maintenance_owner": "toddwbucy",
       "implementer": "Codex",
@@ -17,7 +17,7 @@
         "commit": "ad4eaee3705ea5edb610ab37041be496d012e583",
         "source_tree_git_sha1": "3d02e892427fda36c7e799cdbbd521f80e3cf36c",
         "tag": null,
-        "artifact_sha256": null
+        "artifact_sha256": "e66fb4ff79e9807104620ae4797b6ad2ed17d097b85f9001eb086a81e487ce26"
       },
       "license": {
         "spdx": "MIT",
@@ -35,9 +35,9 @@
       },
       "runtime": {
         "assessment": "unverified",
-        "dependencies": "Go submodule claimed by pinned README; exact transitive closure unverified.",
+        "dependencies": "Pinned Go v3 submodule (README v2 example is stale); sole dependency golang.org/x/text v0.14.0. Linux/amd64 offline probe built; no production adoption.",
         "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
-        "side_effects": "Carrier decoding/normalization may change representations; map to acquired bytes."
+        "side_effects": "ExtractManifest returns raw-input UTF-8 offsets but an NFC clean-text derivative; structured/HTML APIs omit spans. HTML lexical matching failed eight independent host-syntax/placement cases. No network or source modifications observed in the bounded isolated study."
       },
       "supported_scope": {
         "production": [],
@@ -65,9 +65,9 @@
           ".github/workflows/sensitive-content-guard.yml"
         ],
         "tree_listing_truncated": false,
-        "build_reproducibility": "not_tested",
+        "build_reproducibility": "verified",
         "vulnerability_review": "pending",
-        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+        "maintenance_conclusion": "Issue #37 bounded Linux/amd64 study: 28 upstream tests pass; 39 independent cases execute, eight HTML expectation mismatches. Two fresh builds/results compared; this is not cross-platform conformance. Recommendation revise before adoption; adapter G1 and G6 remain open."
       },
       "disable_or_replace": "Disable adapter and retain native Unicode observations; substitute independently validated carrier extractor.",
       "decision": null
