@@ -101,6 +101,12 @@ capabilities. It complements #17's contract work and #7's ongoing validation.
 | **G5 — Weaver interoperability and research** | Portable baseline exporter/consumer contract and optional fingerprint experiment | Accepted corpus identities, linked producer/consumer issues and compatibility tests; blind/open-set validation before any fingerprint claim |
 | **G6 — Release and lifecycle** | Per-component release, maintenance and rollback decision | #7 validation evidence, native supported-platform checks, conformance corpus, dependency notices and reviewed upgrade semantics |
 
+The carrier/verifier studies are accepted in PRs #47/#48, and the
+[DA-001 exchange contract](docs/specs/detector-adapter-v1.md) is accepted in PR #49.
+Next under #36 is the [report-3.0 migration design](docs/specs/report-v3-migration.md):
+review design, then full wire fixtures, Go import/emit parity, and opt-in consumer
+acceptance before any production adapter. Schema 1.0/2.0 behavior stays unchanged.
+
 C2PA is the first adoption evaluation, not an already selected production
 dependency. Feasibility can inform G1 without bypassing its acceptance gate.
 Unicode comparisons can proceed independently; Office/PDF comparisons wait for
