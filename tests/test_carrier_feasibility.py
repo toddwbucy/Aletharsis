@@ -14,8 +14,13 @@ def test_retained_artifacts_match_recorded_hashes():
     assert set(manifest["measured_files"]) == {p.name for p in ARTIFACTS.iterdir() if p.name != "manifest.json"}
     for name, digest in manifest["measured_files"].items():
         assert hashlib.sha256((ARTIFACTS / name).read_bytes()).hexdigest() == digest
-    assert manifest["reproduction_identical_results"] is True
-    assert manifest["reproduction_identical_binary"] is True
+    assert manifest["results_sha256"] == manifest["measured_files"]["results.json"]
+    for kind in ("results", "binary"):
+        primary = manifest[kind + "_sha256"]
+        reproduced = manifest["reproduction_" + kind + "_sha256"]
+        assert len(primary) == len(reproduced) == 64
+        assert manifest["reproduction_identical_" + kind] == (primary == reproduced)
+        assert primary == reproduced
 
 
 def test_independent_inputs_and_expectations_match_recorded_run():

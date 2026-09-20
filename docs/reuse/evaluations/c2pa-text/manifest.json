@@ -18,5 +18,8 @@
   "binary_sha256": "dd34a3322ca9ea86c455d62888ff94fa3f5fceb1e5449138de5c1351ebd9c497",
   "binary_size": 4396577,
   "reproduction_identical_results": true,
-  "reproduction_identical_binary": true
+  "reproduction_identical_binary": true,
+  "reproduction_binary_sha256": "dd34a3322ca9ea86c455d62888ff94fa3f5fceb1e5449138de5c1351ebd9c497",
+  "results_sha256": "b24579a87fb100deddeabfd813c4ee651f7c50740778f34ef81273667e9ba3d5",
+  "reproduction_results_sha256": "b24579a87fb100deddeabfd813c4ee651f7c50740778f34ef81273667e9ba3d5"
 }
