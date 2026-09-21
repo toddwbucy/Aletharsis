@@ -147,3 +147,12 @@ Tests exercise deterministic exact manifests, artifact identity and permissions,
 source preservation through hard-link/symlink collisions, path rejection,
 preflight budgets including manifest bytes, and write/short-write/close/cleanup
 failures. This internal primitive performs no source acquisition or CLI work.
+
+## Single-file integration
+
+The single-file CLI increment now connects acquisition, full audit evidence,
+comparison and publication using one snapshot for either report schema. See
+[the command contract and compiled-binary demonstrations](reveal-cli.md).
+Directory traversal, relative paths, JSONL and nested-corpus demonstrations remain
+unimplemented; #15 stays open. The internal bundle manifest is separate from both
+existing report wire schemas and does not introduce a remediation command.

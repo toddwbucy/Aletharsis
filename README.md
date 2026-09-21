@@ -27,6 +27,7 @@ some inputs below 8 MiB exceed those budgets and fail explicitly without a repor
 | Pattern analysis | Zero-width binary candidates, periodic insertions, long selector/tag runs and identifier/provenance candidates |
 | Text evidence | Exact extracted text, code-point and byte positions, context samples, BOMs, line endings and normalization/comparison hashes |
 | Reporting | Escaped console output, complete JSON evidence, filtered finding views and severity-based exit codes |
+| Reveal | Single-file revealed text, faithful/display diffs, coordinate mappings and hash manifest in a new private output directory |
 | Integrity | Read-only acquisition, source-change checks, rejection of symlink inputs and refusal to overwrite report destinations |
 
 TXT, Markdown, RST, CSV, JSON, XML, HTML and source-code files are inspected as
@@ -40,7 +41,7 @@ in extracted evidence. Malformed encodings fail without replacement; legacy
 encodings and BOM-less UTF-16/32 are unsupported. MIME hints do not establish
 full document validity.
 
-**Not implemented:** directory/recursive scans, JSONL, reveal/diff exports,
+**Not implemented:** directory/recursive scans, JSONL,
 DOCX/ODT/PDF parsing, structured document metadata, expected-artifact profiles,
 C2PA validation, statistical watermark detectors, model fingerprinting, the web
 workbench, saved rules or cleanup. PDF and DOCX signatures are recognized and
@@ -82,6 +83,7 @@ aletharsis audit suspicious.txt --verbose
 aletharsis audit suspicious.txt --json
 aletharsis audit suspicious.txt --schema-version 2.0 --json
 aletharsis audit suspicious.txt --output report.json
+aletharsis audit suspicious.txt --reveal-out review-new --json
 aletharsis unicode suspicious.txt
 aletharsis metadata suspicious.txt --json
 aletharsis structure suspicious.txt
@@ -94,6 +96,23 @@ aletharsis --help
 Reports contain extracted source text; handle them as evidence with the same
 sensitivity as the input. `--verbose` emits structured diagnostics on stderr.
 Console output escapes control, bidi and non-ASCII characters.
+
+`audit FILE --reveal-out NEW_DIRECTORY` publishes `report.json`, `revealed.txt`,
+`comparison.json`, `faithful.diff`, `display.diff`, and `manifest.json` from one
+acquired source snapshot. Both report schemas are supported. The output directory
+must be new; its parent must already exist, with no symlink ancestors. Files use
+mode `0600`, the directory `0700`. It cannot be combined with `--output`; the
+bundle already includes the exact report printed by `--json`.
+
+The faithful diff retains original controls and compares decoded UTF-8, not
+original UTF-16/32 bytes. Use `display.diff` for an ASCII-escaped review view.
+Neither diff is cleanup authorization. `comparison.json` retains the original,
+revealed and display mappings; literal marker-looking text remains distinguishable.
+The manifest binds source/report hashes and artifact sizes/hashes. Publication
+failures return 4 and attempt rollback; a crash may leave incomplete output, so
+verify every manifest entry before treating a bundle as complete. A stdout failure
+after successful publication also returns 4 but retains the complete bundle.
+See the [single-file reveal contract](docs/specs/reveal-cli.md).
 
 `unicode`, `metadata` and `structure` filter findings. Their summaries and exit
 codes apply to that view, but complete extracted evidence and parser failures

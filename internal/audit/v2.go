@@ -21,6 +21,9 @@ type V2Options struct {
 	InputBytes   int
 	ReportLimits identity.Limits
 	View         string
+	// RetainSnapshot exposes owned native evidence and the one acquired source
+	// buffer for presentation; neither is included in the report wire format.
+	RetainSnapshot bool
 }
 
 // V2Output contains a validated serialization and its presentation model. Callers
@@ -28,6 +31,8 @@ type V2Options struct {
 type V2Output struct {
 	Report v2.Report
 	JSON   []byte
+	Source []byte           `json:"-"`
+	Native *evidence.Report `json:"-"`
 }
 
 func DefaultV2Options() V2Options {
@@ -77,7 +82,11 @@ func runV2WithReader(ctx context.Context, path string, options V2Options, read f
 	if err != nil {
 		return nil, err
 	}
-	return &V2Output{Report: report, JSON: encoded}, nil
+	result := &V2Output{Report: report, JSON: encoded}
+	if options.RetainSnapshot && outcome.Failure == nil && trace.canceled == "" && outcome.Report.Status == "completed" && outcome.Report.File.SHA256 != nil {
+		result.Source, result.Native = trace.source, outcome.Report
+	}
+	return result, nil
 }
 func stage(role v2.Role) int {
 	switch role {

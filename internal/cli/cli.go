@@ -16,6 +16,7 @@ const help = `aletharsis — read-only text and Unicode forensic auditing
 
 Usage:
   aletharsis audit FILE [--json] [--verbose] [--output NEW_REPORT.json]
+  aletharsis audit FILE --reveal-out NEW_DIRECTORY [--json] [--schema-version 1.0|2.0]
   aletharsis unicode|metadata|structure FILE [--json] [--verbose]
   aletharsis --version
   aletharsis --help
@@ -46,7 +47,7 @@ func Run(args []string, out, errout io.Writer) int {
 	if command != "audit" && command != "unicode" && command != "metadata" && command != "structure" {
 		return failure("unknown command: " + command)
 	}
-	path, output := "", ""
+	path, output, revealOutput := "", "", ""
 	schemaVersion := "1.0"
 	jsonOutput, verbose, endFlags := false, false, false
 	for i := 1; i < len(args); i++ {
@@ -74,6 +75,13 @@ func Run(args []string, out, errout io.Writer) int {
 				i++
 				schemaVersion = args[i]
 				continue
+			case "--reveal-out":
+				if i+1 >= len(args) || args[i+1] == "" || strings.HasPrefix(args[i+1], "-") {
+					return failure("--reveal-out requires a new directory path")
+				}
+				i++
+				revealOutput = args[i]
+				continue
 			case "--output":
 				if i+1 >= len(args) || args[i+1] == "" || strings.HasPrefix(args[i+1], "-") {
 					return failure("--output requires a path")
@@ -86,6 +94,13 @@ func Run(args []string, out, errout io.Writer) int {
 				schemaVersion = strings.TrimPrefix(arg, "--schema-version=")
 				if schemaVersion != "1.0" && schemaVersion != "2.0" {
 					return failure("--schema-version requires 1.0 or 2.0")
+				}
+				continue
+			}
+			if strings.HasPrefix(arg, "--reveal-out=") {
+				revealOutput = strings.TrimPrefix(arg, "--reveal-out=")
+				if revealOutput == "" {
+					return failure("--reveal-out requires a new directory path")
 				}
 				continue
 			}
@@ -107,6 +122,12 @@ func Run(args []string, out, errout io.Writer) int {
 	}
 	if path == "" {
 		return failure("a file is required")
+	}
+	if revealOutput != "" {
+		if command != "audit" || output != "" {
+			return failure("--reveal-out requires audit and cannot be combined with --output; the bundle includes report.json")
+		}
+		return runReveal(path, revealOutput, schemaVersion, jsonOutput, verbose, out, errout)
 	}
 	if schemaVersion == "2.0" {
 		return runV2(command, path, output, jsonOutput, verbose, out, errout)
