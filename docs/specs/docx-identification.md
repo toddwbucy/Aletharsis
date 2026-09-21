@@ -131,3 +131,9 @@ full package/relationship/identification path. An additional mixed-variant regre
 also passed. This is bounded native validation, not Office conformance certification
 or an independent forensic-tool comparison. No source file or external resource was
 modified or accessed by the identification API.
+
+## Independent ODT path
+
+[OI-001](odt-identification.md) identifies ODT through its mimetype and manifest,
+without reusing OPC case equivalence or URI resolution. Both paths preserve part
+identity and expose unsupported or partial evidence before later profile integration.

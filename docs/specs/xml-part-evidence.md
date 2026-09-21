@@ -129,3 +129,10 @@ certification. No network resource, external parser, model or Office application
 OPC relationship inventory. It preserves the full parsed XML and distinguishes local
 target identity from external or unresolved declarations. It does not enable Word
 format identification, body extraction or expected-artifact classification.
+
+## Optional scalar mapping consumer
+
+[XM-001](xml-text-mappings.md) adds a separate opt-in mapped parse. It verifies
+per-scalar original part-byte regions against the parsed text, distinguishing entity
+and line-ending transformations. Base XP-001 tokens and `Parse` behavior remain
+unchanged; mapped parsing has its own document-wide scalar budget.
