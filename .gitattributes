@@ -28,3 +28,5 @@ tests/adapters/fixtures/*.json -text
 docs/specs/detector-adapter-v1.md -text
 schemas/adapter-exchange-v1.schema.json -text
 tests/adapters/*.py -text
+# Profile conformance definitions retain exact artifact identities.
+internal/profiles/testdata/*.json -text
