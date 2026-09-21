@@ -85,7 +85,14 @@ func runV2WithReader(ctx context.Context, path string, options V2Options, read f
 	}
 	result := &V2Output{Report: report, JSON: encoded, Failure: outcome.Failure}
 	if options.RetainSnapshot && outcome.Failure == nil && trace.canceled == "" && outcome.Report.Status == "completed" && outcome.Report.File.SHA256 != nil {
-		result.Source, result.Native = trace.source, outcome.Report
+		// Presentation references must index the saved v2 finding collection,
+		// whose ordering (and selected view) can differ from the native report.
+		native := *outcome.Report
+		native.Findings = make([]evidence.Finding, len(report.Findings))
+		for i, finding := range report.Findings {
+			native.Findings[i] = finding.Finding
+		}
+		result.Source, result.Native = trace.source, &native
 	}
 	return result, nil
 }

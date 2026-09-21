@@ -1,8 +1,8 @@
 # Rooted corpus executor and JSONL
 
-This internal #15/P1 increment joins discovery to native auditing. It does not yet
-add directory CLI flags or publish source-relative reveal trees. The reviewed
-single-file command remains separate until corpus publication is integrated.
+This internal #15/P1 increment joins discovery to native auditing. It is used by the directory audit and directory reveal CLI commands.
+Presentation/publication lives in trusted compiled callbacks, outside the native
+detector and report wire models.
 
 ## One acquisition authority
 
@@ -94,7 +94,11 @@ corpora, pinned-root rename, parent-link substitution between discovery and read
 source timestamp preservation, cancellation accounting, short writes, truncated
 output, aggregate acquisition exhaustion and discovery failure.
 
-Directory CLI integration, source-relative reveal publication, output-tree and
-collision exclusions, aggregate console presentation and compiled nested-corpus
-demonstrations remain. This package writes only to its supplied stream; it does
-not create files or authorize transformations. #15 remains open.
+The directory audit and reveal specifications describe CLI integration and
+compiled nested demonstrations. This package writes to its supplied stream; an
+optional trusted Observer receives a copied discovery plan and completed native
+snapshots, and handles derivative publication. Failed/skipped/canceled outcomes
+receive no successful snapshot. Observer errors stop the stream without a summary.
+Callbacks are not a serialized plugin mechanism and cannot be supplied by document,
+rule or profile data. They must not mutate or retain evidence; no callback authorizes
+source modification.

@@ -16,6 +16,8 @@ const help = `aletharsis — read-only text and Unicode forensic auditing
 
 Usage:
   aletharsis audit FILE [--json] [--verbose] [--output NEW_REPORT.json]
+  aletharsis audit DIRECTORY [--recursive] [--json|--jsonl] [--output NEW_REPORT]
+  aletharsis audit DIRECTORY [--recursive] --reveal-out NEW_DIRECTORY [--json|--jsonl]
   aletharsis audit FILE --reveal-out NEW_DIRECTORY [--json] [--schema-version 1.0|2.0]
   aletharsis unicode|metadata|structure FILE [--json] [--verbose]
   aletharsis --version
@@ -50,6 +52,7 @@ func Run(args []string, out, errout io.Writer) int {
 	path, output, revealOutput := "", "", ""
 	schemaVersion := "1.0"
 	jsonOutput, verbose, endFlags := false, false, false
+	jsonl, recursive := false, false
 	for i := 1; i < len(args); i++ {
 		arg := args[i]
 		if !endFlags {
@@ -62,6 +65,12 @@ func Run(args []string, out, errout io.Writer) int {
 					return 4
 				}
 				return 0
+			case "--jsonl":
+				jsonl = true
+				continue
+			case "--recursive":
+				recursive = true
+				continue
 			case "--json":
 				jsonOutput = true
 				continue
@@ -122,6 +131,26 @@ func Run(args []string, out, errout io.Writer) int {
 	}
 	if path == "" {
 		return failure("a file is required")
+	}
+	info, statErr := os.Lstat(path)
+	directory := statErr == nil && info.IsDir()
+	if directory || jsonl || recursive {
+		if command != "audit" {
+			return failure("directory options require audit")
+		}
+		if statErr == nil && !directory {
+			return failure("--recursive and --jsonl require a directory")
+		}
+		if jsonOutput && jsonl {
+			return failure("choose --json or --jsonl")
+		}
+		if revealOutput != "" {
+			if output != "" {
+				return failure("--reveal-out cannot be combined with --output; the tree includes corpus.jsonl")
+			}
+			return runDirectoryReveal(path, revealOutput, schemaVersion, recursive, jsonOutput, jsonl, verbose, out, errout)
+		}
+		return runDirectory(path, output, schemaVersion, recursive, jsonOutput, jsonl, verbose, out, errout)
 	}
 	if revealOutput != "" {
 		if command != "audit" || output != "" {

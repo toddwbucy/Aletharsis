@@ -1,7 +1,9 @@
 # Single-file reveal CLI
 
-This increment connects #15's reviewed package boundaries. It does not complete
-directory scanning, JSONL, relative directory layout or corpus demonstrations.
+This increment connects #15's package boundaries for single-file exports.
+Directory scanning and source-relative publication are specified separately in
+[directory reveal integration](directory-reveal.md). Review acceptance remains
+a separate delivery gate.
 
 ```sh
 aletharsis audit notes.txt --reveal-out review-new --json
