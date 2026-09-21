@@ -28,7 +28,8 @@ var ErrSourceLimit = errors.New("observer source resource limit")
 // Observer is a trusted in-process presentation boundary, never imported code.
 // Callbacks must not mutate or retain the supplied evidence. Errors stop the run
 // without a completion record, except Visit returning exactly ErrSourceLimit after
-// retaining a report-only outcome. Observers own rollback of derivative work.
+// retaining a report-only outcome. Wrapped/joined errors remain fatal so a
+// joined publication failure cannot be swallowed. Observers own rollback.
 type Observer interface {
 	Prepare([]workspace.Entry) error
 	Visit(Entry, Snapshot) error

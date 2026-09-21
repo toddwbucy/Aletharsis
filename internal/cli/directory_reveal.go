@@ -127,6 +127,9 @@ func runDirectoryReveal(path, output, schema string, recursive, jsonOutput, json
 		if cleanupErr := cleanup(); cleanupErr != nil {
 			return v2Failure(errout, "output.cleanup_failed", "reveal publication failed and cleanup is incomplete")
 		}
+		if errors.Is(cause, publication.ErrPortableName) {
+			return v2Failure(errout, "execution.unsupported_input", "a source name cannot be exported under the portable-name policy")
+		}
 		code := "output.publish_failed"
 		if errors.Is(cause, publication.ErrCollision) {
 			code = "output.path_collision"

@@ -104,7 +104,9 @@ snapshots, and handles derivative publication. Failed/skipped/canceled outcomes
 receive no successful snapshot. A Visit callback may return exactly `ErrSourceLimit`
 after retaining a report-only outcome for a successfully audited source; the
 executor records a failed `execution.resource_limit` entry and continues. Other
-observer errors stop the stream without a summary.
+observer errors stop the stream without a summary. Wrapped/joined errors are
+intentionally fatal: a joined publication failure must not be recovered merely
+because `errors.Is` also finds the resource sentinel.
 Callbacks are not a serialized plugin mechanism and cannot be supplied by document,
 rule or profile data. They must not mutate or retain evidence; no callback authorizes
 source modification.

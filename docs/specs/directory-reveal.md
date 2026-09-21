@@ -65,7 +65,9 @@ Preflight does not rename or normalize source paths. Portable-name and
 case/normalization/prefix collisions fail explicitly. For example `a` and `a.json/b`
 would collide between `reports/a.json` and the directory required beneath it, so
 that export fails before source auditing or artifact writes. Audit-only JSONL
-remains available for paths that cannot be exported under this policy.
+remains available for paths that cannot be exported under this policy. A portable
+name rejection reports `execution.unsupported_input` with a fixed policy message;
+it does not claim an artifact write failed or a published tree was rolled back.
 
 ## Failure, delivery and bounds
 

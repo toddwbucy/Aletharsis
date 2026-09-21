@@ -333,3 +333,33 @@ func TestDirectoryRevealPerSourceLimitPreservesOtherArtifacts(t *testing.T) {
 		}
 	}
 }
+
+func TestPortableNamePreflightDiagnostic(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("Linux source names and no-atime acquisition")
+	}
+	for _, name := range []string{"Chapter 1: Intro.md", "aux.md", "draft."} {
+		t.Run(name, func(t *testing.T) {
+			dir := t.TempDir()
+			raw := []byte("clean source")
+			source := filepath.Join(dir, name)
+			if err := os.WriteFile(source, raw, 0600); err != nil {
+				t.Fatal(err)
+			}
+			output := filepath.Join(t.TempDir(), "review")
+			var out, stderr bytes.Buffer
+			code := Run([]string{"audit", dir, "--reveal-out", output}, &out, &stderr)
+			want := "aletharsis: execution.unsupported_input: a source name cannot be exported under the portable-name policy\n"
+			if code != 4 || stderr.String() != want || out.Len() != 0 {
+				t.Fatal(code, stderr.String(), out.String())
+			}
+			if _, err := os.Lstat(output); !os.IsNotExist(err) {
+				t.Fatal("preflight left artifacts", err)
+			}
+			after, err := os.ReadFile(source)
+			if err != nil || !bytes.Equal(raw, after) {
+				t.Fatal("source changed", err)
+			}
+		})
+	}
+}

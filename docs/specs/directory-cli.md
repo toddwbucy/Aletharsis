@@ -39,7 +39,12 @@ must never be interpreted as a complete scan.
 
 Exit 0 means no reported findings among completed audits, not proof of absence.
 Otherwise maximum severity yields 1–3; any failed, unsupported, canceled or
-incomplete enumeration yields 4. Explicit policy skips remain visible. A valid
+incomplete enumeration yields 4. Incomplete enumeration includes per-entry
+unavailability; it does not authorize truncation at resource limits. Entry, depth
+and path-budget exhaustion fail discovery with no candidate set and
+`discovery_complete: false`, before any source audit. Choosing a bounded subset
+requires a separate deterministic selection contract; raw filesystem enumeration
+order is not a stable selection rule. Explicit policy skips remain visible. A valid
 report that includes failed files is retained; an actual report write/close failure
 removes only the new partial output and returns 4.
 

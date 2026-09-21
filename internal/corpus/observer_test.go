@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -72,6 +74,63 @@ func TestObserverSnapshotAndFailures(t *testing.T) {
 					t.Fatal("failed observer completed stream")
 				}
 			}
+		}
+	}
+}
+
+type limitObserver struct {
+	outcome error
+	visits  int
+}
+
+func (o *limitObserver) Prepare([]workspace.Entry) error { return nil }
+func (o *limitObserver) Visit(Entry, Snapshot) error     { o.visits++; return o.outcome }
+func TestSourceLimitMustBeAnUnambiguousOutcome(t *testing.T) {
+	linux(t)
+	dir := t.TempDir()
+	put(t, filepath.Join(dir, "a"), []byte("clean"))
+	put(t, filepath.Join(dir, "b"), []byte("clean"))
+	for _, outcome := range []error{ErrSourceLimit, fmt.Errorf("context: %w", ErrSourceLimit), errors.Join(ErrSourceLimit, errObserver)} {
+		observer := &limitObserver{outcome: outcome}
+		options := DefaultOptions()
+		options.Observer = observer
+		var out bytes.Buffer
+		summary, err := Run(context.Background(), dir, options, &out)
+		if outcome == ErrSourceLimit {
+			if err != nil || observer.visits != 2 || summary.ExitCode != 4 || !bytes.Contains(out.Bytes(), []byte(`"type":"summary"`)) {
+				t.Fatal("recoverable outcome lost", err)
+			}
+		} else if err != outcome || observer.visits != 1 || bytes.Contains(out.Bytes(), []byte(`"type":"summary"`)) {
+			t.Fatal("ambiguous observer error swallowed", err)
+		}
+	}
+}
+
+func TestDiscoveryCapsDoNotStartObservers(t *testing.T) {
+	linux(t)
+	dir := t.TempDir()
+	put(t, filepath.Join(dir, "a"), []byte("clean"))
+	if err := os.Mkdir(filepath.Join(dir, "nested"), 0700); err != nil {
+		t.Fatal(err)
+	}
+	put(t, filepath.Join(dir, "nested", "b"), []byte("clean"))
+	for _, mode := range []string{"entries", "depth"} {
+		options := DefaultOptions()
+		options.Discovery.Recursive = true
+		if mode == "entries" {
+			options.Discovery.MaxEntries = 1
+		} else {
+			options.Discovery.MaxDepth = 0
+		}
+		observer := &testObserver{t: t}
+		options.Observer = observer
+		var out bytes.Buffer
+		summary, err := Run(context.Background(), dir, options, &out)
+		if err != nil || summary.State != "failed" || summary.Reason != "execution.resource_limit" || summary.Entries != 0 || observer.prepared || observer.visited != 0 {
+			t.Fatal("limit admitted a partial candidate plan", summary, err)
+		}
+		if !bytes.Contains(out.Bytes(), []byte(`"discovery_complete":false`)) {
+			t.Fatal("missing incomplete coverage disclosure")
 		}
 	}
 }

@@ -18,6 +18,9 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
+// ErrPortableName identifies a rejected export name before publication begins.
+var ErrPortableName = errors.New("artifact name is not portable")
+
 var ErrCollision = errors.New("artifact path collision")
 var treeReasonPattern = regexp.MustCompile(`^[a-z][a-z0-9_.-]{0,127}$`)
 var ErrState = errors.New("publication transaction is not active or incomplete")
@@ -106,7 +109,7 @@ func NewTree(root *os.Root, sources []TreeSource, limits TreeLimits) (*Tree, err
 			}
 			for _, component := range strings.Split(name, "/") {
 				if !portableComponent(component) {
-					return nil, ErrInvalid
+					return nil, errors.Join(ErrInvalid, ErrPortableName)
 				}
 			}
 			k := key(name)
