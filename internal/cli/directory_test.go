@@ -175,7 +175,7 @@ func TestDirectoryReportSafety(t *testing.T) {
 }
 func TestDirectoryUsageAndOutputFailure(t *testing.T) {
 	dir, _ := corpusFixture(t)
-	for _, args := range [][]string{{"audit", dir, "--json", "--jsonl"}, {"unicode", dir}, {"audit", filepath.Join(dir, "clean.txt"), "--recursive"}, {"audit", dir, "--reveal-out", "new"}} {
+	for _, args := range [][]string{{"audit", dir, "--json", "--jsonl"}, {"unicode", dir}, {"audit", filepath.Join(dir, "clean.txt"), "--recursive"}, {"audit", dir, "--reveal-out", "new", "--output", "report.json"}} {
 		var out, stderr bytes.Buffer
 		if Run(args, &out, &stderr) != 4 || out.Len() != 0 {
 			t.Fatal("invalid directory options accepted")

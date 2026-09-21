@@ -28,7 +28,7 @@ some inputs below 8 MiB exceed those budgets and fail explicitly without a repor
 | Text evidence | Exact extracted text, code-point and byte positions, context samples, BOMs, line endings and normalization/comparison hashes |
 | Reporting | Escaped console output, complete JSON/JSONL corpus evidence, filtered single-file views and severity-based exit codes |
 | Corpus | Explicit recursion, sorted outcomes, rooted no-follow acquisition, resource bounds and aggregate summaries |
-| Reveal | Single-file revealed text, faithful/display diffs, coordinate mappings and hash manifest in a new private output directory |
+| Reveal | File and source-relative directory reveals, faithful/display diffs, coordinate mappings and hash manifests in a new private output directory |
 | Integrity | Read-only acquisition, source-change checks, rejection of symlink inputs and refusal to overwrite report destinations |
 
 TXT, Markdown, RST, CSV, JSON, XML, HTML and source-code files are inspected as
@@ -42,8 +42,7 @@ in extracted evidence. Malformed encodings fail without replacement; legacy
 encodings and BOM-less UTF-16/32 are unsupported. MIME hints do not establish
 full document validity.
 
-**Not implemented:** directory reveal exports,
-DOCX/ODT/PDF parsing, structured document metadata, expected-artifact profiles,
+**Not implemented:** DOCX/ODT/PDF parsing, structured document metadata, expected-artifact profiles,
 C2PA validation, statistical watermark detectors, model fingerprinting, the web
 workbench, saved rules or cleanup. PDF and DOCX signatures are recognized and
 reported as unsupported, including when disguised with a text extension.
@@ -87,6 +86,7 @@ aletharsis audit suspicious.txt --output report.json
 aletharsis audit suspicious.txt --reveal-out review-new --json
 aletharsis audit ./documents --recursive
 aletharsis audit ./documents --recursive --jsonl
+aletharsis audit ./documents --recursive --reveal-out review-tree-new --jsonl
 aletharsis audit ./documents --recursive --json --output corpus-report.json
 aletharsis unicode suspicious.txt
 aletharsis metadata suspicious.txt --json
@@ -115,6 +115,20 @@ remain visible. Scans use one in-flight audit, at most 10,000 discovered entries
 64 nested levels, 256 MiB aggregate acquisition and 128 MiB output by default.
 See the [directory CLI contract](docs/specs/directory-cli.md) for complete limits,
 outcome semantics and a compiled nested-corpus demonstration.
+
+`audit DIRECTORY --recursive --reveal-out NEW_DIRECTORY` publishes source-relative
+`revealed/`, `reports/`, `mappings/`, `diffs/` and `display-diffs/` trees, plus exact
+`corpus.jsonl` and a final `manifest.json`. Failed/unsupported files retain reports
+without invented revealed text; skipped/canceled observations remain in the ledger.
+The destination must be new and outside the source tree. Portable-name, case-fold,
+normalization and file/directory collisions fail explicitly rather than rename
+sources. `--output` cannot be combined with `--reveal-out`.
+
+Publication finishes before stdout is delivered. A stdout failure leaves the
+committed tree available; publication failure attempts rollback of its own files.
+Corpus JSONL is buffered up to its 128 MiB default limit for commit, in addition
+to per-file processing memory. Total tree file bytes are bounded at 256 MiB.
+See the [directory reveal contract and demonstration](docs/specs/directory-reveal.md).
 
 `audit FILE --reveal-out NEW_DIRECTORY` publishes `report.json`, `revealed.txt`,
 `comparison.json`, `faithful.diff`, `display.diff`, and `manifest.json` from one
