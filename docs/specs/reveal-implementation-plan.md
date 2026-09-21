@@ -156,3 +156,12 @@ comparison and publication using one snapshot for either report schema. See
 Directory traversal, relative paths, JSONL and nested-corpus demonstrations remain
 unimplemented; #15 stays open. The internal bundle manifest is separate from both
 existing report wire schemas and does not introduce a remediation command.
+
+## Directory discovery increment
+
+[Bounded workspace discovery](workspace-discovery.md) now defines and implements
+candidate enumeration separately from content auditing. It preserves Linux
+no-atime directory reads and records skipped links, non-recursive directories and
+failed entries explicitly. Candidates are not authorized source handles. Secure
+corpus acquisition, aggregate outcomes, relative publication and CLI integration
+remain required before directory support can be advertised.
