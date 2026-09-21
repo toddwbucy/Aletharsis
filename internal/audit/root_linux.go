@@ -13,6 +13,11 @@ import (
 // Each path component is opened relative to an already-open directory with
 // O_NOFOLLOW. No candidate pathname is joined to an ambient absolute root.
 func readRootSnapshot(root *os.Root, relative string, limit int) ([]byte, error) {
+	var consumed int
+	return readRootSnapshotCounted(root, relative, limit, &consumed)
+}
+
+func readRootSnapshotCounted(root *os.Root, relative string, limit int, consumed *int) ([]byte, error) {
 	if root == nil || !fs.ValidPath(relative) || relative == "." || len(relative) > 4096 || strings.Count(relative, "/") > 64 || limit <= 0 || limit > MaxBytes {
 		return nil, errors.New("invalid rooted acquisition")
 	}
@@ -40,6 +45,19 @@ func readRootSnapshot(root *os.Root, relative string, limit int) ([]byte, error)
 		if err != nil {
 			return nil, err
 		}
-		return os.NewFile(uintptr(fd), relative), nil
+		return countedSnapshot{snapshotFile: os.NewFile(uintptr(fd), relative), consumed: consumed}, nil
 	})
+}
+
+// Count only bytes returned by Read, even when acquisition later rejects them.
+// Partial bytes remain private to acquisition and never become evidence.
+type countedSnapshot struct {
+	snapshotFile
+	consumed *int
+}
+
+func (f countedSnapshot) Read(p []byte) (int, error) {
+	n, err := f.snapshotFile.Read(p)
+	*f.consumed += n
+	return n, err
 }

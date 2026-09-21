@@ -62,6 +62,15 @@ func Open(path string) (*os.Root, error) {
 	if !available() {
 		return nil, ErrUnavailable
 	}
+	return Pin(path)
+}
+
+// Pin verifies directory identity without enumeration or source-content reads.
+// It does not establish that no-atime acquisition is available on this host.
+func Pin(path string) (*os.Root, error) {
+	if path == "" || !utf8.ValidString(path) {
+		return nil, ErrInvalid
+	}
 	before, err := os.Lstat(path)
 	if err != nil {
 		return nil, err

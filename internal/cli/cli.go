@@ -134,7 +134,7 @@ func Run(args []string, out, errout io.Writer) int {
 	}
 	info, statErr := os.Lstat(path)
 	directory := statErr == nil && info.IsDir()
-	if directory || jsonl || recursive {
+	if directory && command == "audit" || jsonl || recursive {
 		if command != "audit" {
 			return failure("directory options require audit")
 		}

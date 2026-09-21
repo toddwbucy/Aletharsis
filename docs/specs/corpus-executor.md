@@ -81,11 +81,11 @@ its serialized evidence is larger, producing `execution.resource_limit` for that
 entry. JSONL defaults to 128 MiB with a
 256 MiB hard output ceiling.
 
-Aggregate acquisition defaults to 256 MiB, hard-capped at 1 GiB. Known acquired
-sizes are charged exactly. When a failure leaves consumption unknown, the full
-attempted limit plus the existing oversize sentinel byte is charged conservatively.
-This may exhaust the budget early for repeated denied/missing files; it cannot
-let failed reads bypass the aggregate cap. Remaining candidates receive explicit
+Aggregate acquisition defaults to 256 MiB, hard-capped at 1 GiB. A rooted-reader
+counter charges actual bytes returned by Read, including partial errors, changed
+snapshots, and oversize sentinel bytes, even when downstream reporting fails.
+Failures before Read consume zero bytes; discarded data is never exposed as
+source evidence. Remaining candidates receive explicit
 resource-limit outcomes without fabricated reports. One sentinel byte is reserved
 before each attempt, so a final one-byte remainder cannot initiate another read.
 

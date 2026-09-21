@@ -10,7 +10,8 @@ aletharsis audit ./documents --recursive --jsonl --schema-version 2.0
 aletharsis audit ./documents --recursive --json --output corpus-report.json
 ```
 
-Only `audit` accepts directories. Immediate regular files are candidates by
+Only `audit` scans directories. Specialized file views (`unicode`, `metadata`,
+`structure`) retain their schema-valid file failure report when given a directory. Immediate regular files are candidates by
 default; `--recursive` includes descendants. Non-recursive directories, symlinks
 and special files produce explicit skipped records. Unknown extensions remain
 eligible for content-based identification. Directory selection uses non-following
@@ -22,6 +23,8 @@ stat; a symlink root is not treated as a traversable directory.
   outcome counts, discovery completeness, aggregate state and exit code. Paths
   and reasons are escaped; source text is never executed or rendered as markup.
 - `--jsonl` streams the corpus header, sorted entry records and final summary.
+  JSON and JSONL escape non-ASCII scalars, including paths and embedded reports;
+  canonical report hashes still identify canonicalized report content.
 - `--json` streams one `{header, entries, summary}` object with identical record
   semantics. [The document schema](../../schemas/corpus-document-v1.schema.json)
   references the existing closed corpus record schema. These envelopes do not
@@ -55,15 +58,20 @@ ancestry reject overlap; symlink output ancestors and pre-existing destinations
 are rejected. The source root is pinned before destination checks. The output
 parent is pinned and its identity rechecked before exclusive 0600 creation;
 source discovery/acquisition reuses the already-open source root. No existing
-report or source alias is overwritten.
+report or source alias is overwritten. On unsupported hosts a metadata-only source
+pin allows a failed corpus envelope to be saved without reading source contents.
+If the source directory cannot be pinned at all (for example it disappears),
+`--output` fails before creating a destination: source/output separation cannot be
+verified. This publication-preflight failure has stderr diagnostics, not a saved
+corpus report. Without `--output`, acquisition failure can still be streamed.
 
 The caller must control the output namespace. These checks do not claim isolation
 from privileged mount changes or hostile processes manipulating the namespace as
 the same user. Directory and file reads preserve Linux no-atime guarantees; other
 platforms still report unavailable rather than falling back to ordinary reads.
 
-Default bounds: 8 MiB per file, 256 MiB aggregate acquisition (failed unknown reads
-charged conservatively), 10,000 encountered entries, 64 levels, 4 MiB cumulative
+Default bounds: 8 MiB per file, 256 MiB aggregate acquisition (actual bytes read,
+including discarded partial/changed/oversize snapshots; pre-read failures cost zero), 10,000 encountered entries, 64 levels, 4 MiB cumulative
 relative paths, 4,096 bytes per relative path, and 128 MiB output. Report
 canonicalization retains the 16 MiB contract budget. One in-flight audit gives
 stable ordering. Both serialized JSONL and actually delivered presentation bytes

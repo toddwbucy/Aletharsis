@@ -141,17 +141,17 @@ func run(ctx context.Context, path string, options Options, out io.Writer, root 
 				exit = 4
 			} else {
 				attemptLimit := min(options.InputBytes, remainingInput-1)
-				var acquiredSize *int
+				var charge int
 				var report []byte
 				var auditFailure *failure.Error
 				var runErr error
 				if options.Schema == "1.0" {
-					result, raw := audit.InspectRoot(root, candidate.RelativePath, attemptLimit)
+					result, raw, consumed := audit.InspectRootCounted(root, candidate.RelativePath, attemptLimit)
+					charge = consumed
 					if options.Observer != nil {
 						snapshot = Snapshot{Source: raw, Native: result.Report}
 					}
 					auditFailure = result.Failure
-					acquiredSize = result.Report.File.Size
 					exit = result.Report.Summary["exit_code"]
 					var text string
 					text, runErr = reporters.JSON(result.Report, false)
@@ -160,21 +160,15 @@ func run(ctx context.Context, path string, options Options, out io.Writer, root 
 					settings := audit.DefaultV2Options()
 					settings.InputBytes = attemptLimit
 					settings.RetainSnapshot = options.Observer != nil
-					result, err := audit.RunV2Root(ctx, root, candidate.RelativePath, settings)
+					result, err, consumed := audit.RunV2RootCounted(ctx, root, candidate.RelativePath, settings)
+					charge = consumed
 					runErr = err
 					if err == nil {
 						report = result.JSON
 						snapshot = Snapshot{Source: result.Source, Native: result.Native}
 						auditFailure = result.Failure
-						acquiredSize = result.Report.File.Size
 						exit = result.Report.Summary["exit_code"]
 					}
-				}
-				// Unknown acquisition consumption is charged the full attempted read
-				// plus its oversize sentinel. Failed reads cannot evade the corpus cap.
-				charge := attemptLimit + 1
-				if acquiredSize != nil {
-					charge = *acquiredSize
 				}
 				remainingInput -= charge
 				item.State = "no_reported_findings"
@@ -277,17 +271,15 @@ type streamWriter struct {
 }
 
 func (s *streamWriter) emit(value any) error {
-	var b bytes.Buffer
-	encoder := json.NewEncoder(&b)
-	encoder.SetEscapeHTML(false)
-	if err := encoder.Encode(value); err != nil {
+	raw, err := reporters.JSON(value, false)
+	if err != nil {
 		return err
 	}
-	if b.Len() > s.remaining {
+	if len(raw) > s.remaining {
 		return ErrOutputLimit
 	}
-	n, err := s.out.Write(b.Bytes())
-	if err == nil && n != b.Len() {
+	n, err := s.out.Write([]byte(raw))
+	if err == nil && n != len(raw) {
 		err = io.ErrShortWrite
 	}
 	if err != nil {

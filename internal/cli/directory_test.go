@@ -175,7 +175,7 @@ func TestDirectoryReportSafety(t *testing.T) {
 }
 func TestDirectoryUsageAndOutputFailure(t *testing.T) {
 	dir, _ := corpusFixture(t)
-	for _, args := range [][]string{{"audit", dir, "--json", "--jsonl"}, {"unicode", dir}, {"audit", filepath.Join(dir, "clean.txt"), "--recursive"}, {"audit", dir, "--reveal-out", "new", "--output", "report.json"}} {
+	for _, args := range [][]string{{"audit", dir, "--json", "--jsonl"}, {"audit", filepath.Join(dir, "clean.txt"), "--recursive"}, {"audit", dir, "--reveal-out", "new", "--output", "report.json"}} {
 		var out, stderr bytes.Buffer
 		if Run(args, &out, &stderr) != 4 || out.Len() != 0 {
 			t.Fatal("invalid directory options accepted")
@@ -205,5 +205,64 @@ func TestFormattedCorpusOutputBudget(t *testing.T) {
 	}
 	if n, err := bounded.Write([]byte("d")); n != 0 || err != corpus.ErrOutputLimit || out.String() != "abc" {
 		t.Fatal("formatted output exceeded budget")
+	}
+}
+
+func TestDirectorySubviewsRetainFailureReports(t *testing.T) {
+	dir := t.TempDir()
+	for _, schema := range []string{"1.0", "2.0"} {
+		for _, view := range []string{"unicode", "metadata", "structure"} {
+			var out, stderr bytes.Buffer
+			if Run([]string{view, dir, "--json", "--schema-version=" + schema}, &out, &stderr) != 4 || stderr.Len() != 0 {
+				t.Fatal(view, schema, stderr.String())
+			}
+			var report struct {
+				Schema  string         `json:"schema_version"`
+				Summary map[string]int `json:"summary"`
+			}
+			if err := json.Unmarshal(out.Bytes(), &report); err != nil || report.Schema != schema || report.Summary["exit_code"] != 4 {
+				t.Fatal("missing failure report", err, out.String())
+			}
+		}
+	}
+}
+
+func TestDirectoryOutputUnpinnableSourceFailsBeforeCreation(t *testing.T) {
+	parent := t.TempDir()
+	target := filepath.Join(parent, "report.json")
+	var out, stderr bytes.Buffer
+	if Run([]string{"audit", filepath.Join(parent, "missing"), "--recursive", "--output", target}, &out, &stderr) != 4 || out.Len() != 0 || !strings.Contains(stderr.String(), "input.open_failed") {
+		t.Fatal("unsafe preflight", stderr.String())
+	}
+	if _, err := os.Lstat(target); !os.IsNotExist(err) {
+		t.Fatal("created report without source pin", err)
+	}
+}
+
+func TestUnsupportedHostCanSaveCorpusFailure(t *testing.T) {
+	if runtime.GOOS == "linux" {
+		t.Skip("unsupported-host contract")
+	}
+	parent := t.TempDir()
+	source := filepath.Join(parent, "source")
+	if err := os.Mkdir(source, 0700); err != nil {
+		t.Fatal(err)
+	}
+	for _, schema := range []string{"1.0", "2.0"} {
+		var out, stderr bytes.Buffer
+		target := filepath.Join(parent, schema+".json")
+		if Run([]string{"audit", source, "--output", target, "--schema-version=" + schema}, &out, &stderr) != 4 || out.Len() != 0 || stderr.Len() != 0 {
+			t.Fatal(stderr.String())
+		}
+		raw, err := os.ReadFile(target)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var report struct {
+			Summary corpus.Summary `json:"summary"`
+		}
+		if err := json.Unmarshal(raw, &report); err != nil || report.Summary.Reason != "integrity.no_atime_unavailable" || report.Summary.State != "failed" {
+			t.Fatal("missing failure envelope", err, string(raw))
+		}
 	}
 }

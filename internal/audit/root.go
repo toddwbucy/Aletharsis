@@ -13,3 +13,22 @@ func InspectRoot(root *os.Root, relative string, limit int) (Outcome, []byte) {
 func RunV2Root(ctx context.Context, root *os.Root, relative string, options V2Options) (*V2Output, error) {
 	return runV2WithReader(ctx, relative, options, func(_ string, limit int) ([]byte, error) { return readRootSnapshot(root, relative, limit) }, nil)
 }
+
+// InspectRootCounted also returns actual bytes read, including discarded partial
+// or invalid snapshots. Rejections before Read consume zero acquisition bytes.
+func InspectRootCounted(root *os.Root, relative string, limit int) (Outcome, []byte, int) {
+	consumed := 0
+	outcome, raw := inspectSnapshotWithReader(relative, limit, func(_ string, limit int) ([]byte, error) {
+		return readRootSnapshotCounted(root, relative, limit, &consumed)
+	})
+	return outcome, raw, consumed
+}
+
+// RunV2RootCounted retains consumption even if later report construction fails.
+func RunV2RootCounted(ctx context.Context, root *os.Root, relative string, options V2Options) (*V2Output, error, int) {
+	consumed := 0
+	result, err := runV2WithReader(ctx, relative, options, func(_ string, limit int) ([]byte, error) {
+		return readRootSnapshotCounted(root, relative, limit, &consumed)
+	}, nil)
+	return result, err, consumed
+}

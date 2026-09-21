@@ -33,9 +33,14 @@ func runDirectory(path, output, schema string, recursive, jsonOutput, jsonl, ver
 	var sourceRoot, parent *os.Root
 	var file *os.File
 	var name string
+	acquisitionAvailable := true
 	if output != "" {
 		var err error
 		sourceRoot, err = workspace.Open(path)
+		if errors.Is(err, workspace.ErrUnavailable) {
+			acquisitionAvailable = false
+			sourceRoot, err = workspace.Pin(path)
+		}
 		if err != nil {
 			return v2Failure(errout, "input.open_failed", "could not pin source directory")
 		}
@@ -50,7 +55,7 @@ func runDirectory(path, output, schema string, recursive, jsonOutput, jsonl, ver
 	presentation := &corpusPresentation{out: &boundedCorpusOutput{out: writer, remaining: options.OutputBytes}, mode: mode}
 	var summary corpus.Summary
 	var err error
-	if sourceRoot == nil {
+	if sourceRoot == nil || !acquisitionAvailable {
 		summary, err = corpus.Run(ctx, path, options, presentation)
 	} else {
 		summary, err = corpus.RunRoot(ctx, path, sourceRoot, options, presentation)

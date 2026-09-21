@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -290,5 +291,71 @@ func TestLegacyCorpusReportBudgetIsIndependentOfSourceBudget(t *testing.T) {
 	}
 	if entry.State != "failed" || entry.Reason != "execution.resource_limit" || len(entry.Report) != 0 {
 		t.Fatal("partial/oversized report escaped", entry.State, entry.Reason)
+	}
+}
+
+func TestPreReadFailuresDoNotExhaustAcquisitionBudget(t *testing.T) {
+	linux(t)
+	dir := t.TempDir()
+	for i := 0; i < 40; i++ {
+		put(t, filepath.Join(dir, fmt.Sprintf("a%02d.txt", i)), []byte("too large"))
+	}
+	put(t, filepath.Join(dir, "z.txt"), []byte("ok"))
+	for _, schema := range []string{"1.0", "2.0"} {
+		options := DefaultOptions()
+		options.Schema = schema
+		options.InputBytes = 4
+		options.AcquisitionBytes = 6
+		var out bytes.Buffer
+		summary, err := Run(context.Background(), dir, options, &out)
+		if err != nil || summary.Counts["failed"] != 40 || summary.Counts["no_reported_findings"] != 1 {
+			t.Fatalf("%s: %+v %v", schema, summary, err)
+		}
+		rows := records(t, out.Bytes())
+		for _, row := range rows[1:41] {
+			var entry Entry
+			if err := json.Unmarshal(row, &entry); err != nil {
+				t.Fatal(err)
+			}
+			if entry.Reason != "file.too_large" {
+				t.Fatalf("lost acquisition failure: %+v", entry)
+			}
+		}
+	}
+}
+
+func TestCorpusEscapesUnicodeAndPreservesCanonicalHash(t *testing.T) {
+	linux(t)
+	dir := filepath.Join(t.TempDir(), "workspace\u202e")
+	if err := os.Mkdir(dir, 0700); err != nil {
+		t.Fatal(err)
+	}
+	name := "source\u2066\U0001f600.txt"
+	put(t, filepath.Join(dir, name), []byte("a\u200bb\u202e"))
+	for _, schema := range []string{"1.0", "2.0"} {
+		options := DefaultOptions()
+		options.Schema = schema
+		var out bytes.Buffer
+		if _, err := Run(context.Background(), dir, options, &out); err != nil {
+			t.Fatal(err)
+		}
+		for _, b := range out.Bytes() {
+			if b > 127 {
+				t.Fatal("raw non-ASCII in stream")
+			}
+		}
+		var entry Entry
+		if err := json.Unmarshal(records(t, out.Bytes())[1], &entry); err != nil {
+			t.Fatal(err)
+		}
+		canonical, err := identity.Canonicalize(entry.Report, audit.DefaultV2Options().ReportLimits)
+		if err != nil || entry.RelativePath != name || evidence.Hash(canonical) != entry.ReportCanonicalSHA256 {
+			t.Fatal("escaping changed identity", err)
+		}
+		tight := options
+		tight.OutputBytes = out.Len() - 100
+		if _, err := Run(context.Background(), dir, tight, io.Discard); !errors.Is(err, ErrOutputLimit) {
+			t.Fatal("escaped byte budget not enforced", err)
+		}
 	}
 }

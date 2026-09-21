@@ -180,11 +180,20 @@ def main():
                     results['checks'].append({'binary': 'built' if binary == built else 'installed',
                                               'source': 'corpus', 'view': 'audit', 'format': output_format,
                                               'schema_version': version, 'exit_code': first.returncode})
+                target = root / ('corpus-' + binary.parent.name + '-' + version + '.json')
+                saved = run([str(binary), 'audit', str(corpus_root), '--output', str(target),
+                             '--schema-version=' + version], env=runtime_env)
+                require(not saved.stdout and not saved.stderr, 'Unexpected saved corpus output')
+                validate_directory(json.loads(target.read_bytes()), saved.returncode, system, version, directory_validator)
                 for view in ('unicode', 'metadata', 'structure'):
                     process = run([str(binary), view, str(corpus_root), '--json',
                                    '--schema-version=' + version], env=runtime_env)
-                    require(process.returncode == 4 and not process.stdout and process.stderr,
-                            'Directory subview did not reject unsupported command')
+                    require(process.returncode == 4 and process.stdout and not process.stderr,
+                            'Directory subview did not emit a failure report')
+                    report = json.loads(process.stdout)
+                    (validator if version == '1.0' else v2_validator).validate(report)
+                    require(report['schema_version'] == version, 'Wrong subview report schema')
+                    require(report['summary']['exit_code'] == 4, 'Subview failure lost')
         # Stat before validation reads: reading fixtures in the test can update atime.
         for source in sources:
             after = source.stat()
