@@ -103,9 +103,11 @@ capabilities. It complements #17's contract work and #7's ongoing validation.
 
 The carrier/verifier studies are accepted in PRs #47/#48, and the
 [DA-001 exchange contract](docs/specs/detector-adapter-v1.md) is accepted in PR #49.
-Next under #36 is the [report-3.0 migration design](docs/specs/report-v3-migration.md):
-review design, then full wire fixtures, Go import/emit parity, and opt-in consumer
-acceptance before any production adapter. Schema 1.0/2.0 behavior stays unchanged.
+The [report-3.0 migration design](docs/specs/report-v3-migration.md) is accepted in
+PR #50. Under #36, the [wire/schema conformance gate](docs/specs/report-v3-wire-and-import.md)
+now supplies complete reports and retained evidence for review. Go import/emit
+parity and opt-in consumer acceptance follow before any production adapter.
+Schema 1.0/2.0 behavior stays unchanged.
 
 C2PA is the first adoption evaluation, not an already selected production
 dependency. Feasibility can inform G1 without bypassing its acceptance gate.

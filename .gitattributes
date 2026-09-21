@@ -31,3 +31,10 @@ tests/adapters/*.py -text
 # Unicode comparison fixtures, raw results and probe identities are exact bytes.
 docs/reuse/evaluations/unicode/** -text
 experiments/unicode-differential/** -text
+# Full v3 conformance reports, blobs and independent vectors retain exact bytes.
+tests/contracts_v3/fixtures/** -text
+tests/contracts_v3/invalid/** -text
+tests/contracts_v3/blobs/** -text whitespace=-blank-at-eol,-blank-at-eof
+tests/contracts_v3/*-vectors.json -text
+tests/contracts_v3/invalid-cases.json -text
+tests/contracts_v3/catalog.json -text
