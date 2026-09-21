@@ -97,3 +97,5 @@ do not certify complete Office extraction, format conformance or remediation saf
 
 The next proposed per-part consumer is [WT-001](word-text-evidence.md), which selects
 WordprocessingML text and direct context while retaining these mappings unchanged.
+The proposed ODF consumer [OT-001](odt-text-evidence.md) likewise retains stored
+character maps, with structural whitespace represented separately as XML controls.

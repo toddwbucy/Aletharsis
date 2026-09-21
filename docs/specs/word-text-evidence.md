@@ -112,3 +112,6 @@ Validation record: Linux amd64 / Go 1.27.1 full Go suite, vet and wordtext race
 checks passed, along with 265 offline contract tests. A three-second two-worker
 fuzz configuration exercised 64,950 inputs without failure (about four seconds
 including shutdown). These checks do not establish full OOXML conformance.
+
+[WA-001](word-analysis-scopes.md) proposes the next consumer: cross-run stored-text
+scopes with native Unicode/emoji/pattern findings and explicit scalar source maps.
