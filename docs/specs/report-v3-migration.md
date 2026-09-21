@@ -2,7 +2,7 @@
 
 | Attribute | Value |
 | --- | --- |
-| Status | Proposed design; wire schema and Go acceptance remain separate review units |
+| Status | Design accepted in PR #50; wire schema and Go acceptance remain separate review units |
 | Tracking | #36, reuse epic #21, ongoing validation #7 |
 | Prerequisite | DA-001 accepted in PR #49; feasibility PRs #47/#48 |
 | Target | Report `schema_version: "3.0"`, opt-in only after implementation acceptance |

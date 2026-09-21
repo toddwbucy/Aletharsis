@@ -1,0 +1,82 @@
+[
+  {
+    "file": "unknown-member.json",
+    "stage": "schema",
+    "reason": null
+  },
+  {
+    "file": "missing-run.json",
+    "stage": "semantic",
+    "reason": "adapter run planning"
+  },
+  {
+    "file": "source-hash.json",
+    "stage": "semantic",
+    "reason": "source identity mismatch"
+  },
+  {
+    "file": "request-digest.json",
+    "stage": "semantic",
+    "reason": "request digest mismatch"
+  },
+  {
+    "file": "response-as-input.json",
+    "stage": "semantic",
+    "reason": "result input mismatch"
+  },
+  {
+    "file": "partial-overlap.json",
+    "stage": "semantic",
+    "reason": "analyzed/excluded overlap"
+  },
+  {
+    "file": "unchecked-span.json",
+    "stage": "semantic",
+    "reason": "carrier outside checked scope"
+  },
+  {
+    "file": "fabricated-trust.json",
+    "stage": "semantic",
+    "reason": "trust without material"
+  },
+  {
+    "file": "altered-verdict.json",
+    "stage": "semantic",
+    "reason": "provider result promotion mismatch"
+  },
+  {
+    "file": "false-nfc-map.json",
+    "stage": "semantic",
+    "reason": "exact map width mismatch"
+  },
+  {
+    "file": "dangling-raw.json",
+    "stage": "semantic",
+    "reason": "dangling artifact"
+  },
+  {
+    "file": "unstarted-completed.json",
+    "stage": "schema",
+    "reason": null
+  },
+  {
+    "file": "statistical-config.json",
+    "stage": "semantic",
+    "reason": "provider configuration identity mismatch"
+  },
+  {
+    "file": "lost-limitations.json",
+    "stage": "semantic",
+    "reason": "provider limitation lost"
+  },
+  {
+    "file": "missing-primary-cause.json",
+    "stage": "semantic",
+    "reason": "missing primary cleanup cause"
+  },
+  {
+    "file": "bad-byte-offset.json",
+    "stage": "semantic",
+    "reason": "nonmonotonic byte offsets"
+  }
+]

@@ -85,6 +85,10 @@ The next #36 review unit is [EC-003 report migration design](../specs/report-v3-
 Its planning vectors do not replace the separately gated full wire fixtures and
 Go marshal/import parity required before adapter implementation.
 
+The [EC-004 wire proposal](../specs/report-v3-wire-and-import.md) supplies the
+closed report-3.0 schema, full positive/negative reports and retained synthetic
+evidence. Go parity and production migration acceptance remain subsequent gates.
+
 ## Per-component adoption
 
 The [G6 checklist and gap records](adoptions/README.md) bind each recommendation to
