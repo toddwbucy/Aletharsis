@@ -69,3 +69,42 @@ The caller supplies positive source, output and occurrence limits. The occurrenc
 budget also bounds total finding links. Limit or validation failures return no
 partial result. The pure renderer does no file I/O and retains no mutable input
 objects. Resource-bounded publication and report linkage are subsequent gates.
+
+## Bounded comparison contract
+
+`internal/reveal.Compare` builds a fresh verified reveal, then returns two
+explicitly labeled comparisons. `faithful` compares the exact decoded UTF-8
+representation with the revealed UTF-8 representation. Its original side retains
+invisible characters, CRLF, and missing final newlines. It is not safe raw terminal
+output and is not a patch for original UTF-16/32 bytes.
+
+`presentation` compares ASCII-escaped versions of those representations. LF is
+preserved; backslash, CR, tab, controls and all non-ASCII scalars are escaped.
+Ordinary multilingual text is escaped for display too; that is not a finding.
+Every escape maps its input scalar and UTF-8 byte span to its output byte span.
+The before map joins to native text evidence; the after map joins through the
+reveal occurrence map and unchanged intervals. Neither map invents original
+file-byte offsets. Both full display representations are retained for inspection.
+
+Source encoding, original source digest, decoded/revealed digests, display input
+and output digests, and diff digests distinguish every stage. Fixed inert diff
+headers contain no source filenames. These are internal package contracts, not
+additions to an existing report schema. Neither diff authorizes cleanup or should
+be accepted as a cleanup plan or executable source file.
+
+Caller budgets bound combined decoded/revealed bytes, combined escaped bytes,
+combined diff output, line indexing and escape mappings. Hard ceilings are 32 MiB
+per representation pair, 64 MiB total diff output, 200,000 combined lines,
+100,000 combined escapes and 1,000 context lines. Renderer limits apply separately.
+Any limit/validation failure returns no partial comparison. Equal line counts use
+positional comparison with merged context windows; differing counts use a full
+replacement hunk. This deliberately avoids quadratic edit-distance work and does
+not promise minimal diffs.
+
+Tests cover exact unified syntax, optional independent `patch` application to
+only temporary copies, CRLF/CR and missing-newline cases, context windows,
+UTF-8/16/32 identity, reversible display mappings, controls/emoji/combining text,
+determinism, source/evidence immutability and failure budgets. Production code
+introduces no subprocess or filesystem writes. Safe publication, manifest/report
+linkage, single-snapshot CLI acquisition and bounded directory integration remain
+separate delivery gates; this increment does not complete #15.
