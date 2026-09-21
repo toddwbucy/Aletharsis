@@ -17,6 +17,7 @@ const help = `aletharsis — read-only text and Unicode forensic auditing
 Usage:
   aletharsis audit FILE [--json] [--verbose] [--output NEW_REPORT.json]
   aletharsis audit DIRECTORY [--recursive] [--json|--jsonl] [--output NEW_REPORT]
+  aletharsis audit DIRECTORY [--recursive] --reveal-out NEW_DIRECTORY [--json|--jsonl]
   aletharsis audit FILE --reveal-out NEW_DIRECTORY [--json] [--schema-version 1.0|2.0]
   aletharsis unicode|metadata|structure FILE [--json] [--verbose]
   aletharsis --version
@@ -144,7 +145,10 @@ func Run(args []string, out, errout io.Writer) int {
 			return failure("choose --json or --jsonl")
 		}
 		if revealOutput != "" {
-			return failure("directory reveal publication is not available yet")
+			if output != "" {
+				return failure("--reveal-out cannot be combined with --output; the tree includes corpus.jsonl")
+			}
+			return runDirectoryReveal(path, revealOutput, schemaVersion, recursive, jsonOutput, jsonl, verbose, out, errout)
 		}
 		return runDirectory(path, output, schemaVersion, recursive, jsonOutput, jsonl, verbose, out, errout)
 	}

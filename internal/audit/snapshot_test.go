@@ -3,6 +3,7 @@ package audit
 import (
 	"context"
 	"errors"
+	"reflect"
 	"runtime"
 	"testing"
 
@@ -42,5 +43,29 @@ func TestSnapshotFailureDoesNotExposeBytes(t *testing.T) {
 	out, source := inspectSnapshotWithReader("input.txt", MaxBytes, func(string, int) ([]byte, error) { return []byte("partial"), errors.New("read failed") })
 	if out.Failure == nil || source != nil {
 		t.Fatal("partial acquisition retained")
+	}
+}
+
+func TestV2SnapshotFindingReferencesFollowSavedView(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("native acquisition unavailable")
+	}
+	for _, view := range []string{"audit", "unicode", "metadata"} {
+		t.Run(view, func(t *testing.T) {
+			options := DefaultV2Options()
+			options.View, options.RetainSnapshot = view, true
+			out, err := runV2WithReader(context.Background(), "input.txt", options, func(string, int) ([]byte, error) { return []byte("a\u200bb\u202e"), nil }, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if out.Native == nil || len(out.Native.Findings) != len(out.Report.Findings) {
+				t.Fatal("snapshot findings differ from saved view")
+			}
+			for i, finding := range out.Report.Findings {
+				if !reflect.DeepEqual(out.Native.Findings[i], finding.Finding) {
+					t.Fatal("snapshot index differs from saved finding", i)
+				}
+			}
+		})
 	}
 }

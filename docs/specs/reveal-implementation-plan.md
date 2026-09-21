@@ -1,6 +1,7 @@
 # Reveal delivery plan (#15)
 
-Status: implementation in review; no new CLI capability yet.
+Status: complete text/corpus workflow implemented in a stacked review series;
+review and merge remain required before release or closure of #15.
 
 Reveal is a presentation derivative of acquired evidence, not remediation and
 not a new detector. It must not change source bytes or normalize decoded text.
@@ -153,8 +154,8 @@ failures. This internal primitive performs no source acquisition or CLI work.
 The single-file CLI increment now connects acquisition, full audit evidence,
 comparison and publication using one snapshot for either report schema. See
 [the command contract and compiled-binary demonstrations](reveal-cli.md).
-Directory traversal, relative paths, JSONL and nested-corpus demonstrations remain
-unimplemented; #15 stays open. The internal bundle manifest is separate from both
+Directory traversal, relative paths, JSONL and nested-corpus demonstrations are
+covered by the subsequent increments below; #15 stays open pending acceptance. The internal bundle manifest is separate from both
 existing report wire schemas and does not introduce a remediation command.
 
 ## Directory discovery increment
@@ -179,8 +180,7 @@ reveal publication, including output-tree exclusion and nested demonstrations.
 [Directory audit commands](directory-cli.md) now expose console, JSON and JSONL
 corpus output, explicit recursion, safe outside-tree report destinations and
 aggregate outcomes. Both report schemas and a compiled nested-corpus audit are
-validated. Directory `--reveal-out` remains rejected until source-relative
-artifact planning, collision handling and publication are implemented and tested.
+validated. Directory `--reveal-out` is connected by the integration increment below.
 
 ## Source-relative publication increment
 
@@ -188,4 +188,14 @@ artifact planning, collision handling and publication are implemented and tested
 preserves relative paths, records every planned outcome, and publishes a final
 hash manifest. It rejects aliases/prefix collisions and rolls back only its own
 still-identical nodes. Corpus snapshot callbacks, directory CLI wiring and the
-compiled nested reveal demonstration are the remaining integration gate.
+compiled nested reveal demonstration are covered by the integration below.
+
+## Directory reveal integration
+
+[The end-to-end directory contract](directory-reveal.md) connects the pinned
+corpus executor to tree publication using one acquired snapshot per file. Both
+report schemas preserve occurrence references into their saved finding collection.
+The compiled nested-corpus demonstration verifies repeatable manifests, exact
+report/corpus identities, reversible occurrence maps and unchanged source bytes
+and timestamps. The implementation remains in a stacked PR review series; #15
+must not close until the required reviews and merges are complete.

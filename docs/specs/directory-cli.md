@@ -1,7 +1,7 @@
 # Directory audit CLI
 
 The directory command exposes the bounded corpus executor. Source-relative
-**reveal publication is still unsupported**; this increment does not close #15.
+[reveal publication](directory-reveal.md) is a separate explicit option.
 
 ```sh
 aletharsis audit ./documents
@@ -73,8 +73,8 @@ non-recursive skips, terminal-control escaping, output-tree and symlink-alias
 rejection, report permissions, existing-report preservation, empty/missing roots,
 invalid options, short output and presentation byte budgets.
 
-Remaining #15 acceptance: safe source-relative revealed/diff/mapping output,
-path-collision handling for that tree, and the complete nested reveal demonstration.
+See the [directory reveal integration](directory-reveal.md) for source-relative
+artifacts, collision handling and the nested reveal demonstration.
 
 ## Compiled nested-corpus demonstration
 
@@ -115,4 +115,4 @@ The `%PDF-1.7` plus LF fixture hash:
 `0716f9264c9fe19f5d7455276107f3ddcc1d3497f63d60689a73558ae8a1bf5e`.
 
 This demonstrates directory **auditing**, not directory revealed derivatives.
-The latter remains an explicit pending gate.
+That workflow is demonstrated separately in the directory reveal specification.

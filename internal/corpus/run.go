@@ -21,7 +21,20 @@ import (
 var ErrOutputLimit = errors.New("corpus output limit")
 var ErrInvalid = errors.New("invalid corpus options")
 
+// Observer is a trusted in-process presentation boundary, never imported code.
+// Callbacks must not mutate or retain the supplied evidence. Errors stop the run
+// without a completion record; observers own rollback of their derivative work.
+type Observer interface {
+	Prepare([]workspace.Entry) error
+	Visit(Entry, Snapshot) error
+}
+type Snapshot struct {
+	Source []byte
+	Native *evidence.Report
+}
+
 type Options struct {
+	Observer                                  Observer
 	Discovery                                 workspace.Options
 	Schema                                    string
 	InputBytes, AcquisitionBytes, OutputBytes int
@@ -102,9 +115,15 @@ func run(ctx context.Context, path string, options Options, out io.Writer, root 
 		return finishFailure(err)
 	}
 	summary.DiscoveryComplete = discovered.Complete
+	if options.Observer != nil {
+		if err := options.Observer.Prepare(append([]workspace.Entry(nil), discovered.Entries...)); err != nil {
+			return summary, err
+		}
+	}
 	for _, candidate := range discovered.Entries {
 		item := Entry{Type: "entry", RelativePath: candidate.RelativePath, State: candidate.State, Reason: candidate.Reason}
 		exit := 0
+		var snapshot Snapshot
 		if candidate.State == "candidate" {
 			if err := ctx.Err(); err != nil {
 				item.State = "canceled"
@@ -121,7 +140,10 @@ func run(ctx context.Context, path string, options Options, out io.Writer, root 
 				var auditFailure *failure.Error
 				var runErr error
 				if options.Schema == "1.0" {
-					result, _ := audit.InspectRoot(root, candidate.RelativePath, attemptLimit)
+					result, raw := audit.InspectRoot(root, candidate.RelativePath, attemptLimit)
+					if options.Observer != nil {
+						snapshot = Snapshot{Source: raw, Native: result.Report}
+					}
 					auditFailure = result.Failure
 					acquiredSize = result.Report.File.Size
 					exit = result.Report.Summary["exit_code"]
@@ -131,10 +153,12 @@ func run(ctx context.Context, path string, options Options, out io.Writer, root 
 				} else {
 					settings := audit.DefaultV2Options()
 					settings.InputBytes = attemptLimit
+					settings.RetainSnapshot = options.Observer != nil
 					result, err := audit.RunV2Root(ctx, root, candidate.RelativePath, settings)
 					runErr = err
 					if err == nil {
 						report = result.JSON
+						snapshot = Snapshot{Source: result.Source, Native: result.Native}
 						auditFailure = result.Failure
 						acquiredSize = result.Report.File.Size
 						exit = result.Report.Summary["exit_code"]
@@ -188,6 +212,16 @@ func run(ctx context.Context, path string, options Options, out io.Writer, root 
 		}
 		if item.State == "failed" || item.State == "unsupported" || item.State == "canceled" {
 			exit = 4
+		}
+		if options.Observer != nil {
+			if item.State != "no_reported_findings" && item.State != "requires_review" {
+				snapshot = Snapshot{}
+			}
+			observed := item
+			observed.Report = bytes.Clone(item.Report)
+			if err := options.Observer.Visit(observed, snapshot); err != nil {
+				return summary, err
+			}
 		}
 		if err := stream.emit(item); err != nil {
 			return summary, err

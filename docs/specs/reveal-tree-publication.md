@@ -1,9 +1,8 @@
 # Source-relative reveal tree publication
 
-This internal #15 increment plans and publishes a complete derivative tree. It
-does not yet connect directory `--reveal-out` to corpus execution; source snapshots,
-verified comparison generation and the outside-source output root remain caller
-responsibilities. The publisher never acquires sources or interprets their content.
+This internal #15 increment plans and publishes a complete derivative tree. The [directory reveal CLI](directory-reveal.md) supplies source snapshots,
+verified comparisons and the outside-source output root; these remain caller
+responsibilities at the package boundary. The publisher never acquires sources or interprets their content.
 
 ## Preflight and layout
 
@@ -83,5 +82,5 @@ The publisher retains bounded metadata, not all previously written artifact bodi
 Tests cover exact nested layout, byte hashes, repeatable manifests, empty input,
 failed/skipped ledger records, alias/prefix collisions, invalid names, resource
 bounds, missing ledger entries, late manifest collisions and identity-preserving
-rollback. Remaining work is corpus callback/CLI wiring and a nested reveal
-end-to-end demonstration; #15 stays open.
+rollback. Corpus callbacks, CLI wiring and the nested demonstration are documented in
+the directory reveal integration. Review/merge acceptance remains separate.
