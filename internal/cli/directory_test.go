@@ -243,7 +243,12 @@ func TestUnsupportedHostCanSaveCorpusFailure(t *testing.T) {
 	if runtime.GOOS == "linux" {
 		t.Skip("unsupported-host contract")
 	}
-	parent := t.TempDir()
+	// macOS TempDir may use /var -> /private/var. The output policy requires
+	// real ancestors, so use the physical fixture path rather than that alias.
+	parent, err := filepath.EvalSymlinks(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
 	source := filepath.Join(parent, "source")
 	if err := os.Mkdir(source, 0700); err != nil {
 		t.Fatal(err)

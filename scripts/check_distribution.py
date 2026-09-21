@@ -77,7 +77,7 @@ def main():
     results = {'system': system, 'machine': platform.machine(), 'checks': [],
                'acquisition': 'supported' if system == 'Linux' else 'fails_closed'}
     with tempfile.TemporaryDirectory(prefix='aletharsis-distribution-') as directory:
-        root = Path(directory)
+        root = Path(directory).resolve()
         suffix = '.exe' if system == 'Windows' else ''
         built = root / ('aletharsis' + suffix)
         install = root / 'installed'
