@@ -60,9 +60,9 @@ func owner(name string) (string, bool) {
 	return strings.Join(append(split[:n-2], split[n-1][:len(split[n-1])-5]), "/"), true
 }
 
-// resolve admits a conservative ASCII URI-path subset. Unsupported escaping,
+// ResolveInternalTarget admits a conservative ASCII URI-path subset. Unsupported escaping,
 // fragments, queries and authority/scheme forms are preserved, never guessed.
-func resolve(source, target string) (string, string) {
+func ResolveInternalTarget(source, target string) (string, string) {
 	if target == "" {
 		return "", "opc.target_empty"
 	}
@@ -225,7 +225,7 @@ func (r *Result) readPart(part *PartResult, index map[string][]int) {
 	}
 	sourceCode := ""
 	if part.SourcePart != "" {
-		if _, code := resolve("", part.SourcePart); code != "" {
+		if _, code := ResolveInternalTarget("", part.SourcePart); code != "" {
 			sourceCode = "opc.source_syntax_unsupported"
 		}
 		found := index[fold(part.SourcePart)]
@@ -287,7 +287,7 @@ func (r *Result) readPart(part *PartResult, index map[string][]int) {
 		case rel.TargetMode != "Internal":
 			rel.State, rel.Code = "invalid", "opc.target_mode_invalid"
 		default:
-			target, code := resolve(part.SourcePart, rel.Target)
+			target, code := ResolveInternalTarget(part.SourcePart, rel.Target)
 			if code != "" {
 				rel.State, rel.Code = "unresolved", code
 			} else {

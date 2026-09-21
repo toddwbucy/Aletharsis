@@ -209,13 +209,13 @@ func TestRetainedDOCXAndODT(t *testing.T) {
 }
 func TestResolverBoundary(t *testing.T) {
 	for _, tc := range []struct{ source, target, want string }{{"word/document.xml", "./media/image.png", "word/media/image.png"}, {"word/document.xml", "../custom.xml", "custom.xml"}, {"word/document.xml", "/root.xml", "root.xml"}, {"", "a/b/../c.xml", "a/c.xml"}} {
-		got, code := resolve(tc.source, tc.target)
+		got, code := ResolveInternalTarget(tc.source, tc.target)
 		if got != tc.want || code != "" {
 			t.Fatal(tc, got, code)
 		}
 	}
 	for _, target := range []string{".", "..", "/", "a//b", "a/.", "a/..", "a/../../b", "a<b", "a\\b"} {
-		if _, code := resolve("", target); code == "" {
+		if _, code := ResolveInternalTarget("", target); code == "" {
 			t.Fatal("unsafe URI accepted", target)
 		}
 	}

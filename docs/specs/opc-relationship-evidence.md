@@ -123,3 +123,10 @@ completed 59,798 executions without failure. Additional aggregate XML-byte and f
 parse allowance tests passed. These are bounded implementation checks, not complete
 OPC/Office conformance or an external forensic-oracle comparison. No relationship
 resource was accessed and no third-party runtime dependency was introduced.
+
+## DOCX identification consumer
+
+[DI-001](docx-identification.md) joins the root relationship to content-type declarations
+and located main XML, preserving unknown/partial inventory states. Its use of the shared
+`ResolveInternalTarget` URI subset does not change OR-001 resolution behavior. It does
+not add traversal, network access, Word rendering or profile suppression.
