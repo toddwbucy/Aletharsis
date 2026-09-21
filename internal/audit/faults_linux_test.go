@@ -257,3 +257,29 @@ func TestCountedSnapshotAccountsDiscardedBytes(t *testing.T) {
 		})
 	}
 }
+
+func TestSeparateAcquisitionCeilings(t *testing.T) {
+	for _, tc := range []struct {
+		name     string
+		size     int64
+		data     string
+		code     failure.Code
+		consumed int
+	}{
+		{"aggregate_pre_read", 5, "valid", failure.ResourceLimit, 0},
+		{"file_pre_read", 9, "oversized", failure.TooLarge, 0},
+		{"grew_past_aggregate", 2, "valid", failure.ResourceLimit, 4},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			consumed := 0
+			f := &snapshotStub{reader: strings.NewReader(tc.data), before: snapshotInfo{size: tc.size}, after: snapshotInfo{size: int64(len(tc.data))}}
+			data, err := readSnapshotWithOpenLimits("source.txt", 3, 8, func(string, int) (snapshotFile, error) {
+				return countedSnapshot{snapshotFile: f, consumed: &consumed}, nil
+			})
+			var typed *failure.Error
+			if !errors.As(err, &typed) || typed.Code() != tc.code || data != nil || consumed != tc.consumed || f.closes != 1 {
+				t.Fatalf("data=%q consumed=%d err=%v", data, consumed, err)
+			}
+		})
+	}
+}

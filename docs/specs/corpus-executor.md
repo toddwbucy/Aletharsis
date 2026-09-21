@@ -75,11 +75,18 @@ Filesystem work and cancellation checks are cooperative, not hard timeouts.
 Execution currently uses one in-flight audit (declared concurrency 1), preserving
 deterministic order without retaining a corpus of reports. Per-file source input
 is at most 8 MiB; discovery retains its own entry/depth/path bounds. Reports use
-the existing 16 MiB canonicalization limits. This is a separate budget from source
-size: an audit accepted individually may exceed the corpus report budget because
-its serialized evidence is larger, producing `execution.resource_limit` for that
+16 MiB input/output, 4 Mi-node and depth-64 canonicalization limits in both schemas.
+This is a separate budget from source size: an audit accepted individually may exceed the corpus report budget because
+its serialized evidence is larger, producing `execution.report_limit` for that
 entry. JSONL defaults to 128 MiB with a
 256 MiB hard output ceiling.
+
+A remaining acquisition allowance smaller than the configured per-file ceiling
+produces `execution.resource_limit` in the envelope and schema-2 diagnostic;
+the retained native failure message identifies the corpus allowance in both schemas.
+`file.too_large` is reserved for evidence exceeding the configured
+per-file ceiling. Both checks use the acquired descriptor; pre-read rejections
+charge zero bytes, allowing later smaller candidates to use the remaining pool.
 
 Aggregate acquisition defaults to 256 MiB, hard-capped at 1 GiB. A rooted-reader
 counter charges actual bytes returned by Read, including partial errors, changed

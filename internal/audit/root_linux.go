@@ -14,11 +14,11 @@ import (
 // O_NOFOLLOW. No candidate pathname is joined to an ambient absolute root.
 func readRootSnapshot(root *os.Root, relative string, limit int) ([]byte, error) {
 	var consumed int
-	return readRootSnapshotCounted(root, relative, limit, &consumed)
+	return readRootSnapshotCounted(root, relative, limit, limit, &consumed)
 }
 
-func readRootSnapshotCounted(root *os.Root, relative string, limit int, consumed *int) ([]byte, error) {
-	if root == nil || !fs.ValidPath(relative) || relative == "." || len(relative) > 4096 || strings.Count(relative, "/") > 64 || limit <= 0 || limit > MaxBytes {
+func readRootSnapshotCounted(root *os.Root, relative string, limit, fileLimit int, consumed *int) ([]byte, error) {
+	if root == nil || !fs.ValidPath(relative) || relative == "." || len(relative) > 4096 || strings.Count(relative, "/") > 64 || limit <= 0 || limit > fileLimit || fileLimit > MaxBytes {
 		return nil, errors.New("invalid rooted acquisition")
 	}
 	flags := syscall.O_RDONLY | syscall.O_DIRECTORY | syscall.O_NOATIME | syscall.O_NOFOLLOW | syscall.O_NONBLOCK | syscall.O_CLOEXEC
@@ -40,7 +40,7 @@ func readRootSnapshotCounted(root *os.Root, relative string, limit int, consumed
 		}
 		dir = next
 	}
-	return readSnapshotWithOpen(relative, limit, func(_ string, flags int) (snapshotFile, error) {
+	return readSnapshotWithOpenLimits(relative, limit, fileLimit, func(_ string, flags int) (snapshotFile, error) {
 		fd, err := syscall.Openat(int(dir.Fd()), components[len(components)-1], flags|syscall.O_CLOEXEC, 0)
 		if err != nil {
 			return nil, err

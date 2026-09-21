@@ -11,8 +11,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/toddwbucy/Aletharsis/internal/audit"
 	"github.com/toddwbucy/Aletharsis/internal/corpus"
 	"github.com/toddwbucy/Aletharsis/internal/evidence"
+	"github.com/toddwbucy/Aletharsis/internal/identity"
 	"github.com/toddwbucy/Aletharsis/internal/publication"
 	"github.com/toddwbucy/Aletharsis/internal/reveal"
 	"github.com/toddwbucy/Aletharsis/internal/workspace"
@@ -27,7 +29,7 @@ func TestDirectoryRevealCompleteWorkflow(t *testing.T) {
 		t.Fatal(err)
 	}
 	delete(files, unsafe)
-	extras := map[string][]byte{"nested/binary.md": []byte(strings.Repeat("\u200b\u200c", 32)), "nested/日本語.md": []byte("Café 日本語 e\u0301 👩\u200d💻\r\n"), "empty.txt": {}, "utf16.txt": {0xff, 0xfe, 'a', 0, 0x0b, 0x20}, "utf32.txt": {0, 0, 0xfe, 0xff, 0, 0, 0, 97, 0, 0, 0x20, 0x0b}}
+	extras := map[string][]byte{"bidi.txt": []byte("invoice\u202e.txt"), "nested/binary.md": []byte(strings.Repeat("\u200b\u200c", 32)), "nested/日本語.md": []byte("Café 日本語 e\u0301 👩\u200d💻\r\n"), "empty.txt": {}, "utf16.txt": {0xff, 0xfe, 'a', 0, 0x0b, 0x20}, "utf32.txt": {0, 0, 0xfe, 0xff, 0, 0, 0, 97, 0, 0, 0x20, 0x0b}}
 	for name, data := range extras {
 		files[name] = data
 		if err := os.WriteFile(filepath.Join(dir, name), data, 0600); err != nil {
@@ -80,6 +82,32 @@ func TestDirectoryRevealCompleteWorkflow(t *testing.T) {
 				}
 				if !bytes.Equal(corpusBytes, out.Bytes()) || len(corpusBytes) != manifest.Corpus.Size || evidence.Hash(corpusBytes) != manifest.Corpus.SHA256 {
 					t.Fatal("corpus identity mismatch")
+				}
+				for _, b := range corpusBytes {
+					if b > 127 {
+						t.Fatal("raw Unicode in corpus transport")
+					}
+				}
+				var bidiEntry corpus.Entry
+				for _, line := range bytes.Split(bytes.TrimSpace(corpusBytes), []byte("\n")) {
+					var entry corpus.Entry
+					if err := json.Unmarshal(line, &entry); err != nil {
+						t.Fatal(err)
+					}
+					if entry.RelativePath == "bidi.txt" {
+						bidiEntry = entry
+					}
+				}
+				canonical, err := identity.Canonicalize(bidiEntry.Report, audit.DefaultV2Options().ReportLimits)
+				if err != nil {
+					t.Fatal(err)
+				}
+				savedBidi, err := os.ReadFile(filepath.Join(output, "reports", "bidi.txt.json"))
+				if err != nil {
+					t.Fatal(err)
+				}
+				if !bytes.Contains(savedBidi, []byte("\u202e")) || !bytes.Equal(savedBidi, canonical) || evidence.Hash(savedBidi) != bidiEntry.ReportCanonicalSHA256 {
+					t.Fatal("canonical raw evidence/hash binding changed")
 				}
 				for _, source := range manifest.Sources {
 					if source.RelativePath == "link" {

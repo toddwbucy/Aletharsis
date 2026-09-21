@@ -58,6 +58,17 @@ order is not a stable selection rule. Explicit policy skips remain visible. A va
 report that includes failed files is retained; an actual report write/close failure
 removes only the new partial output and returns 4.
 
+## Source and report budgets
+
+Both directory report schemas enforce a 16 MiB serialized/canonical report bound,
+4 Mi nodes and depth 64. Expanded offset evidence can exceed it around 2 MiB of
+ASCII input, despite the 8 MiB per-file source ceiling. Report-budget exhaustion
+emits `failed / execution.report_limit` without an embedded report or reveal
+artifacts; the ledger still records the source outcome. This differs from
+standalone schema 1.0. Aggregate acquisition exhaustion uses
+`execution.resource_limit`; an actual per-file ceiling violation uses
+`file.too_large`. Schema 2.0 also retains its native report/per-record limits.
+
 ## Output and source integrity
 
 Report output must be outside the source tree. Canonical path ancestry and inode

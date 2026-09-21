@@ -146,7 +146,7 @@ func run(ctx context.Context, path string, options Options, out io.Writer, root 
 				var auditFailure *failure.Error
 				var runErr error
 				if options.Schema == "1.0" {
-					result, raw, consumed := audit.InspectRootCounted(root, candidate.RelativePath, attemptLimit)
+					result, raw, consumed := audit.InspectRootCounted(root, candidate.RelativePath, attemptLimit, options.InputBytes)
 					charge = consumed
 					if options.Observer != nil {
 						snapshot = Snapshot{Source: raw, Native: result.Report}
@@ -160,7 +160,7 @@ func run(ctx context.Context, path string, options Options, out io.Writer, root 
 					settings := audit.DefaultV2Options()
 					settings.InputBytes = attemptLimit
 					settings.RetainSnapshot = options.Observer != nil
-					result, err, consumed := audit.RunV2RootCounted(ctx, root, candidate.RelativePath, settings)
+					result, err, consumed := audit.RunV2RootCounted(ctx, root, candidate.RelativePath, settings, options.InputBytes)
 					charge = consumed
 					runErr = err
 					if err == nil {
@@ -197,7 +197,7 @@ func run(ctx context.Context, path string, options Options, out io.Writer, root 
 					item.State = "failed"
 					item.Reason = "execution.failed"
 					if errors.Is(runErr, identity.ErrLimit) {
-						item.Reason = "execution.resource_limit"
+						item.Reason = "execution.report_limit"
 					}
 					if ctx.Err() != nil {
 						item.State = "canceled"

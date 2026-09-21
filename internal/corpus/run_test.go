@@ -289,7 +289,7 @@ func TestLegacyCorpusReportBudgetIsIndependentOfSourceBudget(t *testing.T) {
 	if err := decoder.Decode(&entry); err != nil {
 		t.Fatal(err)
 	}
-	if entry.State != "failed" || entry.Reason != "execution.resource_limit" || len(entry.Report) != 0 {
+	if entry.State != "failed" || entry.Reason != "execution.report_limit" || len(entry.Report) != 0 {
 		t.Fatal("partial/oversized report escaped", entry.State, entry.Reason)
 	}
 }
@@ -356,6 +356,36 @@ func TestCorpusEscapesUnicodeAndPreservesCanonicalHash(t *testing.T) {
 		tight.OutputBytes = out.Len() - 100
 		if _, err := Run(context.Background(), dir, tight, io.Discard); !errors.Is(err, ErrOutputLimit) {
 			t.Fatal("escaped byte budget not enforced", err)
+		}
+	}
+}
+
+func TestRemainingBudgetDoesNotClaimPerFileOversize(t *testing.T) {
+	linux(t)
+	dir := t.TempDir()
+	for name, data := range map[string]string{"a.txt": "abc", "b.txt": "valid", "c.txt": "oversized", "d.txt": "ok"} {
+		put(t, filepath.Join(dir, name), []byte(data))
+	}
+	for _, schema := range []string{"1.0", "2.0"} {
+		options := DefaultOptions()
+		options.Schema, options.InputBytes, options.AcquisitionBytes = schema, 8, 7
+		var out bytes.Buffer
+		summary, err := Run(context.Background(), dir, options, &out)
+		if err != nil || summary.Counts["failed"] != 2 || summary.Counts["no_reported_findings"] != 2 {
+			t.Fatalf("%s: %+v %v", schema, summary, err)
+		}
+		rows := records(t, out.Bytes())
+		for i, want := range []string{"execution.resource_limit", "file.too_large"} {
+			var entry Entry
+			if err := json.Unmarshal(rows[i+2], &entry); err != nil {
+				t.Fatal(err)
+			}
+			if entry.Reason != want || len(entry.Report) == 0 || (schema == "2.0" && !bytes.Contains(entry.Report, []byte(want))) {
+				t.Fatalf("%s: wrong envelope/native failure: %+v", schema, entry)
+			}
+			if i == 0 && (bytes.Contains(entry.Report, []byte("file.too_large")) || !bytes.Contains(entry.Report, []byte("corpus acquisition allowance"))) {
+				t.Fatal("aggregate rejection misrepresented in retained evidence")
+			}
 		}
 	}
 }

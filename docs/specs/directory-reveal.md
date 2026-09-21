@@ -54,7 +54,13 @@ A complete publication can therefore contain a partial or canceled audit; the
 corpus summary and source ledger disclose those outcomes.
 
 Native reports are saved as the exact canonical bytes retained in the corpus
-entry. Their artifact hashes equal `report_canonical_sha256`. Mappings retain
+entry. Their artifact hashes equal `report_canonical_sha256`. These report files
+contain raw UTF-8, potentially including bidi controls, and are not safe terminal
+display artifacts. Handle them like raw revealed text and faithful diffs; review
+with an escaping JSON viewer or the escaped display diffs. Corpus stdout JSON/JSONL
+is ASCII-escaped, as is the schema-1 single-file bundle report; directory reports
+intentionally use canonical bytes instead to preserve this hash binding.
+Mappings retain
 source, decoded, revealed and display identities and exact occurrence spans.
 Finding reference indices resolve into the saved report’s finding order for either
 schema. The manifest binds every artifact size/hash and the exact corpus stream. A saved

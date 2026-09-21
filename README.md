@@ -17,8 +17,12 @@ workbench, and explicitly approved transformations into new files. See the
 Go **0.2.0** defaults to deterministic **report schema 1.0** output.
 Opt in to the new coverage contract with `--schema-version 2.0`.
 It audits regular files or bounded directories on **Linux** with supported
-no-atime acquisition, up to **8 MiB per file**. Schema 2.0 also enforces report and per-record budgets;
-some inputs below 8 MiB exceed those budgets and fail explicitly without a report.
+no-atime acquisition, up to **8 MiB per file**. Directory audits in **both schemas**
+additionally enforce a 16 MiB / 4 Mi-node report budget; expanded text/offset evidence can exhaust it around 2 MiB of ASCII
+input, producing `execution.report_limit` with no retained report. Standalone
+schema 1.0 does not have this corpus budget. Schema 2.0 also enforces native report
+and per-record budgets. The 8 MiB source ceiling is not a promise that every
+smaller input fits all evidence budgets.
 
 | Capability | Current behavior |
 | --- | --- |
@@ -124,6 +128,13 @@ without invented revealed text; skipped/canceled observations remain in the ledg
 The destination must be new and outside the source tree. Portable-name, case-fold,
 normalization and file/directory collisions fail explicitly rather than rename
 sources. `--output` cannot be combined with `--reveal-out`.
+
+Directory `reports/*.json` preserve canonical **raw UTF-8** evidence, including
+bidi controls: do not display them directly in a terminal. This intentionally
+differs from ASCII-escaped stdout JSON/JSONL and the schema-1 single-file
+`report.json`. Their byte hashes equal the corpus canonical report hashes. Treat
+them like raw revealed text and faithful diffs; use an escaping JSON viewer or
+`display-diffs/` for review.
 
 Publication finishes before stdout is delivered. A stdout failure leaves the
 committed tree available; publication failure attempts rollback of its own files.
