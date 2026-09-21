@@ -81,7 +81,7 @@
             },
             "record": {
               "type": "string",
-              "pattern": "^https://github\\.com/toddwbucy/Aletharsis/(issues|pull)/[1-9][0-9]*(#.*)?$"
+              "pattern": "^https://github\\.com/toddwbucy/Aletharsis/pull/[1-9][0-9]*$"
             },
             "disposition": {
               "enum": [
@@ -165,7 +165,7 @@
         "properties": {
           "path": {
             "type": "string",
-            "pattern": "^(docs|experiments)/[A-Za-z0-9_./-]+$"
+            "pattern": "^(docs|experiments)/([A-Za-z0-9_.-]*[A-Za-z0-9_-][A-Za-z0-9_.-]*/)*[A-Za-z0-9_.-]*[A-Za-z0-9_-][A-Za-z0-9_.-]*$"
           },
           "sha256": {
             "type": "string",
@@ -251,7 +251,8 @@
         },
         "scope_justification": {
           "type": "string",
-          "pattern": "\\S"
+          "pattern": "\\S",
+          "minLength": 20
         }
       },
       "required": [
@@ -328,10 +329,7 @@
               "unit_contract": {
                 "properties": {
                   "status": {
-                    "enum": [
-                      "passed",
-                      "not_applicable"
-                    ]
+                    "const": "passed"
                   }
                 }
               },
@@ -348,80 +346,56 @@
               "source_integrity": {
                 "properties": {
                   "status": {
-                    "enum": [
-                      "passed",
-                      "not_applicable"
-                    ]
+                    "const": "passed"
                   }
                 }
               },
               "adversarial_fuzz": {
                 "properties": {
                   "status": {
-                    "enum": [
-                      "passed",
-                      "not_applicable"
-                    ]
+                    "const": "passed"
                   }
                 }
               },
               "resources": {
                 "properties": {
                   "status": {
-                    "enum": [
-                      "passed",
-                      "not_applicable"
-                    ]
+                    "const": "passed"
                   }
                 }
               },
               "native_platforms": {
                 "properties": {
                   "status": {
-                    "enum": [
-                      "passed",
-                      "not_applicable"
-                    ]
+                    "const": "passed"
                   }
                 }
               },
               "build_install": {
                 "properties": {
                   "status": {
-                    "enum": [
-                      "passed",
-                      "not_applicable"
-                    ]
+                    "const": "passed"
                   }
                 }
               },
               "disable_rollback_missing": {
                 "properties": {
                   "status": {
-                    "enum": [
-                      "passed",
-                      "not_applicable"
-                    ]
+                    "const": "passed"
                   }
                 }
               },
               "security_updates": {
                 "properties": {
                   "status": {
-                    "enum": [
-                      "passed",
-                      "not_applicable"
-                    ]
+                    "const": "passed"
                   }
                 }
               },
               "semantic_upgrade": {
                 "properties": {
                   "status": {
-                    "enum": [
-                      "passed",
-                      "not_applicable"
-                    ]
+                    "const": "passed"
                   }
                 }
               }

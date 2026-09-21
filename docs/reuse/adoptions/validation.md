@@ -44,3 +44,16 @@ Coverage now includes new registered components, accepted approve/revise/reject
 transitions, pending recommendations without authority, missing registry decisions,
 non-file evidence paths and supported versus unsupported scope exclusions.
 Both retained studies remain revise recommendations with no owner acceptance.
+
+## Second review remediation validation
+
+Re-run on 2026-09-21 against the second remediation tree based on `1b0c15c`,
+using the commands and Python 3.12.13 Linux/amd64 environment above: 114 focused
+tests and 393 full offline tests passed (58 adoption checks). Full-suite process
+measurements: 3.09 seconds wall, 3.33 seconds user CPU, 0.08 seconds system CPU,
+and 92,272 KiB maximum resident set. Earlier measurements remain historical.
+
+New checks exercise the ten-waiver scenario and each mandatory approval gate,
+matching acceptance/registry URL forms, schema-only traversal rejection, short
+justifications, and matching-registry self-review attempts. No component was
+approved, no retained experiment bytes changed, and no live detector ran.

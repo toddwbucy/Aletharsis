@@ -24,6 +24,7 @@ def validate(record):
     assert record['owner'] == component['acceptance_owner']
     assert record['implementer'] == component['implementer']
     assert record['technical_reviewer'] == component['technical_reviewer']
+    assert record['technical_reviewer'].strip().casefold() != record['implementer'].strip().casefold(), 'technical reviewer must differ from implementer'
     assert component['evaluation_issue'] in record['tracking']
     for number in (7, 21, 45):
         assert f'https://github.com/toddwbucy/Aletharsis/issues/{number}' in record['tracking']
@@ -159,7 +160,7 @@ def test_acceptance_lifecycle(disposition, monkeypatch, pending_record):
             validate(record)
 
 
-@pytest.mark.parametrize('fault', ['all_na', 'no_evidence', 'no_justification', 'blank_justification', 'none'])
+@pytest.mark.parametrize('fault', ['all_na', 'ten_na', 'no_evidence', 'no_justification', 'blank_justification', 'short_justification', 'none'])
 def test_not_applicable_requires_supported_scope(fault, pending_record):
     record = deepcopy(pending_record)
     record['recommendation'] = 'approve'
@@ -170,7 +171,12 @@ def test_not_applicable_requires_supported_scope(fault, pending_record):
                  scope_justification='Synthetic shape test: developer-only fixture oracle; no adapter shipped.')
     if fault == 'all_na':
         for check in record['checks'].values():
-            check.update(status='not_applicable', evidence=[0], scope_justification='Synthetic exclusion.')
+            check.update(status='not_applicable', evidence=[0], scope_justification='Synthetic scope exclusion for schema testing.')
+    elif fault == 'ten_na':
+        for name, check in record['checks'].items():
+            if name not in ('prerequisites', 'licenses_notices'):
+                check.update(status='not_applicable', evidence=[0], scope_justification='Synthetic scope exclusion for schema testing.')
+    elif fault == 'short_justification': check['scope_justification'] = 'n/a'
     elif fault == 'no_evidence': check['evidence'] = []
     elif fault == 'no_justification': del check['scope_justification']
     elif fault == 'blank_justification': check['scope_justification'] = '   '
@@ -199,3 +205,54 @@ def test_inventory_rejects_non_record_sidecar(tmp_path, monkeypatch):
     monkeypatch.setitem(globals(), 'PATHS', [*PATHS, path])
     with pytest.raises(AssertionError):
         test_inventory()
+
+
+@pytest.mark.parametrize('name', [
+    'prerequisites', 'licenses_notices', 'unit_contract', 'source_integrity',
+    'adversarial_fuzz', 'resources', 'native_platforms', 'build_install',
+    'disable_rollback_missing', 'security_updates', 'semantic_upgrade',
+])
+def test_required_approval_checks_cannot_be_waived(name, pending_record):
+    record = deepcopy(pending_record)
+    record['recommendation'] = 'approve'
+    for check in record['checks'].values():
+        check.update(status='passed', evidence=[0])
+    record['checks'][name].update(status='not_applicable',
+        scope_justification='Synthetic long justification cannot waive this gate.')
+    with pytest.raises(ValidationError):
+        VALIDATOR.validate(record)
+
+
+@pytest.mark.parametrize('suffix,valid', [('pull/60', True), ('issues/60', False),
+    ('pull/60#issuecomment-1', False), ('pull/0', False)])
+def test_acceptance_url_agrees_with_registry(suffix, valid, pending_record):
+    record = deepcopy(pending_record)
+    url = 'https://github.com/toddwbucy/Aletharsis/' + suffix
+    record['acceptance'] = dict(owner=record['owner'],
+        technical_reviewer=record['technical_reviewer'], record=url, disposition='revise')
+    registry_schema = json.loads((ROOT/'schemas/reuse-registry.schema.json').read_bytes())
+    registry_url = Draft202012Validator(registry_schema['$defs']['decision']['properties']['record'])
+    assert VALIDATOR.is_valid(record) == registry_url.is_valid(url) == valid
+
+
+@pytest.mark.parametrize('path,valid', [
+    ('docs/../../etc/passwd', False), ('docs/../README.md', False),
+    ('docs/a/..', False), ('docs/./evidence.json', False),
+    ('docs//evidence.json', False), ('docs/reuse/evidence.json', True),
+    ('experiments/.evidence/results-v1.0.json', True),
+])
+def test_evidence_path_schema_rejects_traversal(path, valid, pending_record):
+    record = deepcopy(pending_record)
+    record['evidence'][0]['path'] = path
+    assert VALIDATOR.is_valid(record) == valid
+
+
+@pytest.mark.parametrize('reviewer', ['Codex', 'CODEX', ' Codex '])
+def test_matching_registry_cannot_authorize_self_review(reviewer, pending_record, monkeypatch):
+    record = deepcopy(pending_record)
+    record.update(owner='Codex', implementer='Codex', technical_reviewer=reviewer)
+    component = deepcopy(REGISTRY[record['component']])
+    component.update(acceptance_owner='Codex', implementer='Codex', technical_reviewer=reviewer)
+    monkeypatch.setitem(REGISTRY, record['component'], component)
+    with pytest.raises(AssertionError, match='technical reviewer must differ'):
+        validate(record)

@@ -32,12 +32,29 @@ not-applicable entry also requires a nonblank `scope_justification`, reviewed by
 the owner against that evidence;
 it is not an escape hatch for missing platforms or an unavailable test system.
 An `approve` recommendation requires all checks passed or justified not-applicable.
-Prerequisites and license/notice clearance must always pass; neither can be waived.
+For approval, every check except `live_adapter` must pass, including native
+platform execution, security review, disable/rollback and an initial semantic
+baseline. `live_adapter` alone may be not-applicable for an explicitly scoped
+component that ships no adapter (for example a development-only fixture oracle).
+Every scope justification must contain at least 20 characters and non-whitespace;
+that is a placeholder guard, not proof of a sound justification.
 A pending `approve` recommendation with null acceptance is valid and grants no
 adoption authority; the registry cannot be approved in that state.
 It is only a recommendation until `acceptance` names the owner, technical reviewer,
-review record and matching disposition. CodeRabbit cannot grant owner acceptance.
-Specialist review must be assigned where automated review lacks domain expertise.
+review record and matching disposition. `acceptance.record` must be a bare
+Aletharsis PR URL, matching the registry decision contract; issue URLs and comment
+anchors can be retained in tracking/evidence but cannot replace that canonical URL.
+CodeRabbit cannot grant owner acceptance.
+The technical reviewer identifier must differ from the implementer (ignoring
+case and surrounding whitespace). An owner may implement work but cannot thereby
+self-review it. Specialist review must be assigned where automated review lacks
+domain expertise; schema validation cannot authenticate a person, detect alternate
+accounts, or establish reviewer competence.
+
+Acceptance may be recorded in the evaluation PR if that same reviewed change
+contains explicit owner acceptance and independent technical review. A separate PR
+URL is not required and would not establish independence by itself. Pending records
+naming an automated reviewer are not evidence of completed specialist acceptance.
 
 Acceptance must inspect evidence, not merely validate JSON. Schema checks cannot
 prove the truth of a pass assertion or that a linked reviewer accepted it. On
