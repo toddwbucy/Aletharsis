@@ -1,0 +1,394 @@
+{
+  "document_kind": "migration_design_vectors",
+  "design_revision": "EC-003/0.1",
+  "not_wire_reports": true,
+  "baseline_commit": "7cfc0615c16225e63cd56064fb462f111ed9eb7a",
+  "scenario_assumptions": {
+    "native_operation": "completed with usable result",
+    "native_severity_findings": 0,
+    "adapter_participation": "optional",
+    "adapter_findings": 0
+  },
+  "reason_map": [
+    {
+      "host_reason": "none",
+      "report_code": null,
+      "reason_source": "none"
+    },
+    {
+      "host_reason": "partial",
+      "report_code": "adapter.partial_scope",
+      "reason_source": "host"
+    },
+    {
+      "host_reason": "unavailable",
+      "report_code": null,
+      "reason_source": "capability"
+    },
+    {
+      "host_reason": "timeout",
+      "report_code": "execution.timeout",
+      "reason_source": "host"
+    },
+    {
+      "host_reason": "malformed_output",
+      "report_code": "adapter.malformed_output",
+      "reason_source": "host"
+    },
+    {
+      "host_reason": "oversized_output",
+      "report_code": "adapter.output_limit",
+      "reason_source": "host"
+    },
+    {
+      "host_reason": "source_mismatch",
+      "report_code": "adapter.source_mismatch",
+      "reason_source": "host"
+    },
+    {
+      "host_reason": "provider_failure",
+      "report_code": "adapter.provider_failure",
+      "reason_source": "host"
+    },
+    {
+      "host_reason": "cleanup_failed",
+      "report_code": "adapter.cleanup_failed",
+      "reason_source": "host"
+    },
+    {
+      "host_reason": "canceled",
+      "report_code": "execution.canceled",
+      "reason_source": "host"
+    }
+  ],
+  "result_map": [
+    {
+      "operation": "extract",
+      "kind": "carrier_extraction",
+      "contract_version": "1",
+      "role": "analyzer",
+      "mechanism": "structural"
+    },
+    {
+      "operation": "verify",
+      "kind": "credential_verification",
+      "contract_version": "1",
+      "role": "verifier",
+      "mechanism": "cryptographic"
+    },
+    {
+      "operation": "statistical",
+      "kind": "statistical_analysis",
+      "contract_version": "1",
+      "role": "analyzer",
+      "mechanism": "statistical"
+    }
+  ],
+  "cases": [
+    {
+      "id": "canceled",
+      "da_fixture": "tests/adapters/fixtures/canceled.json",
+      "fixture_sha256": "b5afe0139a6920d474cf3926c2ca2f272f5c7b1cac3dd29308539968a8257083",
+      "operation": "extract",
+      "host_state": "canceled",
+      "host_reason": "canceled",
+      "expected": {
+        "execution_state": "canceled",
+        "report_reason": "execution.canceled",
+        "reason_source": "host",
+        "result_kind": null,
+        "result_count": 0,
+        "mixed_native_report_status": "partial",
+        "mixed_native_exit_code": 4
+      }
+    },
+    {
+      "id": "cleanup_failed",
+      "da_fixture": "tests/adapters/fixtures/cleanup_failed.json",
+      "fixture_sha256": "1c9de771b85f9ec2aed8d5a752f2e484e760ce7a2ac1646beac78b1334237584",
+      "operation": "extract",
+      "host_state": "failed",
+      "host_reason": "cleanup_failed",
+      "expected": {
+        "execution_state": "failed",
+        "report_reason": "adapter.cleanup_failed",
+        "reason_source": "host",
+        "result_kind": null,
+        "result_count": 0,
+        "mixed_native_report_status": "partial",
+        "mixed_native_exit_code": 4
+      }
+    },
+    {
+      "id": "credential-absent",
+      "da_fixture": "tests/adapters/fixtures/credential-absent.json",
+      "fixture_sha256": "070821f61824a9f7b97bf6766e6785f8132d220a84fdb6ebf0ff260d25d422f5",
+      "operation": "verify",
+      "host_state": "completed",
+      "host_reason": "none",
+      "expected": {
+        "execution_state": "completed",
+        "report_reason": null,
+        "reason_source": "none",
+        "result_kind": "credential_verification",
+        "result_count": 1,
+        "mixed_native_report_status": "completed",
+        "mixed_native_exit_code": 0
+      }
+    },
+    {
+      "id": "extracted",
+      "da_fixture": "tests/adapters/fixtures/extracted.json",
+      "fixture_sha256": "9ad2330322d4b63904b7b58cb0ff534738a031985293819f5601c421370a3fc2",
+      "operation": "extract",
+      "host_state": "completed",
+      "host_reason": "none",
+      "expected": {
+        "execution_state": "completed",
+        "report_reason": null,
+        "reason_source": "none",
+        "result_kind": "carrier_extraction",
+        "result_count": 1,
+        "mixed_native_report_status": "completed",
+        "mixed_native_exit_code": 0
+      }
+    },
+    {
+      "id": "malformed_output",
+      "da_fixture": "tests/adapters/fixtures/malformed_output.json",
+      "fixture_sha256": "a43cc4b5a5db47254dbdf90e3496d1aa6bdd6c8702b175f45e7148ee053f2a06",
+      "operation": "extract",
+      "host_state": "failed",
+      "host_reason": "malformed_output",
+      "expected": {
+        "execution_state": "failed",
+        "report_reason": "adapter.malformed_output",
+        "reason_source": "host",
+        "result_kind": null,
+        "result_count": 0,
+        "mixed_native_report_status": "partial",
+        "mixed_native_exit_code": 4
+      }
+    },
+    {
+      "id": "oversized_output",
+      "da_fixture": "tests/adapters/fixtures/oversized_output.json",
+      "fixture_sha256": "766cd38e9f9555aaa1abcf2eca60547fa74e8cfb8ced8ebf15e60561d3435adc",
+      "operation": "extract",
+      "host_state": "failed",
+      "host_reason": "oversized_output",
+      "expected": {
+        "execution_state": "failed",
+        "report_reason": "adapter.output_limit",
+        "reason_source": "host",
+        "result_kind": null,
+        "result_count": 0,
+        "mixed_native_report_status": "partial",
+        "mixed_native_exit_code": 4
+      }
+    },
+    {
+      "id": "partial",
+      "da_fixture": "tests/adapters/fixtures/partial.json",
+      "fixture_sha256": "02f7f718483424199837e2df890d50676ea009bef607833d09fec6becc245e35",
+      "operation": "extract",
+      "host_state": "partial",
+      "host_reason": "partial",
+      "expected": {
+        "execution_state": "partial",
+        "report_reason": "adapter.partial_scope",
+        "reason_source": "host",
+        "result_kind": "carrier_extraction",
+        "result_count": 1,
+        "mixed_native_report_status": "partial",
+        "mixed_native_exit_code": 4
+      }
+    },
+    {
+      "id": "provider_failure",
+      "da_fixture": "tests/adapters/fixtures/provider_failure.json",
+      "fixture_sha256": "ebb32e4c3228e9bdb0a47530bf9afdcfa5b869fc0d1171544e2f72879230d02e",
+      "operation": "extract",
+      "host_state": "failed",
+      "host_reason": "provider_failure",
+      "expected": {
+        "execution_state": "failed",
+        "report_reason": "adapter.provider_failure",
+        "reason_source": "host",
+        "result_kind": null,
+        "result_count": 0,
+        "mixed_native_report_status": "partial",
+        "mixed_native_exit_code": 4
+      }
+    },
+    {
+      "id": "source_mismatch",
+      "da_fixture": "tests/adapters/fixtures/source_mismatch.json",
+      "fixture_sha256": "a2392448dc08c42a8a61f6afb23ae61fbe8f7b47098c633ba41578225f85b2c6",
+      "operation": "extract",
+      "host_state": "failed",
+      "host_reason": "source_mismatch",
+      "expected": {
+        "execution_state": "failed",
+        "report_reason": "adapter.source_mismatch",
+        "reason_source": "host",
+        "result_kind": null,
+        "result_count": 0,
+        "mixed_native_report_status": "partial",
+        "mixed_native_exit_code": 4
+      }
+    },
+    {
+      "id": "statistical",
+      "da_fixture": "tests/adapters/fixtures/statistical.json",
+      "fixture_sha256": "e0252c2d70186e19a1626d86799f3a8dabb7a8748afbe650779b9327d2a65f8b",
+      "operation": "statistical",
+      "host_state": "completed",
+      "host_reason": "none",
+      "expected": {
+        "execution_state": "completed",
+        "report_reason": null,
+        "reason_source": "none",
+        "result_kind": "statistical_analysis",
+        "result_count": 1,
+        "mixed_native_report_status": "completed",
+        "mixed_native_exit_code": 0
+      }
+    },
+    {
+      "id": "timeout",
+      "da_fixture": "tests/adapters/fixtures/timeout.json",
+      "fixture_sha256": "e675bdc37e72ac1efc29b01b9462824253ee0e94f60a9c68ff18fff1af7c6ac2",
+      "operation": "extract",
+      "host_state": "failed",
+      "host_reason": "timeout",
+      "expected": {
+        "execution_state": "failed",
+        "report_reason": "execution.timeout",
+        "reason_source": "host",
+        "result_kind": null,
+        "result_count": 0,
+        "mixed_native_report_status": "partial",
+        "mixed_native_exit_code": 4
+      }
+    },
+    {
+      "id": "unavailable",
+      "da_fixture": "tests/adapters/fixtures/unavailable.json",
+      "fixture_sha256": "abe95555a4c977680179f4be4f9baba50f8c81632b0bb08c1b93df6b27327726",
+      "operation": "extract",
+      "host_state": "not_run",
+      "host_reason": "unavailable",
+      "expected": {
+        "execution_state": "not_run",
+        "report_reason": null,
+        "reason_source": "capability",
+        "result_kind": null,
+        "result_count": 0,
+        "mixed_native_report_status": "partial",
+        "mixed_native_exit_code": 4
+      }
+    },
+    {
+      "id": "verification",
+      "da_fixture": "tests/adapters/fixtures/verification.json",
+      "fixture_sha256": "382cd4dd0c2523ecca5fe9b68a1d64bf45c3e973d8eddc77eb13a7db9dca1c5b",
+      "operation": "verify",
+      "host_state": "completed",
+      "host_reason": "none",
+      "expected": {
+        "execution_state": "completed",
+        "report_reason": null,
+        "reason_source": "none",
+        "result_kind": "credential_verification",
+        "result_count": 1,
+        "mixed_native_report_status": "completed",
+        "mixed_native_exit_code": 0
+      }
+    }
+  ],
+  "aggregate_cases": [
+    {
+      "id": "disabled-does-not-reduce-coverage",
+      "operational_failure": false,
+      "adapter_participation": "disabled",
+      "adapter_state": "not_run",
+      "usable_results": true,
+      "severity_exit": 0,
+      "expected_status": "completed",
+      "expected_exit": 0
+    },
+    {
+      "id": "required-unavailable-no-results",
+      "operational_failure": false,
+      "adapter_participation": "required",
+      "adapter_state": "not_run",
+      "usable_results": false,
+      "severity_exit": 0,
+      "expected_status": "failed",
+      "expected_exit": 4
+    },
+    {
+      "id": "optional-unavailable-no-results",
+      "operational_failure": false,
+      "adapter_participation": "optional",
+      "adapter_state": "not_run",
+      "usable_results": false,
+      "severity_exit": 0,
+      "expected_status": "partial",
+      "expected_exit": 4
+    },
+    {
+      "id": "canceled-no-results",
+      "operational_failure": false,
+      "adapter_participation": "required",
+      "adapter_state": "canceled",
+      "usable_results": false,
+      "severity_exit": 0,
+      "expected_status": "canceled",
+      "expected_exit": 4
+    },
+    {
+      "id": "acquisition-failure-precedence",
+      "operational_failure": true,
+      "adapter_participation": "optional",
+      "adapter_state": "partial",
+      "usable_results": true,
+      "severity_exit": 3,
+      "expected_status": "failed",
+      "expected_exit": 4
+    },
+    {
+      "id": "completed-high-native-finding",
+      "operational_failure": false,
+      "adapter_participation": "optional",
+      "adapter_state": "completed",
+      "usable_results": true,
+      "severity_exit": 3,
+      "expected_status": "completed",
+      "expected_exit": 3
+    },
+    {
+      "id": "completed-invalid-credential-not-process-failure",
+      "operational_failure": false,
+      "adapter_participation": "optional",
+      "adapter_state": "completed",
+      "usable_results": true,
+      "severity_exit": 0,
+      "expected_status": "completed",
+      "expected_exit": 0
+    }
+  ],
+  "compatibility": {
+    "production_schema_default": "1.0",
+    "existing_opt_in": "2.0",
+    "proposed_opt_in": "3.0",
+    "old_importer_status": "unsupported_version",
+    "old_importer_coverage": "unknown",
+    "frozen_schema_semantic_sha256": {
+      "schemas/report.schema.json": "ca14acb44fae72878261115103069dc820305ad1fadd3d37d97e02daf422f2fd",
+      "schemas/report-v2.schema.json": "a1852c7a024075f5763a66a388fde731d01c2f8038df378624fe11f12e30db80",
+      "schemas/adapter-exchange-v1.schema.json": "347dcddbb15cc4a0e4e78e58872ee258a15273a46d3ee9070d5a922e2ab7c566"
+    }
+  }
+}

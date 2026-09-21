@@ -74,9 +74,13 @@ conformance. Do not use inventory refreshes to silently approve an upstream upda
 
 ## Adapter contract review
 
-[DA-001](../specs/detector-adapter-v1.md) proposes the bounded local exchange,
+[DA-001](../specs/detector-adapter-v1.md), accepted in PR #49, defines the bounded local exchange,
 source/derived identities, raw-result retention, trust dimensions and worker
 lifecycle under #36, informed by merged studies #47/#48. Its schema and offline
 fixtures are design conformance tools. Production report schema 2.0 and dependency
 approval remain unchanged; the report migration and G6 enforcement are separate
 review gates.
+
+The next #36 review unit is [EC-003 report migration design](../specs/report-v3-migration.md).
+Its planning vectors do not replace the separately gated full wire fixtures and
+Go marshal/import parity required before adapter implementation.
