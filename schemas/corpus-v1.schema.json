@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aletharsis.local/schemas/corpus-v1.schema.json",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/header"
+    },
+    {
+      "$ref": "#/$defs/entry"
+    },
+    {
+      "$ref": "#/$defs/summary"
+    }
+  ],
+  "$defs": {
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "contract",
+        "workspace",
+        "report_schema",
+        "limits"
+      ],
+      "properties": {
+        "type": {
+          "const": "header"
+        },
+        "contract": {
+          "const": "aletharsis.corpus/1"
+        },
+        "workspace": {
+          "type": "string",
+          "minLength": 1
+        },
+        "report_schema": {
+          "enum": [
+            "1.0",
+            "2.0"
+          ]
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file_input_bytes",
+            "acquisition_bytes",
+            "output_bytes",
+            "concurrency",
+            "entries",
+            "depth",
+            "path_bytes"
+          ],
+          "properties": {
+            "file_input_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "acquisition_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "output_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "concurrency": {
+              "const": 1
+            },
+            "entries": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "depth": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "path_bytes": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "relative_path",
+        "state",
+        "reason"
+      ],
+      "properties": {
+        "type": {
+          "const": "entry"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state": {
+          "enum": [
+            "no_reported_findings",
+            "requires_review",
+            "unsupported",
+            "failed",
+            "skipped",
+            "canceled"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "report": {
+          "oneOf": [
+            {
+              "$ref": "report.schema.json"
+            },
+            {
+              "$ref": "report-v2.schema.json"
+            }
+          ]
+        },
+        "report_canonical_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "dependentRequired": {
+        "report": [
+          "report_canonical_sha256"
+        ],
+        "report_canonical_sha256": [
+          "report"
+        ]
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "no_reported_findings",
+                  "requires_review"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "report"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "skipped"
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "required": [
+                "report"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "state",
+        "reason",
+        "discovery_complete",
+        "entries",
+        "counts",
+        "exit_code"
+      ],
+      "properties": {
+        "type": {
+          "const": "summary"
+        },
+        "state": {
+          "enum": [
+            "completed",
+            "partial",
+            "failed",
+            "canceled"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "discovery_complete": {
+          "type": "boolean"
+        },
+        "entries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "no_reported_findings",
+            "requires_review",
+            "unsupported",
+            "failed",
+            "skipped",
+            "canceled"
+          ],
+          "properties": {
+            "no_reported_findings": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requires_review": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unsupported": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "skipped": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "canceled": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "exit_code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 # Reveal delivery plan (#15)
 
-Status: implementation in review; no new CLI capability yet.
+Status: complete text/corpus workflow implemented in a stacked review series;
+review and merge remain required before release or closure of #15.
 
 Reveal is a presentation derivative of acquired evidence, not remediation and
 not a new detector. It must not change source bytes or normalize decoded text.
@@ -69,3 +70,132 @@ The caller supplies positive source, output and occurrence limits. The occurrenc
 budget also bounds total finding links. Limit or validation failures return no
 partial result. The pure renderer does no file I/O and retains no mutable input
 objects. Resource-bounded publication and report linkage are subsequent gates.
+
+## Bounded comparison contract
+
+`internal/reveal.Compare` builds a fresh verified reveal, then returns two
+explicitly labeled comparisons. `faithful` compares the exact decoded UTF-8
+representation with the revealed UTF-8 representation. Its original side retains
+invisible characters, CRLF, and missing final newlines. It is not safe raw terminal
+output and is not a patch for original UTF-16/32 bytes.
+
+`presentation` compares ASCII-escaped versions of those representations. LF is
+preserved; backslash, CR, tab, controls and all non-ASCII scalars are escaped.
+Ordinary multilingual text is escaped for display too; that is not a finding.
+Every escape maps its input scalar and UTF-8 byte span to its output byte span.
+The before map joins to native text evidence; the after map joins through the
+reveal occurrence map and unchanged intervals. Neither map invents original
+file-byte offsets. Both full display representations are retained for inspection.
+
+Source encoding, original source digest, decoded/revealed digests, display input
+and output digests, and diff digests distinguish every stage. Fixed inert diff
+headers contain no source filenames. These are internal package contracts, not
+additions to an existing report schema. Neither diff authorizes cleanup or should
+be accepted as a cleanup plan or executable source file.
+
+Caller budgets bound combined decoded/revealed bytes, combined escaped bytes,
+combined diff output, line indexing and escape mappings. Hard ceilings are 32 MiB
+per representation pair, 64 MiB total diff output, 200,000 combined lines,
+100,000 combined escapes and 1,000 context lines. Renderer limits apply separately.
+Any limit/validation failure returns no partial comparison. Equal line counts use
+positional comparison with merged context windows; differing counts use a full
+replacement hunk. This deliberately avoids quadratic edit-distance work and does
+not promise minimal diffs.
+
+Tests cover exact unified syntax, optional independent `patch` application to
+only temporary copies, CRLF/CR and missing-newline cases, context windows,
+UTF-8/16/32 identity, reversible display mappings, controls/emoji/combining text,
+determinism, source/evidence immutability and failure budgets. Production code
+introduces no subprocess or filesystem writes. Safe publication, manifest/report
+linkage, single-snapshot CLI acquisition and bounded directory integration remain
+separate delivery gates; this increment does not complete #15.
+
+## Artifact publication primitive
+
+`internal/publication.Publish` accepts an already-open `os.Root` for a private,
+caller-controlled output directory, caller-verified source/report SHA-256 values,
+and named artifact bytes. It creates only flat, constrained lowercase names;
+source-derived relative paths are not accepted by this primitive. Directory
+layout and source/output alias checks remain responsibilities of the future
+acquisition/CLI layer, which must establish the private directory outside the
+source tree. Callers must prevent concurrent namespace mutation in that directory
+and concurrent mutation of supplied artifact bytes.
+
+All files use exclusive creation and mode 0600 (subject to platform permission
+semantics). Existing files, directories, hard links and symlinks cause failure;
+they are not replaced. Names and budgets are validated before the first write.
+Output is capped at 64 artifacts and 64 MiB including the manifest, or lower
+caller limits. The caller's artifact order remains unchanged; publication and
+manifest entries use sorted names.
+
+`manifest.json` is reserved and written last. Its internal bundle contract is
+`aletharsis.artifact-bundle/1`, recording `source_sha256`,
+`report_artifact_sha256`, and each artifact's `name`, `size`, and `sha256`.
+The receipt separately records the hash of the exact manifest bytes (JSON plus
+LF); timestamps and random identifiers are absent. These supplied source/report
+identities are not authenticated by the writer. This does not change a report
+wire schema or authorize cleanup.
+
+On create/write/close failure the writer rolls back only its own new files in
+reverse order, returning cleanup errors along with the initial failure. It never
+recursively deletes an output directory. Under its private-directory precondition
+this leaves existing collision targets untouched. It is not a hostile same-user
+filesystem sandbox, an atomic bundle transaction, or a crash/power-loss durability
+guarantee. A crash can leave incomplete output: consumers must parse the manifest
+and verify every listed artifact's size/hash before considering a bundle complete.
+
+Tests exercise deterministic exact manifests, artifact identity and permissions,
+source preservation through hard-link/symlink collisions, path rejection,
+preflight budgets including manifest bytes, and write/short-write/close/cleanup
+failures. This internal primitive performs no source acquisition or CLI work.
+
+## Single-file integration
+
+The single-file CLI increment now connects acquisition, full audit evidence,
+comparison and publication using one snapshot for either report schema. See
+[the command contract and compiled-binary demonstrations](reveal-cli.md).
+Directory traversal, relative paths, JSONL and nested-corpus demonstrations are
+covered by the subsequent increments below; #15 stays open pending acceptance. The internal bundle manifest is separate from both
+existing report wire schemas and does not introduce a remediation command.
+
+## Directory discovery increment
+
+[Bounded workspace discovery](workspace-discovery.md) now defines and implements
+candidate enumeration separately from content auditing. It preserves Linux
+no-atime directory reads and records skipped links, non-recursive directories and
+failed entries explicitly. Candidates are not authorized source handles. Secure
+corpus acquisition, aggregate outcomes, relative publication and CLI integration
+remain required before directory support can be advertised.
+
+## Corpus execution increment
+
+[The rooted corpus executor](corpus-executor.md) now couples discovery and
+acquisition under one pinned directory, streams bounded JSONL for either report
+schema, and accounts for failed/unsupported/skipped/canceled candidates. The
+remaining delivery gate is directory CLI integration and safe source-relative
+reveal publication, including output-tree exclusion and nested demonstrations.
+
+## Directory audit CLI increment
+
+[Directory audit commands](directory-cli.md) now expose console, JSON and JSONL
+corpus output, explicit recursion, safe outside-tree report destinations and
+aggregate outcomes. Both report schemas and a compiled nested-corpus audit are
+validated. Directory `--reveal-out` is connected by the integration increment below.
+
+## Source-relative publication increment
+
+[The reveal tree publisher](reveal-tree-publication.md) preflights complete layouts,
+preserves relative paths, records every planned outcome, and publishes a final
+hash manifest. It rejects aliases/prefix collisions and rolls back only its own
+still-identical nodes. Corpus snapshot callbacks, directory CLI wiring and the
+compiled nested reveal demonstration are covered by the integration below.
+
+## Directory reveal integration
+
+[The end-to-end directory contract](directory-reveal.md) connects the pinned
+corpus executor to tree publication using one acquired snapshot per file. Both
+report schemas preserve occurrence references into their saved finding collection.
+The compiled nested-corpus demonstration verifies repeatable manifests, exact
+report/corpus identities, reversible occurrence maps and unchanged source bytes
+and timestamps. The implementation remains in a stacked PR review series; #15
+must not close until the required reviews and merges are complete.
