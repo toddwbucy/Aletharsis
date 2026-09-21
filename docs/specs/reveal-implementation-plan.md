@@ -61,7 +61,10 @@ inserted into the revealed body.
 
 Each emitted occurrence records a half-open scalar span, original byte span,
 UTF-8 rendered-byte span, code point, pinned Unicode name, reason and associated
-findings. The result records source, decoded-text and rendered-text SHA-256
+findings. Located findings on unchanged printable scalars also receive occurrences
+with reason `finding_reference`, preserving their references without inserting
+markers or extending the supplied location to an inferred whole string.
+The result records source, decoded-text and rendered-text SHA-256
 separately. Literal text between mapped spans remains unchanged. Replacing mapped
 spans with their verified source scalars reconstructs the decoded text exactly.
 This is a presentation map, not edit authorization or a new report wire schema.

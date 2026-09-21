@@ -62,6 +62,14 @@ func (o *treeObserver) Visit(entry corpus.Entry, snapshot corpus.Snapshot) error
 			reveal.Limits{SourceBytes: audit.MaxBytes, OutputBytes: 16 << 20, Occurrences: 100000},
 			reveal.DiffLimits{TextBytes: 32 << 20, OutputBytes: 32 << 20, Lines: 200000, Escapes: 100000, Context: 3})
 		if err != nil {
+			if errors.Is(err, reveal.ErrLimit) || errors.Is(err, reveal.ErrDiffLimit) {
+				// Retain this source's audit report and continue the corpus. A
+				// publication failure remains fatal and must not be masked.
+				if recordErr := o.tree.Record(entry.RelativePath, "failed", "execution.resource_limit", sourceHash, artifacts); recordErr != nil {
+					return recordErr
+				}
+				return corpus.ErrSourceLimit
+			}
 			return err
 		}
 		mapping, err := json.Marshal(comparison)

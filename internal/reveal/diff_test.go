@@ -176,3 +176,24 @@ func TestCompareLimitsAndValidation(t *testing.T) {
 		t.Fatal("accepted invalid source map")
 	}
 }
+
+func TestEscapedRepresentationPairSharesBudget(t *testing.T) {
+	raw := []byte("日")
+	text, findings := native(t, raw)
+	limits := diffLimits
+	// Each escaped side is eight ASCII bytes; the pair requires sixteen.
+	limits.TextBytes = 15
+	if got, err := Compare(raw, evidence.Hash(raw), text, findings, testLimits, limits); got != nil || !errors.Is(err, ErrDiffLimit) {
+		t.Fatal("combined escaped byte budget bypassed", err)
+	}
+	limits.TextBytes = 16
+	limits.Escapes = 1
+	if got, err := Compare(raw, evidence.Hash(raw), text, findings, testLimits, limits); got != nil || !errors.Is(err, ErrDiffLimit) {
+		t.Fatal("combined escape map budget bypassed", err)
+	}
+	limits.Escapes = 2
+	got, err := Compare(raw, evidence.Hash(raw), text, findings, testLimits, limits)
+	if err != nil || len(got.Presentation.Before.Text)+len(got.Presentation.After.Text) != 16 {
+		t.Fatal("exact shared budget", err)
+	}
+}

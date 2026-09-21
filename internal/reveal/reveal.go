@@ -12,6 +12,9 @@ import (
 	u "github.com/toddwbucy/Aletharsis/internal/unicoderef"
 )
 
+// ErrLimit identifies exhausted render resources, separately from invalid evidence.
+var ErrLimit = errors.New("reveal resource limit")
+
 type Limits struct {
 	SourceBytes int
 	OutputBytes int
@@ -58,7 +61,7 @@ func Render(source []byte, expectedSHA256 string, text *evidence.Text, findings 
 		return nil, errors.New("reveal requires positive limits")
 	}
 	if len(source) > limits.SourceBytes {
-		return nil, errors.New("reveal source limit exceeded")
+		return nil, fmt.Errorf("%w: source limit exceeded", ErrLimit)
 	}
 	if evidence.Hash(source) != expectedSHA256 {
 		return nil, errors.New("reveal source hash mismatch")
@@ -102,7 +105,7 @@ func Render(source []byte, expectedSHA256 string, text *evidence.Text, findings 
 			}
 			links++
 			if links > limits.Occurrences {
-				return nil, errors.New("reveal finding-link limit exceeded")
+				return nil, fmt.Errorf("%w: finding-link limit exceeded", ErrLimit)
 			}
 			refs[p] = append(refs[p], FindingRef{index, f.ID, f.Category, f.Severity, f.Classification})
 		}
@@ -122,14 +125,17 @@ func Render(source []byte, expectedSHA256 string, text *evidence.Text, findings 
 		} else if (u.Category(r) == "Cc" || u.Category(r) == "Cf") && !strings.ContainsRune("\r\n\t", r) {
 			piece, reason = "⟦"+code+" "+name+"⟧", "display_escape"
 		}
+		if reason == "" && len(refs[p]) > 0 {
+			reason = "finding_reference"
+		}
 		if len(piece) > limits.OutputBytes-b.Len() {
-			return nil, errors.New("reveal output limit exceeded")
+			return nil, fmt.Errorf("%w: output limit exceeded", ErrLimit)
 		}
 		start := b.Len()
 		b.WriteString(piece)
 		if reason != "" {
 			if len(result.Occurrences) >= limits.Occurrences {
-				return nil, errors.New("reveal occurrence limit exceeded")
+				return nil, fmt.Errorf("%w: occurrence limit exceeded", ErrLimit)
 			}
 			links := append([]FindingRef{}, refs[p]...)
 			result.Occurrences = append(result.Occurrences, Occurrence{

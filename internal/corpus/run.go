@@ -21,9 +21,14 @@ import (
 var ErrOutputLimit = errors.New("corpus output limit")
 var ErrInvalid = errors.New("invalid corpus options")
 
+// ErrSourceLimit is returned only after an observer has retained a report-only
+// outcome for this source. It changes the corpus outcome, not the native report.
+var ErrSourceLimit = errors.New("observer source resource limit")
+
 // Observer is a trusted in-process presentation boundary, never imported code.
 // Callbacks must not mutate or retain the supplied evidence. Errors stop the run
-// without a completion record; observers own rollback of their derivative work.
+// without a completion record, except Visit returning exactly ErrSourceLimit after
+// retaining a report-only outcome. Observers own rollback of derivative work.
 type Observer interface {
 	Prepare([]workspace.Entry) error
 	Visit(Entry, Snapshot) error
@@ -220,7 +225,13 @@ func run(ctx context.Context, path string, options Options, out io.Writer, root 
 			observed := item
 			observed.Report = bytes.Clone(item.Report)
 			if err := options.Observer.Visit(observed, snapshot); err != nil {
-				return summary, err
+				if err == ErrSourceLimit && (item.State == "no_reported_findings" || item.State == "requires_review") {
+					item.State = "failed"
+					item.Reason = "execution.resource_limit"
+					exit = 4
+				} else {
+					return summary, err
+				}
 			}
 		}
 		if err := stream.emit(item); err != nil {

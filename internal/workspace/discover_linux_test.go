@@ -24,6 +24,7 @@ func TestSpecialFilesAreNotOpened(t *testing.T) {
 }
 func TestInvalidUTF8NameFailsWithoutLossyCoordinates(t *testing.T) {
 	dir := t.TempDir()
+	write(t, filepath.Join(dir, "ordinary.txt"))
 	write(t, filepath.Join(dir, string([]byte{'b', 0xff})))
 	if got, err := Discover(context.Background(), dir, testOptions); !errors.Is(err, ErrInvalid) || got != nil {
 		t.Fatal("invalid path normalized silently")

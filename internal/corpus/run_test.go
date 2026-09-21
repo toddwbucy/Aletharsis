@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/toddwbucy/Aletharsis/internal/audit"
@@ -253,5 +254,41 @@ func TestOutputLimitLeavesNoCompletionMarker(t *testing.T) {
 		if record.Type == "summary" {
 			t.Fatal("failed delivery claimed completion")
 		}
+	}
+}
+
+func TestLegacyCorpusReportBudgetIsIndependentOfSourceBudget(t *testing.T) {
+	linux(t)
+	dir := t.TempDir()
+	source := filepath.Join(dir, "large.txt")
+	put(t, source, []byte(strings.Repeat("a ", 1<<20)))
+	inspected, _ := audit.InspectSnapshot(source, audit.MaxBytes)
+	if inspected.Report.Status != "completed" {
+		t.Fatal("valid standalone source failed")
+	}
+	raw, err := json.Marshal(inspected.Report)
+	if err != nil {
+		t.Fatal(err)
+	}
+	limits := audit.DefaultV2Options().ReportLimits
+	if len(raw) <= limits.InputBytes {
+		t.Fatal("fixture does not cross corpus report budget")
+	}
+	var out bytes.Buffer
+	summary, err := Run(context.Background(), dir, DefaultOptions(), &out)
+	if err != nil || summary.State != "partial" || summary.ExitCode != 4 || summary.Counts["failed"] != 1 {
+		t.Fatal("corpus report budget not explicit", summary, err)
+	}
+	decoder := json.NewDecoder(&out)
+	var header map[string]any
+	var entry Entry
+	if err := decoder.Decode(&header); err != nil {
+		t.Fatal(err)
+	}
+	if err := decoder.Decode(&entry); err != nil {
+		t.Fatal(err)
+	}
+	if entry.State != "failed" || entry.Reason != "execution.resource_limit" || len(entry.Report) != 0 {
+		t.Fatal("partial/oversized report escaped", entry.State, entry.Reason)
 	}
 }

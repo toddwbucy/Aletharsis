@@ -28,8 +28,12 @@ and reasons remain evidence; no revealed content is invented.
 Observer callbacks are compiled application code, never instructions loaded from
 an inspected file, imported rule or profile. Supplied evidence is read-only and
 must not be retained. The corpus layer copies the report bytes passed to a callback
-so its serialized output does not share that buffer. Callback errors stop execution
-without a corpus completion record and trigger derivative rollback.
+so its serialized output does not share that buffer. A per-source render or diff
+resource limit retains the audit report alone, records a failed
+`execution.resource_limit` outcome, and continues with other sources. The native
+audit report remains unchanged; the corpus completes as partial with exit code 4.
+Other callback errors, including publication and aggregate resource failures, stop
+execution without a corpus completion record and trigger derivative rollback.
 
 ## Published layout and identity
 

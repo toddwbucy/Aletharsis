@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -249,5 +250,86 @@ func TestDirectoryRevealSnapshotMismatch(t *testing.T) {
 	}
 	if err := observer.tree.Abort(); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestDirectoryRevealPerSourceLimitPreservesOtherArtifacts(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("Linux acquisition")
+	}
+	for _, schema := range []string{"1.0", "2.0"} {
+		for name, payload := range map[string]string{"render": strings.Repeat("\u200b", 100001), "diff": strings.Repeat("日", 60000)} {
+			t.Run(schema+"/"+name, func(t *testing.T) {
+				dir := t.TempDir()
+				files := map[string]string{"a.txt": "clean before", "b.txt": payload, "c.txt": "clean after"}
+				before := map[string]os.FileInfo{}
+				for name, text := range files {
+					path := filepath.Join(dir, name)
+					if err := os.WriteFile(path, []byte(text), 0600); err != nil {
+						t.Fatal(err)
+					}
+					info, err := os.Stat(path)
+					if err != nil {
+						t.Fatal(err)
+					}
+					before[name] = info
+				}
+				output := filepath.Join(t.TempDir(), "review")
+				var out, stderr bytes.Buffer
+				code := Run([]string{"audit", dir, "--schema-version", schema, "--json", "--reveal-out", output}, &out, &stderr)
+				if code != 4 || stderr.Len() != 0 {
+					t.Fatalf("limit aborted corpus: %d %s", code, stderr.String())
+				}
+				var report struct {
+					Entries []corpus.Entry
+					Summary corpus.Summary
+				}
+				if err := json.Unmarshal(out.Bytes(), &report); err != nil {
+					t.Fatal(err)
+				}
+				if len(report.Entries) != 3 || report.Summary.State != "partial" || report.Summary.Counts["failed"] != 1 || report.Summary.Counts["no_reported_findings"] != 2 {
+					t.Fatal("incorrect aggregate", report.Summary)
+				}
+				failed := report.Entries[1]
+				if failed.State != "failed" || failed.Reason != "execution.resource_limit" || len(failed.Report) == 0 {
+					t.Fatal("missing per-source failure", failed.State, failed.Reason)
+				}
+				var native struct{ Status string }
+				if err := json.Unmarshal(failed.Report, &native); err != nil || native.Status != "completed" {
+					t.Fatal("audit outcome rewritten", err)
+				}
+				raw, err := os.ReadFile(filepath.Join(output, "manifest.json"))
+				if err != nil {
+					t.Fatal(err)
+				}
+				var manifest publication.TreeManifest
+				if err = json.Unmarshal(raw, &manifest); err != nil {
+					t.Fatal(err)
+				}
+				for _, item := range manifest.Sources {
+					if item.RelativePath == "b.txt" {
+						if item.State != "failed" || item.Reason != "execution.resource_limit" || len(item.Artifacts) != 1 {
+							t.Fatal("bad source ledger", item)
+						}
+					} else if item.State != "revealed" || len(item.Artifacts) != 5 {
+						t.Fatal("unrelated artifacts lost", item)
+					}
+				}
+				if len(manifest.Sources) != 3 {
+					t.Fatal("incomplete ledger")
+				}
+				for name, text := range files {
+					path := filepath.Join(dir, name)
+					info, err := os.Stat(path)
+					if err != nil || !reflect.DeepEqual(before[name], info) {
+						t.Fatal("source stat changed", err)
+					}
+					raw, err := os.ReadFile(path)
+					if err != nil || string(raw) != text {
+						t.Fatal("source bytes changed", err)
+					}
+				}
+			})
+		}
 	}
 }

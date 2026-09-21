@@ -75,7 +75,10 @@ Filesystem work and cancellation checks are cooperative, not hard timeouts.
 Execution currently uses one in-flight audit (declared concurrency 1), preserving
 deterministic order without retaining a corpus of reports. Per-file source input
 is at most 8 MiB; discovery retains its own entry/depth/path bounds. Reports use
-the existing 16 MiB canonicalization limits. JSONL defaults to 128 MiB with a
+the existing 16 MiB canonicalization limits. This is a separate budget from source
+size: an audit accepted individually may exceed the corpus report budget because
+its serialized evidence is larger, producing `execution.resource_limit` for that
+entry. JSONL defaults to 128 MiB with a
 256 MiB hard output ceiling.
 
 Aggregate acquisition defaults to 256 MiB, hard-capped at 1 GiB. Known acquired
@@ -98,7 +101,10 @@ The directory audit and reveal specifications describe CLI integration and
 compiled nested demonstrations. This package writes to its supplied stream; an
 optional trusted Observer receives a copied discovery plan and completed native
 snapshots, and handles derivative publication. Failed/skipped/canceled outcomes
-receive no successful snapshot. Observer errors stop the stream without a summary.
+receive no successful snapshot. A Visit callback may return exactly `ErrSourceLimit`
+after retaining a report-only outcome for a successfully audited source; the
+executor records a failed `execution.resource_limit` entry and continues. Other
+observer errors stop the stream without a summary.
 Callbacks are not a serialized plugin mechanism and cannot be supplied by document,
 rule or profile data. They must not mutate or retain evidence; no callback authorizes
 source modification.
