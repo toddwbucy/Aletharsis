@@ -84,6 +84,7 @@ def test_defensive_output_budget_retains_result(tmp_path, monkeypatch, size, exc
     ("document.getElementById('scanVerdict').textContent='scanned empty'; document.getElementById('scanSecret').hidden=true;", 'completed'),
     ("const n=document.createElement('span'); n.textContent='U+200B'; document.getElementById('scanViz').appendChild(n);", 'visual map overran input'),
     ("while(true) {}", 'Script execution timed out'),
+    ("document.getElementById('scanSecret').hidden='';", 'non-boolean hidden assignment'),
 ])
 def test_probe_observes_handler_and_bounds_scan(tmp_path, handler, expected):
     node = shutil.which('node')
@@ -108,6 +109,7 @@ def test_failing_case_is_retained_before_abort(tmp_path, monkeypatch, failure):
     (tmp_path/'input-trees.json').write_text('{}')
     monkeypatch.setattr(runner, '__file__', str(tmp_path/'run_cases.py'))
     monkeypatch.setattr(runner, 'runtime_metadata', lambda *a: {})
+    monkeypatch.setattr(runner, 'validate_trees', lambda *a: None)
     monkeypatch.setattr(runner, 'cases', lambda: [{'id': 'synthetic', 'raw_hex': '61', 'decoded_text': 'a'}])
     args = ['run_cases']
     for name in ('juriku', 'hiberius', 'emoji', 'python', 'binary'):
@@ -134,11 +136,11 @@ def test_failing_case_is_retained_before_abort(tmp_path, monkeypatch, failure):
 def test_runtime_identity_uses_probe_binaries(monkeypatch, version):
     runner = load('run_cases', monkeypatch)
     commands = []
-    def output(command, **kwargs):
+    def output(command):
         commands.append(command)
-        assert kwargs == dict(timeout=5, text=True)
-        return version if command[0] == '/supplied/python/bin/python3.12' else 'v26.8.1'
-    monkeypatch.setattr(runner.subprocess, 'check_output', output)
+        assert command[0] == 'bwrap' and '--unshare-all' in command and '--clearenv' in command
+        return version if '/python/bin/python3.12' in command else 'v26.8.2'
+    monkeypatch.setattr(runner, 'runtime_version', output)
     monkeypatch.setattr(runner.platform, 'python_version', lambda: 'different-launcher')
     monkeypatch.setattr(runner, 'digest', lambda path: str(path))
     if version != '3.12.13':
@@ -148,9 +150,10 @@ def test_runtime_identity_uses_probe_binaries(monkeypatch, version):
     result = runner.runtime_metadata(Path('/supplied/python'))
     assert result['python'] == '3.12.13'
     assert result['launcher_python'] == 'different-launcher'
-    assert result['python_binary_sha256'] == commands[0][0]
-    assert result['node_binary_sha256'] == commands[1][0] == '/usr/bin/node'
-    assert commands[1] == ['/usr/bin/node', '--version']
+    assert result['python_binary_sha256'] == '/supplied/python/bin/python3.12'
+    assert '/supplied/python' in commands[0]
+    assert result['node_binary_sha256'] == '/usr/bin/node'
+    assert commands[1][-2:] == ['/usr/bin/node', '--version']
 
 
 def test_incomplete_hiberius_does_not_infer_absence(monkeypatch):
@@ -188,3 +191,34 @@ def test_probe_rejects_facade_drift(tmp_path, script):
 def test_probe_identity_excludes_docs(monkeypatch):
     runner = load('run_cases', monkeypatch)
     assert set(runner.PROBE_FILES) == {'corpus.py','adjudicate.py','run_cases.py','juriku_probe.py','hiberius_probe.cjs','input-trees.json','provision.py'}
+
+
+@pytest.mark.parametrize('case,cp,expected', [('hangul_fillers','U+200B','defect'),('hangul_fillers','U+115F','inventory'),('new_typography_case','U+2026','defect')])
+def test_native_exemptions_are_scoped(monkeypatch, case, cp, expected):
+    assert load('adjudicate',monkeypatch).reason('aletharsis',case,cp,0,'completed')[0] == expected
+
+
+def test_only_hashed_probe_files_are_mounted(monkeypatch):
+    runner=load('run_cases',monkeypatch)
+    argv=runner.namespace('/upstream-tree','/local-probe',None,None,'/input','/binary')
+    mounts=[argv[i+1:i+3] for i,a in enumerate(argv) if a=='--ro-bind']
+    assert ['/local-probe','/probe'] not in mounts
+    assert {target for _,target in mounts if target.startswith('/probe/')} == {'/probe/'+p for p in runner.PROBE_FILES}
+
+
+@pytest.mark.parametrize('keys', [[], ['juriku','hiberius'], ['juriku','hiberius','emoji','unexpected']])
+def test_tree_pin_coverage_is_exact(tmp_path,monkeypatch,keys):
+    runner=load('run_cases',monkeypatch)
+    (tmp_path/'input-trees.json').write_text(json.dumps(dict.fromkeys(keys,{})))
+    monkeypatch.setattr(runner,'__file__',str(tmp_path/'run_cases.py'))
+    with pytest.raises(ValueError,match='tree coverage'): runner.validate_trees(object())
+
+
+def test_runtime_probe_uses_bounded_executor(monkeypatch):
+    runner=load('run_cases',monkeypatch)
+    def execute(argv,payload,out,err):
+        assert argv==['synthetic'] and payload==b''
+        out.write_text('3.12.13\n');err.write_text('')
+        return dict(reaped=True,timed_out=False,output_limit_exceeded=False,returncode=0)
+    monkeypatch.setattr(runner,'execute',execute)
+    assert runner.runtime_version(['synthetic'])=='3.12.13'

@@ -9,6 +9,7 @@ import resource
 import signal
 import subprocess
 import time
+import tempfile
 
 from corpus import cases
 
@@ -20,33 +21,60 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def namespace(upstream, probe, python, emoji, input_file, binary):
+def base_namespace():
     args=['bwrap','--unshare-all','--die-with-parent','--new-session','--cap-drop','ALL','--clearenv']
     for path in ('/usr','/lib','/lib64'):
         args += ['--ro-bind',path,path]
-    args += ['--symlink','usr/bin','/bin','--proc','/proc','--dev','/dev','--tmpfs','/tmp',
-             '--ro-bind',str(input_file),'/input.txt','--ro-bind',str(binary),'/aletharsis']
-    if upstream is not None:
-        args += ['--ro-bind',str(upstream),'/upstream','--ro-bind',str(probe),'/probe']
-        for root, target in ((python, '/python'), (emoji, '/emoji')):
-            if root is not None:
-                args += ['--ro-bind',str(root),target]
+    args += ['--symlink','usr/bin','/bin','--proc','/proc','--dev','/dev','--tmpfs','/tmp']
     for key,value in {'PATH':'/usr/bin:/bin','PYTHONDONTWRITEBYTECODE':'1','PYTHONHASHSEED':'0',
                       'PYTHONNOUSERSITE':'1','HOME':'/nonexistent','GOMEMLIMIT':'384MiB'}.items():
         args += ['--setenv',key,value]
     return args
 
 
+def namespace(upstream, probe, python, emoji, input_file, binary):
+    args=base_namespace()+['--ro-bind',str(input_file),'/input.txt','--ro-bind',str(binary),'/aletharsis']
+    if upstream is not None:
+        args += ['--ro-bind',str(upstream),'/upstream','--dir','/probe']
+        for name in PROBE_FILES:
+            args += ['--ro-bind',str(Path(probe)/name),'/probe/'+name]
+        for root, target in ((python, '/python'), (emoji, '/emoji')):
+            if root is not None:
+                args += ['--ro-bind',str(root),target]
+    return args
+
+
+def runtime_version(argv):
+    # Use the same bounded execution and offline namespace as study probes.
+    with tempfile.TemporaryDirectory(prefix='aletharsis-runtime-') as directory:
+        out, err = Path(directory)/'out', Path(directory)/'err'
+        result = execute(argv, b'', out, err)
+        if not result['reaped'] or result['timed_out'] or result['output_limit_exceeded'] or result['returncode'] != 0:
+            raise ValueError('bounded runtime version probe failed')
+        return out.read_text().strip()
+
+
 def runtime_metadata(python):
     interpreter = python/'bin/python3.12'
-    version = subprocess.check_output([str(interpreter), '-I', '-c',
-        'import platform; print(platform.python_version())'], timeout=5, text=True).strip()
+    version = runtime_version(base_namespace()+['--ro-bind',str(python),'/python',
+        '/python/bin/python3.12', '-I', '-c', 'import platform; print(platform.python_version())'])
     if version != '3.12.13':
         raise ValueError('Juriku runtime must be Python 3.12.13')
     return {'python':version, 'python_binary_sha256':digest(interpreter),
         'launcher_python':platform.python_version(),
-        'node':subprocess.check_output(['/usr/bin/node','--version'],timeout=5,text=True).strip(),
+        'node':runtime_version(base_namespace()+['/usr/bin/node','--version']),
         'node_binary_sha256':digest(Path('/usr/bin/node'))}
+
+
+def validate_trees(args):
+    trees=json.loads((Path(__file__).parent/'input-trees.json').read_bytes())
+    if set(trees) != {'juriku','hiberius','emoji'}:
+        raise ValueError('pinned comparator tree coverage mismatch')
+    for name, expected in trees.items():
+        root=getattr(args,name)
+        actual={p.relative_to(root).as_posix():digest(p) for p in sorted(root.rglob('*')) if p.is_file()}
+        if actual != expected or any(p.is_symlink() for p in root.rglob('*')):
+            raise ValueError('pinned comparator tree mismatch: '+name)
 
 
 def execute(argv, payload, out, err):
@@ -84,12 +112,7 @@ def main():
     for name in vars(args): setattr(args,name,getattr(args,name).resolve())
     # Every supplied upstream file must match the independently retained tree
     # inventory obtained from the hash-pinned archives, including emoji data.
-    trees=json.loads((Path(__file__).parent/'input-trees.json').read_bytes())
-    for name, expected in trees.items():
-        root=getattr(args,name)
-        actual={p.relative_to(root).as_posix():digest(p) for p in sorted(root.rglob('*')) if p.is_file()}
-        if actual != expected or any(p.is_symlink() for p in root.rglob('*')):
-            raise ValueError('pinned comparator tree mismatch: '+name)
+    validate_trees(args)
     runtimes=runtime_metadata(args.python)
     args.output.mkdir(exist_ok=False)
     probe=Path(__file__).resolve().parent

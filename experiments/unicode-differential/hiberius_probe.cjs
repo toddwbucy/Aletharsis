@@ -4,7 +4,9 @@
 const fs = require('node:fs');
 const vm = require('node:vm');
 class Element {
-  constructor() { this.children = []; this.events = {}; this.value = ''; this.style = {}; this.hidden = null; this._text = ''; this.writes = 0; }
+  constructor() { this.children = []; this.events = {}; this.value = ''; this.style = {}; this._hidden = null; this._text = ''; this.writes = 0; }
+  set hidden(v) { if (typeof v !== 'boolean') throw new Error('non-boolean hidden assignment'); this._hidden = v; }
+  get hidden() { return this._hidden; }
   set textContent(v) { this.writes++; this._text = String(v); this.children = []; }
   get textContent() { return this._text + this.children.map(c => c.textContent).join(''); }
   appendChild(c) { this.writes++; this.children.push(c); return c; }

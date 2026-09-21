@@ -1,21 +1,21 @@
-Running as unit: run-p3588841-i3562400.service; invocation ID: f886d288c0cf43c6b0aa950a19684cac
-	Command being timed: "/home/todd/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12 /tmp/aletharsis-unicode-differential/experiments/unicode-differential/run_cases.py --juriku /tmp/aletharsis-unicode-study/reproduction-inputs/juriku/hidden-characters-detector-c75a379a181750eab788cf2eb668109caa8b88e6 --hiberius /tmp/aletharsis-unicode-study/reproduction-inputs/hiberius/hiberius-unicode-toolkit-1d86b8d951fca3cd7efbe637267f57e391dd7570 --emoji /tmp/aletharsis-unicode-study/reproduction-inputs/emoji --python /home/todd/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu --binary /tmp/aletharsis-unicode-study/aletharsis --output /tmp/aletharsis-unicode-study/review7"
-	User time (seconds): 0.14
+Running as unit: run-p3621180-i3646089.service; invocation ID: 48e27014a37a4a83848cea159fd76f62
+	Command being timed: "/home/todd/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12 /tmp/aletharsis-unicode-differential/experiments/unicode-differential/run_cases.py --juriku /tmp/aletharsis-unicode-study/reproduction-inputs/juriku/hidden-characters-detector-c75a379a181750eab788cf2eb668109caa8b88e6 --hiberius /tmp/aletharsis-unicode-study/reproduction-inputs/hiberius/hiberius-unicode-toolkit-1d86b8d951fca3cd7efbe637267f57e391dd7570 --emoji /tmp/aletharsis-unicode-study/reproduction-inputs/emoji --python /home/todd/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu --binary /tmp/aletharsis-unicode-study/aletharsis --output /tmp/aletharsis-unicode-study/review9"
+	User time (seconds): 0.13
 	System time (seconds): 0.14
 	Percent of CPU this job got: 8%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:03.45
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:03.52
 	Average shared text size (kbytes): 0
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 75444
+	Maximum resident set size (kbytes): 75640
 	Average resident set size (kbytes): 0
-	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 21467
-	Voluntary context switches: 739
-	Involuntary context switches: 29
+	Major (requiring I/O) page faults: 1
+	Minor (reclaiming a frame) page faults: 20432
+	Voluntary context switches: 935
+	Involuntary context switches: 35
 	Swaps: 0
-	File system inputs: 0
+	File system inputs: 92736
 	File system outputs: 0
 	Socket messages sent: 0
 	Socket messages received: 0
@@ -24,6 +24,6 @@ Running as unit: run-p3588841-i3562400.service; invocation ID: f886d288c0cf43c6b
 	Exit status: 0
           Finished with result: success
 Main processes terminated with: code=exited, status=0/SUCCESS
-               Service runtime: 3.456s
-             CPU time consumed: 2.639s
-                   Memory peak: 63M (swap: 0B)
+               Service runtime: 3.529s
+             CPU time consumed: 2.665s
+                   Memory peak: 108.8M (swap: 0B)

@@ -178,3 +178,17 @@ now exercise incomplete HIBERIUS coverage, unexplained native omissions, shifted
 coordinates, DOM output/event drift and unreaped non-final output. Unknown misses
 are not automatically assigned an inventory exemption. The existing inventory
 exceptions describe the reviewed pinned tool surfaces, not future detector versions.
+
+## Fourth review remediation
+
+Repeated both bounded offline runs on 2026-09-21 after narrowing native filler and
+typography exemptions, mounting only hashed probe files, isolating runtime version
+queries, requiring exact comparator-tree coverage, rejecting non-boolean hidden
+assignments and removing an unused probe import. All 30 sources, 90 stdout files
+and 90 stderr files match between runs and the preceding retained evidence;
+comparison rows are unchanged. Execution metadata and hashes were freshly captured.
+
+Cgroup measurements: run 1 used 3.529 seconds wall, 2.665 seconds CPU and 108.8 MiB
+peak memory; run 2 used 3.550 seconds wall, 2.737 seconds CPU and 63.5 MiB peak.
+The full offline suite passed 402 tests, including 67 study/harness checks.
+No production detector or component-adoption status changed.

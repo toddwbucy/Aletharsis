@@ -126,3 +126,15 @@ remain unadjudicated; unexpected native omissions and candidate offset mismatche
 require investigation. Non-completed HIBERIUS scans cannot establish absence.
 The DOM facade rejects unsupported document events and requires visualization/verdict
 writes for nonempty input; empty-input early return remains explicitly observable.
+
+Runtime version queries also run through the bounded executor in offline, cleared-
+environment namespaces inside the enclosing study cgroup. The supplied Python
+runtime is mounted read-only at `/python`; it is not executed directly on the host
+by the metadata query. The launcher and deliberately provisioned host libraries
+remain trusted prerequisites. Comparator-tree coverage must name exactly Juriku,
+HIBERIUS and emoji. `/probe` contains only the individually mounted `PROBE_FILES`,
+so an added unlisted helper cannot execute unnoticed from the checkout.
+
+The hidden-state facade accepts direct boolean assignments only. A non-boolean
+assignment fails the probe rather than becoming unknown visibility. HTML attributes,
+CSS visibility and browser rendering remain outside this facade's coverage.
