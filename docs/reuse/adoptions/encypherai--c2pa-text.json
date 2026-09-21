@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0",
+  "component": "encypherai--c2pa-text",
+  "commit": "ad4eaee3705ea5edb610ab37041be496d012e583",
+  "archive_sha256": "e66fb4ff79e9807104620ae4797b6ad2ed17d097b85f9001eb086a81e487ce26",
+  "license_sha256": "69e809a12ae0fd3df05046880b9073cc4e72f4ccb26a3122f8ceb80d66ca3022",
+  "scope": [
+    "Text provenance carrier extraction only; no signing or cleanup.",
+    "Bounded Linux/amd64 feasibility only; no accepted production capability."
+  ],
+  "owner": "toddwbucy",
+  "implementer": "Codex",
+  "technical_reviewer": "coderabbitai",
+  "tracking": [
+    "https://github.com/toddwbucy/Aletharsis/issues/37",
+    "https://github.com/toddwbucy/Aletharsis/issues/45",
+    "https://github.com/toddwbucy/Aletharsis/issues/21",
+    "https://github.com/toddwbucy/Aletharsis/issues/7"
+  ],
+  "evaluation_pr": "https://github.com/toddwbucy/Aletharsis/pull/47",
+  "recommendation": "revise",
+  "acceptance": null,
+  "checks": {
+    "prerequisites": {
+      "status": "partial",
+      "detail": "G0 and DA-001/EC-003 design accepted. Report v3 wire, executable adapter and adoption gates remain incomplete.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "licenses_notices": {
+      "status": "partial",
+      "detail": "Root license retained; study does not clear transitive per-file redistribution, fixtures, notices or release packaging.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "unit_contract": {
+      "status": "partial",
+      "detail": "Bounded upstream/probe cases executed; production adapter contract and native normalization conformance remain unexecuted.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "live_adapter": {
+      "status": "not_run",
+      "detail": "Study probe is not the production DA-001 adapter. No live production exchange evidence.",
+      "evidence": []
+    },
+    "source_integrity": {
+      "status": "partial",
+      "detail": "Synthetic study sources retained unchanged. Production acquisition, raw-response mapping and derivative authority require integration tests.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "adversarial_fuzz": {
+      "status": "partial",
+      "detail": "Study includes malformed or boundary cases; no complete adopted-scope adversarial/fuzz campaign.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "resources": {
+      "status": "partial",
+      "detail": "Study limits and observed consumption recorded; no reviewed production platform budget or worst-case claim.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "native_platforms": {
+      "status": "partial",
+      "detail": "Linux amd64 study only. No other native target tested. Core cross-build CI is not detector platform evidence.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "build_install": {
+      "status": "partial",
+      "detail": "Same-environment repeated builds match; production install, relocation and offline provisioning still need validation.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "disable_rollback_missing": {
+      "status": "not_run",
+      "detail": "No installed adapter: disable, rollback and missing-runtime drills cannot yet establish release behavior.",
+      "evidence": []
+    },
+    "security_updates": {
+      "status": "not_run",
+      "detail": "No complete transitive advisory, security response and supported-update review for adoption.",
+      "evidence": []
+    },
+    "semantic_upgrade": {
+      "status": "not_run",
+      "detail": "No accepted baseline or proposed upgrade. Define baseline conformance and run reviewed semantic diffs before any replacement pin.",
+      "evidence": []
+    }
+  },
+  "evidence": [
+    {
+      "path": "docs/reuse/evaluations/c2pa-text.md",
+      "sha256": "8b97a5561e5a4048ee934ece4b967e305161b7d2b0395b0cd8072deac96539de",
+      "purpose": "Observed results, environment and residual limitations"
+    },
+    {
+      "path": "docs/reuse/evaluations/c2pa-text/manifest.json",
+      "sha256": "db2c4a0e8eb5517a7236ba7eef1e03c7fa8c850d4c855cc9d55c558bf67dc40d",
+      "purpose": "Exact retained experiment artifacts, toolchain and result identities"
+    },
+    {
+      "path": "experiments/c2pa-text/README.md",
+      "sha256": "62f2a8939e2d5a86b90e63b85a74ed2aa7546789634904ca4977ff2c63699535",
+      "purpose": "Reproducible pinned provisioning and offline commands"
+    }
+  ],
+  "limitations": [
+    "Eight of 39 independent HTML cases disagree with expected host syntax/context.",
+    "NFC derivative coordinates differ from raw input; structured/HTML APIs omit source spans.",
+    "Passing 28 upstream tests does not establish production interoperability."
+  ],
+  "next_actions": [
+    "Finish report wire and executable adapter contract gates under #36.",
+    "Scope extraction APIs and define format-aware host validation and source mappings.",
+    "Obtain reviewed production test/platform/resource and license/security plans before adoption."
+  ]
+}

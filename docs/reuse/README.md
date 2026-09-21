@@ -84,3 +84,9 @@ review gates.
 The next #36 review unit is [EC-003 report migration design](../specs/report-v3-migration.md).
 Its planning vectors do not replace the separately gated full wire fixtures and
 Go marshal/import parity required before adapter implementation.
+
+## Per-component adoption
+
+The [G6 checklist and gap records](adoptions/README.md) bind each recommendation to
+its exact pin, evidence, missing checks and owner acceptance. The first two C2PA
+records recommend revision; neither approves a production dependency.

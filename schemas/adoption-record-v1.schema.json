@@ -1,0 +1,421 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "component": {
+      "type": "string",
+      "minLength": 1
+    },
+    "commit": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "archive_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "license_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "implementer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "technical_reviewer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tracking": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^https://github\\.com/toddwbucy/Aletharsis/(issues|pull)/[1-9][0-9]*(#.*)?$"
+      },
+      "minItems": 3,
+      "uniqueItems": true
+    },
+    "evaluation_pr": {
+      "type": "string",
+      "pattern": "^https://github\\.com/toddwbucy/Aletharsis/(issues|pull)/[1-9][0-9]*(#.*)?$"
+    },
+    "recommendation": {
+      "enum": [
+        "approve",
+        "revise",
+        "reject"
+      ]
+    },
+    "acceptance": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "owner": {
+              "type": "string",
+              "minLength": 1
+            },
+            "technical_reviewer": {
+              "type": "string",
+              "minLength": 1
+            },
+            "record": {
+              "type": "string",
+              "pattern": "^https://github\\.com/toddwbucy/Aletharsis/(issues|pull)/[1-9][0-9]*(#.*)?$"
+            },
+            "disposition": {
+              "enum": [
+                "approve",
+                "revise",
+                "reject"
+              ]
+            }
+          },
+          "required": [
+            "owner",
+            "technical_reviewer",
+            "record",
+            "disposition"
+          ]
+        }
+      ]
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "prerequisites": {
+          "$ref": "#/$defs/check"
+        },
+        "licenses_notices": {
+          "$ref": "#/$defs/check"
+        },
+        "unit_contract": {
+          "$ref": "#/$defs/check"
+        },
+        "live_adapter": {
+          "$ref": "#/$defs/check"
+        },
+        "source_integrity": {
+          "$ref": "#/$defs/check"
+        },
+        "adversarial_fuzz": {
+          "$ref": "#/$defs/check"
+        },
+        "resources": {
+          "$ref": "#/$defs/check"
+        },
+        "native_platforms": {
+          "$ref": "#/$defs/check"
+        },
+        "build_install": {
+          "$ref": "#/$defs/check"
+        },
+        "disable_rollback_missing": {
+          "$ref": "#/$defs/check"
+        },
+        "security_updates": {
+          "$ref": "#/$defs/check"
+        },
+        "semantic_upgrade": {
+          "$ref": "#/$defs/check"
+        }
+      },
+      "required": [
+        "prerequisites",
+        "licenses_notices",
+        "unit_contract",
+        "live_adapter",
+        "source_integrity",
+        "adversarial_fuzz",
+        "resources",
+        "native_platforms",
+        "build_install",
+        "disable_rollback_missing",
+        "security_updates",
+        "semantic_upgrade"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^(docs|experiments)/[A-Za-z0-9_./-]+$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "path",
+          "sha256",
+          "purpose"
+        ]
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "component",
+    "commit",
+    "archive_sha256",
+    "license_sha256",
+    "scope",
+    "owner",
+    "implementer",
+    "technical_reviewer",
+    "tracking",
+    "evaluation_pr",
+    "recommendation",
+    "acceptance",
+    "checks",
+    "evidence",
+    "limitations",
+    "next_actions"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aletharsis.local/schemas/adoption-record-v1.schema.json",
+  "$defs": {
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "passed",
+            "partial",
+            "failed",
+            "not_run",
+            "not_applicable"
+          ]
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "required": [
+        "status",
+        "detail",
+        "evidence"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "passed",
+                  "partial",
+                  "failed"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "evidence": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "recommendation": {
+            "const": "approve"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "checks": {
+            "properties": {
+              "prerequisites": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "not_applicable"
+                    ]
+                  }
+                }
+              },
+              "licenses_notices": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "not_applicable"
+                    ]
+                  }
+                }
+              },
+              "unit_contract": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "not_applicable"
+                    ]
+                  }
+                }
+              },
+              "live_adapter": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "not_applicable"
+                    ]
+                  }
+                }
+              },
+              "source_integrity": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "not_applicable"
+                    ]
+                  }
+                }
+              },
+              "adversarial_fuzz": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "not_applicable"
+                    ]
+                  }
+                }
+              },
+              "resources": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "not_applicable"
+                    ]
+                  }
+                }
+              },
+              "native_platforms": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "not_applicable"
+                    ]
+                  }
+                }
+              },
+              "build_install": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "not_applicable"
+                    ]
+                  }
+                }
+              },
+              "disable_rollback_missing": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "not_applicable"
+                    ]
+                  }
+                }
+              },
+              "security_updates": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "not_applicable"
+                    ]
+                  }
+                }
+              },
+              "semantic_upgrade": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "not_applicable"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

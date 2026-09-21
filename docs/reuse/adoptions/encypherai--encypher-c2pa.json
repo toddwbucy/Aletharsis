@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0",
+  "component": "encypherai--encypher-c2pa",
+  "commit": "da85f07f2e0d084854be30dd3dc89dc0d2a9cde9",
+  "archive_sha256": "9dcc42ea327ae057b7e8d3a2e338dbb540ddd005ed0042e2931cc6f8953aace8",
+  "license_sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+  "scope": [
+    "Verification candidate; in-process versus sidecar remains undecided.",
+    "Bounded Linux/amd64 feasibility only; no accepted production capability."
+  ],
+  "owner": "toddwbucy",
+  "implementer": "Codex",
+  "technical_reviewer": "coderabbitai",
+  "tracking": [
+    "https://github.com/toddwbucy/Aletharsis/issues/38",
+    "https://github.com/toddwbucy/Aletharsis/issues/45",
+    "https://github.com/toddwbucy/Aletharsis/issues/21",
+    "https://github.com/toddwbucy/Aletharsis/issues/7"
+  ],
+  "evaluation_pr": "https://github.com/toddwbucy/Aletharsis/pull/48",
+  "recommendation": "revise",
+  "acceptance": null,
+  "checks": {
+    "prerequisites": {
+      "status": "partial",
+      "detail": "G0 and DA-001/EC-003 design accepted. Report v3 wire, executable adapter and adoption gates remain incomplete.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "licenses_notices": {
+      "status": "partial",
+      "detail": "Root license retained; study does not clear transitive per-file redistribution, fixtures, notices or release packaging.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "unit_contract": {
+      "status": "partial",
+      "detail": "Bounded upstream/probe cases executed; production adapter contract and native normalization conformance remain unexecuted.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "live_adapter": {
+      "status": "not_run",
+      "detail": "Study probe is not the production DA-001 adapter. No live production exchange evidence.",
+      "evidence": []
+    },
+    "source_integrity": {
+      "status": "partial",
+      "detail": "Synthetic study sources retained unchanged. Production acquisition, raw-response mapping and derivative authority require integration tests.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "adversarial_fuzz": {
+      "status": "partial",
+      "detail": "Study includes malformed or boundary cases; no complete adopted-scope adversarial/fuzz campaign.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "resources": {
+      "status": "partial",
+      "detail": "Study limits and observed consumption recorded; no reviewed production platform budget or worst-case claim.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "native_platforms": {
+      "status": "partial",
+      "detail": "Linux amd64 study only. No other native target tested. Core cross-build CI is not detector platform evidence.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "build_install": {
+      "status": "partial",
+      "detail": "Same-environment repeated builds match; production install, relocation and offline provisioning still need validation.",
+      "evidence": [
+        0,
+        1,
+        2
+      ]
+    },
+    "disable_rollback_missing": {
+      "status": "not_run",
+      "detail": "No installed adapter: disable, rollback and missing-runtime drills cannot yet establish release behavior.",
+      "evidence": []
+    },
+    "security_updates": {
+      "status": "not_run",
+      "detail": "No complete transitive advisory, security response and supported-update review for adoption.",
+      "evidence": []
+    },
+    "semantic_upgrade": {
+      "status": "not_run",
+      "detail": "No accepted baseline or proposed upgrade. Define baseline conformance and run reviewed semantic diffs before any replacement pin.",
+      "evidence": []
+    }
+  },
+  "evidence": [
+    {
+      "path": "docs/reuse/evaluations/c2pa-verifier.md",
+      "sha256": "58e809469d960a6ef51a4e1d9e2e3c4d8f0ff80b270f2425d35aaa1ae38f8111",
+      "purpose": "Observed results, environment and residual limitations"
+    },
+    {
+      "path": "docs/reuse/evaluations/c2pa-verifier/manifest.json",
+      "sha256": "c4223e181ba189bcbe2782d01090335750d43b1a6697af0f26e8408b46efd28f",
+      "purpose": "Exact retained experiment artifacts, toolchain and result identities"
+    },
+    {
+      "path": "experiments/c2pa-verifier/README.md",
+      "sha256": "64238d412811b0d0cb0920fe28ca19437385784f793117055d5d0b87d2ec978c",
+      "purpose": "Reproducible pinned provisioning and offline commands"
+    }
+  ],
+  "limitations": [
+    "Eleven final cases pass; independent fixture origin is not independent verifier execution.",
+    "Rust/CGO and system-library packaging tested only on Linux amd64.",
+    "Telemetry override and worker termination probes do not prove a production sandbox or cooperative cancellation."
+  ],
+  "next_actions": [
+    "Finish #36 and a bounded worker implementation proposal.",
+    "Add independent verification, reviewed trust-profile cases and target-specific packaging evidence.",
+    "Obtain reviewed production test/platform/resource and license/security plans before adoption."
+  ]
+}
