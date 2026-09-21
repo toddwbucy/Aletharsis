@@ -24,15 +24,28 @@ def namespace(upstream, probe, python, emoji, input_file, binary):
     for path in ('/usr','/lib','/lib64'):
         args += ['--ro-bind',path,path]
     args += ['--symlink','usr/bin','/bin','--proc','/proc','--dev','/dev','--tmpfs','/tmp',
-             '--ro-bind',str(probe),'/probe',
-             '--ro-bind',str(python),'/python','--ro-bind',str(emoji),'/emoji',
              '--ro-bind',str(input_file),'/input.txt','--ro-bind',str(binary),'/aletharsis']
     if upstream is not None:
-        args += ['--ro-bind',str(upstream),'/upstream']
+        args += ['--ro-bind',str(upstream),'/upstream','--ro-bind',str(probe),'/probe']
+        for root, target in ((python, '/python'), (emoji, '/emoji')):
+            if root is not None:
+                args += ['--ro-bind',str(root),target]
     for key,value in {'PATH':'/usr/bin:/bin','PYTHONDONTWRITEBYTECODE':'1','PYTHONHASHSEED':'0',
                       'PYTHONNOUSERSITE':'1','HOME':'/nonexistent','GOMEMLIMIT':'384MiB'}.items():
         args += ['--setenv',key,value]
     return args
+
+
+def runtime_metadata(python):
+    interpreter = python/'bin/python3.12'
+    version = subprocess.check_output([str(interpreter), '-I', '-c',
+        'import platform; print(platform.python_version())'], timeout=5, text=True).strip()
+    if version != '3.12.13':
+        raise ValueError('Juriku runtime must be Python 3.12.13')
+    return {'python':version, 'python_binary_sha256':digest(interpreter),
+        'launcher_python':platform.python_version(),
+        'node':subprocess.check_output(['/usr/bin/node','--version'],timeout=5,text=True).strip(),
+        'node_binary_sha256':digest(Path('/usr/bin/node'))}
 
 
 def execute(argv, payload, out, err):
@@ -75,6 +88,7 @@ def main():
         actual={p.relative_to(root).as_posix():digest(p) for p in sorted(root.rglob('*')) if p.is_file()}
         if actual != expected or any(p.is_symlink() for p in root.rglob('*')):
             raise ValueError('pinned comparator tree mismatch: '+name)
+    runtimes=runtime_metadata(args.python)
     args.output.mkdir(exist_ok=False)
     probe=Path(__file__).resolve().parent
     corpus=cases()
@@ -93,7 +107,8 @@ def main():
             ('hiberius',args.hiberius,['/usr/bin/node','--max-old-space-size=128','/probe/hiberius_probe.cjs']),
             ('aletharsis',None,['/aletharsis','audit','/input.txt','--json']),
         ]:
-            argv=namespace(upstream,probe,args.python,args.emoji,source,args.binary)+command
+            argv=namespace(upstream,probe,args.python if tool=='juriku' else None,
+                args.emoji if tool=='juriku' else None,source,args.binary)+command
             commands.setdefault(tool,argv)
             out=directory/f'{tool}.stdout.json';err=directory/f'{tool}.stderr'
             run=execute(argv,payload,out,err)
@@ -108,11 +123,9 @@ def main():
     used=sum(p.stat().st_size for p in args.output.rglob('*') if p.is_file())
     if used>2*1024**3: raise ValueError('retained output disk ceiling exceeded')
     usage=resource.getrusage(resource.RUSAGE_CHILDREN)
-    environment={'python':platform.python_version(),'platform':platform.platform(),
+    environment={**runtimes,'platform':platform.platform(),
         'binary_sha256':digest(args.binary),'probe_sha256':{p.name:digest(p) for p in probe.glob('*') if p.is_file()},
-        'example_argv':commands,'child_cpu_seconds':usage.ru_utime+usage.ru_stime,'retained_bytes':used,
-        'node':subprocess.check_output(['node','--version'],timeout=5,text=True).strip(),
-        'node_binary_sha256':digest(Path('/usr/bin/node'))}
+        'example_argv':commands,'child_cpu_seconds':usage.ru_utime+usage.ru_stime,'retained_bytes':used}
     (args.output/'environment.json').write_text(json.dumps(environment,indent=2)+'\n')
     print(f'{len(records)} cases completed; retained bytes={used}; child CPU seconds={usage.ru_utime+usage.ru_stime:.3f}')
 

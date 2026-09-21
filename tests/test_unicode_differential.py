@@ -52,7 +52,11 @@ def test_independent_generator_and_adjudication():
     assert not any(d['category']=='unadjudicated' for row in expected for d in row['differences'])
     assert {d['category'] for row in expected for d in row['differences']}=={'inventory','coverage','parser','policy'}
     environment=json.loads((DATA/'environment.json').read_bytes())
-    assert '/upstream' not in environment['example_argv']['aletharsis']
+    assert not {'/upstream', '/probe', '/python', '/emoji'} & set(environment['example_argv']['aletharsis'])
+    assert not {'/python', '/emoji'} & set(environment['example_argv']['hiberius'])
+    assert environment['python'] == '3.12.13'
+    assert len(environment['python_binary_sha256']) == 64
+    assert environment['python_binary_sha256'] == json.loads((DATA/'reproduction-environment.json').read_bytes())['python_binary_sha256']
     for name,digest in environment['probe_sha256'].items():
         assert hashlib.sha256((PROBE/name).read_bytes()).hexdigest()==digest
 

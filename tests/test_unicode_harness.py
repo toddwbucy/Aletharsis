@@ -36,7 +36,10 @@ def test_tool_specific_adjudication(monkeypatch, tool, cp, expected):
 
 def test_native_namespace_excludes_upstream(monkeypatch):
     runner = load('run_cases', monkeypatch)
-    assert '/upstream' not in runner.namespace(None, '/probe', '/python', '/emoji', '/input', '/binary')
+    native = runner.namespace(None, '/probe', '/python', '/emoji', '/input', '/binary')
+    assert not {'/upstream', '/probe', '/python', '/emoji'} & set(native)
+    hiberius = runner.namespace('/tree', '/probe', None, None, '/input', '/binary')
+    assert not {'/python', '/emoji'} & set(hiberius)
     assert '/upstream' in runner.namespace('/tree', '/probe', '/python', '/emoji', '/input', '/binary')
 
 
@@ -102,6 +105,7 @@ def test_failing_case_is_retained_before_abort(tmp_path, monkeypatch, failure):
     runner = load('run_cases', monkeypatch)
     (tmp_path/'input-trees.json').write_text('{}')
     monkeypatch.setattr(runner, '__file__', str(tmp_path/'run_cases.py'))
+    monkeypatch.setattr(runner, 'runtime_metadata', lambda *a: {})
     monkeypatch.setattr(runner, 'cases', lambda: [{'id': 'synthetic', 'raw_hex': '61', 'decoded_text': 'a'}])
     args = ['run_cases']
     for name in ('juriku', 'hiberius', 'emoji', 'python', 'binary'):
@@ -122,3 +126,26 @@ def test_failing_case_is_retained_before_abort(tmp_path, monkeypatch, failure):
     result = records[0]['tools']['juriku']
     assert result['source_unchanged']
     assert result['cleanup_timed_out'] if failure == 'cleanup_timeout' else result['output_limit_exceeded']
+
+
+@pytest.mark.parametrize('version', ['3.12.13', '3.13.0'])
+def test_runtime_identity_uses_probe_binaries(monkeypatch, version):
+    runner = load('run_cases', monkeypatch)
+    commands = []
+    def output(command, **kwargs):
+        commands.append(command)
+        assert kwargs == dict(timeout=5, text=True)
+        return version if command[0] == '/supplied/python/bin/python3.12' else 'v26.8.1'
+    monkeypatch.setattr(runner.subprocess, 'check_output', output)
+    monkeypatch.setattr(runner.platform, 'python_version', lambda: 'different-launcher')
+    monkeypatch.setattr(runner, 'digest', lambda path: str(path))
+    if version != '3.12.13':
+        with pytest.raises(ValueError, match='Juriku runtime'):
+            runner.runtime_metadata(Path('/supplied/python'))
+        return
+    result = runner.runtime_metadata(Path('/supplied/python'))
+    assert result['python'] == '3.12.13'
+    assert result['launcher_python'] == 'different-launcher'
+    assert result['python_binary_sha256'] == commands[0][0]
+    assert result['node_binary_sha256'] == commands[1][0] == '/usr/bin/node'
+    assert commands[1] == ['/usr/bin/node', '--version']

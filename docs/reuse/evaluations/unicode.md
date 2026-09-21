@@ -136,8 +136,27 @@ cleanup timeout produce retainable failure records before the runner stops. An
 unreaped process is never reported as successfully cleaned up. These changes
 do not claim the VM or facade is a production security boundary.
 
-Review-run resource measurements are retained in `unicode/run1.stderr` and
-`unicode/run2.stderr`: 2.679/2.692 cgroup CPU seconds, 3.494/3.491 seconds service
+First-review resource measurements are retained in commit `ab163c3`:
+2.679/2.692 cgroup CPU seconds, 3.494/3.491 seconds service
 runtime and 76/66.4 MiB peak memory. Both remain within the original study budget.
 Validation passed 50 focused tests and 385 full offline tests, including synthetic
 handler timeout/overrun cases and retention of failed cleanup/output outcomes.
+
+## Runtime identity and mount follow-up
+
+Second-review runs replace the current environment/results/resource logs; previous
+observations remain in `ab163c3`. The harness now queries the supplied Juriku
+interpreter, enforces Python 3.12.13 and records its executable hash separately
+from the launcher version. Node version and hash both refer to `/usr/bin/node`.
+These are executable identities, not a hash inventory of the Python standard
+library or the host system libraries. Comparator/data trees retain their separate
+file-by-file pin checks. Native execution receives none of `/upstream`, `/probe`,
+`/python` or `/emoji`; HIBERIUS receives neither `/python` nor `/emoji`.
+
+Both 30-case runs succeeded. Every original source and raw stdout/stderr artifact
+is byte-identical to the prior evidence and between runs. Current logs record
+3.516/3.513 seconds service runtime, 2.732/2.705 cgroup CPU seconds and
+108.1/62.8 MiB peak memory, within the original study budget. Validation passed
+52 focused tests and 387 full offline tests. The full branch comparison
+`git diff --check origin/main` passes with evidence-specific whitespace attributes;
+intentional CRLF bytes were preserved. No new upstream provisioning occurred.

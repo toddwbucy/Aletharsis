@@ -32,6 +32,12 @@ built with Go 1.27.1 from commit `abc513e354e864a38d3d57649667c22ba6080cc7` usin
 cgroup with offline pre-provisioned module/toolchain caches. Pin the host/runtime
 for identical reproduction; Node is distro-linked, not a hermetic runtime bundle.
 Exact binary/environment identities and initial build resource log are retained.
+The harness queries `/usr/bin/node` for both its version and executable hash. It
+queries the supplied `--python/bin/python3.12`, requires version 3.12.13 and records
+its executable SHA-256 separately from the launcher Python version. This identifies
+the interpreter binary, not every standard-library/system-library byte; the supplied
+Python tree remains a deliberately provisioned trusted runtime, not an archive
+covered by `input-trees.json`.
 
 Root comparator MIT license digests match the existing registry. Emoji's wheel
 contains a BSD-3-Clause license and no non-dev runtime dependencies; its license
@@ -98,7 +104,8 @@ attributes: secret visibility is unknown until the handler assigns `hidden`. The
 may call its known-carrier decoder; recovered content remains inert output.
 
 Aletharsis: the compiled native CLI audits the original bytes at a fixed sandbox
-path, without mounting either comparator source tree. A binary identification failure is retained as failed, not no findings.
+path, without mounting comparator sources, probe scripts, Python or emoji. Only Juriku
+receives the supplied Python and emoji mounts; HIBERIUS does not. A binary identification failure is retained as failed, not no findings.
 External detectors receive strict decoded text with BOM and line endings retained;
 that explicit transformation must not be mistaken for their file-parser coverage.
 
