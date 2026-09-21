@@ -181,3 +181,11 @@ corpus output, explicit recursion, safe outside-tree report destinations and
 aggregate outcomes. Both report schemas and a compiled nested-corpus audit are
 validated. Directory `--reveal-out` remains rejected until source-relative
 artifact planning, collision handling and publication are implemented and tested.
+
+## Source-relative publication increment
+
+[The reveal tree publisher](reveal-tree-publication.md) preflights complete layouts,
+preserves relative paths, records every planned outcome, and publishes a final
+hash manifest. It rejects aliases/prefix collisions and rolls back only its own
+still-identical nodes. Corpus snapshot callbacks, directory CLI wiring and the
+compiled nested reveal demonstration are the remaining integration gate.
