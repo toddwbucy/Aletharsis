@@ -1,0 +1,71 @@
+# Reveal delivery plan (#15)
+
+Status: implementation in review; no new CLI capability yet.
+
+Reveal is a presentation derivative of acquired evidence, not remediation and
+not a new detector. It must not change source bytes or normalize decoded text.
+The native report schemas and CLI defaults remain unchanged.
+
+## Delivery gates
+
+1. **Verified renderer (this increment).** Consume native text evidence and its
+   findings, verify the complete scalar/byte map against the source snapshot,
+   render detected Unicode characters, and retain exact occurrence mappings.
+   Test UTF-8/16/32, overlapping findings, literal marker collisions, malicious
+   controls, deterministic output, resource limits, and immutable inputs.
+2. **Safe artifact publication and diff.** Add exclusive derivative writes,
+   rollback on failure, alias/symlink protections, output manifests, and a bounded
+   unified-diff implementation. Specify a terminal-safe baseline representation:
+   a display diff must not imply it is a byte patch applicable to an encoded
+   source. Preserve original line endings in the revealed artifact; terminal
+   views must escape carriage returns and other active controls separately.
+3. **Single-file CLI integration.** Reuse one acquired snapshot for audit and
+   reveal, preserving no-atime acquisition guarantees. Add `--reveal-out`, exact
+   source/report/derivative identities, machine-readable occurrence output, and
+   end-to-end demonstrations with before/after source hashes.
+4. **Bounded directory integration.** Add deterministic traversal, recursion and
+   supported-format policy, relative-path output layout, explicit failed,
+   unsupported and skipped records, aggregate summaries and JSONL. Reject output
+   inside the input tree and unsafe links/collisions. Exercise nested corpora and
+   partial failures end to end.
+
+Each increment receives its own review. Issue #15 remains open until all its
+acceptance criteria, including CLI, directory, diff and demonstrations, pass.
+Structured document extraction requires separate location adapters; this native
+literal-text renderer does not pretend that package/object offsets are file spans.
+
+## Renderer contract
+
+`internal/reveal.Render` accepts a bounded original snapshot, its expected
+SHA-256, one native text segment, and the unfiltered native findings. Existing
+`identity.VerifyText` verifies decoding and the complete original byte map.
+Imported reports must pass their own import contract; this function deliberately
+accepts native typed coordinate slices, not arbitrary JSON maps.
+
+Unicode inventory findings select characters to reveal. Pattern and other
+located findings attach their references at those same positions without
+creating duplicate markers or replacing ordinary identifier text. A finding
+reference includes its index in the supplied collection, stable detector ID,
+category, severity and classification. Unlocated findings do not acquire invented
+spans. Finding coordinates must be strictly increasing and agree with the map.
+
+Markers use `⟦U+200B ZERO WIDTH SPACE⟧`. Literal opening delimiters become `⟦⟦`,
+with their own escape mappings, so marker-looking source is distinguishable.
+Unselected control/format characters are escaped for display, except CR, LF and
+tab, which retain line structure. These escapes explicitly carry no newly
+invented finding. Output remains inert text, not safe executable HTML/Markdown
+or raw terminal output: viewers must use text nodes and console renderers must
+escape active line controls. Source filenames and finding prose are never
+inserted into the revealed body.
+
+Each emitted occurrence records a half-open scalar span, original byte span,
+UTF-8 rendered-byte span, code point, pinned Unicode name, reason and associated
+findings. The result records source, decoded-text and rendered-text SHA-256
+separately. Literal text between mapped spans remains unchanged. Replacing mapped
+spans with their verified source scalars reconstructs the decoded text exactly.
+This is a presentation map, not edit authorization or a new report wire schema.
+
+The caller supplies positive source, output and occurrence limits. The occurrence
+budget also bounds total finding links. Limit or validation failures return no
+partial result. The pure renderer does no file I/O and retains no mutable input
+objects. Resource-bounded publication and report linkage are subsequent gates.
