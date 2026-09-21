@@ -8,7 +8,7 @@ aletharsis audit ./documents --recursive --reveal-out ../review-v2 --schema-vers
 `--reveal-out` is explicit and works with both existing report schemas. Recursion
 remains opt-in. It cannot be combined with `--output`; the tree contains native
 reports and the exact corpus JSONL already. The destination must be new and
-outside the source tree, with real directory ancestors. Existing destinations,
+outside the source tree, with resolvable directory ancestors. Existing destinations,
 source aliases and unsafe ancestry are rejected before publication.
 
 ## One snapshot, separate authorities
@@ -127,3 +127,11 @@ cmp /tmp/corpus/review-first/manifest.json /tmp/corpus/review-repeat/manifest.js
 checks both schemas, and additionally covers UTF-16/32, empty files, emoji,
 combining characters and occurrence references into saved reports. Manifest hashes
 include the workspace identity and are not portable golden hashes across paths.
+
+Global publication limits remain transaction failures: the 256 MiB tree budget
+includes artifacts plus final corpus/manifest bytes. Exhaustion rolls back the
+uncommitted tree, including earlier sources. This differs from a per-source
+render/diff limit, where a report-only entry can still fit and the transaction
+can finish. A failed `Tree.Record` has already aborted the tree and cannot be
+converted to `corpus.ErrSourceLimit`. Retaining a prefix would require a separate
+checkpoint/partial-publication contract with reserved completion-record capacity.

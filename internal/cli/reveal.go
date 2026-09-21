@@ -97,11 +97,11 @@ func runReveal(path, output, schema string, jsonOutput, verbose bool, out, errou
 	return code
 }
 
-// Output ancestors must already exist and contain no symlinks. A pinned Root
-// contains writes under that parent. The newly created private child must remain
+// Output ancestors must already exist; parent aliases are resolved before pinning.
+// A pinned Root contains writes under that parent. The newly created private child must remain
 // under caller control: this is not isolation from hostile same-user processes.
 func publishReveal(output, sourceHash, reportHash string, artifacts []publication.Artifact) error {
-	absolute, err := filepath.Abs(output)
+	absolute, err := resolveOutput(output)
 	if err != nil {
 		return err
 	}
@@ -109,10 +109,14 @@ func publishReveal(output, sourceHash, reportHash string, artifacts []publicatio
 	if name == "." || name == string(filepath.Separator) {
 		return errors.New("invalid output directory")
 	}
+	var expectedParent os.FileInfo
 	for current := parent; ; current = filepath.Dir(current) {
 		info, err := os.Lstat(current)
 		if err != nil {
 			return err
+		}
+		if current == parent {
+			expectedParent = info
 		}
 		if !info.IsDir() || info.Mode()&os.ModeSymlink != 0 {
 			return errors.New("output ancestor is not a real directory")
@@ -126,6 +130,10 @@ func publishReveal(output, sourceHash, reportHash string, artifacts []publicatio
 		return err
 	}
 	defer root.Close()
+	pinned, err := root.Stat(".")
+	if err != nil || !os.SameFile(expectedParent, pinned) {
+		return errors.New("output parent identity changed")
+	}
 	if err := root.Mkdir(name, 0700); err != nil {
 		return err
 	}
@@ -143,4 +151,21 @@ func publishReveal(output, sourceHash, reportHash string, artifacts []publicatio
 		return fmt.Errorf("published bundle root close: %w", closeErr)
 	}
 	return nil
+}
+
+// Resolve only existing ancestors, never the final destination. Exclusive
+// creation still rejects destination symlinks, files and directories unchanged.
+func resolveOutput(output string) (string, error) {
+	absolute, err := filepath.Abs(output)
+	if err != nil {
+		return "", err
+	}
+	if filepath.Dir(absolute) == absolute {
+		return "", errors.New("invalid output destination")
+	}
+	parent, err := filepath.EvalSymlinks(filepath.Dir(absolute))
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(parent, filepath.Base(absolute)), nil
 }

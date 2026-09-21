@@ -126,7 +126,7 @@ func TestRevealRejectsDestinations(t *testing.T) {
 	if err := os.Symlink(existing, sym); err != nil {
 		t.Fatal(err)
 	}
-	for _, dest := range []string{source, hard, sym, existing, filepath.Join(sym, "new"), filepath.Join(dir, "missing", "new")} {
+	for _, dest := range []string{source, hard, sym, existing, filepath.Join(dir, "missing", "new")} {
 		var stdout, stderr bytes.Buffer
 		if code := Run([]string{"audit", source, "--reveal-out", dest}, &stdout, &stderr); code != 4 || !strings.Contains(stderr.String(), "output.publish_failed") {
 			t.Fatalf("accepted destination %q: %d %q", dest, code, stderr.Bytes())
@@ -181,5 +181,45 @@ func TestRevealStdoutFailureRetainsCompleteBundle(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(output, "manifest.json")); err != nil {
 		t.Fatal("complete bundle removed", err)
+	}
+}
+
+func TestRevealAcceptsResolvedParentAlias(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("Linux acquisition")
+	}
+	parent := t.TempDir()
+	outside := filepath.Join(parent, "outside")
+	if err := os.Mkdir(outside, 0700); err != nil {
+		t.Fatal(err)
+	}
+	alias := filepath.Join(parent, "alias")
+	if err := os.Symlink(outside, alias); err != nil {
+		t.Fatal(err)
+	}
+	source := filepath.Join(parent, "source.txt")
+	if err := os.WriteFile(source, []byte("plain"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	for _, directory := range []bool{false, true} {
+		input := source
+		name := "single"
+		if directory {
+			input = filepath.Join(parent, "corpus")
+			name = "corpus"
+			if err := os.Mkdir(input, 0700); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(filepath.Join(input, "a.txt"), []byte("plain"), 0600); err != nil {
+				t.Fatal(err)
+			}
+		}
+		var out, stderr bytes.Buffer
+		if code := Run([]string{"audit", input, "--reveal-out", filepath.Join(alias, name)}, &out, &stderr); code != 0 {
+			t.Fatal(code, stderr.String())
+		}
+		if _, err := os.Stat(filepath.Join(outside, name, "manifest.json")); err != nil {
+			t.Fatal(err)
+		}
 	}
 }

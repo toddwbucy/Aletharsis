@@ -307,3 +307,38 @@ func TestTreeLateReportLinkDoesNotTouchSource(t *testing.T) {
 		})
 	}
 }
+
+func TestGlobalBudgetRollsBackEarlierSourcesAndCannotRecover(t *testing.T) {
+	for _, secondReportOnly := range []bool{false, true} {
+		r, dir := root(t)
+		artifacts := treeArtifacts()
+		size := 0
+		for _, data := range artifacts {
+			size += len(data)
+		}
+		limits := treeLimits
+		limits.Bytes = size
+		tree, err := NewTree(r, []TreeSource{{"first", true}, {"second", true}}, limits)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := tree.Record("first", "revealed", "", digest, artifacts); err != nil {
+			t.Fatal(err)
+		}
+		state, reason := "revealed", ""
+		if secondReportOnly {
+			state, reason = "failed", "execution.resource_limit"
+			artifacts = map[string][]byte{"report": []byte("{}")}
+		}
+		if err := tree.Record("second", state, reason, digest, artifacts); !errors.Is(err, ErrLimit) {
+			t.Fatal("global budget not enforced", err)
+		}
+		if err := tree.Record("second", "failed", "execution.resource_limit", "", nil); !errors.Is(err, ErrState) {
+			t.Fatal("aborted tree reused", err)
+		}
+		entries, err := os.ReadDir(dir)
+		if err != nil || len(entries) != 0 {
+			t.Fatal("uncommitted prefix retained", err, entries)
+		}
+	}
+}

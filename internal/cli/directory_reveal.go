@@ -95,7 +95,7 @@ func runDirectoryReveal(path, output, schema string, recursive, jsonOutput, json
 	defer source.Close()
 	parent, name, err := corpusOutputParent(source, path, output)
 	if err != nil {
-		return v2Failure(errout, "output.create_failed", "reveal root must be a new path outside the source tree with real directory ancestors")
+		return v2Failure(errout, "output.create_failed", "reveal root must be a new path outside the source tree with resolvable directory ancestors")
 	}
 	defer parent.Close()
 	if err := parent.Mkdir(name, 0700); err != nil {

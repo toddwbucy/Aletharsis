@@ -47,7 +47,7 @@ func runDirectory(path, output, schema string, recursive, jsonOutput, jsonl, ver
 		defer sourceRoot.Close()
 		parent, name, file, err = openCorpusReport(sourceRoot, path, output)
 		if err != nil {
-			return v2Failure(errout, "output.create_failed", "report must be a new path outside the source tree with real directory ancestors")
+			return v2Failure(errout, "output.create_failed", "report must be a new path outside the source tree with resolvable directory ancestors")
 		}
 		defer parent.Close()
 		writer = file
@@ -107,7 +107,7 @@ func corpusOutputParent(source *os.Root, sourcePath, output string) (*os.Root, s
 	if err != nil {
 		return nil, "", err
 	}
-	absolute, err := filepath.Abs(output)
+	absolute, err := resolveOutput(output)
 	if err != nil {
 		return nil, "", err
 	}
@@ -115,8 +115,15 @@ func corpusOutputParent(source *os.Root, sourcePath, output string) (*os.Root, s
 	if err != nil {
 		return nil, "", err
 	}
-	if relative == "." || relative != ".." && !strings.HasPrefix(relative, ".."+string(filepath.Separator)) {
+	if !strings.HasPrefix(relative, ".."+string(filepath.Separator)) {
 		return nil, "", errors.New("output overlaps source")
+	}
+	reverse, err := filepath.Rel(absolute, canonical)
+	if err != nil {
+		return nil, "", err
+	}
+	if reverse == "." || reverse != ".." && !strings.HasPrefix(reverse, ".."+string(filepath.Separator)) {
+		return nil, "", errors.New("output contains source")
 	}
 	sourceInfo, err := source.Stat(".")
 	if err != nil {

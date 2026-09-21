@@ -106,7 +106,8 @@ nested directories. Symlinks and special files are explicit skips. `--jsonl`
 streams a header, per-entry outcomes and final summary. `--json` produces one
 object containing those same header/entries/summary records; directory `--output`
 defaults to this JSON form unless `--jsonl` is selected. The output must be a new
-file outside the source tree, with real directory ancestors.
+file outside the source tree. Existing parent-directory aliases are resolved and
+checked before writes; the destination itself must not exist.
 
 A valid partial corpus report is retained with exit 4 when files fail or are
 unsupported. Missing completion records or transport errors mean the stream did
@@ -133,7 +134,8 @@ See the [directory reveal contract and demonstration](docs/specs/directory-revea
 `audit FILE --reveal-out NEW_DIRECTORY` publishes `report.json`, `revealed.txt`,
 `comparison.json`, `faithful.diff`, `display.diff`, and `manifest.json` from one
 acquired source snapshot. Both report schemas are supported. The output directory
-must be new; its parent must already exist, with no symlink ancestors. Files use
+must be new; its parent must already exist. Parent aliases are resolved and the
+opened parent identity is checked; existing destinations are never followed. Files use
 mode `0600`, the directory `0700`. It cannot be combined with `--output`; the
 bundle already includes the exact report printed by `--json`.
 

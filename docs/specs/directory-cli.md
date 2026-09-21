@@ -17,6 +17,13 @@ and special files produce explicit skipped records. Unknown extensions remain
 eligible for content-based identification. Directory selection uses non-following
 stat; a symlink root is not treated as a traversable directory.
 
+Explicit `--recursive` or `--jsonl` selects directory/corpus mode even if the input
+cannot be statted. An unavailable or missing workspace then emits a corpus header
+and failed terminal summary (exit 4), not a file report or a usage-only error.
+Without a directory-only flag, a missing path follows ordinary file auditing.
+A successfully identified non-directory rejects these flags as usage errors.
+Consumers must select the corpus schema when requesting corpus-only options.
+
 ## Presentations
 
 - Default console output lists each source-relative path and outcome, then all six
@@ -54,8 +61,11 @@ removes only the new partial output and returns 4.
 ## Output and source integrity
 
 Report output must be outside the source tree. Canonical path ancestry and inode
-ancestry reject overlap; symlink output ancestors and pre-existing destinations
-are rejected. The source root is pinned before destination checks. The output
+ancestry reject overlap in both directions; pre-existing destinations are rejected.
+Existing output-parent aliases are resolved before containment checks and identity
+pinning, so platform aliases such as `/tmp` work. The final destination is never
+resolved or followed; exclusive creation rejects an existing final symlink.
+The source root is pinned before destination checks. The output
 parent is pinned and its identity rechecked before exclusive 0600 creation;
 source discovery/acquisition reuses the already-open source root. No existing
 report or source alias is overwritten. On unsupported hosts a metadata-only source

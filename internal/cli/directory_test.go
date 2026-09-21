@@ -243,12 +243,7 @@ func TestUnsupportedHostCanSaveCorpusFailure(t *testing.T) {
 	if runtime.GOOS == "linux" {
 		t.Skip("unsupported-host contract")
 	}
-	// macOS TempDir may use /var -> /private/var. The output policy requires
-	// real ancestors, so use the physical fixture path rather than that alias.
-	parent, err := filepath.EvalSymlinks(t.TempDir())
-	if err != nil {
-		t.Fatal(err)
-	}
+	parent := t.TempDir()
 	source := filepath.Join(parent, "source")
 	if err := os.Mkdir(source, 0700); err != nil {
 		t.Fatal(err)
@@ -268,6 +263,92 @@ func TestUnsupportedHostCanSaveCorpusFailure(t *testing.T) {
 		}
 		if err := json.Unmarshal(raw, &report); err != nil || report.Summary.Reason != "integrity.no_atime_unavailable" || report.Summary.State != "failed" {
 			t.Fatal("missing failure envelope", err, string(raw))
+		}
+	}
+}
+
+func TestCorpusOutputParentResolvesAliasesAndRejectsContainment(t *testing.T) {
+	parent := t.TempDir()
+	sourcePath := filepath.Join(parent, "source")
+	outside := filepath.Join(parent, "outside")
+	for _, p := range []string{sourcePath, outside} {
+		if err := os.Mkdir(p, 0700); err != nil {
+			t.Fatal(err)
+		}
+	}
+	source, err := os.OpenRoot(sourcePath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer source.Close()
+	alias := filepath.Join(parent, "alias")
+	if err := os.Symlink(outside, alias); err != nil {
+		t.Skipf("symlink setup unavailable: %v", err)
+	}
+	for _, output := range []string{sourcePath, filepath.Join(sourcePath, "new"), parent, filepath.Dir(parent)} {
+		root, _, err := corpusOutputParent(source, sourcePath, output)
+		if root != nil {
+			root.Close()
+		}
+		if err == nil {
+			t.Fatal("overlap admitted before creation", output)
+		}
+	}
+	root, name, err := corpusOutputParent(source, sourcePath, filepath.Join(alias, "report.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer root.Close()
+	// Retargeting the lexical alias cannot redirect the pinned output parent.
+	if err := os.Remove(alias); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(sourcePath, alias); err != nil {
+		t.Fatal(err)
+	}
+	f, err := root.OpenFile(name, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := f.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.Join(outside, name)); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Lstat(filepath.Join(sourcePath, name)); !os.IsNotExist(err) {
+		t.Fatal("write redirected into source", err)
+	}
+	if p, _, err := corpusOutputParent(source, sourcePath, filepath.Join(alias, "new")); err == nil {
+		p.Close()
+		t.Fatal("source alias accepted")
+	}
+}
+
+func TestMissingInputFlagSelectsDocumentedEnvelope(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("Linux acquisition diagnostic")
+	}
+	for _, schema := range []string{"1.0", "2.0"} {
+		for _, flag := range []string{"--json", "--jsonl", "--recursive"} {
+			var out, stderr bytes.Buffer
+			args := []string{"audit", filepath.Join(t.TempDir(), "missing"), "--schema-version=" + schema, flag}
+			if flag == "--recursive" {
+				args = append(args, "--json")
+			}
+			if code := Run(args, &out, &stderr); code != 4 || stderr.Len() != 0 {
+				t.Fatal("missing input did not report failure", code, stderr.String())
+			}
+			if flag == "--json" {
+				var r struct {
+					Schema string `json:"schema_version"`
+				}
+				if err := json.Unmarshal(out.Bytes(), &r); err != nil || r.Schema != schema {
+					t.Fatal("file envelope changed", err)
+				}
+			} else if !strings.Contains(out.String(), `"contract":"aletharsis.corpus/1"`) || !strings.Contains(out.String(), `"reason":"file.not_found"`) {
+				t.Fatal("missing corpus failure", out.String())
+			}
 		}
 	}
 }

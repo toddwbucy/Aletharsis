@@ -11,8 +11,9 @@ aletharsis audit notes.txt --reveal-out review-v2 --schema-version 2.0 --json
 ```
 
 `--reveal-out` accepts a new directory, only for the full `audit` view. It cannot
-be combined with `--output`. Its parent must already exist, and symlink ancestors
-are rejected. Existing destinations, including source aliases, fail exclusively.
+be combined with `--output`. Its parent must already exist. Parent aliases are
+resolved to physical paths and the opened parent identity is checked before writing;
+the final destination is never followed. Existing destinations, including source aliases, fail exclusively.
 Directory sources, unsupported formats and failed audits produce no derivatives;
 the report remains available on stdout with exit 4. Successful calls retain the
 ordinary severity exit code, including 1–3 for findings. Failure diagnostics use
