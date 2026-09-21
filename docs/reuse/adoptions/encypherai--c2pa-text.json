@@ -23,7 +23,7 @@
   "checks": {
     "prerequisites": {
       "status": "partial",
-      "detail": "G0 and DA-001/EC-003 design accepted. Report v3 wire, executable adapter and adoption gates remain incomplete.",
+      "detail": "G2 #37 scoped four Go extraction APIs. HTML host validation and source mappings remain prerequisites alongside executable DA-001/report integration; no accepted extraction adapter.",
       "evidence": [
         0,
         1,
@@ -32,7 +32,7 @@
     },
     "licenses_notices": {
       "status": "partial",
-      "detail": "Root license retained; study does not clear transitive per-file redistribution, fixtures, notices or release packaging.",
+      "detail": "Root MIT retained and x/text BSD-3-Clause inspected; no upstream code or vectors redistributed. Per-file/transitive notices and production redistribution clearance remain open.",
       "evidence": [
         0,
         1,
@@ -41,7 +41,7 @@
     },
     "unit_contract": {
       "status": "partial",
-      "detail": "Bounded upstream/probe cases executed; production adapter contract and native normalization conformance remain unexecuted.",
+      "detail": "28 upstream tests passed; 39 independent cases completed with eight HTML host-context mismatches. These probes do not establish production normalization or adapter conformance.",
       "evidence": [
         0,
         1,
@@ -50,12 +50,12 @@
     },
     "live_adapter": {
       "status": "not_run",
-      "detail": "Study probe is not the production DA-001 adapter. No live production exchange evidence.",
+      "detail": "No DA-001 extraction adapter executed; ExtractManifest/ValidateText/ExtractStructured/ExtractHTML probes are feasibility evidence only.",
       "evidence": []
     },
     "source_integrity": {
       "status": "partial",
-      "detail": "Synthetic study sources retained unchanged. Production acquisition, raw-response mapping and derivative authority require integration tests.",
+      "detail": "Synthetic input hashes checked after every case. Decomposed-text raw/NFC offsets differ and structured/HTML APIs omit spans; production acquisition and source mapping remain unvalidated.",
       "evidence": [
         0,
         1,
@@ -64,7 +64,7 @@
     },
     "adversarial_fuzz": {
       "status": "partial",
-      "detail": "Study includes malformed or boundary cases; no complete adopted-scope adversarial/fuzz campaign.",
+      "detail": "39 cases cover malformed VS wrappers, huge lengths, multiple carriers, Unicode coordinates and HTML host confusion. Eight HTML mismatches remain; no production fuzz campaign completed.",
       "evidence": [
         0,
         1,
@@ -73,7 +73,7 @@
     },
     "resources": {
       "status": "partial",
-      "detail": "Study limits and observed consumption recorded; no reviewed production platform budget or worst-case claim.",
+      "detail": "Build/upstream tests used 23.945 CPU seconds and 416.7 MiB peak memory; case run 0.265 CPU seconds and 153.3 MiB. Linux harness enforced 1 GiB memory and per-case deadlines; no production worst-case bound.",
       "evidence": [
         0,
         1,
@@ -82,7 +82,7 @@
     },
     "native_platforms": {
       "status": "partial",
-      "detail": "Linux amd64 study only. No other native target tested. Core cross-build CI is not detector platform evidence.",
+      "detail": "Go 1.27.1 Linux/amd64 extraction study only. No other native detector platform executed; core cross-build CI is not evidence for these APIs.",
       "evidence": [
         0,
         1,
@@ -91,7 +91,7 @@
     },
     "build_install": {
       "status": "partial",
-      "detail": "Same-environment repeated builds match; production install, relocation and offline provisioning still need validation.",
+      "detail": "Two fresh offline Go probe builds and corpus runs yielded identical binary/result bytes. This does not establish cross-host reproducibility, install/relocation or accepted release packaging.",
       "evidence": [
         0,
         1,
@@ -100,17 +100,17 @@
     },
     "disable_rollback_missing": {
       "status": "not_run",
-      "detail": "No installed adapter: disable, rollback and missing-runtime drills cannot yet establish release behavior.",
+      "detail": "No installed extraction adapter; disable, missing-runtime and rollback behavior in native audits remains untested.",
       "evidence": []
     },
     "security_updates": {
       "status": "not_run",
-      "detail": "No complete transitive advisory, security response and supported-update review for adoption.",
+      "detail": "Carrier pin and x/text dependency identified, but no complete advisory, per-file notice or supported-update review for extraction adoption.",
       "evidence": []
     },
     "semantic_upgrade": {
       "status": "not_run",
-      "detail": "No accepted baseline or proposed upgrade. Define baseline conformance and run reviewed semantic diffs before any replacement pin.",
+      "detail": "39-case carrier baseline is retained, including eight unresolved HTML discrepancies; no accepted baseline, replacement pin comparison or rollback drill yet.",
       "evidence": []
     }
   },

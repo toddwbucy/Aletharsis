@@ -23,7 +23,7 @@
   "checks": {
     "prerequisites": {
       "status": "partial",
-      "detail": "G0 and DA-001/EC-003 design accepted. Report v3 wire, executable adapter and adoption gates remain incomplete.",
+      "detail": "G2 #38 recommends a bounded worker because Verify has no cancellation parameter. Production DA-001 execution, trust-policy and packaging gates remain incomplete.",
       "evidence": [
         0,
         1,
@@ -32,7 +32,7 @@
     },
     "licenses_notices": {
       "status": "partial",
-      "detail": "Root license retained; study does not clear transitive per-file redistribution, fixtures, notices or release packaging.",
+      "detail": "Root Apache-2.0 and fixture rights inspected; Linux C ABI/CLI graph contains 153 pinned packages. Declared licenses do not establish per-file redistribution or packaging-notice clearance.",
       "evidence": [
         0,
         1,
@@ -41,7 +41,7 @@
     },
     "unit_contract": {
       "status": "partial",
-      "detail": "Bounded upstream/probe cases executed; production adapter contract and native normalization conformance remain unexecuted.",
+      "detail": "11 final byte/trust cases completed without mismatches. Six c2pa-rs-origin assets provide independent fixtures, not independent verifier execution; production adapter conformance remains untested.",
       "evidence": [
         0,
         1,
@@ -50,12 +50,12 @@
     },
     "live_adapter": {
       "status": "not_run",
-      "detail": "Study probe is not the production DA-001 adapter. No live production exchange evidence.",
+      "detail": "No production DA-001 verifier exchange. Rust C ABI, CLI and Go byte probe executions do not establish a completed sidecar protocol.",
       "evidence": []
     },
     "source_integrity": {
       "status": "partial",
-      "detail": "Synthetic study sources retained unchanged. Production acquisition, raw-response mapping and derivative authority require integration tests.",
+      "detail": "Read-only fixtures retained unchanged file/buffer hashes; telemetry override cases left preferences unchanged. This does not validate production acquisition, manifest maps or raw-response identity enforcement.",
       "evidence": [
         0,
         1,
@@ -64,7 +64,7 @@
     },
     "adversarial_fuzz": {
       "status": "partial",
-      "detail": "Study includes malformed or boundary cases; no complete adopted-scope adversarial/fuzz campaign.",
+      "detail": "Cases distinguish invalid signatures, hash mismatch, unsigned input, trust status and the size boundary; an observed-live worker was terminated/reaped. No full verifier fuzz campaign or independent algorithm validation.",
       "evidence": [
         0,
         1,
@@ -73,7 +73,7 @@
     },
     "resources": {
       "status": "partial",
-      "detail": "Study limits and observed consumption recorded; no reviewed production platform budget or worst-case claim.",
+      "detail": "Rust build used 137.932 seconds wall, 113.642 CPU seconds and 648.3 MiB peak memory. Study used 2 GiB cgroup memory, 120-second case deadlines and a 32 MiB probe input cap; no production bound claimed.",
       "evidence": [
         0,
         1,
@@ -82,7 +82,7 @@
     },
     "native_platforms": {
       "status": "partial",
-      "detail": "Linux amd64 study only. No other native target tested. Core cross-build CI is not detector platform evidence.",
+      "detail": "Rust/CLI/CGO verifier executed only on Linux amd64. Linux arm64/macOS untested; Windows linker/packaging requires investigation.",
       "evidence": [
         0,
         1,
@@ -91,7 +91,7 @@
     },
     "build_install": {
       "status": "partial",
-      "detail": "Same-environment repeated builds match; production install, relocation and offline provisioning still need validation.",
+      "detail": "Two clean Rust target directories produced matching static-library, shared-library and CLI hashes. CGO probe still requires system libraries/loader; offline installation, relocation and other platforms remain unvalidated.",
       "evidence": [
         0,
         1,
@@ -100,17 +100,17 @@
     },
     "disable_rollback_missing": {
       "status": "not_run",
-      "detail": "No installed adapter: disable, rollback and missing-runtime drills cannot yet establish release behavior.",
+      "detail": "Worker termination/reaping was demonstrated, but no installed verifier adapter exists for disable, incompatible/missing runtime, rollback or uninstall drills.",
       "evidence": []
     },
     "security_updates": {
       "status": "not_run",
-      "detail": "No complete transitive advisory, security response and supported-update review for adoption.",
+      "detail": "Explicit telemetry-off overrides conflicting ambient settings in the study. Network isolation did not trace socket attempts; full transitive advisories, trust-update policy and security response review remain open.",
       "evidence": []
     },
     "semantic_upgrade": {
       "status": "not_run",
-      "detail": "No accepted baseline or proposed upgrade. Define baseline conformance and run reviewed semantic diffs before any replacement pin.",
+      "detail": "11 final verifier cases and the corrected exploratory trust-label mismatch are retained. No accepted verification baseline, new-pin semantic comparison or production rollback drill exists.",
       "evidence": []
     }
   },

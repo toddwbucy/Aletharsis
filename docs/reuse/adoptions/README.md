@@ -9,11 +9,13 @@ checks; link a scoped follow-up issue for new work rather than inheriting closur
 
 ## Record and acceptance procedure
 
-Create one JSON record per scoped registry component, conforming to
+Create one `<component-id>.json` record per scoped registry component, conforming to
 [adoption record 1.0](../../../schemas/adoption-record-v1.schema.json). The two
 records in this directory demonstrate application to actual retained feasibility
 evidence, not fictional production readiness. Do not copy their results to a new
-component. Start new checks as `not_run` with explicit required evidence.
+component. This directory reserves `.json` files for records; keep indexes or
+other JSON sidecars elsewhere. Registry-approved components must have a record.
+Start new checks as `not_run` with explicit required evidence.
 
 Bind the record to the exact registry commit, source archive and license digests,
 requested scope, accountable owner, implementer, technical reviewer, evaluation
@@ -25,10 +27,14 @@ checks; hashing a manifest alone does not validate the files it describes.
 
 Every checklist field is required. Use `passed`, `partial`, `failed`, `not_run` or
 `not_applicable`; the detail states what ran, what it proves and what it does not.
-Passed/partial/failed entries require retained evidence. A not-applicable entry
-requires an explicit scope-based justification in detail, reviewed by the owner;
+Passed/partial/failed/not-applicable entries require retained evidence. A
+not-applicable entry also requires a nonblank `scope_justification`, reviewed by
+the owner against that evidence;
 it is not an escape hatch for missing platforms or an unavailable test system.
 An `approve` recommendation requires all checks passed or justified not-applicable.
+Prerequisites and license/notice clearance must always pass; neither can be waived.
+A pending `approve` recommendation with null acceptance is valid and grants no
+adoption authority; the registry cannot be approved in that state.
 It is only a recommendation until `acceptance` names the owner, technical reviewer,
 review record and matching disposition. CodeRabbit cannot grant owner acceptance.
 Specialist review must be assigned where automated review lacks domain expertise.
