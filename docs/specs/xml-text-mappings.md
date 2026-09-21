@@ -94,3 +94,6 @@ checks passed. The 265 offline contract tests passed. A three-second, two-worker
 fuzz configuration executed 101,424 inputs without failure (about four seconds
 including shutdown). The analyzer-join regression also passed. These bounded checks
 do not certify complete Office extraction, format conformance or remediation safety.
+
+The next proposed per-part consumer is [WT-001](word-text-evidence.md), which selects
+WordprocessingML text and direct context while retaining these mappings unchanged.
