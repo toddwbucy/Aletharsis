@@ -285,6 +285,13 @@
             "required": [
               "scope_justification"
             ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "scope_justification"
+              ]
+            }
           }
         }
       ]

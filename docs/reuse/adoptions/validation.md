@@ -66,3 +66,9 @@ New regressions cover retained historical approval with recorded withdrawal,
 byte-exact identity patterns, nonblank substantive fields, bare evaluation PRs,
 not-run evidence references and rejection of known automated acceptance identities.
 No experiment bytes changed and neither component received adoption approval.
+
+Fourth remediation pass (2026-09-21, based on `7f78a5d`): 440 offline tests passed,
+including 105 adoption checks. Accepted rejection now requires matching registry
+status/decision/reference; stale scope waivers are rejected after status changes.
+Wording distinguishes pending automated review from accepted review and distinct
+withdrawal references from verified chronology. Neither component is approved.

@@ -46,7 +46,8 @@ review record and matching disposition. `acceptance.record` must be a bare
 Aletharsis PR URL, matching the registry decision contract; issue URLs and comment
 anchors can be retained in tracking/evidence but cannot replace that canonical URL.
 Known `coderabbitai` and `*[bot]` identifiers are rejected as acceptance owners
-or technical reviewers. This is a limited guard, not identity authentication.
+or accepted technical reviewers. Pending records may name automated reviewers
+that supplied evaluation feedback. This is a limited guard, not identity authentication.
 The technical reviewer identifier must differ from the implementer (ignoring
 case and surrounding whitespace). An owner may implement work but cannot thereby
 self-review it. Specialist review must be assigned where automated review lacks
@@ -134,3 +135,7 @@ Existing offline CI runs these tests. They verify closed record shapes, complete
 checklists, pins/ownership against the registry, retained evidence digests, bounded
 references and negative mutations. They neither contact upstream nor install/run
 any detector. Study-specific tests validate the retained manifests and results.
+
+An accepted rejection requires a matching rejected registry status and rejection
+decision/reference; accepted revision can remain evaluating. `scope_justification`
+is allowed only while a check is `not_applicable`; remove it when that status changes.

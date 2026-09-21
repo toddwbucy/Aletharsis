@@ -59,7 +59,12 @@ def validate(record):
             registry_schema = json.loads((ROOT / 'schemas/reuse-registry.schema.json').read_bytes())
             Draft202012Validator(registry_schema['$defs']['decision']).validate(component['decision'])
             VALIDATOR.evolve(schema=SCHEMA['properties']['evaluation_pr']).validate(component['decision']['record'])
-            assert component['decision']['record'] != acceptance['record'], 'withdrawal must reference a later decision'
+            assert component['decision']['record'] != acceptance['record'], 'withdrawal must reference a distinct decision'
+    if record['recommendation'] == 'reject' and acceptance is not None:
+        assert component['adoption_status'] == 'rejected', 'accepted rejection requires rejected registry status'
+        assert isinstance(component['decision'], dict), 'registry decision must record rejection'
+        assert component['decision']['disposition'] == 'reject'
+        assert component['decision']['record'] == acceptance['record']
     if component['adoption_status'] == 'approved':
         assert record['recommendation'] == 'approve'
         assert acceptance is not None
@@ -160,6 +165,9 @@ def test_acceptance_lifecycle(disposition, monkeypatch, pending_record):
     if disposition == 'approve':
         component['adoption_status'] = 'approved'
         component['decision'] = dict(disposition='approve', record=record['evaluation_pr'])
+    if disposition == 'reject':
+        component['adoption_status'] = 'rejected'
+        component['decision'] = dict(disposition='reject', record=record['evaluation_pr'])
     monkeypatch.setitem(REGISTRY, record['component'], component)
     validate(record)
     if disposition == 'approve':
@@ -336,4 +344,23 @@ def test_automated_acceptance_rejected(actor, pending_record):
 def test_acceptance_reference_rejects_trailing_newline(pending_record):
     pending_record['acceptance'] = dict(owner=pending_record['owner'], technical_reviewer=pending_record['technical_reviewer'],
         record=pending_record['evaluation_pr']+'\n', disposition='revise')
+    assert not VALIDATOR.is_valid(pending_record)
+
+
+@pytest.mark.parametrize('fault', ['status','missing_decision','disposition','reference'])
+def test_accepted_rejection_must_match_registry(fault, pending_record):
+    pending_record['recommendation'] = 'reject'
+    pending_record['acceptance'] = dict(owner=pending_record['owner'], technical_reviewer=pending_record['technical_reviewer'], record=pending_record['evaluation_pr'], disposition='reject')
+    component = REGISTRY[pending_record['component']]
+    component.update(adoption_status='rejected', decision=dict(disposition='reject', record=pending_record['evaluation_pr']))
+    if fault == 'status': component['adoption_status'] = 'evaluating'
+    elif fault == 'missing_decision': component['decision'] = None
+    elif fault == 'disposition': component['decision']['disposition'] = 'approve'
+    else: component['decision']['record'] = 'https://github.com/toddwbucy/Aletharsis/pull/1'
+    with pytest.raises(AssertionError): validate(pending_record)
+
+
+@pytest.mark.parametrize('status', ['passed','partial','failed','not_run'])
+def test_stale_scope_waiver_rejected(status, pending_record):
+    pending_record['checks']['live_adapter'].update(status=status, scope_justification='Previously out of scope but no longer waived.')
     assert not VALIDATOR.is_valid(pending_record)
