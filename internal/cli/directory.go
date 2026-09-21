@@ -81,54 +81,9 @@ func runDirectory(path, output, schema string, recursive, jsonOutput, jsonl, ver
 // All output access stays relative to a pinned parent. Caller-controlled namespace
 // remains a precondition; this is not isolation from privileged mount changes.
 func openCorpusReport(source *os.Root, sourcePath, output string) (*os.Root, string, *os.File, error) {
-	canonical, err := filepath.EvalSymlinks(sourcePath)
+	parent, name, err := corpusOutputParent(source, sourcePath, output)
 	if err != nil {
 		return nil, "", nil, err
-	}
-	canonical, err = filepath.Abs(canonical)
-	if err != nil {
-		return nil, "", nil, err
-	}
-	absolute, err := filepath.Abs(output)
-	if err != nil {
-		return nil, "", nil, err
-	}
-	relative, err := filepath.Rel(canonical, absolute)
-	if err != nil {
-		return nil, "", nil, err
-	}
-	if relative == "." || relative != ".." && !strings.HasPrefix(relative, ".."+string(filepath.Separator)) {
-		return nil, "", nil, errors.New("output overlaps source")
-	}
-	sourceInfo, err := source.Stat(".")
-	if err != nil {
-		return nil, "", nil, err
-	}
-	parentPath, name := filepath.Dir(absolute), filepath.Base(absolute)
-	var expectedParent os.FileInfo
-	for current := parentPath; ; current = filepath.Dir(current) {
-		info, err := os.Lstat(current)
-		if err != nil {
-			return nil, "", nil, err
-		}
-		if current == parentPath {
-			expectedParent = info
-		}
-		if !info.IsDir() || info.Mode()&os.ModeSymlink != 0 || os.SameFile(sourceInfo, info) {
-			return nil, "", nil, errors.New("unsafe output ancestry")
-		}
-		if current == filepath.Dir(current) {
-			break
-		}
-	}
-	parent, err := os.OpenRoot(parentPath)
-	if err != nil {
-		return nil, "", nil, err
-	}
-	pinned, err := parent.Stat(".")
-	if err != nil || !os.SameFile(expectedParent, pinned) || os.SameFile(sourceInfo, pinned) {
-		_ = parent.Close()
-		return nil, "", nil, errors.New("unsafe pinned output parent")
 	}
 	file, err := parent.OpenFile(name, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
 	if err != nil {
@@ -136,6 +91,59 @@ func openCorpusReport(source *os.Root, sourcePath, output string) (*os.Root, str
 		return nil, "", nil, err
 	}
 	return parent, name, file, nil
+}
+
+func corpusOutputParent(source *os.Root, sourcePath, output string) (*os.Root, string, error) {
+	canonical, err := filepath.EvalSymlinks(sourcePath)
+	if err != nil {
+		return nil, "", err
+	}
+	canonical, err = filepath.Abs(canonical)
+	if err != nil {
+		return nil, "", err
+	}
+	absolute, err := filepath.Abs(output)
+	if err != nil {
+		return nil, "", err
+	}
+	relative, err := filepath.Rel(canonical, absolute)
+	if err != nil {
+		return nil, "", err
+	}
+	if relative == "." || relative != ".." && !strings.HasPrefix(relative, ".."+string(filepath.Separator)) {
+		return nil, "", errors.New("output overlaps source")
+	}
+	sourceInfo, err := source.Stat(".")
+	if err != nil {
+		return nil, "", err
+	}
+	parentPath, name := filepath.Dir(absolute), filepath.Base(absolute)
+	var expectedParent os.FileInfo
+	for current := parentPath; ; current = filepath.Dir(current) {
+		info, err := os.Lstat(current)
+		if err != nil {
+			return nil, "", err
+		}
+		if current == parentPath {
+			expectedParent = info
+		}
+		if !info.IsDir() || info.Mode()&os.ModeSymlink != 0 || os.SameFile(sourceInfo, info) {
+			return nil, "", errors.New("unsafe output ancestry")
+		}
+		if current == filepath.Dir(current) {
+			break
+		}
+	}
+	parent, err := os.OpenRoot(parentPath)
+	if err != nil {
+		return nil, "", err
+	}
+	pinned, err := parent.Stat(".")
+	if err != nil || !os.SameFile(expectedParent, pinned) || os.SameFile(sourceInfo, pinned) {
+		_ = parent.Close()
+		return nil, "", errors.New("unsafe pinned output parent")
+	}
+	return parent, name, nil
 }
 
 // The executor delivers one bounded complete JSONL record per Write. This adapter
