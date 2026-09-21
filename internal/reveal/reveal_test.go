@@ -240,3 +240,25 @@ func TestGoldenMarkerAndOffsets(t *testing.T) {
 		t.Fatalf("lost finding: %+v", o)
 	}
 }
+
+func TestRejectMalformedUnicodeCodePoint(t *testing.T) {
+	for _, empty := range []bool{false, true} {
+		for _, value := range []any{nil, 0x200b, true, []string{"U+200B"}} {
+			raw := []byte("a\u200b")
+			text, findings := native(t, raw)
+			if value == nil {
+				delete(findings[0].Evidence, "code_point")
+			} else {
+				findings[0].Evidence["code_point"] = value
+			}
+			if empty {
+				findings[0].Location["character_offsets"] = []int{}
+				findings[0].Location["byte_offsets"] = []int{}
+			}
+			got, err := Render(raw, evidence.Hash(raw), text, findings, testLimits)
+			if got != nil || err == nil || err.Error() != "invalid reveal finding code point" {
+				t.Fatalf("value=%v empty=%v: result=%v err=%v", value, empty, got, err)
+			}
+		}
+	}
+}

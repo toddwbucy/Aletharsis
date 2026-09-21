@@ -83,19 +83,22 @@ func Render(source []byte, expectedSHA256 string, text *evidence.Text, findings 
 		if !ok || !bytesOK || len(positions) != len(bytes) {
 			return nil, errors.New("invalid reveal finding coordinates")
 		}
+		unicodeFinding := strings.HasPrefix(f.ID, "unicode.")
+		code, codeOK := f.Evidence["code_point"].(string)
+		if unicodeFinding && !codeOK {
+			return nil, errors.New("invalid reveal finding code point")
+		}
 		previous := -1
 		for i, p := range positions {
 			if p <= previous || p < 0 || p >= len(runes) || bytes[i] != text.ByteOffsets[p] {
 				return nil, errors.New("invalid reveal finding coordinates")
 			}
 			previous = p
-			if strings.HasPrefix(f.ID, "unicode.") {
-				if code, ok := f.Evidence["code_point"].(string); ok {
-					if code != fmt.Sprintf("U+%04X", runes[p]) {
-						return nil, errors.New("reveal finding code point mismatch")
-					}
-					marked[p] = true
+			if unicodeFinding {
+				if code != fmt.Sprintf("U+%04X", runes[p]) {
+					return nil, errors.New("reveal finding code point mismatch")
 				}
+				marked[p] = true
 			}
 			links++
 			if links > limits.Occurrences {
