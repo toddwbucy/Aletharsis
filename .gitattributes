@@ -30,3 +30,7 @@ schemas/adapter-exchange-v1.schema.json -text
 tests/adapters/*.py -text
 # Profile conformance definitions retain exact artifact identities.
 internal/profiles/testdata/*.json -text
+# Office package fixtures and retained part hashes are byte evidence.
+internal/packageparts/testdata/*.docx -text
+internal/packageparts/testdata/*.odt -text
+internal/packageparts/testdata/manifest.json -text
