@@ -242,7 +242,7 @@
       },
       "runtime": {
         "assessment": "unverified",
-        "dependencies": "Study: existing distro Node 26.8.1 executes unchanged scan handler using an inert DOM facade; not a complete browser test or production dependency.",
+        "dependencies": "Study: existing distro Node 26.8.2 executes unchanged scan handler using an inert DOM facade; not a complete browser test or production dependency.",
         "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
         "side_effects": "Offline read-only scan probe retained source identity; no clean/inject/clipboard/download action invoked. Scalar positions reconstructed from scan nodes. Pinned inventory omits variation selectors/tags and generally marks language joiners without contextual exclusion."
       },

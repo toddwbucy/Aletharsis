@@ -7,15 +7,13 @@
   "platform": "Linux-7.2.2-1-cachyos-x86_64-with-glibc2.44",
   "binary_sha256": "028f698cb3548ab16768c54aed0b2403515d7fc47c973336d988480b753d1d4b",
   "probe_sha256": {
-    "README.md": "c83836f12b76d6b55b319047bfb524121a2be95826f7f366ccd08c54257991ff",
-    "input-trees.json": "db9728810d9d3c82b2e19503301c61b1e4e6d52c3ca22aa5ddb4601fc14eca80",
-    "provision.py": "7bea02a41f043a1526e5481201ebcbbae438fc860be76f591081671febc29e50",
-    "adjudicate.py": "c3909c92880c1987fb494209b93cbb8646d5311f42f1ae34f5f6526aaa4bcb2e",
-    "run_cases.py": "91048fe75b0e42c6d1f998d36a42c64f97e8efe631742327dc284e07e94139db",
     "corpus.py": "a7ded2ec193379ac0975ce257480f09eef233c216516ac2e33e85160de931fc7",
-    "hiberius_probe.cjs": "1f57ecbcb97efde9411771dbcadb27babdd30c3908ccfd3c878bc9e0a6e6df91",
+    "adjudicate.py": "b6267c10f186d5f60966295ee632440067cbcf1c85f644b76fb73cef71861265",
+    "run_cases.py": "82955e8cd30813db728a76913159f490b61c26987f5fda42f4fb951333d9c503",
     "juriku_probe.py": "0d6c03ca77c19dbf2cb01e6263c207852915310e42ed7a6cdd5704ff858460c4",
-    "PLAN.md": "75948ab94189da18f60d7a3da7f939617204d90f10f2af76b8fbf7869297f621"
+    "hiberius_probe.cjs": "f7b205d28ab40a52e8478e8f5d979b078ae258a48b6503debac2ae3fc9807e69",
+    "input-trees.json": "db9728810d9d3c82b2e19503301c61b1e4e6d52c3ca22aa5ddb4601fc14eca80",
+    "provision.py": "7bea02a41f043a1526e5481201ebcbbae438fc860be76f591081671febc29e50"
   },
   "example_argv": {
     "juriku": [
@@ -45,7 +43,7 @@
       "--tmpfs",
       "/tmp",
       "--ro-bind",
-      "/tmp/aletharsis-unicode-study/review4/empty/source.bin",
+      "/tmp/aletharsis-unicode-study/review8/empty/source.bin",
       "/input.txt",
       "--ro-bind",
       "/tmp/aletharsis-unicode-study/aletharsis",
@@ -110,7 +108,7 @@
       "--tmpfs",
       "/tmp",
       "--ro-bind",
-      "/tmp/aletharsis-unicode-study/review4/empty/source.bin",
+      "/tmp/aletharsis-unicode-study/review8/empty/source.bin",
       "/input.txt",
       "--ro-bind",
       "/tmp/aletharsis-unicode-study/aletharsis",
@@ -170,7 +168,7 @@
       "--tmpfs",
       "/tmp",
       "--ro-bind",
-      "/tmp/aletharsis-unicode-study/review4/empty/source.bin",
+      "/tmp/aletharsis-unicode-study/review8/empty/source.bin",
       "/input.txt",
       "--ro-bind",
       "/tmp/aletharsis-unicode-study/aletharsis",
@@ -199,6 +197,6 @@
       "--json"
     ]
   },
-  "child_cpu_seconds": 0.152763,
-  "retained_bytes": 326558
+  "child_cpu_seconds": 0.146758,
+  "retained_bytes": 331421
 }

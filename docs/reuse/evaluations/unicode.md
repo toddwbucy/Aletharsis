@@ -23,7 +23,7 @@ No attribution or intent is inferred from a character being present.
 | --- | --- |
 | Aletharsis | Main `abc513e354e864a38d3d57649667c22ba6080cc7`, Go 1.27.1, compiled `audit --json`; native original-byte acquisition/identification/decoding |
 | juriku/hidden-characters-detector | `c75a379a181750eab788cf2eb668109caa8b88e6`; unchanged `_process_line` with cleaning off, typography/IVS on, both inventory and Word-exclusion modes; Python 3.12.13 plus hash-pinned emoji 2.15.0 |
-| Hiberius/hiberius-unicode-toolkit | `1d86b8d951fca3cd7efbe637267f57e391dd7570`; unchanged Scan event handler in Node 26.8.1 with inert DOM facade, not a browser test |
+| Hiberius/hiberius-unicode-toolkit | `1d86b8d951fca3cd7efbe637267f57e391dd7570`; unchanged Scan event handler in Node 26.8.2 with inert DOM facade, not a browser test |
 
 [Corpus](unicode/corpus.json) records Apache-2.0 ownership, exact raw hex, encoding,
 source and decoded-text SHA-256, literal decoding transformation, independently
@@ -160,3 +160,21 @@ is byte-identical to the prior evidence and between runs. Current logs record
 52 focused tests and 387 full offline tests. The full branch comparison
 `git diff --check origin/main` passes with evidence-specific whitespace attributes;
 intentional CRLF bytes were preserved. No new upstream provisioning occurred.
+
+## Third review remediation
+
+The final revised probes were executed twice on 2026-09-21 using the same pinned
+inputs, native binary and bounded offline cgroup configuration. All 30 sources,
+90 stdout files and 90 stderr files match between runs and the preceding retained
+study. Comparison results remain unchanged. Metadata now records explicit reaping
+and output finality, and hashes only the executable/configuration probe list.
+Documentation is excluded from that list. Retained runtime evidence identifies
+Node 26.8.2; the registry and reproduction prerequisites now agree.
+
+Cgroup measurements: run 1 used 3.456 seconds wall, 2.639 seconds CPU and 63 MiB
+peak memory; run 2 used 3.478 seconds wall, 2.619 seconds CPU and 63.1 MiB peak.
+All 393 offline tests passed, including 58 study/harness checks. Synthetic tests
+now exercise incomplete HIBERIUS coverage, unexplained native omissions, shifted
+coordinates, DOM output/event drift and unreaped non-final output. Unknown misses
+are not automatically assigned an inventory exemption. The existing inventory
+exceptions describe the reviewed pinned tool surfaces, not future detector versions.

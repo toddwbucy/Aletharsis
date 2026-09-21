@@ -24,7 +24,7 @@ def load(name, monkeypatch):
     ('juriku_word', 'U+2026', 'policy'),
     ('aletharsis', 'U+2026', 'policy'),
     ('hiberius', 'U+2026', 'policy'),
-    ('aletharsis', 'U+1F600', 'inventory'),
+    ('aletharsis', 'U+1F600', 'defect'),
     ('hiberius', 'U+1F600', 'coverage'),
 ])
 def test_tool_specific_adjudication(monkeypatch, tool, cp, expected):
@@ -62,6 +62,8 @@ def test_timeout_retains_cleanup_outcome(tmp_path, monkeypatch, cleanup_timeout)
     assert result['timed_out']
     assert result['cleanup_timed_out'] == cleanup_timeout
     assert proc.calls == 2
+    assert result['reaped'] == result['output_final'] == (not cleanup_timeout)
+    if cleanup_timeout: assert result['output_limit_exceeded'] is None
 
 
 @pytest.mark.parametrize('size,exceeded', [(8*1024**2, False), (8*1024**2+1, True)])
@@ -115,7 +117,7 @@ def test_failing_case_is_retained_before_abort(tmp_path, monkeypatch, failure):
     def failed(argv, payload, out, err):
         out.write_bytes(b'partial')
         err.write_bytes(b'')
-        return dict(returncode=None, timed_out=failure == 'cleanup_timeout',
+        return dict(reaped=failure != 'cleanup_timeout', output_final=failure != 'cleanup_timeout', returncode=None, timed_out=failure == 'cleanup_timeout',
                     cleanup_timed_out=failure == 'cleanup_timeout',
                     output_limit_exceeded=failure == 'output_limit', wall_seconds=30)
     monkeypatch.setattr(runner, 'execute', failed)
@@ -149,3 +151,40 @@ def test_runtime_identity_uses_probe_binaries(monkeypatch, version):
     assert result['python_binary_sha256'] == commands[0][0]
     assert result['node_binary_sha256'] == commands[1][0] == '/usr/bin/node'
     assert commands[1] == ['/usr/bin/node', '--version']
+
+
+def test_incomplete_hiberius_does_not_infer_absence(monkeypatch):
+    adjudicate = load('adjudicate', monkeypatch)
+    assert adjudicate.reason('hiberius','nonempty','U+200B',0,'completed','no_verdict_emitted')[0] == 'coverage'
+    assert adjudicate.reason('hiberius','new-case','U+200B',0,'completed')[0] == 'unadjudicated'
+
+
+def test_wrong_scalar_is_offset_difference(tmp_path, monkeypatch):
+    adjudicate = load('adjudicate', monkeypatch)
+    (tmp_path/'corpus.json').write_text(json.dumps([dict(id='shift', expected_observations=[dict(scalar=1,code_point='U+200B')], interpretation='synthetic')]))
+    case = tmp_path/'shift'; case.mkdir()
+    (case/'aletharsis.stdout.json').write_text(json.dumps(dict(status='completed', findings=[dict(id='unicode.zero_width',evidence=dict(code_point='U+200B'),location=dict(character_offsets=[2]))])))
+    (case/'juriku.stdout.json').write_text(json.dumps(dict(results=dict(inventory=[],word_exclusions=[]))))
+    (case/'hiberius.stdout.json').write_text(json.dumps(dict(scan_status='no_verdict_emitted',observations=[])))
+    row = adjudicate.summarize(tmp_path)[0]
+    assert [d['category'] for d in row['differences'] if d['tool']=='aletharsis'] == ['offset','offset']
+    assert [d['category'] for d in row['differences'] if d['tool']=='hiberius'] == ['coverage']
+
+
+@pytest.mark.parametrize('script', [
+    "document.addEventListener('DOMContentLoaded',()=>{});",
+    "document.getElementById('btnScan').addEventListener('click',()=>{document.getElementById('renamedViz').textContent='a';document.getElementById('renamedVerdict').textContent='done';});",
+])
+def test_probe_rejects_facade_drift(tmp_path, script):
+    node = shutil.which('node')
+    if node is None: pytest.skip('Node required for synthetic facade checks')
+    html = tmp_path/'index.html'; html.write_text('<script>'+script+'</script>')
+    code = (PROBE/'hiberius_probe.cjs').read_text().replace("'/upstream/index.html'", json.dumps(str(html)))
+    result = subprocess.run([node,'-e',code],input='{"text":"a"}',text=True,capture_output=True,timeout=5)
+    assert result.returncode != 0
+    assert 'unsupported document event' in result.stderr or 'scan output contract drift' in result.stderr
+
+
+def test_probe_identity_excludes_docs(monkeypatch):
+    runner = load('run_cases', monkeypatch)
+    assert set(runner.PROBE_FILES) == {'corpus.py','adjudicate.py','run_cases.py','juriku_probe.py','hiberius_probe.cjs','input-trees.json','provision.py'}

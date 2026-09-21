@@ -4,16 +4,16 @@
 const fs = require('node:fs');
 const vm = require('node:vm');
 class Element {
-  constructor() { this.children = []; this.events = {}; this.value = ''; this.style = {}; this.hidden = null; this._text = ''; }
-  set textContent(v) { this._text = String(v); this.children = []; }
+  constructor() { this.children = []; this.events = {}; this.value = ''; this.style = {}; this.hidden = null; this._text = ''; this.writes = 0; }
+  set textContent(v) { this.writes++; this._text = String(v); this.children = []; }
   get textContent() { return this._text + this.children.map(c => c.textContent).join(''); }
-  appendChild(c) { this.children.push(c); return c; }
+  appendChild(c) { this.writes++; this.children.push(c); return c; }
   addEventListener(event, callback) { this.events[event] = callback; }
   setAttribute() {}
 }
 const elements = new Map();
 const get = id => { if (!elements.has(id)) elements.set(id, new Element()); return elements.get(id); };
-const document = {getElementById:get, querySelectorAll:()=>[], addEventListener:()=>{},
+const document = {getElementById:get, querySelectorAll:()=>[], addEventListener:event=>{ if(event !== 'keydown') throw new Error('unsupported document event: '+event); },
   createElement:()=>new Element(), createTextNode:text=>{ const n = new Element(); n.textContent=text; n.isText=true; return n; }};
 const html = fs.readFileSync('/upstream/index.html','utf8');
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
@@ -22,7 +22,10 @@ const context = vm.createContext({document, TextEncoder, TextDecoder});
 vm.runInContext(scripts[0][1], context, {timeout:1000});
 const request = JSON.parse(fs.readFileSync(0,'utf8'));
 get('scanInput').value = request.text;
+if (typeof get('btnScan').events.click !== 'function') throw new Error('missing scan handler');
+get('scanViz').writes = 0; get('scanVerdict').writes = 0;
 vm.runInContext("document.getElementById('btnScan').events.click()", context, {timeout:1000});
+if (request.text.length && (!get('scanViz').writes || !get('scanVerdict').writes)) throw new Error('scan output contract drift');
 const input = Array.from(request.text);
 const observations = [];
 let scalar = 0;

@@ -8,12 +8,13 @@ import platform
 import resource
 import signal
 import subprocess
-import sys
 import time
 
 from corpus import cases
 
 LIMIT = 8 * 1024**2
+PROBE_FILES = ('corpus.py', 'adjudicate.py', 'run_cases.py', 'juriku_probe.py',
+               'hiberius_probe.cjs', 'input-trees.json', 'provision.py')
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -69,8 +70,9 @@ def execute(argv, payload, out, err):
             except subprocess.TimeoutExpired:
                 cleanup_timed_out=True
     # Defensive check if per-stream limits change; equality is within budget.
-    output_limit_exceeded=out.stat().st_size + err.stat().st_size > LIMIT
-    return {'returncode':proc.returncode,'timed_out':timed_out,'cleanup_timed_out':cleanup_timed_out,
+    reaped = proc.returncode is not None
+    output_limit_exceeded=(out.stat().st_size + err.stat().st_size > LIMIT) if reaped else None
+    return {'reaped':reaped,'output_final':reaped,'returncode':proc.returncode,'timed_out':timed_out,'cleanup_timed_out':cleanup_timed_out,
             'output_limit_exceeded':output_limit_exceeded,'wall_seconds':round(time.monotonic()-start,6)}
 
 
@@ -112,11 +114,14 @@ def main():
             commands.setdefault(tool,argv)
             out=directory/f'{tool}.stdout.json';err=directory/f'{tool}.stderr'
             run=execute(argv,payload,out,err)
-            run.update(stdout_sha256=digest(out),stderr_sha256=digest(err),source_unchanged=digest(source)==before)
+            # Unreaped children may still write: no final digests/size claim.
+            run.update(stdout_sha256=digest(out) if run['output_final'] else None,
+                       stderr_sha256=digest(err) if run['output_final'] else None,
+                       source_unchanged=digest(source)==before)
             record['tools'][tool]=run
             (args.output/'results.json').write_text(json.dumps(records+[record],indent=2)+'\n')
             allowed=range(5) if tool=='aletharsis' else [0]
-            if run['timed_out'] or run['output_limit_exceeded'] or run['returncode'] not in allowed or not run['source_unchanged']:
+            if not run['reaped'] or run['timed_out'] or run['output_limit_exceeded'] or run['returncode'] not in allowed or not run['source_unchanged']:
                 raise RuntimeError(f'partial study retained: {case["id"]}/{tool} failed')
             json.loads(out.read_bytes())
         records.append(record)
@@ -124,7 +129,7 @@ def main():
     if used>2*1024**3: raise ValueError('retained output disk ceiling exceeded')
     usage=resource.getrusage(resource.RUSAGE_CHILDREN)
     environment={**runtimes,'platform':platform.platform(),
-        'binary_sha256':digest(args.binary),'probe_sha256':{p.name:digest(p) for p in probe.glob('*') if p.is_file()},
+        'binary_sha256':digest(args.binary),'probe_sha256':{name:digest(probe/name) for name in PROBE_FILES},
         'example_argv':commands,'child_cpu_seconds':usage.ru_utime+usage.ru_stime,'retained_bytes':used}
     (args.output/'environment.json').write_text(json.dumps(environment,indent=2)+'\n')
     print(f'{len(records)} cases completed; retained bytes={used}; child CPU seconds={usage.ru_utime+usage.ru_stime:.3f}')

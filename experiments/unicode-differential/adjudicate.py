@@ -7,7 +7,18 @@ VISIBLE_EMOJI = {'U+1F469','U+1F4BB','U+2764','U+1F600'}
 TYPOGRAPHY = {'U+201C','U+201D','U+2014','U+2019','U+2026'}
 
 
-def reason(tool, case, cp, scalar, native_status):
+# Explicit omissions verified for these pinned inventories; new misses require review.
+INVENTORY = {
+ 'hiberius': {'U+0301','U+180B','U+180C','U+180D','U+FE00','U+FE01','U+FE0F','U+E0100'},
+ 'juriku': {'U+0000','U+001B','U+007F','U+0085','U+061C','U+115F','U+1160','U+17B4','U+17B5','U+2026','U+3164','U+FFA0'},
+}
+for inventory in INVENTORY.values():
+    inventory.update(f'U+{cp:04X}' for cp in [*range(0xE0061,0xE0070),0xE007F])
+
+
+def reason(tool, case, cp, scalar, native_status, hiberius_status='completed'):
+    if tool == 'hiberius' and hiberius_status != 'completed':
+        return 'coverage', 'No completed HIBERIUS verdict; do not infer inventory absence.'
     if tool == 'aletharsis' and native_status != 'completed':
         return 'parser', 'Binary identification rejected this source; no text audit completed. Do not infer absence.'
     if tool == 'juriku_word' and (cp in TYPOGRAPHY or cp == 'U+00A0') and case == 'word_typography':
@@ -22,7 +33,11 @@ def reason(tool, case, cp, scalar, native_status):
         return 'coverage', 'Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim.'
     if tool == 'aletharsis' and case == 'hangul_fillers':
         return 'inventory', 'Native Kind covers controls/marks but misses these letter-category fillers. Candidate #14 inventory extension; not a watermark verdict.'
-    return 'inventory', 'Code point is present at the independently specified position but absent from this configured comparator inventory.'
+    if cp in INVENTORY.get('juriku' if tool.startswith('juriku') else tool, set()):
+        return 'inventory', 'Code point is present at the independently specified position but absent from this configured comparator inventory.'
+    if tool == 'aletharsis':
+        return 'defect', 'Unexpected native omission against authored expectations; requires investigation, not an inventory exemption.'
+    return 'unadjudicated', 'Unexplained comparator omission; requires source/fixture review.'
 
 
 def summarize(root):
@@ -45,11 +60,15 @@ def summarize(root):
         for tool,rows in observed.items():
             rows.sort(key=lambda r:(r['scalar'],r['code_point']))
             actual={(r['scalar'],r['code_point']) for r in rows}
-            for scalar,cp in sorted(expected-actual):
-                category,detail=reason(tool,case['id'],cp,scalar,native['status'])
+            missing, extra = expected-actual, actual-expected
+            shifted = {cp for _,cp in missing} & {cp for _,cp in extra}
+            for scalar,cp in sorted(missing):
+                category,detail=reason(tool,case['id'],cp,scalar,native['status'],hiberius['scan_status'])
+                if cp in shifted:
+                    category,detail='offset','Code point appears at an unexpected scalar; inspect detector/probe coordinates.'
                 differences.append({'tool':tool,'scalar':scalar,'code_point':cp,'direction':'not_reported','category':category,'reason':detail})
             for scalar,cp in sorted(actual-expected):
-                differences.append({'tool':tool,'scalar':scalar,'code_point':cp,'direction':'additional','category':'unadjudicated','reason':'Requires independent fixture/source review; do not automatically bless an extra observation.'})
+                differences.append({'tool':tool,'scalar':scalar,'code_point':cp,'direction':'additional','category':'offset' if cp in shifted else 'unadjudicated','reason':'Requires independent fixture/source review; do not automatically bless an extra observation.'})
         output.append({'case':case['id'],'native_status':native['status'],
             'hiberius_status':hiberius['scan_status'], 'observed':observed,'differences':differences,
             'native_pattern_ids':sorted({f['id'] for f in native['findings'] if f['id'].startswith('pattern.')}),

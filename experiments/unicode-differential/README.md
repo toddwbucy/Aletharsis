@@ -25,7 +25,7 @@ python3.12 experiments/unicode-differential/provision.py \
   --downloads /absolute/downloads --output /absolute/fresh-inputs
 ```
 
-Runtime prerequisites: existing Python 3.12.13, Node 26.8.1, Linux bubblewrap,
+Runtime prerequisites: existing Python 3.12.13, Node 26.8.2, Linux bubblewrap,
 util-linux prlimit, GNU time and a working systemd user manager. Native binary was
 built with Go 1.27.1 from commit `abc513e354e864a38d3d57649667c22ba6080cc7` using
 `go build -p=1 -trimpath -o /absolute/aletharsis ./cmd/aletharsis`, in a 512 MiB
@@ -74,7 +74,10 @@ exactly 8 MiB is within budget.
 The enclosing cgroup bounds aggregate memory to 512 MiB, has no swap and a
 900-second deadline. The runner retains partial results before a failing case
 stops execution, including a second cleanup timeout or output overrun. Cleanup
-timeout is recorded separately and does not claim successful reaping; the enclosing
+timeout is recorded separately with `reaped: false`, `output_final: false`, null
+return code, null final output digests and null output-limit determination. Output
+files may still change; the partial run must not be promoted as retained final evidence.
+A fresh run is required after cgroup termination; the enclosing
 cgroup remains responsible for termination. Storage is measured after execution, not filesystem-quota enforced;
 the synthetic corpus is far below the 2 GiB study ceiling. This is a Linux study
 harness, not proof of a portable production sandbox.
@@ -116,3 +119,10 @@ Run twice with fresh output directories and compare every raw stdout/stderr byte
 wall-time/environment paths may differ. CI verifies retained raw identities,
 independent coordinate expectations, interpretation and comparison reproducibility
 without downloading or executing these upstream tools.
+
+Probe identities cover the explicit executable/configuration file list in `PROBE_FILES`;
+README and PLAN are documentation, not executed probe inputs. Unknown inventory misses
+remain unadjudicated; unexpected native omissions and candidate offset mismatches
+require investigation. Non-completed HIBERIUS scans cannot establish absence.
+The DOM facade rejects unsupported document events and requires visualization/verdict
+writes for nonempty input; empty-input early return remains explicitly observable.

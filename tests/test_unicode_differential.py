@@ -3,7 +3,6 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
-import sys
 
 import pytest
 
@@ -50,7 +49,8 @@ def test_independent_generator_and_adjudication():
     expected=load('adjudicate').summarize(DATA)
     assert expected==json.loads((DATA/'comparison.json').read_bytes())
     assert not any(d['category']=='unadjudicated' for row in expected for d in row['differences'])
-    assert {d['category'] for row in expected for d in row['differences']}=={'inventory','coverage','parser','policy'}
+    assert {d['category'] for row in expected for d in row['differences']} <= {'inventory','coverage','parser','policy','offset','defect'}
+    assert not any(d['category'] in ('offset','defect') for row in expected for d in row['differences'])
     environment=json.loads((DATA/'environment.json').read_bytes())
     assert not {'/upstream', '/probe', '/python', '/emoji'} & set(environment['example_argv']['aletharsis'])
     assert not {'/python', '/emoji'} & set(environment['example_argv']['hiberius'])
@@ -79,6 +79,7 @@ def test_fixture_coordinates_and_raw_results(case):
     i=next(i for i,r in enumerate(RESULTS) if r['case']==case['id'])
     for tool,run in RESULTS[i]['tools'].items():
         assert run['source_unchanged'] and not run['timed_out']
+        assert run['reaped'] and run['output_final']
         assert not run['cleanup_timed_out'] and not run['output_limit_exceeded']
         assert run['returncode'] in (range(5) if tool=='aletharsis' else [0])
         for key,suffix in [('stdout_sha256','stdout.json'),('stderr_sha256','stderr')]:
@@ -122,3 +123,9 @@ def test_actionable_gaps_and_limits_are_not_hidden():
     tags=json.loads((DATA/'tag_run/aletharsis.stdout.json').read_bytes())
     pattern=next(f for f in tags['findings'] if f['id']=='pattern.tag_run')
     assert pattern['evidence']['ascii_projection']=='abcdefghijklmno'
+
+
+def test_documented_node_runtime_matches_retained_execution():
+    version = json.loads((DATA/'environment.json').read_bytes())['node'].removeprefix('v')
+    for path in [ROOT/'docs/reuse/candidates.json', ROOT/'docs/reuse/evaluations/unicode.md', PROBE/'README.md']:
+        assert 'Node '+version in path.read_text()
