@@ -1,0 +1,168 @@
+{
+  "aletharsis_version": "0.2.0",
+  "schema_version": "1.0",
+  "file": {
+    "path": "/input.txt",
+    "filename": "input.txt",
+    "extension": ".txt",
+    "mime": "text/plain",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "size": 11,
+    "sha256": "c8ddee48e9ed5901ead53abf4dc6af4dc5a8ddc140adb3b6b1ebaa60cfbfed6c",
+    "parser": "text-source-v1"
+  },
+  "status": "completed",
+  "evidence": {
+    "texts": [
+      {
+        "source": "file",
+        "text": "x\u180b\u180c\u180dy",
+        "encoding": "utf-8",
+        "byte_offsets": [
+          0,
+          1,
+          4,
+          7,
+          10,
+          11
+        ],
+        "bom": null,
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 0
+        },
+        "hashes": {
+          "formatting_removed_sha256": "c8ddee48e9ed5901ead53abf4dc6af4dc5a8ddc140adb3b6b1ebaa60cfbfed6c",
+          "nfc_text_sha256": "c8ddee48e9ed5901ead53abf4dc6af4dc5a8ddc140adb3b6b1ebaa60cfbfed6c",
+          "nfkc_text_sha256": "c8ddee48e9ed5901ead53abf4dc6af4dc5a8ddc140adb3b6b1ebaa60cfbfed6c",
+          "raw_text_sha256": "c8ddee48e9ed5901ead53abf4dc6af4dc5a8ddc140adb3b6b1ebaa60cfbfed6c"
+        },
+        "normalization": {
+          "formatting_removed_count": 0,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        }
+      }
+    ],
+    "metadata": {},
+    "structure": {
+      "byte_length": 11,
+      "inspection": "literal source text"
+    }
+  },
+  "findings": [
+    {
+      "id": "unicode.combining",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+180B MONGOLIAN FREE VARIATION SELECTOR ONE detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+180B",
+        "contexts": [
+          {
+            "character_offset": 1,
+            "escaped_text": "x\\u180b\\u180c\\u180dy"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "MONGOLIAN FREE VARIATION SELECTOR ONE"
+      },
+      "location": {
+        "byte_offsets": [
+          1
+        ],
+        "character_offsets": [
+          1
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.combining",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+180C MONGOLIAN FREE VARIATION SELECTOR TWO detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+180C",
+        "contexts": [
+          {
+            "character_offset": 2,
+            "escaped_text": "x\\u180b\\u180c\\u180dy"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "MONGOLIAN FREE VARIATION SELECTOR TWO"
+      },
+      "location": {
+        "byte_offsets": [
+          4
+        ],
+        "character_offsets": [
+          2
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.combining",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+180D MONGOLIAN FREE VARIATION SELECTOR THREE detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+180D",
+        "contexts": [
+          {
+            "character_offset": 3,
+            "escaped_text": "x\\u180b\\u180c\\u180dy"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "MONGOLIAN FREE VARIATION SELECTOR THREE"
+      },
+      "location": {
+        "byte_offsets": [
+          7
+        ],
+        "character_offsets": [
+          3
+        ],
+        "source": "file"
+      }
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "summary": {
+    "exit_code": 1,
+    "findings": 3,
+    "high": 0,
+    "info": 3,
+    "low": 0,
+    "medium": 0
+  }
+}

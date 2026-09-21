@@ -1,0 +1,286 @@
+{
+  "aletharsis_version": "0.2.0",
+  "schema_version": "1.0",
+  "file": {
+    "path": "/input.txt",
+    "filename": "input.txt",
+    "extension": ".txt",
+    "mime": "text/plain",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "size": 49,
+    "sha256": "f51a354748cc6a8a61bf2969ace6336ce05f99e60df6c5103aaecd1e26863f89",
+    "parser": "text-source-v1"
+  },
+  "status": "completed",
+  "evidence": {
+    "texts": [
+      {
+        "source": "file",
+        "text": "x\ufe00\ufe01\ufe00\ufe01\ufe00\ufe01\ufe00\ufe01\ufe00\ufe01\ufe00\ufe01\ufe00\ufe01\ufe00\ufe01",
+        "encoding": "utf-8",
+        "byte_offsets": [
+          0,
+          1,
+          4,
+          7,
+          10,
+          13,
+          16,
+          19,
+          22,
+          25,
+          28,
+          31,
+          34,
+          37,
+          40,
+          43,
+          46,
+          49
+        ],
+        "bom": null,
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 0
+        },
+        "hashes": {
+          "formatting_removed_sha256": "2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881",
+          "nfc_text_sha256": "f51a354748cc6a8a61bf2969ace6336ce05f99e60df6c5103aaecd1e26863f89",
+          "nfkc_text_sha256": "f51a354748cc6a8a61bf2969ace6336ce05f99e60df6c5103aaecd1e26863f89",
+          "raw_text_sha256": "f51a354748cc6a8a61bf2969ace6336ce05f99e60df6c5103aaecd1e26863f89"
+        },
+        "normalization": {
+          "formatting_removed_count": 16,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        }
+      }
+    ],
+    "metadata": {},
+    "structure": {
+      "byte_length": 49,
+      "inspection": "literal source text"
+    }
+  },
+  "findings": [
+    {
+      "id": "pattern.variation_selector_run",
+      "severity": "MEDIUM",
+      "confidence": 0.75,
+      "category": "possible_steganography",
+      "classification": "suspicious_pattern",
+      "title": "Long contiguous variation selector sequence",
+      "description": "This run is consistent with encoded character data. Tags and variation selectors also have legitimate uses; interpretation requires review.",
+      "evidence": {
+        "alphabet_size": 2,
+        "count": 16,
+        "minimum_run": 8
+      },
+      "location": {
+        "byte_offsets": [
+          1,
+          4,
+          7,
+          10,
+          13,
+          16,
+          19,
+          22,
+          25,
+          28,
+          31,
+          34,
+          37,
+          40,
+          43,
+          46
+        ],
+        "character_offsets": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.variation_selector",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+FE00 VARIATION SELECTOR-1 detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+FE00",
+        "contexts": [
+          {
+            "character_offset": 1,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 3,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 5,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 7,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 9,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 11,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 13,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 15,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 8,
+        "leading_bom": false,
+        "name": "VARIATION SELECTOR-1"
+      },
+      "location": {
+        "byte_offsets": [
+          1,
+          7,
+          13,
+          19,
+          25,
+          31,
+          37,
+          43
+        ],
+        "character_offsets": [
+          1,
+          3,
+          5,
+          7,
+          9,
+          11,
+          13,
+          15
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.variation_selector",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+FE01 VARIATION SELECTOR-2 detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+FE01",
+        "contexts": [
+          {
+            "character_offset": 2,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 4,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 6,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 8,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 10,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 12,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 14,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          },
+          {
+            "character_offset": 16,
+            "escaped_text": "x\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01\\ufe00\\ufe01"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 8,
+        "leading_bom": false,
+        "name": "VARIATION SELECTOR-2"
+      },
+      "location": {
+        "byte_offsets": [
+          4,
+          10,
+          16,
+          22,
+          28,
+          34,
+          40,
+          46
+        ],
+        "character_offsets": [
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16
+        ],
+        "source": "file"
+      }
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "summary": {
+    "exit_code": 2,
+    "findings": 3,
+    "high": 0,
+    "info": 2,
+    "low": 0,
+    "medium": 1
+  }
+}

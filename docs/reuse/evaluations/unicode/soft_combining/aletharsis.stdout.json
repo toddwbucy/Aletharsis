@@ -1,0 +1,194 @@
+{
+  "aletharsis_version": "0.2.0",
+  "schema_version": "1.0",
+  "file": {
+    "path": "/input.txt",
+    "filename": "input.txt",
+    "extension": ".txt",
+    "mime": "text/plain",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "size": 18,
+    "sha256": "5be2c471690e695b0aa8ed5913a03e17b86836c95dcf37155de339418f8ba6dc",
+    "parser": "text-source-v1"
+  },
+  "status": "completed",
+  "evidence": {
+    "texts": [
+      {
+        "source": "file",
+        "text": "co\u00adoperate e\u0301 \u034f",
+        "encoding": "utf-8",
+        "byte_offsets": [
+          0,
+          1,
+          2,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          15,
+          16,
+          18
+        ],
+        "bom": null,
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 0
+        },
+        "hashes": {
+          "formatting_removed_sha256": "a216f893014264611ec19f781254ff8b35e35cd89b21d379111e6b34b6a641f3",
+          "nfc_text_sha256": "92436efe6b1f3f9dbdd8a36679878c499514a6e4dfe78c00272b216a63d29319",
+          "nfkc_text_sha256": "92436efe6b1f3f9dbdd8a36679878c499514a6e4dfe78c00272b216a63d29319",
+          "raw_text_sha256": "5be2c471690e695b0aa8ed5913a03e17b86836c95dcf37155de339418f8ba6dc"
+        },
+        "normalization": {
+          "formatting_removed_count": 1,
+          "hash_encoding": "utf-8",
+          "nfc_changed": true,
+          "nfkc_changed": true,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        }
+      }
+    ],
+    "metadata": {},
+    "structure": {
+      "byte_length": 18,
+      "inspection": "literal source text"
+    }
+  },
+  "findings": [
+    {
+      "id": "unicode.combining",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+0301 COMBINING ACUTE ACCENT detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+0301",
+        "contexts": [
+          {
+            "character_offset": 12,
+            "escaped_text": "co\\xadoperate e\\u0301 \\u034f"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "COMBINING ACUTE ACCENT"
+      },
+      "location": {
+        "byte_offsets": [
+          13
+        ],
+        "character_offsets": [
+          12
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.combining",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+034F COMBINING GRAPHEME JOINER detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+034F",
+        "contexts": [
+          {
+            "character_offset": 14,
+            "escaped_text": "co\\xadoperate e\\u0301 \\u034f"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "COMBINING GRAPHEME JOINER"
+      },
+      "location": {
+        "byte_offsets": [
+          16
+        ],
+        "character_offsets": [
+          14
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.normalization",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "Unicode normalization changes extracted text",
+      "description": "Canonical or compatibility equivalents differ. This is common in normal text and does not imply a watermark.",
+      "evidence": {
+        "nfc_changed": true,
+        "nfkc_changed": true
+      },
+      "location": {
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.soft_hyphen",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+00AD SOFT HYPHEN detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+00AD",
+        "contexts": [
+          {
+            "character_offset": 2,
+            "escaped_text": "co\\xadoperate e\\u0301 \\u034f"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "SOFT HYPHEN"
+      },
+      "location": {
+        "byte_offsets": [
+          2
+        ],
+        "character_offsets": [
+          2
+        ],
+        "source": "file"
+      }
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "summary": {
+    "exit_code": 1,
+    "findings": 4,
+    "high": 0,
+    "info": 4,
+    "low": 0,
+    "medium": 0
+  }
+}

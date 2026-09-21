@@ -1,0 +1,164 @@
+{
+  "aletharsis_version": "0.2.0",
+  "schema_version": "1.0",
+  "file": {
+    "path": "/input.txt",
+    "filename": "input.txt",
+    "extension": ".txt",
+    "mime": "text/plain",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "size": 29,
+    "sha256": "718c60cf1eb18ab09190ff424b5928b498ee86e7df24be7c83fee28169617539",
+    "parser": "text-source-v1"
+  },
+  "status": "completed",
+  "evidence": {
+    "texts": [
+      {
+        "source": "file",
+        "text": "\u201cword\u201d\u2014it\u2019s\u2026\u00a0x\u202fy",
+        "encoding": "utf-8",
+        "byte_offsets": [
+          0,
+          3,
+          4,
+          5,
+          6,
+          7,
+          10,
+          13,
+          14,
+          15,
+          18,
+          19,
+          22,
+          24,
+          25,
+          28,
+          29
+        ],
+        "bom": null,
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 0
+        },
+        "hashes": {
+          "formatting_removed_sha256": "718c60cf1eb18ab09190ff424b5928b498ee86e7df24be7c83fee28169617539",
+          "nfc_text_sha256": "718c60cf1eb18ab09190ff424b5928b498ee86e7df24be7c83fee28169617539",
+          "nfkc_text_sha256": "866ffcf05e8e4ebe9d6cd4cf74208eb9b61a227f9e36bd260a333ab4c7f85e42",
+          "raw_text_sha256": "718c60cf1eb18ab09190ff424b5928b498ee86e7df24be7c83fee28169617539"
+        },
+        "normalization": {
+          "formatting_removed_count": 0,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": true,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        }
+      }
+    ],
+    "metadata": {},
+    "structure": {
+      "byte_length": 29,
+      "inspection": "literal source text"
+    }
+  },
+  "findings": [
+    {
+      "id": "unicode.normalization",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "Unicode normalization changes extracted text",
+      "description": "Canonical or compatibility equivalents differ. This is common in normal text and does not imply a watermark.",
+      "evidence": {
+        "nfc_changed": false,
+        "nfkc_changed": true
+      },
+      "location": {
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.unusual_whitespace",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+00A0 NO-BREAK SPACE detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+00A0",
+        "contexts": [
+          {
+            "character_offset": 12,
+            "escaped_text": "\\u201cword\\u201d\\u2014it\\u2019s\\u2026\\xa0x\\u202fy"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "NO-BREAK SPACE"
+      },
+      "location": {
+        "byte_offsets": [
+          22
+        ],
+        "character_offsets": [
+          12
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.unusual_whitespace",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+202F NARROW NO-BREAK SPACE detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+202F",
+        "contexts": [
+          {
+            "character_offset": 14,
+            "escaped_text": "\\u201cword\\u201d\\u2014it\\u2019s\\u2026\\xa0x\\u202fy"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "NARROW NO-BREAK SPACE"
+      },
+      "location": {
+        "byte_offsets": [
+          25
+        ],
+        "character_offsets": [
+          14
+        ],
+        "source": "file"
+      }
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "summary": {
+    "exit_code": 1,
+    "findings": 3,
+    "high": 0,
+    "info": 3,
+    "low": 0,
+    "medium": 0
+  }
+}

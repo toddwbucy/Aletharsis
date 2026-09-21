@@ -1,0 +1,103 @@
+{
+  "aletharsis_version": "0.2.0",
+  "schema_version": "1.0",
+  "file": {
+    "path": "/input.txt",
+    "filename": "input.txt",
+    "extension": ".txt",
+    "mime": "text/plain",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "size": 7,
+    "sha256": "c20187ffb870125e25825ac9fcb355879a3a05d07892f2ae9a6b4d72a3cce7a8",
+    "parser": "text-source-v1"
+  },
+  "status": "completed",
+  "evidence": {
+    "texts": [
+      {
+        "source": "file",
+        "text": "\u6f22\udb40\udd00",
+        "encoding": "utf-8",
+        "byte_offsets": [
+          0,
+          3,
+          7
+        ],
+        "bom": null,
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 0
+        },
+        "hashes": {
+          "formatting_removed_sha256": "fc9f0d61dd80076ae5f0e41688aa0c3e8727b232b7a8c40c4f0671e0cd5d94c9",
+          "nfc_text_sha256": "c20187ffb870125e25825ac9fcb355879a3a05d07892f2ae9a6b4d72a3cce7a8",
+          "nfkc_text_sha256": "c20187ffb870125e25825ac9fcb355879a3a05d07892f2ae9a6b4d72a3cce7a8",
+          "raw_text_sha256": "c20187ffb870125e25825ac9fcb355879a3a05d07892f2ae9a6b4d72a3cce7a8"
+        },
+        "normalization": {
+          "formatting_removed_count": 1,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        }
+      }
+    ],
+    "metadata": {},
+    "structure": {
+      "byte_length": 7,
+      "inspection": "literal source text"
+    }
+  },
+  "findings": [
+    {
+      "id": "unicode.variation_selector",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+E0100 VARIATION SELECTOR-17 detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+E0100",
+        "contexts": [
+          {
+            "character_offset": 1,
+            "escaped_text": "\\u6f22\\U000e0100"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "VARIATION SELECTOR-17"
+      },
+      "location": {
+        "byte_offsets": [
+          3
+        ],
+        "character_offsets": [
+          1
+        ],
+        "source": "file"
+      }
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "summary": {
+    "exit_code": 1,
+    "findings": 1,
+    "high": 0,
+    "info": 1,
+    "low": 0,
+    "medium": 0
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "aletharsis_version": "0.2.0",
+  "schema_version": "1.0",
+  "file": {
+    "path": "/input.txt",
+    "filename": "input.txt",
+    "extension": ".txt",
+    "mime": "text/plain",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "size": 8,
+    "sha256": "ee3c9317a6ef9f77cbd9e3cb8158aee81ec8d631534c75ca547f01538cf6300d",
+    "parser": "text-source-v1"
+  },
+  "status": "completed",
+  "evidence": {
+    "texts": [
+      {
+        "source": "file",
+        "text": "\ufeffa\ufeffb",
+        "encoding": "utf-8",
+        "byte_offsets": [
+          0,
+          3,
+          4,
+          7,
+          8
+        ],
+        "bom": "efbbbf",
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 0
+        },
+        "hashes": {
+          "formatting_removed_sha256": "fb8e20fc2e4c3f248c60c39bd652f3c1347298bb977b8b4d5903b85055620603",
+          "nfc_text_sha256": "ee3c9317a6ef9f77cbd9e3cb8158aee81ec8d631534c75ca547f01538cf6300d",
+          "nfkc_text_sha256": "ee3c9317a6ef9f77cbd9e3cb8158aee81ec8d631534c75ca547f01538cf6300d",
+          "raw_text_sha256": "ee3c9317a6ef9f77cbd9e3cb8158aee81ec8d631534c75ca547f01538cf6300d"
+        },
+        "normalization": {
+          "formatting_removed_count": 2,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        }
+      }
+    ],
+    "metadata": {},
+    "structure": {
+      "byte_length": 8,
+      "inspection": "literal source text"
+    }
+  },
+  "findings": [
+    {
+      "id": "text.embedded_bom",
+      "severity": "LOW",
+      "confidence": 1,
+      "category": "document_structure",
+      "classification": "observed_fact",
+      "title": "Embedded BOM character detected",
+      "description": "Possible concatenated text or embedded formatting marker.",
+      "evidence": {
+        "count": 1
+      },
+      "location": {
+        "byte_offsets": [
+          4
+        ],
+        "character_offsets": [
+          2
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.zero_width",
+      "severity": "LOW",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+FEFF ZERO WIDTH NO-BREAK SPACE detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+FEFF",
+        "contexts": [
+          {
+            "character_offset": 0,
+            "escaped_text": "\\ufeffa\\ufeffb"
+          },
+          {
+            "character_offset": 2,
+            "escaped_text": "\\ufeffa\\ufeffb"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 2,
+        "leading_bom": false,
+        "name": "ZERO WIDTH NO-BREAK SPACE"
+      },
+      "location": {
+        "byte_offsets": [
+          0,
+          4
+        ],
+        "character_offsets": [
+          0,
+          2
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "text.bom",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "document_structure",
+      "classification": "observed_fact",
+      "title": "Byte order mark detected",
+      "description": "An initial BOM is an ordinary encoding marker.",
+      "evidence": {
+        "encoding": "utf-8",
+        "hex": "efbbbf"
+      },
+      "location": {
+        "byte_offset": 0,
+        "source": "file"
+      }
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "summary": {
+    "exit_code": 1,
+    "findings": 3,
+    "high": 0,
+    "info": 1,
+    "low": 2,
+    "medium": 0
+  }
+}

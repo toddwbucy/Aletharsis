@@ -1,0 +1,107 @@
+{
+  "aletharsis_version": "0.2.0",
+  "schema_version": "1.0",
+  "file": {
+    "path": "/input.txt",
+    "filename": "input.txt",
+    "extension": ".txt",
+    "mime": "text/plain",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "size": 13,
+    "sha256": "b5992bb1f025974c6317d8ffc13487b6103034b9ccfca1e04a633c4ebd614dd4",
+    "parser": "text-source-v1"
+  },
+  "status": "completed",
+  "evidence": {
+    "texts": [
+      {
+        "source": "file",
+        "text": "\u0645\u06cc\u200c\u0631\u0648\u0645",
+        "encoding": "utf-8",
+        "byte_offsets": [
+          0,
+          2,
+          4,
+          7,
+          9,
+          11,
+          13
+        ],
+        "bom": null,
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 0
+        },
+        "hashes": {
+          "formatting_removed_sha256": "828ad07c7dfca559b01a30366ec7a01a44d538fdc0893d629c69738bc0b967ca",
+          "nfc_text_sha256": "b5992bb1f025974c6317d8ffc13487b6103034b9ccfca1e04a633c4ebd614dd4",
+          "nfkc_text_sha256": "b5992bb1f025974c6317d8ffc13487b6103034b9ccfca1e04a633c4ebd614dd4",
+          "raw_text_sha256": "b5992bb1f025974c6317d8ffc13487b6103034b9ccfca1e04a633c4ebd614dd4"
+        },
+        "normalization": {
+          "formatting_removed_count": 1,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        }
+      }
+    ],
+    "metadata": {},
+    "structure": {
+      "byte_length": 13,
+      "inspection": "literal source text"
+    }
+  },
+  "findings": [
+    {
+      "id": "unicode.zero_width",
+      "severity": "LOW",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+200C ZERO WIDTH NON-JOINER detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200C",
+        "contexts": [
+          {
+            "character_offset": 2,
+            "escaped_text": "\\u0645\\u06cc\\u200c\\u0631\\u0648\\u0645"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "ZERO WIDTH NON-JOINER"
+      },
+      "location": {
+        "byte_offsets": [
+          4
+        ],
+        "character_offsets": [
+          2
+        ],
+        "source": "file"
+      }
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "summary": {
+    "exit_code": 1,
+    "findings": 1,
+    "high": 0,
+    "info": 0,
+    "low": 1,
+    "medium": 0
+  }
+}

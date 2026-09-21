@@ -1,0 +1,3773 @@
+[
+  {
+    "case": "empty",
+    "native_status": "completed",
+    "hiberius_status": "empty_input_not_scanned",
+    "observed": {
+      "aletharsis": [],
+      "juriku_inventory": [],
+      "juriku_word": [],
+      "hiberius": []
+    },
+    "differences": [],
+    "native_pattern_ids": [],
+    "interpretation": "Empty literal text; no observations expected."
+  },
+  {
+    "case": "ascii",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [],
+      "juriku_inventory": [],
+      "juriku_word": [],
+      "hiberius": []
+    },
+    "differences": [],
+    "native_pattern_ids": [],
+    "interpretation": "ASCII line endings are ordinary; preserve bytes."
+  },
+  {
+    "case": "multilingual",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [],
+      "juriku_inventory": [],
+      "juriku_word": [],
+      "hiberius": []
+    },
+    "differences": [],
+    "native_pattern_ids": [],
+    "interpretation": "Visible multilingual prose is not hidden data."
+  },
+  {
+    "case": "isolated_zwsp",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 5,
+          "code_point": "U+200B"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 5,
+          "code_point": "U+200B"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 5,
+          "code_point": "U+200B"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 5,
+          "code_point": "U+200B"
+        }
+      ]
+    },
+    "differences": [],
+    "native_pattern_ids": [],
+    "interpretation": "Isolated zero-width character; intent undetermined."
+  },
+  {
+    "case": "persian_zwnj",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 2,
+          "code_point": "U+200C"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 2,
+          "code_point": "U+200C"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 2,
+          "code_point": "U+200C"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 2,
+          "code_point": "U+200C"
+        }
+      ]
+    },
+    "differences": [],
+    "native_pattern_ids": [],
+    "interpretation": "Legitimate Persian joining context; retain observation without watermark claim."
+  },
+  {
+    "case": "arabic_zwj",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 1,
+          "code_point": "U+200D"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 1,
+          "code_point": "U+200D"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 1,
+          "code_point": "U+200D"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 1,
+          "code_point": "U+200D"
+        }
+      ]
+    },
+    "differences": [],
+    "native_pattern_ids": [],
+    "interpretation": "Joining control in Arabic script; context is not universal permission."
+  },
+  {
+    "case": "emoji_zwj",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 0,
+          "code_point": "U+1F469"
+        },
+        {
+          "scalar": 1,
+          "code_point": "U+200D"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+1F4BB"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 1,
+          "code_point": "U+200D"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 1,
+          "code_point": "U+200D"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 1,
+          "code_point": "U+200D"
+        }
+      ]
+    },
+    "differences": [
+      {
+        "tool": "juriku_inventory",
+        "scalar": 0,
+        "code_point": "U+1F469",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 2,
+        "code_point": "U+1F4BB",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 0,
+        "code_point": "U+1F469",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 2,
+        "code_point": "U+1F4BB",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 0,
+        "code_point": "U+1F469",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 2,
+        "code_point": "U+1F4BB",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Emoji plus joiner: source-code review may care; no automatic watermark claim."
+  },
+  {
+    "case": "emoji_selector",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 0,
+          "code_point": "U+2764"
+        },
+        {
+          "scalar": 1,
+          "code_point": "U+FE0F"
+        }
+      ],
+      "juriku_inventory": [],
+      "juriku_word": [],
+      "hiberius": []
+    },
+    "differences": [
+      {
+        "tool": "juriku_inventory",
+        "scalar": 0,
+        "code_point": "U+2764",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 1,
+        "code_point": "U+FE0F",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Pinned emoji 2.15.0 recognizes the pair; upstream deliberately omits its selector."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 0,
+        "code_point": "U+2764",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 1,
+        "code_point": "U+FE0F",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Pinned emoji 2.15.0 recognizes the pair; upstream deliberately omits its selector."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 0,
+        "code_point": "U+2764",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 1,
+        "code_point": "U+FE0F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Recognized emoji presentation selector; policy exclusion must remain distinguishable."
+  },
+  {
+    "case": "orphan_selector",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 1,
+          "code_point": "U+FE0F"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 1,
+          "code_point": "U+FE0F"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 1,
+          "code_point": "U+FE0F"
+        }
+      ],
+      "hiberius": []
+    },
+    "differences": [
+      {
+        "tool": "hiberius",
+        "scalar": 1,
+        "code_point": "U+FE0F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Same selector without recognized emoji context."
+  },
+  {
+    "case": "cjk_selector",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 1,
+          "code_point": "U+E0100"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 1,
+          "code_point": "U+E0100"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 1,
+          "code_point": "U+E0100"
+        }
+      ],
+      "hiberius": []
+    },
+    "differences": [
+      {
+        "tool": "hiberius",
+        "scalar": 1,
+        "code_point": "U+E0100",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Ideographic variation sequence; legitimate context must not erase inventory."
+  },
+  {
+    "case": "word_typography",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 12,
+          "code_point": "U+00A0"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+202F"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 0,
+          "code_point": "U+201C"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+201D"
+        },
+        {
+          "scalar": 6,
+          "code_point": "U+2014"
+        },
+        {
+          "scalar": 9,
+          "code_point": "U+2019"
+        },
+        {
+          "scalar": 12,
+          "code_point": "U+00A0"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+202F"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 14,
+          "code_point": "U+202F"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 12,
+          "code_point": "U+00A0"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+202F"
+        }
+      ]
+    },
+    "differences": [
+      {
+        "tool": "aletharsis",
+        "scalar": 0,
+        "code_point": "U+201C",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Visible punctuation is outside this scan inventory (or explicitly not marked); not evidence of a hidden watermark."
+      },
+      {
+        "tool": "aletharsis",
+        "scalar": 5,
+        "code_point": "U+201D",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Visible punctuation is outside this scan inventory (or explicitly not marked); not evidence of a hidden watermark."
+      },
+      {
+        "tool": "aletharsis",
+        "scalar": 6,
+        "code_point": "U+2014",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Visible punctuation is outside this scan inventory (or explicitly not marked); not evidence of a hidden watermark."
+      },
+      {
+        "tool": "aletharsis",
+        "scalar": 9,
+        "code_point": "U+2019",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Visible punctuation is outside this scan inventory (or explicitly not marked); not evidence of a hidden watermark."
+      },
+      {
+        "tool": "aletharsis",
+        "scalar": 11,
+        "code_point": "U+2026",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Visible punctuation is outside this scan inventory (or explicitly not marked); not evidence of a hidden watermark."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 11,
+        "code_point": "U+2026",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Visible punctuation is outside this scan inventory (or explicitly not marked); not evidence of a hidden watermark."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 0,
+        "code_point": "U+201C",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Explicit Word exclusion mode suppresses common typography/NBSP; original bytes remain observable."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 5,
+        "code_point": "U+201D",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Explicit Word exclusion mode suppresses common typography/NBSP; original bytes remain observable."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 6,
+        "code_point": "U+2014",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Explicit Word exclusion mode suppresses common typography/NBSP; original bytes remain observable."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 9,
+        "code_point": "U+2019",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Explicit Word exclusion mode suppresses common typography/NBSP; original bytes remain observable."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 11,
+        "code_point": "U+2026",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Explicit Word exclusion mode suppresses common typography/NBSP; original bytes remain observable."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 12,
+        "code_point": "U+00A0",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Explicit Word exclusion mode suppresses common typography/NBSP; original bytes remain observable."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 0,
+        "code_point": "U+201C",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Visible punctuation is outside this scan inventory (or explicitly not marked); not evidence of a hidden watermark."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 5,
+        "code_point": "U+201D",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Visible punctuation is outside this scan inventory (or explicitly not marked); not evidence of a hidden watermark."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 6,
+        "code_point": "U+2014",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Visible punctuation is outside this scan inventory (or explicitly not marked); not evidence of a hidden watermark."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 9,
+        "code_point": "U+2019",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Visible punctuation is outside this scan inventory (or explicitly not marked); not evidence of a hidden watermark."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 11,
+        "code_point": "U+2026",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Visible punctuation is outside this scan inventory (or explicitly not marked); not evidence of a hidden watermark."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Visible Word-like punctuation and no-break spaces, not confirmed watermark."
+  },
+  {
+    "case": "bidi",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 1,
+          "code_point": "U+202E"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+202C"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+2066"
+        },
+        {
+          "scalar": 7,
+          "code_point": "U+2069"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 1,
+          "code_point": "U+202E"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+202C"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+2066"
+        },
+        {
+          "scalar": 7,
+          "code_point": "U+2069"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 1,
+          "code_point": "U+202E"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+202C"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+2066"
+        },
+        {
+          "scalar": 7,
+          "code_point": "U+2069"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 1,
+          "code_point": "U+202E"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+202C"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+2066"
+        },
+        {
+          "scalar": 7,
+          "code_point": "U+2069"
+        }
+      ]
+    },
+    "differences": [],
+    "native_pattern_ids": [],
+    "interpretation": "Bidi formatting and isolation controls with exact positions."
+  },
+  {
+    "case": "arabic_letter_mark",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 1,
+          "code_point": "U+061C"
+        }
+      ],
+      "juriku_inventory": [],
+      "juriku_word": [],
+      "hiberius": [
+        {
+          "scalar": 1,
+          "code_point": "U+061C"
+        }
+      ]
+    },
+    "differences": [
+      {
+        "tool": "juriku_inventory",
+        "scalar": 1,
+        "code_point": "U+061C",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 1,
+        "code_point": "U+061C",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Arabic Letter Mark inventory boundary."
+  },
+  {
+    "case": "controls",
+    "native_status": "failed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [],
+      "juriku_inventory": [],
+      "juriku_word": [],
+      "hiberius": [
+        {
+          "scalar": 1,
+          "code_point": "U+0000"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+001B"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+007F"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+0085"
+        }
+      ]
+    },
+    "differences": [
+      {
+        "tool": "aletharsis",
+        "scalar": 1,
+        "code_point": "U+0000",
+        "direction": "not_reported",
+        "category": "parser",
+        "reason": "Binary identification rejected this source; no text audit completed. Do not infer absence."
+      },
+      {
+        "tool": "aletharsis",
+        "scalar": 2,
+        "code_point": "U+001B",
+        "direction": "not_reported",
+        "category": "parser",
+        "reason": "Binary identification rejected this source; no text audit completed. Do not infer absence."
+      },
+      {
+        "tool": "aletharsis",
+        "scalar": 3,
+        "code_point": "U+007F",
+        "direction": "not_reported",
+        "category": "parser",
+        "reason": "Binary identification rejected this source; no text audit completed. Do not infer absence."
+      },
+      {
+        "tool": "aletharsis",
+        "scalar": 4,
+        "code_point": "U+0085",
+        "direction": "not_reported",
+        "category": "parser",
+        "reason": "Binary identification rejected this source; no text audit completed. Do not infer absence."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 1,
+        "code_point": "U+0000",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 2,
+        "code_point": "U+001B",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 3,
+        "code_point": "U+007F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 4,
+        "code_point": "U+0085",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 1,
+        "code_point": "U+0000",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 2,
+        "code_point": "U+001B",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 3,
+        "code_point": "U+007F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 4,
+        "code_point": "U+0085",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Literal control bytes; binary-file identification may reject this sample."
+  },
+  {
+    "case": "soft_combining",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 2,
+          "code_point": "U+00AD"
+        },
+        {
+          "scalar": 12,
+          "code_point": "U+0301"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+034F"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 2,
+          "code_point": "U+00AD"
+        },
+        {
+          "scalar": 12,
+          "code_point": "U+0301"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+034F"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 2,
+          "code_point": "U+00AD"
+        },
+        {
+          "scalar": 12,
+          "code_point": "U+0301"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+034F"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 2,
+          "code_point": "U+00AD"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+034F"
+        }
+      ]
+    },
+    "differences": [
+      {
+        "tool": "hiberius",
+        "scalar": 12,
+        "code_point": "U+0301",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Soft hyphen and combining marks; do not normalize source."
+  },
+  {
+    "case": "invisible_math",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 1,
+          "code_point": "U+2060"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+2061"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+2062"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+2063"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+2064"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 1,
+          "code_point": "U+2060"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+2061"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+2062"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+2063"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+2064"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 1,
+          "code_point": "U+2060"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+2061"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+2062"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+2063"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+2064"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 1,
+          "code_point": "U+2060"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+2061"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+2062"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+2063"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+2064"
+        }
+      ]
+    },
+    "differences": [],
+    "native_pattern_ids": [],
+    "interpretation": "Word joiner and mathematical invisible operators."
+  },
+  {
+    "case": "binary_sequence",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 1,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 6,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 7,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 8,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 9,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 10,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 11,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 12,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 13,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 15,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 16,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 17,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 18,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 19,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 20,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 21,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 22,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 23,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 24,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 25,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 26,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 27,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 28,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 29,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 30,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 31,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 32,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 33,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 34,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 35,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 36,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 37,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 38,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 39,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 40,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 41,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 42,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 43,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 44,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 45,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 46,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 47,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 48,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 49,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 50,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 51,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 52,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 53,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 54,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 55,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 56,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 57,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 58,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 59,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 60,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 61,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 62,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 63,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 64,
+          "code_point": "U+200C"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 1,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 6,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 7,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 8,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 9,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 10,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 11,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 12,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 13,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 15,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 16,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 17,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 18,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 19,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 20,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 21,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 22,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 23,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 24,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 25,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 26,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 27,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 28,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 29,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 30,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 31,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 32,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 33,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 34,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 35,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 36,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 37,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 38,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 39,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 40,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 41,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 42,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 43,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 44,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 45,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 46,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 47,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 48,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 49,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 50,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 51,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 52,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 53,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 54,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 55,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 56,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 57,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 58,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 59,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 60,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 61,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 62,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 63,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 64,
+          "code_point": "U+200C"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 1,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 6,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 7,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 8,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 9,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 10,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 11,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 12,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 13,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 15,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 16,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 17,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 18,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 19,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 20,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 21,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 22,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 23,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 24,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 25,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 26,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 27,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 28,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 29,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 30,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 31,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 32,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 33,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 34,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 35,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 36,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 37,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 38,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 39,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 40,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 41,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 42,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 43,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 44,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 45,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 46,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 47,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 48,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 49,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 50,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 51,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 52,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 53,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 54,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 55,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 56,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 57,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 58,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 59,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 60,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 61,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 62,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 63,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 64,
+          "code_point": "U+200C"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 1,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 6,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 7,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 8,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 9,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 10,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 11,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 12,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 13,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 15,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 16,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 17,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 18,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 19,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 20,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 21,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 22,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 23,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 24,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 25,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 26,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 27,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 28,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 29,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 30,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 31,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 32,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 33,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 34,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 35,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 36,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 37,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 38,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 39,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 40,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 41,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 42,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 43,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 44,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 45,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 46,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 47,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 48,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 49,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 50,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 51,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 52,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 53,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 54,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 55,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 56,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 57,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 58,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 59,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 60,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 61,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 62,
+          "code_point": "U+200C"
+        },
+        {
+          "scalar": 63,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 64,
+          "code_point": "U+200C"
+        }
+      ]
+    },
+    "differences": [],
+    "native_pattern_ids": [
+      "pattern.zero_width_binary"
+    ],
+    "interpretation": "Synthetic two-state sequence; possible structural encoding, no vendor attribution."
+  },
+  {
+    "case": "selector_sequence",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 1,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 6,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 7,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 8,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 9,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 10,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 11,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 12,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 13,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 15,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 16,
+          "code_point": "U+FE01"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 1,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 6,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 7,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 8,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 9,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 10,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 11,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 12,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 13,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 15,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 16,
+          "code_point": "U+FE01"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 1,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 6,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 7,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 8,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 9,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 10,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 11,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 12,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 13,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+FE01"
+        },
+        {
+          "scalar": 15,
+          "code_point": "U+FE00"
+        },
+        {
+          "scalar": 16,
+          "code_point": "U+FE01"
+        }
+      ],
+      "hiberius": []
+    },
+    "differences": [
+      {
+        "tool": "hiberius",
+        "scalar": 1,
+        "code_point": "U+FE00",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 2,
+        "code_point": "U+FE01",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 3,
+        "code_point": "U+FE00",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 4,
+        "code_point": "U+FE01",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 5,
+        "code_point": "U+FE00",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 6,
+        "code_point": "U+FE01",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 7,
+        "code_point": "U+FE00",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 8,
+        "code_point": "U+FE01",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 9,
+        "code_point": "U+FE00",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 10,
+        "code_point": "U+FE01",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 11,
+        "code_point": "U+FE00",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 12,
+        "code_point": "U+FE01",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 13,
+        "code_point": "U+FE00",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 14,
+        "code_point": "U+FE01",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 15,
+        "code_point": "U+FE00",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 16,
+        "code_point": "U+FE01",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      }
+    ],
+    "native_pattern_ids": [
+      "pattern.variation_selector_run"
+    ],
+    "interpretation": "Repeated selector alphabet; distinguish pattern from isolated selectors."
+  },
+  {
+    "case": "tag_sequence",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 1,
+          "code_point": "U+E0061"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+E0062"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+E0063"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+E007F"
+        }
+      ],
+      "juriku_inventory": [],
+      "juriku_word": [],
+      "hiberius": []
+    },
+    "differences": [
+      {
+        "tool": "juriku_inventory",
+        "scalar": 1,
+        "code_point": "U+E0061",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 2,
+        "code_point": "U+E0062",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 3,
+        "code_point": "U+E0063",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 4,
+        "code_point": "U+E007F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 1,
+        "code_point": "U+E0061",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 2,
+        "code_point": "U+E0062",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 3,
+        "code_point": "U+E0063",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 4,
+        "code_point": "U+E007F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 1,
+        "code_point": "U+E0061",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 2,
+        "code_point": "U+E0062",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 3,
+        "code_point": "U+E0063",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 4,
+        "code_point": "U+E007F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Known ASCII projection abc plus cancel tag; inert evidence only."
+  },
+  {
+    "case": "tag_run",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 1,
+          "code_point": "U+E0061"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+E0062"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+E0063"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+E0064"
+        },
+        {
+          "scalar": 5,
+          "code_point": "U+E0065"
+        },
+        {
+          "scalar": 6,
+          "code_point": "U+E0066"
+        },
+        {
+          "scalar": 7,
+          "code_point": "U+E0067"
+        },
+        {
+          "scalar": 8,
+          "code_point": "U+E0068"
+        },
+        {
+          "scalar": 9,
+          "code_point": "U+E0069"
+        },
+        {
+          "scalar": 10,
+          "code_point": "U+E006A"
+        },
+        {
+          "scalar": 11,
+          "code_point": "U+E006B"
+        },
+        {
+          "scalar": 12,
+          "code_point": "U+E006C"
+        },
+        {
+          "scalar": 13,
+          "code_point": "U+E006D"
+        },
+        {
+          "scalar": 14,
+          "code_point": "U+E006E"
+        },
+        {
+          "scalar": 15,
+          "code_point": "U+E006F"
+        },
+        {
+          "scalar": 16,
+          "code_point": "U+E007F"
+        }
+      ],
+      "juriku_inventory": [],
+      "juriku_word": [],
+      "hiberius": []
+    },
+    "differences": [
+      {
+        "tool": "juriku_inventory",
+        "scalar": 1,
+        "code_point": "U+E0061",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 2,
+        "code_point": "U+E0062",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 3,
+        "code_point": "U+E0063",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 4,
+        "code_point": "U+E0064",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 5,
+        "code_point": "U+E0065",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 6,
+        "code_point": "U+E0066",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 7,
+        "code_point": "U+E0067",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 8,
+        "code_point": "U+E0068",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 9,
+        "code_point": "U+E0069",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 10,
+        "code_point": "U+E006A",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 11,
+        "code_point": "U+E006B",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 12,
+        "code_point": "U+E006C",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 13,
+        "code_point": "U+E006D",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 14,
+        "code_point": "U+E006E",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 15,
+        "code_point": "U+E006F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 16,
+        "code_point": "U+E007F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 1,
+        "code_point": "U+E0061",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 2,
+        "code_point": "U+E0062",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 3,
+        "code_point": "U+E0063",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 4,
+        "code_point": "U+E0064",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 5,
+        "code_point": "U+E0065",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 6,
+        "code_point": "U+E0066",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 7,
+        "code_point": "U+E0067",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 8,
+        "code_point": "U+E0068",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 9,
+        "code_point": "U+E0069",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 10,
+        "code_point": "U+E006A",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 11,
+        "code_point": "U+E006B",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 12,
+        "code_point": "U+E006C",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 13,
+        "code_point": "U+E006D",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 14,
+        "code_point": "U+E006E",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 15,
+        "code_point": "U+E006F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 16,
+        "code_point": "U+E007F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 1,
+        "code_point": "U+E0061",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 2,
+        "code_point": "U+E0062",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 3,
+        "code_point": "U+E0063",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 4,
+        "code_point": "U+E0064",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 5,
+        "code_point": "U+E0065",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 6,
+        "code_point": "U+E0066",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 7,
+        "code_point": "U+E0067",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 8,
+        "code_point": "U+E0068",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 9,
+        "code_point": "U+E0069",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 10,
+        "code_point": "U+E006A",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 11,
+        "code_point": "U+E006B",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 12,
+        "code_point": "U+E006C",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 13,
+        "code_point": "U+E006D",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 14,
+        "code_point": "U+E006E",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 15,
+        "code_point": "U+E006F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 16,
+        "code_point": "U+E007F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      }
+    ],
+    "native_pattern_ids": [
+      "pattern.tag_run"
+    ],
+    "interpretation": "Sixteen tag characters: independent known ASCII projection abcdefghijklmno and cancel tag; compare with short tag case."
+  },
+  {
+    "case": "hangul_fillers",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [],
+      "juriku_inventory": [],
+      "juriku_word": [],
+      "hiberius": [
+        {
+          "scalar": 1,
+          "code_point": "U+115F"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+1160"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+3164"
+        },
+        {
+          "scalar": 4,
+          "code_point": "U+FFA0"
+        }
+      ]
+    },
+    "differences": [
+      {
+        "tool": "aletharsis",
+        "scalar": 1,
+        "code_point": "U+115F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Native Kind covers controls/marks but misses these letter-category fillers. Candidate #14 inventory extension; not a watermark verdict."
+      },
+      {
+        "tool": "aletharsis",
+        "scalar": 2,
+        "code_point": "U+1160",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Native Kind covers controls/marks but misses these letter-category fillers. Candidate #14 inventory extension; not a watermark verdict."
+      },
+      {
+        "tool": "aletharsis",
+        "scalar": 3,
+        "code_point": "U+3164",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Native Kind covers controls/marks but misses these letter-category fillers. Candidate #14 inventory extension; not a watermark verdict."
+      },
+      {
+        "tool": "aletharsis",
+        "scalar": 4,
+        "code_point": "U+FFA0",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Native Kind covers controls/marks but misses these letter-category fillers. Candidate #14 inventory extension; not a watermark verdict."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 1,
+        "code_point": "U+115F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 2,
+        "code_point": "U+1160",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 3,
+        "code_point": "U+3164",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 4,
+        "code_point": "U+FFA0",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 1,
+        "code_point": "U+115F",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 2,
+        "code_point": "U+1160",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 3,
+        "code_point": "U+3164",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 4,
+        "code_point": "U+FFA0",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Letter-category fillers can be visually blank despite not being format controls."
+  },
+  {
+    "case": "khmer_vowels",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 1,
+          "code_point": "U+17B4"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+17B5"
+        }
+      ],
+      "juriku_inventory": [],
+      "juriku_word": [],
+      "hiberius": [
+        {
+          "scalar": 1,
+          "code_point": "U+17B4"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+17B5"
+        }
+      ]
+    },
+    "differences": [
+      {
+        "tool": "juriku_inventory",
+        "scalar": 1,
+        "code_point": "U+17B4",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 2,
+        "code_point": "U+17B5",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 1,
+        "code_point": "U+17B4",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 2,
+        "code_point": "U+17B5",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Language-specific invisible marks; preserve legitimate context."
+  },
+  {
+    "case": "mongolian_selectors",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 1,
+          "code_point": "U+180B"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+180C"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+180D"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 1,
+          "code_point": "U+180B"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+180C"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+180D"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 1,
+          "code_point": "U+180B"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+180C"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+180D"
+        }
+      ],
+      "hiberius": []
+    },
+    "differences": [
+      {
+        "tool": "hiberius",
+        "scalar": 1,
+        "code_point": "U+180B",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 2,
+        "code_point": "U+180C",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 3,
+        "code_point": "U+180D",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Mongolian selectors are combining marks outside generic VS ranges."
+  },
+  {
+    "case": "boundary_offsets",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 0,
+          "code_point": "U+1F600"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+0301"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 6,
+          "code_point": "U+FEFF"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 2,
+          "code_point": "U+0301"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 6,
+          "code_point": "U+FEFF"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 2,
+          "code_point": "U+0301"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 6,
+          "code_point": "U+FEFF"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        },
+        {
+          "scalar": 6,
+          "code_point": "U+FEFF"
+        }
+      ]
+    },
+    "differences": [
+      {
+        "tool": "juriku_inventory",
+        "scalar": 0,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 0,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 0,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 2,
+        "code_point": "U+0301",
+        "direction": "not_reported",
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Non-BMP, decomposed scalar, CRLF and embedded BOM exercise coordinate units."
+  },
+  {
+    "case": "leading_bom",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 0,
+          "code_point": "U+FEFF"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+FEFF"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 2,
+          "code_point": "U+FEFF"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 2,
+          "code_point": "U+FEFF"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 0,
+          "code_point": "U+FEFF"
+        },
+        {
+          "scalar": 2,
+          "code_point": "U+FEFF"
+        }
+      ]
+    },
+    "differences": [
+      {
+        "tool": "juriku_inventory",
+        "scalar": 0,
+        "code_point": "U+FEFF",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Read-only upstream detector intentionally omits the leading BOM, but not an embedded BOM."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 0,
+        "code_point": "U+FEFF",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Read-only upstream detector intentionally omits the leading BOM, but not an embedded BOM."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "Leading and embedded BOM retained; comparator may deliberately omit first."
+  },
+  {
+    "case": "literal_marker",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [],
+      "juriku_inventory": [],
+      "juriku_word": [],
+      "hiberius": []
+    },
+    "differences": [],
+    "native_pattern_ids": [],
+    "interpretation": "Visible marker-looking text is not actual U+200B."
+  },
+  {
+    "case": "encoded_utf-16-le",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 0,
+          "code_point": "U+FEFF"
+        },
+        {
+          "scalar": 1,
+          "code_point": "U+1F600"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 0,
+          "code_point": "U+FEFF"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ]
+    },
+    "differences": [
+      {
+        "tool": "juriku_inventory",
+        "scalar": 0,
+        "code_point": "U+FEFF",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Read-only upstream detector intentionally omits the leading BOM, but not an embedded BOM."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 1,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 0,
+        "code_point": "U+FEFF",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Read-only upstream detector intentionally omits the leading BOM, but not an embedded BOM."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 1,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 1,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "BOM-marked encoding; comparator input is explicit literal decoding, not its file parser."
+  },
+  {
+    "case": "encoded_utf-16-be",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 0,
+          "code_point": "U+FEFF"
+        },
+        {
+          "scalar": 1,
+          "code_point": "U+1F600"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 0,
+          "code_point": "U+FEFF"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ]
+    },
+    "differences": [
+      {
+        "tool": "juriku_inventory",
+        "scalar": 0,
+        "code_point": "U+FEFF",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Read-only upstream detector intentionally omits the leading BOM, but not an embedded BOM."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 1,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 0,
+        "code_point": "U+FEFF",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Read-only upstream detector intentionally omits the leading BOM, but not an embedded BOM."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 1,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 1,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "BOM-marked encoding; comparator input is explicit literal decoding, not its file parser."
+  },
+  {
+    "case": "encoded_utf-32-le",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 0,
+          "code_point": "U+FEFF"
+        },
+        {
+          "scalar": 1,
+          "code_point": "U+1F600"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 0,
+          "code_point": "U+FEFF"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ]
+    },
+    "differences": [
+      {
+        "tool": "juriku_inventory",
+        "scalar": 0,
+        "code_point": "U+FEFF",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Read-only upstream detector intentionally omits the leading BOM, but not an embedded BOM."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 1,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 0,
+        "code_point": "U+FEFF",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Read-only upstream detector intentionally omits the leading BOM, but not an embedded BOM."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 1,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 1,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "BOM-marked encoding; comparator input is explicit literal decoding, not its file parser."
+  },
+  {
+    "case": "encoded_utf-32-be",
+    "native_status": "completed",
+    "hiberius_status": "completed",
+    "observed": {
+      "aletharsis": [
+        {
+          "scalar": 0,
+          "code_point": "U+FEFF"
+        },
+        {
+          "scalar": 1,
+          "code_point": "U+1F600"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ],
+      "juriku_inventory": [
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ],
+      "juriku_word": [
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ],
+      "hiberius": [
+        {
+          "scalar": 0,
+          "code_point": "U+FEFF"
+        },
+        {
+          "scalar": 3,
+          "code_point": "U+200B"
+        }
+      ]
+    },
+    "differences": [
+      {
+        "tool": "juriku_inventory",
+        "scalar": 0,
+        "code_point": "U+FEFF",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Read-only upstream detector intentionally omits the leading BOM, but not an embedded BOM."
+      },
+      {
+        "tool": "juriku_inventory",
+        "scalar": 1,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 0,
+        "code_point": "U+FEFF",
+        "direction": "not_reported",
+        "category": "policy",
+        "reason": "Read-only upstream detector intentionally omits the leading BOM, but not an embedded BOM."
+      },
+      {
+        "tool": "juriku_word",
+        "scalar": 1,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      },
+      {
+        "tool": "hiberius",
+        "scalar": 1,
+        "code_point": "U+1F600",
+        "direction": "not_reported",
+        "category": "coverage",
+        "reason": "Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim."
+      }
+    ],
+    "native_pattern_ids": [],
+    "interpretation": "BOM-marked encoding; comparator input is explicit literal decoding, not its file parser."
+  }
+]

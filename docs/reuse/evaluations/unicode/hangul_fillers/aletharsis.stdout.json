@@ -1,0 +1,92 @@
+{
+  "aletharsis_version": "0.2.0",
+  "schema_version": "1.0",
+  "file": {
+    "path": "/input.txt",
+    "filename": "input.txt",
+    "extension": ".txt",
+    "mime": "text/plain",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "size": 14,
+    "sha256": "09553952c8d5e219a790a0e1f536cbfac009e32d77fbc3128d2ed0deeb108a49",
+    "parser": "text-source-v1"
+  },
+  "status": "completed",
+  "evidence": {
+    "texts": [
+      {
+        "source": "file",
+        "text": "x\u115f\u1160\u3164\uffa0y",
+        "encoding": "utf-8",
+        "byte_offsets": [
+          0,
+          1,
+          4,
+          7,
+          10,
+          13,
+          14
+        ],
+        "bom": null,
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 0
+        },
+        "hashes": {
+          "formatting_removed_sha256": "09553952c8d5e219a790a0e1f536cbfac009e32d77fbc3128d2ed0deeb108a49",
+          "nfc_text_sha256": "09553952c8d5e219a790a0e1f536cbfac009e32d77fbc3128d2ed0deeb108a49",
+          "nfkc_text_sha256": "f93f0d53172d7f20a0d962a9f2ae57837f9d5ba3a372b0c265090865eda40d2e",
+          "raw_text_sha256": "09553952c8d5e219a790a0e1f536cbfac009e32d77fbc3128d2ed0deeb108a49"
+        },
+        "normalization": {
+          "formatting_removed_count": 0,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": true,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        }
+      }
+    ],
+    "metadata": {},
+    "structure": {
+      "byte_length": 14,
+      "inspection": "literal source text"
+    }
+  },
+  "findings": [
+    {
+      "id": "unicode.normalization",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "Unicode normalization changes extracted text",
+      "description": "Canonical or compatibility equivalents differ. This is common in normal text and does not imply a watermark.",
+      "evidence": {
+        "nfc_changed": false,
+        "nfkc_changed": true
+      },
+      "location": {
+        "source": "file"
+      }
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "summary": {
+    "exit_code": 1,
+    "findings": 1,
+    "high": 0,
+    "info": 1,
+    "low": 0,
+    "medium": 0
+  }
+}

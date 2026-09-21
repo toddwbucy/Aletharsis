@@ -84,3 +84,10 @@ review gates.
 The next #36 review unit is [EC-003 report migration design](../specs/report-v3-migration.md).
 Its planning vectors do not replace the separately gated full wire fixtures and
 Go marshal/import parity required before adapter implementation.
+
+## Unicode comparison evidence
+
+The [G3 Unicode study](evaluations/unicode.md) compares thirty independent cases
+against two pinned read-only probes, preserves policy/inventory/coverage/parser
+differences and identifies a native Hangul-filler inventory gap for #14. Neither
+comparator is adopted as a production dependency.

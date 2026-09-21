@@ -1,0 +1,52 @@
+{
+  "aletharsis_version": "0.2.0",
+  "schema_version": "1.0",
+  "file": {
+    "path": "/input.txt",
+    "filename": "input.txt",
+    "extension": ".txt",
+    "mime": "application/octet-stream",
+    "format": "binary",
+    "identification_basis": "high binary-control density",
+    "size": 7,
+    "sha256": "2a2204adefc2e76d1da76d5fa260a1042f22aba061b4bb1be5bab1de685ed368",
+    "parser": null
+  },
+  "status": "failed",
+  "evidence": {
+    "texts": [],
+    "metadata": {},
+    "structure": {}
+  },
+  "findings": [
+    {
+      "id": "parser.failure",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "parser",
+      "classification": "observed_fact",
+      "title": "Audit could not complete",
+      "description": "The file was not fully analyzed. Review the error before interpreting findings.",
+      "evidence": {
+        "error_type": "ValueError",
+        "message": "Unsupported format: binary; M0/M1 support Unicode text source files"
+      },
+      "location": {}
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "summary": {
+    "exit_code": 4,
+    "findings": 1,
+    "high": 0,
+    "info": 1,
+    "low": 0,
+    "medium": 0
+  }
+}

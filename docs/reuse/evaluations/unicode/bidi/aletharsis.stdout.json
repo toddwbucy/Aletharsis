@@ -1,0 +1,202 @@
+{
+  "aletharsis_version": "0.2.0",
+  "schema_version": "1.0",
+  "file": {
+    "path": "/input.txt",
+    "filename": "input.txt",
+    "extension": ".txt",
+    "mime": "text/plain",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "size": 16,
+    "sha256": "2cf0250444752ac55fb43f4d862a6241168d02f09b303b0d322aa8458ba1ae44",
+    "parser": "text-source-v1"
+  },
+  "status": "completed",
+  "evidence": {
+    "texts": [
+      {
+        "source": "file",
+        "text": "x\u202ey\u202c \u2066z\u2069",
+        "encoding": "utf-8",
+        "byte_offsets": [
+          0,
+          1,
+          4,
+          5,
+          8,
+          9,
+          12,
+          13,
+          16
+        ],
+        "bom": null,
+        "line_endings": {
+          "cr": 0,
+          "crlf": 0,
+          "lf": 0
+        },
+        "hashes": {
+          "formatting_removed_sha256": "ab346d993ea18073bb8322ee7648323b94f7e6e84bac7f96637e7b19c6ef3621",
+          "nfc_text_sha256": "2cf0250444752ac55fb43f4d862a6241168d02f09b303b0d322aa8458ba1ae44",
+          "nfkc_text_sha256": "2cf0250444752ac55fb43f4d862a6241168d02f09b303b0d322aa8458ba1ae44",
+          "raw_text_sha256": "2cf0250444752ac55fb43f4d862a6241168d02f09b303b0d322aa8458ba1ae44"
+        },
+        "normalization": {
+          "formatting_removed_count": 4,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        }
+      }
+    ],
+    "metadata": {},
+    "structure": {
+      "byte_length": 16,
+      "inspection": "literal source text"
+    }
+  },
+  "findings": [
+    {
+      "id": "unicode.bidi_control",
+      "severity": "LOW",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+2069 POP DIRECTIONAL ISOLATE detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+2069",
+        "contexts": [
+          {
+            "character_offset": 7,
+            "escaped_text": "x\\u202ey\\u202c \\u2066z\\u2069"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "POP DIRECTIONAL ISOLATE"
+      },
+      "location": {
+        "byte_offsets": [
+          13
+        ],
+        "character_offsets": [
+          7
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.bidi_control",
+      "severity": "LOW",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+202E RIGHT-TO-LEFT OVERRIDE detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+202E",
+        "contexts": [
+          {
+            "character_offset": 1,
+            "escaped_text": "x\\u202ey\\u202c \\u2066z\\u2069"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "RIGHT-TO-LEFT OVERRIDE"
+      },
+      "location": {
+        "byte_offsets": [
+          1
+        ],
+        "character_offsets": [
+          1
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.bidi_control",
+      "severity": "LOW",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+202C POP DIRECTIONAL FORMATTING detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+202C",
+        "contexts": [
+          {
+            "character_offset": 3,
+            "escaped_text": "x\\u202ey\\u202c \\u2066z\\u2069"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "POP DIRECTIONAL FORMATTING"
+      },
+      "location": {
+        "byte_offsets": [
+          5
+        ],
+        "character_offsets": [
+          3
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.bidi_control",
+      "severity": "LOW",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+2066 LEFT-TO-RIGHT ISOLATE detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+2066",
+        "contexts": [
+          {
+            "character_offset": 5,
+            "escaped_text": "x\\u202ey\\u202c \\u2066z\\u2069"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "LEFT-TO-RIGHT ISOLATE"
+      },
+      "location": {
+        "byte_offsets": [
+          9
+        ],
+        "character_offsets": [
+          5
+        ],
+        "source": "file"
+      }
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "summary": {
+    "exit_code": 1,
+    "findings": 4,
+    "high": 0,
+    "info": 0,
+    "low": 4,
+    "medium": 0
+  }
+}
