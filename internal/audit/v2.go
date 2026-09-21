@@ -29,10 +29,11 @@ type V2Options struct {
 // V2Output contains a validated serialization and its presentation model. Callers
 // own both after return; changes to Report do not rewrite the JSON snapshot.
 type V2Output struct {
-	Report v2.Report
-	JSON   []byte
-	Source []byte           `json:"-"`
-	Native *evidence.Report `json:"-"`
+	Report  v2.Report
+	JSON    []byte
+	Source  []byte           `json:"-"`
+	Native  *evidence.Report `json:"-"`
+	Failure *failure.Error   `json:"-"`
 }
 
 func DefaultV2Options() V2Options {
@@ -82,7 +83,7 @@ func runV2WithReader(ctx context.Context, path string, options V2Options, read f
 	if err != nil {
 		return nil, err
 	}
-	result := &V2Output{Report: report, JSON: encoded}
+	result := &V2Output{Report: report, JSON: encoded, Failure: outcome.Failure}
 	if options.RetainSnapshot && outcome.Failure == nil && trace.canceled == "" && outcome.Report.Status == "completed" && outcome.Report.File.SHA256 != nil {
 		result.Source, result.Native = trace.source, outcome.Report
 	}

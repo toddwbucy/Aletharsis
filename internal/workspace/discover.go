@@ -40,14 +40,24 @@ type Result struct {
 // are applied. Limits/cancellation/change failures return no partial candidate
 // set: callers must represent the entire discovery as failed or canceled.
 func Discover(ctx context.Context, path string, options Options) (*Result, error) {
-	if ctx == nil || path == "" || !utf8.ValidString(path) || options.MaxEntries <= 0 || options.MaxDepth < 0 || options.PathBytes <= 0 {
+	if ctx == nil || options.MaxEntries <= 0 || options.MaxDepth < 0 || options.PathBytes <= 0 {
 		return nil, ErrInvalid
 	}
-	options.MaxEntries = min(options.MaxEntries, 10000)
-	options.MaxDepth = min(options.MaxDepth, 64)
-	options.PathBytes = min(options.PathBytes, 4<<20)
 	if err := ctx.Err(); err != nil {
 		return nil, err
+	}
+	root, err := Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer root.Close()
+	return DiscoverRoot(ctx, root, options)
+}
+
+// Open pins a real source directory. The caller owns and closes the handle.
+func Open(path string) (*os.Root, error) {
+	if path == "" || !utf8.ValidString(path) {
+		return nil, ErrInvalid
 	}
 	if !available() {
 		return nil, ErrUnavailable
@@ -63,14 +73,33 @@ func Discover(ctx context.Context, path string, options Options) (*Result, error
 	if err != nil {
 		return nil, err
 	}
-	defer root.Close()
 	actual, err := root.Stat(".")
 	if err != nil {
+		_ = root.Close()
 		return nil, err
 	}
 	if !os.SameFile(before, actual) {
+		_ = root.Close()
 		return nil, ErrChanged
 	}
+	return root, nil
+}
+
+// DiscoverRoot lets a corpus executor enumerate and acquire beneath the same
+// pinned root even if the original directory pathname is later replaced.
+func DiscoverRoot(ctx context.Context, root *os.Root, options Options) (*Result, error) {
+	if ctx == nil || root == nil || options.MaxEntries <= 0 || options.MaxDepth < 0 || options.PathBytes <= 0 {
+		return nil, ErrInvalid
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	if !available() {
+		return nil, ErrUnavailable
+	}
+	options.MaxEntries = min(options.MaxEntries, 10000)
+	options.MaxDepth = min(options.MaxDepth, 64)
+	options.PathBytes = min(options.PathBytes, 4<<20)
 	w := walker{ctx: ctx, options: options, result: Result{Entries: []Entry{}, Complete: true}}
 	if err := w.walk(root, "", 0); err != nil {
 		return nil, err

@@ -165,3 +165,11 @@ no-atime directory reads and records skipped links, non-recursive directories an
 failed entries explicitly. Candidates are not authorized source handles. Secure
 corpus acquisition, aggregate outcomes, relative publication and CLI integration
 remain required before directory support can be advertised.
+
+## Corpus execution increment
+
+[The rooted corpus executor](corpus-executor.md) now couples discovery and
+acquisition under one pinned directory, streams bounded JSONL for either report
+schema, and accounts for failed/unsupported/skipped/canceled candidates. The
+remaining delivery gate is directory CLI integration and safe source-relative
+reveal publication, including output-tree exclusion and nested demonstrations.
