@@ -139,3 +139,10 @@ primary `Code` even if the owner is also missing or ambiguous. Empty `SourceCode
 is not proof of successful owner resolution when parsing/root admission stopped
 before that check. This field preserves diagnostic evidence without authorizing
 resolution through unsupported root structures.
+
+When the aggregate relationship cap is reached, a part retains its prior primary
+`Code` and separately records `LimitCode: opc.resource_limit`. If no earlier code
+exists, the primary code is also the resource limit. No additional per-relationship
+records are produced after the cap; the inventory count is a retained-prefix count,
+not a total declared count. The parsed XML remains available where parsing completed,
+but callers must not infer complete relationship coverage from that XML or prefix.

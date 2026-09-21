@@ -327,7 +327,7 @@ func (r *Result) readManifest() bool {
 	}
 	for i := range r.Entries {
 		e := &r.Entries[i]
-		if len(paths[e.Path]) > 1 {
+		if e.Path != "" && len(paths[e.Path]) > 1 {
 			e.State, e.Code = "ambiguous", "odt.manifest_path_ambiguous"
 			r.issue(e.Code, part, e.Anchor.Element)
 		}

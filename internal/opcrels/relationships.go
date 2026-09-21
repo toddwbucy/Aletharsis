@@ -33,7 +33,9 @@ type PartResult struct {
 	Part, PartSHA256, SourcePart, State, Code string
 	// SourceCode preserves owner-resolution gaps independently of structural errors.
 	SourceCode string
-	XML        *xmlparts.Document
+	// LimitCode preserves relationship truncation independently of prior defects.
+	LimitCode string
+	XML       *xmlparts.Document
 }
 type Result struct {
 	Parser, State string
@@ -268,7 +270,10 @@ func (r *Result) readPart(part *PartResult, index map[string][]int) {
 			continue
 		}
 		if len(r.Relationships) >= maxRelationships {
-			part.State, part.Code = "partial", "opc.resource_limit"
+			part.State, part.LimitCode = "partial", "opc.resource_limit"
+			if part.Code == "" {
+				part.Code = part.LimitCode
+			}
 			return
 		}
 		a, unknown := attrs(e)

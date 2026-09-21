@@ -185,3 +185,26 @@ func FuzzAnalyze(f *testing.F) {
 		}
 	})
 }
+
+func TestFormattingSubtreeTextDoesNotEnterAnalysis(t *testing.T) {
+	half := strings.Repeat("\u200b\u200c", 8)
+	for _, hidden := range []string{"EVIL", strings.Repeat("\u200b\u200c", 32), "   "} {
+		r := analyze(t, document(`<w:p><w:r><w:t>`+half+`</w:t><w:rPr>`+run(hidden)+`</w:rPr><w:t>`+half+`</w:t></w:r></w:p>`))
+		if len(r.Scopes) != 2 || patterns(r) != 0 || len(r.Extraction.Texts) != 3 {
+			t.Fatal("formatting text changed scope", r)
+		}
+		for _, scope := range r.Scopes {
+			if scope.Text != half {
+				t.Fatal("formatting content entered analysis", scope.Text)
+			}
+			for _, origin := range scope.Origins {
+				if origin.Text == 1 {
+					t.Fatal("excluded text mapped into scope")
+				}
+			}
+		}
+		if len(r.Boundaries) == 0 || r.Boundaries[0].Reason != "unselected_character_data" {
+			t.Fatal("missing formatting-data boundary")
+		}
+	}
+}

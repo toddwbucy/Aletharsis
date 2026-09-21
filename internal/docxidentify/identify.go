@@ -325,7 +325,7 @@ func (r *Result) readTypes() bool {
 	// Iterate declaration order for deterministic issue order, not map order.
 	for i := range r.Declarations {
 		dec := &r.Declarations[i]
-		if len(keys[declarationKey(*dec)]) > 1 {
+		if dec.Key != "" && len(keys[declarationKey(*dec)]) > 1 {
 			dec.State, dec.Code = "ambiguous", "opc.content_type_ambiguous"
 			r.issue(dec.Code, r.TypesPart, dec.Anchor.Element)
 		}

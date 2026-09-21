@@ -328,3 +328,36 @@ func TestMissingTargetIsNotSizeMismatch(t *testing.T) {
 		}
 	}
 }
+
+func TestMissingManifestPathsRetainSpecificDefect(t *testing.T) {
+	p := base()
+	add(p, `<m:file-entry m:media-type="text/xml"/><m:file-entry m:media-type="application/octet-stream"/>`)
+	r := inspect(t, p)
+	missing := 0
+	for _, e := range r.Entries {
+		if e.Path == "" {
+			missing++
+			if e.State != "invalid" || e.Code != "odt.manifest_entry_invalid" {
+				t.Fatal("lost missing-path defect", e)
+			}
+		}
+	}
+	if missing != 2 || r.Format != "odt" || has(r, "odt.manifest_path_ambiguous") {
+		t.Fatal("invented path collision", r.Issues)
+	}
+}
+
+func TestDuplicateMembershipUsesLastDeclarationAsNonAuthoritativeAnchor(t *testing.T) {
+	p := base()
+	add(p, entry("content.xml", "text/plain", ""))
+	r := inspect(t, p)
+	for _, m := range r.Memberships {
+		if m.Part == "content.xml" {
+			if m.Entry != len(r.Entries)-1 || m.State != "ambiguous" || m.Code != "odt.manifest_path_ambiguous" {
+				t.Fatal("ambiguous membership anchor", m)
+			}
+			return
+		}
+	}
+	t.Fatal("missing membership")
+}

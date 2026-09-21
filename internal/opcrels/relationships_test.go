@@ -279,3 +279,22 @@ func TestRootAndOwnerDiagnosticsBothSurvive(t *testing.T) {
 		t.Fatal("unsupported root resolved")
 	}
 }
+
+func TestRelationshipLimitPreservesPriorStructuralDiagnostic(t *testing.T) {
+	var body strings.Builder
+	for i := 0; i <= maxRelationships; i++ {
+		body.WriteString(relationship(fmt.Sprint(i), "target.xml", ""))
+	}
+	xml := strings.Replace(rels(body.String()), `<Relationships `, `<Relationships unknown="x" `, 1)
+	r := inspect(t, map[string]string{"_rels/.rels": xml, "target.xml": "<root/>"})
+	if len(r.Parts) != 1 || len(r.Relationships) != maxRelationships {
+		t.Fatal("wrong capped inventory")
+	}
+	part := r.Parts[0]
+	if part.State != "partial" || part.Code != "opc.relationship_structure_unknown" || part.LimitCode != "opc.resource_limit" {
+		t.Fatal("lost diagnostics", part.Code, part.LimitCode)
+	}
+	if part.XML == nil || len(part.XML.Elements) != maxRelationships+2 {
+		t.Fatal("lost parsed declarations")
+	}
+}

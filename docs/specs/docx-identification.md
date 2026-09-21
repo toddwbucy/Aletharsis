@@ -146,3 +146,8 @@ modified or accessed by the identification API.
 [OI-001](odt-identification.md) identifies ODT through its mimetype and manifest,
 without reusing OPC case equivalence or URI resolution. Both paths preserve part
 identity and expose unsupported or partial evidence before later profile integration.
+
+Declarations with absent/empty keys retain their required-attribute defect rather
+than being grouped as duplicate empty keys. Nonempty lookup-equivalent keys still
+invalidate every colliding declaration, including malformed slashless overrides;
+this avoids order-dependent assignment or fallback authority.

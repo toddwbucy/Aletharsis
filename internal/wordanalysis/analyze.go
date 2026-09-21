@@ -96,6 +96,10 @@ func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		}
 		if textIndex, ok := byToken[ti]; ok {
 			t := extracted.Texts[textIndex]
+			if properties[t.Element] {
+				boundary(ti, "unselected_character_data")
+				continue
+			}
 			if previous >= 0 {
 				p := extracted.Texts[previous]
 				if t.Paragraph != p.Paragraph || t.Role != p.Role || !slices.Equal(t.Revisions, p.Revisions) || !slices.Equal(t.UnresolvedAncestors, p.UnresolvedAncestors) {

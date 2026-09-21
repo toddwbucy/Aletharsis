@@ -127,3 +127,10 @@ The retained DOCX/ODT packages are distinguished without filenames and preserve
 original bytes. These are bounded native checks, not full ODF conformance, cryptographic
 validation or independent Office-oracle comparison. No decryption, external resource
 access, model call or source-file mutation occurred.
+
+Manifest entries with absent/empty full paths retain `odt.manifest_entry_invalid`;
+multiple missing paths are not a duplicate-path assertion. For a genuinely duplicated
+nonempty path, all entry anchors remain in `Entries`. `Membership.Entry` references
+the last declaration in manifest order as a deterministic diagnostic anchor only;
+its ambiguous state/code remains authoritative and the reference grants no membership
+or extraction authority. Consumers can inspect all entries sharing that path.

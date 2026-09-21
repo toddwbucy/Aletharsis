@@ -314,3 +314,24 @@ func TestOverrideLookupCollisionsAreOrderIndependent(t *testing.T) {
 		t.Fatal("unknown element became override", r.Issues)
 	}
 }
+
+func TestMissingDeclarationKeysRetainSpecificDefect(t *testing.T) {
+	for _, kind := range []string{"Default", "Override"} {
+		p := base("word/document.xml")
+		declarations := `<` + kind + ` ContentType="application/xml"/><` + kind + ` ContentType="application/octet-stream"/>`
+		p["[Content_Types].xml"] = strings.Replace(p["[Content_Types].xml"], `</Types>`, declarations+`</Types>`, 1)
+		r := inspect(t, p)
+		missing := 0
+		for _, d := range r.Declarations {
+			if d.Key == "" {
+				missing++
+				if d.State != "invalid" || d.Code != "opc.content_type_required_attribute" {
+					t.Fatal("lost missing-key defect", d)
+				}
+			}
+		}
+		if missing != 2 || r.Format != "docx" || hasIssue(r, "opc.content_type_ambiguous") {
+			t.Fatal("invented collision", r.Issues)
+		}
+	}
+}
