@@ -51,7 +51,9 @@
     "live_adapter": {
       "status": "not_run",
       "detail": "No DA-001 extraction adapter executed; ExtractManifest/ValidateText/ExtractStructured/ExtractHTML probes are feasibility evidence only.",
-      "evidence": []
+      "evidence": [
+        0
+      ]
     },
     "source_integrity": {
       "status": "partial",
@@ -101,17 +103,23 @@
     "disable_rollback_missing": {
       "status": "not_run",
       "detail": "No installed extraction adapter; disable, missing-runtime and rollback behavior in native audits remains untested.",
-      "evidence": []
+      "evidence": [
+        0
+      ]
     },
     "security_updates": {
       "status": "not_run",
       "detail": "Carrier pin and x/text dependency identified, but no complete advisory, per-file notice or supported-update review for extraction adoption.",
-      "evidence": []
+      "evidence": [
+        0
+      ]
     },
     "semantic_upgrade": {
       "status": "not_run",
       "detail": "39-case carrier baseline is retained, including eight unresolved HTML discrepancies; no accepted baseline, replacement pin comparison or rollback drill yet.",
-      "evidence": []
+      "evidence": [
+        0
+      ]
     }
   },
   "evidence": [

@@ -27,11 +27,12 @@ checks; hashing a manifest alone does not validate the files it describes.
 
 Every checklist field is required. Use `passed`, `partial`, `failed`, `not_run` or
 `not_applicable`; the detail states what ran, what it proves and what it does not.
-Passed/partial/failed/not-applicable entries require retained evidence. A
+Every status, including `not_run`, requires retained evidence supporting its
+observations or declared gap. Referencing a feasibility study does not turn an
+unrun adoption gate into an executed one. A
 not-applicable entry also requires a nonblank `scope_justification`, reviewed by
 the owner against that evidence;
 it is not an escape hatch for missing platforms or an unavailable test system.
-An `approve` recommendation requires all checks passed or justified not-applicable.
 For approval, every check except `live_adapter` must pass, including native
 platform execution, security review, disable/rollback and an initial semantic
 baseline. `live_adapter` alone may be not-applicable for an explicitly scoped
@@ -44,7 +45,8 @@ It is only a recommendation until `acceptance` names the owner, technical review
 review record and matching disposition. `acceptance.record` must be a bare
 Aletharsis PR URL, matching the registry decision contract; issue URLs and comment
 anchors can be retained in tracking/evidence but cannot replace that canonical URL.
-CodeRabbit cannot grant owner acceptance.
+Known `coderabbitai` and `*[bot]` identifiers are rejected as acceptance owners
+or technical reviewers. This is a limited guard, not identity authentication.
 The technical reviewer identifier must differ from the implementer (ignoring
 case and surrounding whitespace). An owner may implement work but cannot thereby
 self-review it. Specialist review must be assigned where automated review lacks
@@ -62,6 +64,11 @@ approval, update the existing registry decision/status and accepted production
 scope in the same reviewed change. A dev-only oracle can be approved with empty
 production scope, but its exact developer execution/redistribution scope still
 needs acceptance. Rejection or revision does not silently close other gate issues.
+A previously accepted record remains historical when the registry becomes
+`retired`, `deferred` or `rejected`. The registry must carry a complete matching
+`retire`, `defer` or `reject` decision with a distinct later PR reference; the
+original acceptance is retained and grants no current authority. CI checks the
+recorded transition, not the chronology or authorization of the linked review.
 
 ## Required checklist
 

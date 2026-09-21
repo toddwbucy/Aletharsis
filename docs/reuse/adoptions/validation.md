@@ -57,3 +57,12 @@ New checks exercise the ten-waiver scenario and each mandatory approval gate,
 matching acceptance/registry URL forms, schema-only traversal rejection, short
 justifications, and matching-registry self-review attempts. No component was
 approved, no retained experiment bytes changed, and no live detector ran.
+
+## Third review remediation validation
+
+Re-run on 2026-09-21 against the remediation tree based on `128a7e3`, using
+Python 3.12.13: 432 full offline tests passed, including 97 adoption checks.
+New regressions cover retained historical approval with recorded withdrawal,
+byte-exact identity patterns, nonblank substantive fields, bare evaluation PRs,
+not-run evidence references and rejection of known automated acceptance identities.
+No experiment bytes changed and neither component received adoption approval.

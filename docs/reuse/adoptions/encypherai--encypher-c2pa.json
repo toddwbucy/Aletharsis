@@ -51,7 +51,9 @@
     "live_adapter": {
       "status": "not_run",
       "detail": "No production DA-001 verifier exchange. Rust C ABI, CLI and Go byte probe executions do not establish a completed sidecar protocol.",
-      "evidence": []
+      "evidence": [
+        0
+      ]
     },
     "source_integrity": {
       "status": "partial",
@@ -101,17 +103,23 @@
     "disable_rollback_missing": {
       "status": "not_run",
       "detail": "Worker termination/reaping was demonstrated, but no installed verifier adapter exists for disable, incompatible/missing runtime, rollback or uninstall drills.",
-      "evidence": []
+      "evidence": [
+        0
+      ]
     },
     "security_updates": {
       "status": "not_run",
       "detail": "Explicit telemetry-off overrides conflicting ambient settings in the study. Network isolation did not trace socket attempts; full transitive advisories, trust-update policy and security response review remain open.",
-      "evidence": []
+      "evidence": [
+        0
+      ]
     },
     "semantic_upgrade": {
       "status": "not_run",
       "detail": "11 final verifier cases and the corrected exploratory trust-label mismatch are retained. No accepted verification baseline, new-pin semantic comparison or production rollback drill exists.",
-      "evidence": []
+      "evidence": [
+        0
+      ]
     }
   },
   "evidence": [

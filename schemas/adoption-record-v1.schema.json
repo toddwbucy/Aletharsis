@@ -7,53 +7,58 @@
     },
     "component": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "\\S"
     },
     "commit": {
       "type": "string",
-      "pattern": "^[a-f0-9]{40}$"
+      "pattern": "^[a-f0-9]{40}(?![\\s\\S])"
     },
     "archive_sha256": {
       "type": "string",
-      "pattern": "^[a-f0-9]{64}$"
+      "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
     },
     "license_sha256": {
       "type": "string",
-      "pattern": "^[a-f0-9]{64}$"
+      "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
     },
     "scope": {
       "type": "array",
       "items": {
         "type": "string",
-        "minLength": 1
+        "minLength": 1,
+        "pattern": "\\S"
       },
       "minItems": 1,
       "uniqueItems": true
     },
     "owner": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "\\S"
     },
     "implementer": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "\\S"
     },
     "technical_reviewer": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "\\S"
     },
     "tracking": {
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "^https://github\\.com/toddwbucy/Aletharsis/(issues|pull)/[1-9][0-9]*(#.*)?$"
+        "pattern": "^https://github\\.com/toddwbucy/Aletharsis/(issues|pull)/[1-9][0-9]*(#.*)?(?![\\s\\S])"
       },
       "minItems": 3,
       "uniqueItems": true
     },
     "evaluation_pr": {
       "type": "string",
-      "pattern": "^https://github\\.com/toddwbucy/Aletharsis/(issues|pull)/[1-9][0-9]*(#.*)?$"
+      "pattern": "^https://github\\.com/toddwbucy/Aletharsis/pull/[1-9][0-9]*(?![\\s\\S])"
     },
     "recommendation": {
       "enum": [
@@ -73,15 +78,17 @@
           "properties": {
             "owner": {
               "type": "string",
-              "minLength": 1
+              "minLength": 1,
+              "pattern": "\\S"
             },
             "technical_reviewer": {
               "type": "string",
-              "minLength": 1
+              "minLength": 1,
+              "pattern": "\\S"
             },
             "record": {
               "type": "string",
-              "pattern": "^https://github\\.com/toddwbucy/Aletharsis/pull/[1-9][0-9]*$"
+              "pattern": "^https://github\\.com/toddwbucy/Aletharsis/pull/[1-9][0-9]*(?![\\s\\S])"
             },
             "disposition": {
               "enum": [
@@ -165,15 +172,16 @@
         "properties": {
           "path": {
             "type": "string",
-            "pattern": "^(docs|experiments)/([A-Za-z0-9_.-]*[A-Za-z0-9_-][A-Za-z0-9_.-]*/)*[A-Za-z0-9_.-]*[A-Za-z0-9_-][A-Za-z0-9_.-]*$"
+            "pattern": "^(docs|experiments)/([A-Za-z0-9_.-]*[A-Za-z0-9_-][A-Za-z0-9_.-]*/)*[A-Za-z0-9_.-]*[A-Za-z0-9_-][A-Za-z0-9_.-]*(?![\\s\\S])"
           },
           "sha256": {
             "type": "string",
-            "pattern": "^[a-f0-9]{64}$"
+            "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
           },
           "purpose": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "pattern": "\\S"
           }
         },
         "required": [
@@ -187,7 +195,8 @@
       "type": "array",
       "items": {
         "type": "string",
-        "minLength": 1
+        "minLength": 1,
+        "pattern": "\\S"
       },
       "minItems": 1,
       "uniqueItems": true
@@ -196,7 +205,8 @@
       "type": "array",
       "items": {
         "type": "string",
-        "minLength": 1
+        "minLength": 1,
+        "pattern": "\\S"
       },
       "minItems": 1,
       "uniqueItems": true
@@ -222,7 +232,7 @@
     "next_actions"
   ],
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://aletharsis.local/schemas/adoption-record-v1.schema.json",
+  "$id": "https://aletharsis.invalid/schemas/adoption-record-v1.schema.json",
   "$defs": {
     "check": {
       "type": "object",
@@ -239,7 +249,8 @@
         },
         "detail": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "\\S"
         },
         "evidence": {
           "type": "array",
@@ -247,7 +258,8 @@
           "items": {
             "type": "integer",
             "minimum": 0
-          }
+          },
+          "minItems": 1
         },
         "scope_justification": {
           "type": "string",
@@ -261,27 +273,6 @@
         "evidence"
       ],
       "allOf": [
-        {
-          "if": {
-            "properties": {
-              "status": {
-                "enum": [
-                  "passed",
-                  "partial",
-                  "failed",
-                  "not_applicable"
-                ]
-              }
-            }
-          },
-          "then": {
-            "properties": {
-              "evidence": {
-                "minItems": 1
-              }
-            }
-          }
-        },
         {
           "if": {
             "properties": {
@@ -404,5 +395,6 @@
         }
       }
     }
-  ]
+  ],
+  "title": "G6 component adoption record 1.0 \u2014 proposed gate, not an approval"
 }

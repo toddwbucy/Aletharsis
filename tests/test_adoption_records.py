@@ -41,14 +41,25 @@ def validate(record):
         assert all(i < len(record['evidence']) for i in check['evidence'])
     acceptance = record['acceptance']
     if acceptance is not None:
+        for actor in (acceptance['owner'], acceptance['technical_reviewer']):
+            normalized = actor.strip().casefold()
+            assert normalized != 'coderabbitai' and not normalized.endswith('[bot]'), 'automated identity cannot grant acceptance'
         assert acceptance['owner'] == record['owner']
         assert acceptance['technical_reviewer'] == record['technical_reviewer']
         assert acceptance['disposition'] == record['recommendation']
     if record['recommendation'] == 'approve' and acceptance is not None:
-        assert component['adoption_status'] == 'approved'
-        assert isinstance(component['decision'], dict), 'registry decision must record approval'
-        assert component['decision']['disposition'] == 'approve'
-        assert component['decision']['record'] == acceptance['record']
+        assert isinstance(component['decision'], dict), 'registry decision must record approval or withdrawal'
+        if component['adoption_status'] == 'approved':
+            assert component['decision']['disposition'] == 'approve'
+            assert component['decision']['record'] == acceptance['record']
+        else:
+            withdrawals = {'retired': 'retire', 'deferred': 'defer', 'rejected': 'reject'}
+            assert component['adoption_status'] in withdrawals, 'accepted record requires approval or recorded withdrawal'
+            assert component['decision']['disposition'] == withdrawals[component['adoption_status']]
+            registry_schema = json.loads((ROOT / 'schemas/reuse-registry.schema.json').read_bytes())
+            Draft202012Validator(registry_schema['$defs']['decision']).validate(component['decision'])
+            VALIDATOR.evolve(schema=SCHEMA['properties']['evaluation_pr']).validate(component['decision']['record'])
+            assert component['decision']['record'] != acceptance['record'], 'withdrawal must reference a later decision'
     if component['adoption_status'] == 'approved':
         assert record['recommendation'] == 'approve'
         assert acceptance is not None
@@ -77,12 +88,12 @@ def test_retained_adoption_gap_records(path):
 def pending_record(monkeypatch):
     # Synthetic gate tests must not depend on a retained record staying unapproved.
     record = deepcopy(json.loads(PATHS[0].read_bytes()))
-    record.update(recommendation='revise', acceptance=None)
+    record.update(recommendation='revise', acceptance=None, technical_reviewer='synthetic-independent-reviewer')
     for check in record['checks'].values():
         check.clear()
         check.update(status='partial', detail='Synthetic gate test.', evidence=[0])
     component = deepcopy(REGISTRY[record['component']])
-    component.update(adoption_status='evaluating', decision=None)
+    component.update(adoption_status='evaluating', decision=None, technical_reviewer=record['technical_reviewer'])
     monkeypatch.setitem(REGISTRY, record['component'], component)
     return record
 
@@ -256,3 +267,73 @@ def test_matching_registry_cannot_authorize_self_review(reviewer, pending_record
     monkeypatch.setitem(REGISTRY, record['component'], component)
     with pytest.raises(AssertionError, match='technical reviewer must differ'):
         validate(record)
+
+
+@pytest.mark.parametrize('state,disposition', [('retired','retire'), ('deferred','defer'), ('rejected','reject')])
+@pytest.mark.parametrize('fault', ['none', 'missing_decision', 'wrong_disposition', 'same_reference', 'missing_reason'])
+def test_historical_approval_can_be_withdrawn(state, disposition, fault, pending_record):
+    record = deepcopy(pending_record)
+    record['recommendation'] = 'approve'
+    for check in record['checks'].values(): check.update(status='passed', evidence=[0])
+    record['acceptance'] = dict(owner=record['owner'], technical_reviewer=record['technical_reviewer'],
+                                record=record['evaluation_pr'], disposition='approve')
+    component = REGISTRY[record['component']]
+    component['adoption_status'] = state
+    component['decision'] = dict(disposition=disposition, record='https://github.com/toddwbucy/Aletharsis/pull/999',
+        reviewer='synthetic-owner', scope='former approved scope', gates=record['tracking'], reason='Synthetic withdrawal test')
+    if fault == 'missing_decision': component['decision'] = None
+    elif fault == 'wrong_disposition': component['decision']['disposition'] = 'approve'
+    elif fault == 'same_reference': component['decision']['record'] = record['evaluation_pr']
+    elif fault == 'missing_reason': del component['decision']['reason']
+    if fault == 'none': validate(record)
+    else:
+        with pytest.raises((AssertionError, ValidationError)): validate(record)
+
+
+@pytest.mark.parametrize('pointer', ['commit','archive_sha256','license_sha256','evaluation_pr',
+    'tracking/0','evidence/0/path','evidence/0/sha256'])
+def test_identity_rejects_trailing_newline(pointer, pending_record):
+    record = deepcopy(pending_record)
+    obj = record
+    parts = pointer.split('/')
+    for key in parts[:-1]: obj = obj[int(key)] if isinstance(obj,list) else obj[key]
+    key = int(parts[-1]) if isinstance(obj,list) else parts[-1]
+    obj[key] += '\n'
+    assert not VALIDATOR.is_valid(record)
+
+
+@pytest.mark.parametrize('pointer', ['component','owner','implementer','technical_reviewer','scope/0',
+    'evidence/0/purpose','limitations/0','next_actions/0','checks/resources/detail'])
+def test_blank_record_text_rejected(pointer, pending_record):
+    record = deepcopy(pending_record)
+    obj = record
+    parts = pointer.split('/')
+    for key in parts[:-1]: obj = obj[int(key)] if isinstance(obj,list) else obj[key]
+    key = int(parts[-1]) if isinstance(obj,list) else parts[-1]
+    obj[key] = ' \t\n'
+    assert not VALIDATOR.is_valid(record)
+
+
+@pytest.mark.parametrize('suffix', ['issues/47','pull/47#issuecomment-1','pull/47\n'])
+def test_evaluation_requires_bare_pr(suffix, pending_record):
+    pending_record['evaluation_pr'] = 'https://github.com/toddwbucy/Aletharsis/' + suffix
+    assert not VALIDATOR.is_valid(pending_record)
+
+
+def test_not_run_requires_retained_basis(pending_record):
+    pending_record['checks']['semantic_upgrade'].update(status='not_run', evidence=[])
+    assert not VALIDATOR.is_valid(pending_record)
+
+
+@pytest.mark.parametrize('actor', ['coderabbitai',' CodeRabbitAI ','reviewer[bot]'])
+def test_automated_acceptance_rejected(actor, pending_record):
+    pending_record['technical_reviewer'] = REGISTRY[pending_record['component']]['technical_reviewer'] = actor
+    pending_record['acceptance'] = dict(owner=pending_record['owner'], technical_reviewer=actor,
+        record=pending_record['evaluation_pr'], disposition='revise')
+    with pytest.raises(AssertionError, match='automated identity'): validate(pending_record)
+
+
+def test_acceptance_reference_rejects_trailing_newline(pending_record):
+    pending_record['acceptance'] = dict(owner=pending_record['owner'], technical_reviewer=pending_record['technical_reviewer'],
+        record=pending_record['evaluation_pr']+'\n', disposition='revise')
+    assert not VALIDATOR.is_valid(pending_record)
