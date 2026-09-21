@@ -445,3 +445,21 @@ func TestSchemaScalarBoundaries(t *testing.T) {
 		})
 	}
 }
+
+func TestSingleSignalTargetBudgetUsesLimitSentinel(t *testing.T) {
+	r, d := registeredFixture(t, "text")
+	a, b := observation(d), observation(d)
+	b.ID = "obs.b"
+	limits := budget
+	limits.Links = 1
+	signals := []Signal{{ID: "signal.a", ArtifactSHA256: artifact, Targets: []string{a.ID, b.ID}, MappingComplete: true}}
+	result, err := r.Assess(d.ID, d.Version, []Observation{a, b}, signals, limits)
+	if result != nil || !errors.Is(err, ErrLimit) || errors.Is(err, ErrEvidence) {
+		t.Fatal("target budget misclassified", err)
+	}
+	limits.Links = budget.Links
+	signals[0].Targets = []string{"missing"}
+	if _, err := r.Assess(d.ID, d.Version, []Observation{a, b}, signals, limits); !errors.Is(err, ErrEvidence) {
+		t.Fatal("malformed target misclassified", err)
+	}
+}

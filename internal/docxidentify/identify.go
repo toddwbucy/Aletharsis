@@ -318,26 +318,36 @@ func (r *Result) readTypes() bool {
 		if dec.State != "accepted" {
 			r.issue(dec.Code, r.TypesPart, i)
 		}
-		key := dec.Kind + ":" + fold(dec.Key)
+		key := declarationKey(dec)
 		keys[key] = append(keys[key], len(r.Declarations))
 		r.Declarations = append(r.Declarations, dec)
 	}
 	// Iterate declaration order for deterministic issue order, not map order.
 	for i := range r.Declarations {
 		dec := &r.Declarations[i]
-		if len(keys[dec.Kind+":"+fold(dec.Key)]) > 1 {
+		if len(keys[declarationKey(*dec)]) > 1 {
 			dec.State, dec.Code = "ambiguous", "opc.content_type_ambiguous"
 			r.issue(dec.Code, r.TypesPart, dec.Anchor.Element)
 		}
 	}
 	return true
 }
+
+// Use the same lookup equivalence for duplicate detection and assignment,
+// including malformed overrides that omit the required leading slash.
+func declarationKey(d Declaration) string {
+	key := d.Key
+	if d.Kind == "Override" {
+		key = strings.TrimPrefix(key, "/")
+	}
+	return d.Kind + ":" + fold(key)
+}
 func (r *Result) assign(parts []packageparts.Part) {
 	defaults, overrides := map[string]int{}, map[string]int{}
 	for i, d := range r.Declarations {
 		if d.Kind == "Default" {
 			defaults[fold(d.Key)] = i
-		} else {
+		} else if d.Kind == "Override" {
 			overrides[fold(strings.TrimPrefix(d.Key, "/"))] = i
 		}
 	}

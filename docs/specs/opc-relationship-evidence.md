@@ -130,3 +130,12 @@ resource was accessed and no third-party runtime dependency was introduced.
 and located main XML, preserving unknown/partial inventory states. Its use of the shared
 `ResolveInternalTarget` URI subset does not change OR-001 resolution behavior. It does
 not add traversal, network access, Word rendering or profile suppression.
+
+## Concurrent part diagnostics
+
+For a parsed relationship part with a recognized root, `SourceCode` separately
+retains any checked owner-resolution failure. A root structure error remains the
+primary `Code` even if the owner is also missing or ambiguous. Empty `SourceCode`
+is not proof of successful owner resolution when parsing/root admission stopped
+before that check. This field preserves diagnostic evidence without authorizing
+resolution through unsupported root structures.

@@ -268,3 +268,14 @@ func TestXMLAggregateAndFailureAccounting(t *testing.T) {
 		t.Fatal("failed parse allowance reused")
 	}
 }
+
+func TestRootAndOwnerDiagnosticsBothSurvive(t *testing.T) {
+	xml := `<Relationships xmlns="` + Namespace + `" unknown="x">` + relationship("r", "../a.xml", "") + `</Relationships>`
+	r := inspect(t, map[string]string{"word/_rels/document.xml.rels": xml, "a.xml": "target"})
+	if len(r.Parts) != 1 || r.Parts[0].Code != "opc.relationship_structure_unknown" || r.Parts[0].SourceCode != "opc.source_missing" || r.Parts[0].State != "partial" {
+		t.Fatal("part diagnostic overwritten", r.Parts)
+	}
+	if r.Relationships[0].ResolvedPart != "" || r.Relationships[0].Code != "opc.relationship_structure_unknown" {
+		t.Fatal("unsupported root resolved")
+	}
+}

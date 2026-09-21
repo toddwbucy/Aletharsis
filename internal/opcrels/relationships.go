@@ -31,7 +31,9 @@ type Relationship struct {
 }
 type PartResult struct {
 	Part, PartSHA256, SourcePart, State, Code string
-	XML                                       *xmlparts.Document
+	// SourceCode preserves owner-resolution gaps independently of structural errors.
+	SourceCode string
+	XML        *xmlparts.Document
 }
 type Result struct {
 	Parser, State string
@@ -239,6 +241,7 @@ func (r *Result) readPart(part *PartResult, index map[string][]int) {
 			part.SourcePart = r.Package.Parts[found[0]].Name
 		}
 	}
+	part.SourceCode = sourceCode
 	counts := map[string]int{}
 	invalidContent := map[int]bool{}
 	for _, t := range d.Tokens {
@@ -257,7 +260,7 @@ func (r *Result) readPart(part *PartResult, index map[string][]int) {
 	if invalidContent[0] || rootUnknown {
 		part.State, part.Code = "partial", "opc.relationship_structure_unknown"
 	}
-	if sourceCode != "" {
+	if sourceCode != "" && part.Code == "" {
 		part.State, part.Code = "partial", sourceCode
 	}
 	for i, e := range d.Elements {

@@ -50,7 +50,10 @@ checked with the standard library; media-type parameters are explicitly unsuppor
 Raw lexical values remain in the retained content-types XML.
 
 Duplicate equivalent defaults/overrides mark every duplicate ambiguous, even when
-values happen to agree. Unknown namespaces/elements/attributes, nested declaration
+values happen to agree. Override collision checks use the same single-leading-slash
+removal and ASCII case equivalence as assignment, including rejected declarations;
+missing-slash aliases cannot change selection merely by being reordered. Unknown
+element kinds never enter the default or override assignment maps. Unknown namespaces/elements/attributes, nested declaration
 content, non-whitespace character content and unsupported key/type forms prevent
 content-type selection authority. The complete parsed XML is retained for forensic
 inspection, so an unsupported declaration is not deleted from evidence. Defects

@@ -290,3 +290,27 @@ func TestMediaTypeAndKeyDefectsBothRetained(t *testing.T) {
 		}
 	}
 }
+
+func TestOverrideLookupCollisionsAreOrderIndependent(t *testing.T) {
+	good := override("word/document.xml", MainContentType)
+	bad := `<Override PartName="word/document.xml" ContentType="application/xml"/>`
+	for _, declarations := range []string{good + bad, bad + good} {
+		p := base("word/document.xml")
+		p["[Content_Types].xml"] = types(`<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>` + declarations)
+		r := inspect(t, p)
+		if r.Format != "" || !hasIssue(r, "opc.content_type_ambiguous") || !hasIssue(r, "opc.override_name_unsupported") {
+			t.Fatal("order-dependent override authority", r.Issues)
+		}
+		for _, d := range r.Declarations {
+			if d.Kind == "Override" && d.State != "ambiguous" {
+				t.Fatal("collision not marked", d)
+			}
+		}
+	}
+	p := base("word/document.xml")
+	p["[Content_Types].xml"] = strings.Replace(p["[Content_Types].xml"], `</Types>`, `<Unknown Extension="word/document.xml" ContentType="application/xml"/></Types>`, 1)
+	r := inspect(t, p)
+	if r.Format != "docx" || r.State != "partial" || !hasIssue(r, "opc.content_types_structure_unknown") {
+		t.Fatal("unknown element became override", r.Issues)
+	}
+}

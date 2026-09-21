@@ -111,8 +111,11 @@ func (r *Registry) Assess(id, version string, observations []Observation, signal
 	seenSignals := map[string]bool{}
 	links := 0
 	for _, signal := range signals {
-		if !namePattern.MatchString(signal.ID) || !hashPattern.MatchString(signal.ArtifactSHA256) || seenSignals[signal.ID] || (signal.MappingComplete && len(signal.Targets) == 0) || len(signal.Targets) > limits.Links {
+		if !namePattern.MatchString(signal.ID) || !hashPattern.MatchString(signal.ArtifactSHA256) || seenSignals[signal.ID] || (signal.MappingComplete && len(signal.Targets) == 0) {
 			return nil, fmt.Errorf("%w: invalid profile signal", ErrEvidence)
+		}
+		if len(signal.Targets) > limits.Links {
+			return nil, ErrLimit
 		}
 		if _, known := byArtifact[signal.ArtifactSHA256]; !known {
 			return nil, fmt.Errorf("%w: profile signal artifact unavailable", ErrEvidence)
