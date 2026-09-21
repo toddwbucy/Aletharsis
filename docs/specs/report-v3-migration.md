@@ -216,8 +216,10 @@ Statistical capability IDs must name an approved detector/algorithm profile and
 purpose; no generic SynthID capability implies Anthropic detector access. Until
 adoption, production availability remains unavailable/disabled.
 
-Extraction `scopes` equals ordered execution analyzed_scope. Input_ref equals the
-request artifact; spans are in those checked regions. Outcome/spans/manifest rules
+Extraction `scopes` equals ordered execution analyzed_scope. `input_ref` identifies
+the selected DA-001 input artifact (`source`, `text`, `binding_text`, or `sample`);
+`request_ref` identifies the `adapter_request` header artifact. Spans refer to the
+checked regions of the selected input artifact. Outcome/spans/manifest rules
 are exactly DA-001: absent has no spans/manifest; observed/malformed/ambiguous have
 spans; only observed may have a manifest. An absent result from partial extraction
 applies only to its scopes. Parsing disagreement or unsupported localization cannot

@@ -34,7 +34,7 @@ def test_plan_scope_and_complete_da_fixture_inventory():
     assert len(PLAN['cases']) == 13
     assert len({c['id'] for c in PLAN['cases']}) == 13
     assert {c['da_fixture'] for c in PLAN['cases']} == {
-        str(p.relative_to(ROOT)) for p in (ROOT / 'tests/adapters/fixtures').glob('*.json')}
+        p.relative_to(ROOT).as_posix() for p in (ROOT / 'tests/adapters/fixtures').glob('*.json')}
     assert PLAN['scenario_assumptions'] == {
         'native_operation': 'completed with usable result', 'native_severity_findings': 0,
         'adapter_participation': 'optional', 'adapter_findings': 0}
