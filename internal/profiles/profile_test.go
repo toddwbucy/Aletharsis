@@ -415,3 +415,33 @@ func TestConcurrentRegistrationAndAssessment(t *testing.T) {
 	}
 	wg.Wait()
 }
+
+// Validate the published schema itself, independently of Registry's additional
+// scalar check, so non-Go consumers enforce the same canonical scalar domain.
+func TestSchemaScalarBoundaries(t *testing.T) {
+	schema, err := compiled()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, tc := range []struct {
+		cp    string
+		valid bool
+	}{
+		{"U+0000", true}, {"U+D7FF", true}, {"U+E000", true}, {"U+FFFF", true}, {"U+10000", true}, {"U+FFFFF", true}, {"U+100000", true}, {"U+10FFFF", true},
+		{"U+D800", false}, {"U+DFFF", false}, {"U+110000", false}, {"U+FFFFFF", false}, {"U+000041", false}, {"U+0200B", false}, {"U+200b", false},
+	} {
+		t.Run(tc.cp, func(t *testing.T) {
+			_, d := fixture(t, "text")
+			f := d.Rules[0].Facts["code_point"]
+			f.Value = tc.cp
+			d.Rules[0].Facts["code_point"] = f
+			var value any
+			if err := json.Unmarshal(encode(t, d), &value); err != nil {
+				t.Fatal(err)
+			}
+			if err := schema.Validate(value); (err == nil) != tc.valid {
+				t.Fatalf("valid=%v; error=%v", tc.valid, err)
+			}
+		})
+	}
+}
