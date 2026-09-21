@@ -123,3 +123,10 @@ tests also passed. Explicit fixture regeneration retained all five package/manif
 byte identities; an independent Python ZIP CRC check and XML well-formedness parse
 passed for all four packages and their XML/relationship parts. No Office application,
 external provider, network audit, model, or format conformance validator ran.
+
+## XML evidence layer
+
+[XP-001](xml-part-evidence.md) defines the next bounded layer: namespace-aware
+structure and exact part-byte token spans, with conservative mapping for transformed
+text. It preserves package/part identity boundaries and does not enable format-specific
+parsers or profile suppression by itself.
