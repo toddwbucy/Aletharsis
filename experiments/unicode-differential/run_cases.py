@@ -24,9 +24,11 @@ def namespace(upstream, probe, python, emoji, input_file, binary):
     for path in ('/usr','/lib','/lib64'):
         args += ['--ro-bind',path,path]
     args += ['--symlink','usr/bin','/bin','--proc','/proc','--dev','/dev','--tmpfs','/tmp',
-             '--ro-bind',str(upstream),'/upstream','--ro-bind',str(probe),'/probe',
+             '--ro-bind',str(probe),'/probe',
              '--ro-bind',str(python),'/python','--ro-bind',str(emoji),'/emoji',
              '--ro-bind',str(input_file),'/input.txt','--ro-bind',str(binary),'/aletharsis']
+    if upstream is not None:
+        args += ['--ro-bind',str(upstream),'/upstream']
     for key,value in {'PATH':'/usr/bin:/bin','PYTHONDONTWRITEBYTECODE':'1','PYTHONHASHSEED':'0',
                       'PYTHONNOUSERSITE':'1','HOME':'/nonexistent','GOMEMLIMIT':'384MiB'}.items():
         args += ['--setenv',key,value]
@@ -40,15 +42,23 @@ def execute(argv, payload, out, err):
     with out.open('xb') as stdout, err.open('xb') as stderr:
         proc=subprocess.Popen(command,stdin=subprocess.PIPE,stdout=stdout,stderr=stderr,start_new_session=True)
         timed_out=False
+        cleanup_timed_out=False
         try:
             proc.communicate(payload,timeout=25)
         except subprocess.TimeoutExpired:
             timed_out=True
-            os.killpg(proc.pid,signal.SIGKILL)
-            proc.communicate(timeout=5)
-    if out.stat().st_size + err.stat().st_size > LIMIT:
-        raise ValueError('combined output ceiling exceeded')
-    return {'returncode':proc.returncode,'timed_out':timed_out,'wall_seconds':round(time.monotonic()-start,6)}
+            try:
+                os.killpg(proc.pid,signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            try:
+                proc.communicate(timeout=5)
+            except subprocess.TimeoutExpired:
+                cleanup_timed_out=True
+    # Defensive check if per-stream limits change; equality is within budget.
+    output_limit_exceeded=out.stat().st_size + err.stat().st_size > LIMIT
+    return {'returncode':proc.returncode,'timed_out':timed_out,'cleanup_timed_out':cleanup_timed_out,
+            'output_limit_exceeded':output_limit_exceeded,'wall_seconds':round(time.monotonic()-start,6)}
 
 
 def main():
@@ -81,7 +91,7 @@ def main():
         for tool,upstream,command in [
             ('juriku',args.juriku,['/python/bin/python3.12','/probe/juriku_probe.py']),
             ('hiberius',args.hiberius,['/usr/bin/node','--max-old-space-size=128','/probe/hiberius_probe.cjs']),
-            ('aletharsis',args.juriku,['/aletharsis','audit','/input.txt','--json']),
+            ('aletharsis',None,['/aletharsis','audit','/input.txt','--json']),
         ]:
             argv=namespace(upstream,probe,args.python,args.emoji,source,args.binary)+command
             commands.setdefault(tool,argv)
@@ -91,7 +101,7 @@ def main():
             record['tools'][tool]=run
             (args.output/'results.json').write_text(json.dumps(records+[record],indent=2)+'\n')
             allowed=range(5) if tool=='aletharsis' else [0]
-            if run['timed_out'] or run['returncode'] not in allowed or not run['source_unchanged']:
+            if run['timed_out'] or run['output_limit_exceeded'] or run['returncode'] not in allowed or not run['source_unchanged']:
                 raise RuntimeError(f'partial study retained: {case["id"]}/{tool} failed')
             json.loads(out.read_bytes())
         records.append(record)

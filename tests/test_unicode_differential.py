@@ -52,6 +52,7 @@ def test_independent_generator_and_adjudication():
     assert not any(d['category']=='unadjudicated' for row in expected for d in row['differences'])
     assert {d['category'] for row in expected for d in row['differences']}=={'inventory','coverage','parser','policy'}
     environment=json.loads((DATA/'environment.json').read_bytes())
+    assert '/upstream' not in environment['example_argv']['aletharsis']
     for name,digest in environment['probe_sha256'].items():
         assert hashlib.sha256((PROBE/name).read_bytes()).hexdigest()==digest
 
@@ -74,6 +75,7 @@ def test_fixture_coordinates_and_raw_results(case):
     i=next(i for i,r in enumerate(RESULTS) if r['case']==case['id'])
     for tool,run in RESULTS[i]['tools'].items():
         assert run['source_unchanged'] and not run['timed_out']
+        assert not run['cleanup_timed_out'] and not run['output_limit_exceeded']
         assert run['returncode'] in (range(5) if tool=='aletharsis' else [0])
         for key,suffix in [('stdout_sha256','stdout.json'),('stderr_sha256','stderr')]:
             assert run[key]==REPLAY[i]['tools'][tool][key]
@@ -100,7 +102,9 @@ def test_fixture_coordinates_and_raw_results(case):
 def test_actionable_gaps_and_limits_are_not_hidden():
     comparison={r['case']:r for r in json.loads((DATA/'comparison.json').read_bytes())}
     assert comparison['controls']['native_status']=='failed'
-    assert comparison['empty']['hiberius_status']=='empty_input_not_scanned'
+    assert comparison['empty']['hiberius_status']=='no_verdict_emitted'
+    gaps = comparison['word_typography']['differences']
+    assert any(d['tool'] == 'juriku_inventory' and d['code_point'] == 'U+2026' and d['category'] == 'inventory' for d in gaps)
     assert comparison['hangul_fillers']['observed']['aletharsis']==[]
     assert len(comparison['hangul_fillers']['observed']['hiberius'])==4
     assert comparison['emoji_selector']['observed']['juriku_inventory']==[]

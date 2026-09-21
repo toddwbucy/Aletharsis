@@ -2,7 +2,7 @@
   {
     "case": "empty",
     "native_status": "completed",
-    "hiberius_status": "empty_input_not_scanned",
+    "hiberius_status": "no_verdict_emitted",
     "observed": {
       "aletharsis": [],
       "juriku_inventory": [],
@@ -486,8 +486,8 @@
         "scalar": 11,
         "code_point": "U+2026",
         "direction": "not_reported",
-        "category": "policy",
-        "reason": "Visible punctuation is outside this scan inventory (or explicitly not marked); not evidence of a hidden watermark."
+        "category": "inventory",
+        "reason": "Code point is present at the independently specified position but absent from this configured comparator inventory."
       },
       {
         "tool": "juriku_word",

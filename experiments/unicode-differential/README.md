@@ -62,10 +62,14 @@ python3.12 experiments/unicode-differential/adjudicate.py /absolute/new-results
 Each child uses a new offline PID/network/filesystem namespace, read-only source,
 input, runtime and probe mounts, no home/preferences, a private temporary area,
 25 CPU seconds, 25 seconds execution plus 5 seconds cleanup (30 seconds total),
-and 4 MiB per output stream (8 MiB combined).
+and 4 MiB per output stream (8 MiB combined), enforced by per-stream file-size
+rlimits. A defensive combined-size check records an overrun if these limits change;
+exactly 8 MiB is within budget.
 The enclosing cgroup bounds aggregate memory to 512 MiB, has no swap and a
 900-second deadline. The runner retains partial results before a failing case
-stops execution. Storage is measured after execution, not filesystem-quota enforced;
+stops execution, including a second cleanup timeout or output overrun. Cleanup
+timeout is recorded separately and does not claim successful reaping; the enclosing
+cgroup remains responsible for termination. Storage is measured after execution, not filesystem-quota enforced;
 the synthetic corpus is far below the 2 GiB study ceiling. This is a Linux study
 harness, not proof of a portable production sandbox.
 
@@ -86,11 +90,15 @@ inert DOM facade. Only the registered Scan click handler is invoked. The probe
 reads chips/text nodes to reconstruct scalar positions, checking each chip against
 the input. These are **probe-derived** positions, not an upstream location API.
 This is not a browser rendering, clipboard, download or HTML-security test.
-An empty input returns before scanning and is recorded accordingly. The scanner
+Initialization and the Scan invocation each have a 1-second VM deadline inside
+the outer process limits. The VM is not a security sandbox. Status is derived from
+the observed verdict and visualization, including `no_verdict_emitted`; empty input
+is not assumed unscanned just because it is empty. The facade does not parse HTML
+attributes: secret visibility is unknown until the handler assigns `hidden`. The scanner
 may call its known-carrier decoder; recovered content remains inert output.
 
 Aletharsis: the compiled native CLI audits the original bytes at a fixed sandbox
-path. A binary identification failure is retained as failed, not no findings.
+path, without mounting either comparator source tree. A binary identification failure is retained as failed, not no findings.
 External detectors receive strict decoded text with BOM and line endings retained;
 that explicit transformation must not be mistaken for their file-parser coverage.
 

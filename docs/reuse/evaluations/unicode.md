@@ -8,7 +8,9 @@ Thirty independently authored synthetic cases were executed against Aletharsis a
 two pinned upstream read-only detection probes. All 90 processes exited within the
 configured limits; this does **not** mean every source was analyzed. Native
 Aletharsis completed 29 audits and rejected one control-heavy source as binary.
-HIBERIUS returns early on empty input; that case is explicitly not scanned.
+HIBERIUS emits no verdict or visualization for empty input. This is recorded as
+`no_verdict_emitted`, not inferred from input length; it does not establish a
+completed scan.
 
 Repeating the final corpus produced identical bytes for all 90 stdout and all 90
 stderr artifacts. Twenty cases have inventory, policy, coverage or parser
@@ -46,7 +48,7 @@ source is used, and no unverified successor entry is added to the registry.
 | Juriku Word mode suppresses several quotes/dashes and NBSP | Explicit policy, not source absence. Narrow NBSP remains observed in this sample. Neither a global whitelist nor matching this tool's filtered output is an acceptable truth oracle |
 | Juriku omits the leading BOM but retains the embedded BOM | Explicit read-only BOM policy. Aletharsis preserves both; profile/reveal must distinguish them without losing bytes |
 | HIBERIUS omits basic/supplementary variation selectors, Unicode tags, ordinary combining acute and Mongolian selectors | Pinned inventory coverage, not proof of clean text. Its short/long tag and selector cases can show a clean verdict while Aletharsis retains evidence |
-| Juriku omits tags, Arabic Letter Mark, Khmer invisible marks and the tested controls/fillers | Pinned inventory gaps in this scoped detector configuration; no claim about other tools/successor versions |
+| Juriku inventory mode omits U+2026 despite typography being enabled, along with tags, Arabic Letter Mark, Khmer invisible marks and the tested controls/fillers | Pinned inventory gaps in this scoped detector configuration; no claim about other tools/successor versions |
 | Aletharsis rejects the NUL/ESC/DEL/NEL sample during binary identification | Parser/identification coverage difference. Its report is failed with `parser.failure`, not no findings; upstream probes receive explicitly decoded text and do not test their file parsers |
 | Native binary and selector runs produce pattern findings; a 16-character tag run exposes `abcdefghijklmno` | Deterministic structural evidence only. A four-character tag example remains inventory-only under the native 16-character run threshold. No vendor watermark assertion or channel-generation capability |
 | Original UTF-16/32 bytes, scalar indices and UTF-16 viewer units differ after non-BMP and combining characters | Native original-byte coordinates agree with independent expectations. Upstream probes operate on literal decoded text; HIBERIUS positions are reconstructed from scan nodes. #15 must retain these representation distinctions |
@@ -61,8 +63,9 @@ observation appeared in this corpus. That does not establish universal correctne
 [Manifest](unicode/manifest.json) binds retained raw responses, source fixtures,
 corpus, comparison, environments and run logs. [Tests](../../../tests/test_unicode_differential.py)
 verify the independent generator, original and viewer coordinates, raw identities,
-repeat-run equality and specific differences. The full offline suite passed **298
-tests** (33 added for this study); no live upstream execution runs in normal CI.
+repeat-run equality and specific differences. The initial implementation passed
+298 offline tests (33 added for the study); that is a historical count before
+the main merge and review fixes. No live upstream execution runs in normal CI.
 
 All original synthetic bytes remained unchanged. Upstream probes have read-only
 source/input mounts, no home/preferences and no network namespace access. No
@@ -76,7 +79,7 @@ runtime independence is unchanged.
 Each case: 25 seconds execution plus 5 seconds cleanup (30 total), 25 CPU
 seconds, 8 MiB input/combined output;
 4 MiB stdout and 4 MiB stderr caps. The enclosing job has 512 MiB memory, no swap,
-one-core quota, 64-task ceiling and 900-second deadline. Final runs consumed
+one-core quota, 64-task ceiling and 900-second deadline. Pre-review runs consumed
 2.635 and 2.666 cgroup CPU seconds, 3.454 and 3.498 wall seconds, and 67.7/67.1 MiB
 peak memory. Native build consumed 10.292 CPU seconds, 10.768 wall seconds and
 306.7 MiB peak memory. Two earlier 29-case exploratory/reproduction runs consumed
@@ -87,7 +90,7 @@ case ceiling, with all raw responses unchanged. An initial build invocation fail
 compilation because its service working directory was not set; the corrected
 command and successful build log are retained. No upstream code ran in that failure.
 
-Total cgroup-measured build/probe compute was about 26.0 seconds, far below #39's
+Before review remediation, total cgroup-measured build/probe compute was about 26.0 seconds, far below #39's
 2 CPU-hour ceiling. Python/GNU-time child accounting undercounts some namespaced
 children; prefer retained cgroup totals. At 04:48:26 UTC on 2026-09-21, the study
 artifact interval since first archive creation at 04:32:57 UTC was 15m29s; subsequent
@@ -114,3 +117,27 @@ scope and no adoption decision. The study resolves a bounded comparison incremen
 integration gates are not completed by it.
 
 Reproduce using the [explicit provisioning and offline commands](../../../experiments/unicode-differential/README.md).
+
+## PR #54 review remediation
+
+The retained results/environment/run logs were regenerated twice after correcting
+the probe and adjudication; the prior evidence remains in commit `a5eb8cd`. The
+new runs use the same pinned trees, corpus, runtime and native executable, with
+no upstream downloads. All 90 stdout and 90 stderr artifacts match between runs.
+Native and Juriku outputs and every source byte also match the prior evidence.
+HIBERIUS now derives status from emitted verdict/visualization and reports unknown
+secret visibility until the handler assigns it; the facade does not parse HTML
+attributes. Script initialization and Scan execution each have a 1-second VM
+deadline within the existing outer process/cgroup limits.
+
+Native execution no longer mounts a comparator source tree. Per-stream rlimits
+enforce the combined output ceiling; a defensive overrun check and a second
+cleanup timeout produce retainable failure records before the runner stops. An
+unreaped process is never reported as successfully cleaned up. These changes
+do not claim the VM or facade is a production security boundary.
+
+Review-run resource measurements are retained in `unicode/run1.stderr` and
+`unicode/run2.stderr`: 2.679/2.692 cgroup CPU seconds, 3.494/3.491 seconds service
+runtime and 76/66.4 MiB peak memory. Both remain within the original study budget.
+Validation passed 50 focused tests and 385 full offline tests, including synthetic
+handler timeout/overrun cases and retention of failed cleanup/output outcomes.

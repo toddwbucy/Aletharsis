@@ -1,21 +1,21 @@
-Running as unit: run-p3212896-i3225512.service; invocation ID: a543408562d043b28ccf028c84aed1e6
-	Command being timed: "/home/todd/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12 /tmp/aletharsis-unicode-differential/experiments/unicode-differential/run_cases.py --juriku /tmp/aletharsis-unicode-study/juriku/hidden-characters-detector-c75a379a181750eab788cf2eb668109caa8b88e6 --hiberius /tmp/aletharsis-unicode-study/hiberius/hiberius-unicode-toolkit-1d86b8d951fca3cd7efbe637267f57e391dd7570 --emoji /tmp/aletharsis-unicode-study/emoji --python /home/todd/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu --binary /tmp/aletharsis-unicode-study/aletharsis --output /tmp/aletharsis-unicode-study/run1"
-	User time (seconds): 0.12
-	System time (seconds): 0.12
+Running as unit: run-p3414090-i3393011.service
+	Command being timed: "/home/todd/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12 /tmp/aletharsis-unicode-differential/experiments/unicode-differential/run_cases.py --juriku /tmp/aletharsis-unicode-study/reproduction-inputs/juriku/hidden-characters-detector-c75a379a181750eab788cf2eb668109caa8b88e6 --hiberius /tmp/aletharsis-unicode-study/reproduction-inputs/hiberius/hiberius-unicode-toolkit-1d86b8d951fca3cd7efbe637267f57e391dd7570 --emoji /tmp/aletharsis-unicode-study/reproduction-inputs/emoji --python /home/todd/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu --binary /tmp/aletharsis-unicode-study/aletharsis --output /tmp/aletharsis-unicode-study/review1"
+	User time (seconds): 0.11
+	System time (seconds): 0.15
 	Percent of CPU this job got: 7%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:03.39
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:03.49
 	Average shared text size (kbytes): 0
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 75544
+	Maximum resident set size (kbytes): 75920
 	Average resident set size (kbytes): 0
-	Major (requiring I/O) page faults: 1
-	Minor (reclaiming a frame) page faults: 19661
-	Voluntary context switches: 861
-	Involuntary context switches: 21
+	Major (requiring I/O) page faults: 2
+	Minor (reclaiming a frame) page faults: 20448
+	Voluntary context switches: 832
+	Involuntary context switches: 48
 	Swaps: 0
-	File system inputs: 39136
+	File system inputs: 16016
 	File system outputs: 0
 	Socket messages sent: 0
 	Socket messages received: 0
@@ -24,6 +24,6 @@ Running as unit: run-p3212896-i3225512.service; invocation ID: a543408562d043b28
 	Exit status: 0
           Finished with result: success
 Main processes terminated with: code=exited, status=0/SUCCESS
-               Service runtime: 3.396s
-             CPU time consumed: 2.567s
-                   Memory peak: 87.9M (swap: 0B)
+               Service runtime: 3.494s
+             CPU time consumed: 2.679s
+                   Memory peak: 76M (swap: 0B)

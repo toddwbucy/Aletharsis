@@ -12,13 +12,13 @@ def reason(tool, case, cp, scalar, native_status):
         return 'parser', 'Binary identification rejected this source; no text audit completed. Do not infer absence.'
     if tool == 'juriku_word' and (cp in TYPOGRAPHY or cp == 'U+00A0') and case == 'word_typography':
         return 'policy', 'Explicit Word exclusion mode suppresses common typography/NBSP; original bytes remain observable.'
-    if cp in TYPOGRAPHY:
+    if tool in ('aletharsis', 'hiberius') and cp in TYPOGRAPHY:
         return 'policy', 'Visible punctuation is outside this scan inventory (or explicitly not marked); not evidence of a hidden watermark.'
     if tool.startswith('juriku') and cp == 'U+FEFF' and scalar == 0:
         return 'policy', 'Read-only upstream detector intentionally omits the leading BOM, but not an embedded BOM.'
     if tool.startswith('juriku') and case == 'emoji_selector' and cp == 'U+FE0F':
         return 'policy', 'Pinned emoji 2.15.0 recognizes the pair; upstream deliberately omits its selector.'
-    if cp in VISIBLE_EMOJI:
+    if tool != 'aletharsis' and cp in VISIBLE_EMOJI:
         return 'coverage', 'Comparator does not inventory visible emoji; Aletharsis deliberately does. No attribution claim.'
     if tool == 'aletharsis' and case == 'hangul_fillers':
         return 'inventory', 'Native Kind covers controls/marks but misses these letter-category fillers. Candidate #14 inventory extension; not a watermark verdict.'
