@@ -224,3 +224,11 @@ passes 265 tests. A two-worker, two-second configured `FuzzProfileDefinition` ru
 completed 51,261 inputs without failure (about three seconds including shutdown).
 That bounded run is evidence of this implementation check, not exhaustive assurance.
 The profile fixtures retain exact checkout bytes through `.gitattributes`.
+
+## Structured package prerequisite
+
+[DP-001](document-package-parts.md) adds bounded in-memory ZIP part preservation
+and exact source/compressed/decompressed identities, with retained DOCX/ODT packages.
+It is a separate parser prerequisite, not an approved context producer or profile
+bundle. XML locations, format validation, real profile evaluation and report/CLI
+integration remain required before closing #14.
