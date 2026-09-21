@@ -122,3 +122,17 @@ The final three-second, two-worker fuzz configuration completed 191,482 executio
 without failure (about four seconds including shutdown). The 265 offline contract
 tests passed. This is bounded implementation evidence, not XML/Office conformance
 certification. No network resource, external parser, model or Office application ran.
+
+## Relationship consumer
+
+[OR-001](opc-relationship-evidence.md) consumes these part-byte anchors for a bounded
+OPC relationship inventory. It preserves the full parsed XML and distinguishes local
+target identity from external or unresolved declarations. It does not enable Word
+format identification, body extraction or expected-artifact classification.
+
+## Optional scalar mapping consumer
+
+[XM-001](xml-text-mappings.md) adds a separate opt-in mapped parse. It verifies
+per-scalar original part-byte regions against the parsed text, distinguishing entity
+and line-ending transformations. Base XP-001 tokens and `Parse` behavior remain
+unchanged; mapped parsing has its own document-wide scalar budget.
