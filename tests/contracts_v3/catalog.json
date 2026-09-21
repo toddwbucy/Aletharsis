@@ -1,0 +1,16 @@
+{
+  "catalog_version": "conformance-v3/1",
+  "production_support": false,
+  "native": {
+    "aletharsis.acquire": ["acquisition", null],
+    "aletharsis.parse.text": ["parser", null],
+    "aletharsis.unicode.inventory": ["analyzer", "structural"]
+  },
+  "adapters": {
+    "aletharsis.c2pa.verify": ["verify", "verifier", "cryptographic", "declaration_only"],
+    "anthropic.claude_text_watermark": ["statistical", "analyzer", "statistical", "declaration_only"],
+    "fixture.adapter.extract": ["extract", "analyzer", "structural", "synthetic"],
+    "fixture.adapter.verify": ["verify", "verifier", "cryptographic", "synthetic"],
+    "fixture.adapter.statistical": ["statistical", "analyzer", "statistical", "synthetic"]
+  }
+}

@@ -1,0 +1,817 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {
+      "byte_length": 15,
+      "inspection": "literal source text"
+    },
+    "texts": [
+      {
+        "bom": null,
+        "byte_offsets": [
+          0,
+          1,
+          3,
+          6,
+          9,
+          13,
+          14,
+          15
+        ],
+        "encoding": "utf-8",
+        "hashes": {
+          "formatting_removed_sha256": "74ccf5a337b1b936861cc9bea428888da63318c3af37787117b15352f5c3cf04",
+          "nfc_text_sha256": "34f19e79a606618fa55018fd5c1fc0b87ef3583e78aeb9e7f8fe37f0ca9832af",
+          "nfkc_text_sha256": "34f19e79a606618fa55018fd5c1fc0b87ef3583e78aeb9e7f8fe37f0ca9832af",
+          "raw_text_sha256": "6f67545726c29eb00d2a783fa89438ed77faeb5399560728184e946ff679fcbc"
+        },
+        "line_endings": {
+          "cr": 0,
+          "crlf": 1,
+          "lf": 0
+        },
+        "normalization": {
+          "formatting_removed_count": 2,
+          "hash_encoding": "utf-8",
+          "nfc_changed": true,
+          "nfkc_changed": true,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        },
+        "source": "file",
+        "text": "é﻿​😀\r\n"
+      }
+    ]
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "adapter.txt",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "synthetic/adapter.txt",
+    "sha256": "6f67545726c29eb00d2a783fa89438ed77faeb5399560728184e946ff679fcbc",
+    "size": 15
+  },
+  "findings": [],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent.",
+    "Synthetic contract evidence; no actual adapter, signature or statistical detector executed."
+  ],
+  "schema_version": "3.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 0,
+    "findings": 0,
+    "high": 0,
+    "info": 0,
+    "low": 0,
+    "medium": 0
+  },
+  "catalog_version": "conformance-v3/1",
+  "capabilities": [
+    {
+      "id": "aletharsis.acquire",
+      "revision": "1",
+      "role": "acquisition",
+      "mechanism": null,
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.acquire",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "aletharsis.c2pa.verify",
+      "revision": "1",
+      "role": "verifier",
+      "mechanism": "cryptographic",
+      "purpose": null,
+      "implementation": null,
+      "availability": {
+        "state": "unavailable",
+        "reason_code": "capability.not_implemented"
+      },
+      "participation": "disabled",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "aletharsis.parse.text",
+      "revision": "1",
+      "role": "parser",
+      "mechanism": null,
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.parse.text",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "aletharsis.unicode.inventory",
+      "revision": "1",
+      "role": "analyzer",
+      "mechanism": "structural",
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.unicode.inventory",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "text"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "anthropic.claude_text_watermark",
+      "revision": "1",
+      "role": "analyzer",
+      "mechanism": "statistical",
+      "purpose": "watermark_detection",
+      "implementation": null,
+      "availability": {
+        "state": "unavailable",
+        "reason_code": "capability.detector_access_unavailable"
+      },
+      "participation": "disabled",
+      "supported_scope": {
+        "kinds": [
+          "text"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "fixture.adapter.verify",
+      "revision": "1",
+      "role": "verifier",
+      "mechanism": "cryptographic",
+      "purpose": null,
+      "implementation": {
+        "id": "fixture.verify",
+        "version": "1",
+        "upstream": {
+          "repository": "https://example.invalid/synthetic",
+          "revision": "0000000000000000000000000000000000000000",
+          "sha256": null
+        },
+        "data": [
+          {
+            "id": "executable",
+            "version": "fixture-1",
+            "sha256": "1c64b81b9e5aca8f6de685cc363f732c3b215121310afd62cc71a1a8c41c4a6a"
+          }
+        ]
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "optional",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 1024,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": 4096,
+        "execution_ms": 1000
+      }
+    }
+  ],
+  "executions": [
+    {
+      "execution_ref": "exec/0",
+      "capability_ref": "aletharsis.acquire",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/0",
+          "unit": "whole_artifact"
+        }
+      ],
+      "exclusions": [],
+      "state": "completed",
+      "reason_code": null,
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/1",
+      "capability_ref": "aletharsis.parse.text",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/0",
+          "unit": "whole_artifact"
+        }
+      ],
+      "exclusions": [],
+      "state": "completed",
+      "reason_code": null,
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/2",
+      "capability_ref": "aletharsis.unicode.inventory",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/1",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/1",
+          "unit": "whole_artifact"
+        }
+      ],
+      "exclusions": [],
+      "state": "completed",
+      "reason_code": null,
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/3",
+      "capability_ref": "anthropic.claude_text_watermark",
+      "config": {
+        "schema": null,
+        "revision": null,
+        "settings": null,
+        "sha256": null,
+        "key_ref": null,
+        "unavailable_reason": "configuration.unknown"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/1",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [],
+      "exclusions": [],
+      "state": "not_run",
+      "reason_code": "execution.disabled",
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/4",
+      "capability_ref": "aletharsis.c2pa.verify",
+      "config": {
+        "schema": null,
+        "revision": null,
+        "settings": null,
+        "sha256": null,
+        "key_ref": null,
+        "unavailable_reason": "configuration.unknown"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [],
+      "exclusions": [],
+      "state": "not_run",
+      "reason_code": "execution.disabled",
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/5",
+      "capability_ref": "fixture.adapter.verify",
+      "config": {
+        "schema": "aletharsis.adapter-config/1",
+        "revision": "1",
+        "settings": {
+          "protocol": "aletharsis.adapter-exchange/1",
+          "operation": "verify",
+          "provider_config_ref": "artifact/2",
+          "policy_ref": "artifact/3",
+          "trust_ref": null,
+          "validation_time": "2026-09-20T00:00:00Z",
+          "limits": {
+            "wall_ms": 1000,
+            "cpu_ms": 1000,
+            "memory_bytes": 67108864,
+            "input_bytes": 1024,
+            "output_bytes": 4096,
+            "scratch_bytes": 4096
+          }
+        },
+        "key_ref": null,
+        "sha256": "b9bcb3222b6b04a10e4db641c61af94ce2cc2266b029661c57bf676c5d9e3fdb"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/0",
+          "unit": "whole_artifact"
+        }
+      ],
+      "exclusions": [],
+      "state": "completed",
+      "reason_code": null,
+      "diagnostic_refs": []
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_ref": "artifact/0",
+      "kind": "source",
+      "representation": {
+        "serialization": "original-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "6f67545726c29eb00d2a783fa89438ed77faeb5399560728184e946ff679fcbc",
+      "byte_length": 15,
+      "content_ref": {
+        "kind": "retained_blob",
+        "sha256": "6f67545726c29eb00d2a783fa89438ed77faeb5399560728184e946ff679fcbc"
+      },
+      "unavailable_reason": null,
+      "parents": [],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/1",
+      "kind": "text",
+      "representation": {
+        "serialization": "unicode-scalars-utf8/1",
+        "encoding": "utf-8",
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "6f67545726c29eb00d2a783fa89438ed77faeb5399560728184e946ff679fcbc",
+      "byte_length": 15,
+      "content_ref": {
+        "kind": "report_pointer",
+        "pointer": "/evidence/texts/0/text"
+      },
+      "unavailable_reason": null,
+      "parents": [
+        "artifact/0"
+      ],
+      "transform": {
+        "operation": "decode",
+        "version": "text-source-v1",
+        "config_sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2",
+        "inputs": [
+          "artifact/0"
+        ],
+        "exclusions": []
+      },
+      "mapping": {
+        "quality": "exact",
+        "from_artifact_ref": "artifact/1",
+        "to_artifact_ref": "artifact/0",
+        "method": "scalar-to-source-byte-boundaries",
+        "version": "1",
+        "data_ref": "/evidence/texts/0/byte_offsets"
+      }
+    },
+    {
+      "artifact_ref": "artifact/2",
+      "kind": "configuration",
+      "representation": {
+        "serialization": "exact-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "6ebded45d353e834658ff3bb45d6dfd0b113dfc2acd919d4b15f221d7900f9ab",
+      "byte_length": 19,
+      "content_ref": {
+        "kind": "retained_blob",
+        "sha256": "6ebded45d353e834658ff3bb45d6dfd0b113dfc2acd919d4b15f221d7900f9ab"
+      },
+      "unavailable_reason": null,
+      "parents": [],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/3",
+      "kind": "policy",
+      "representation": {
+        "serialization": "exact-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "06917acde08dda2cb5167e5424a4088a9d95c2e18dd4aae0f7db4cbb8ff756b5",
+      "byte_length": 36,
+      "content_ref": {
+        "kind": "retained_blob",
+        "sha256": "06917acde08dda2cb5167e5424a4088a9d95c2e18dd4aae0f7db4cbb8ff756b5"
+      },
+      "unavailable_reason": null,
+      "parents": [],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/4",
+      "kind": "adapter_request",
+      "representation": {
+        "serialization": "exact-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "03088f10d67dcdaf57d15e388e61536021fed39ad20ef424cb1c16ffcee604d8",
+      "byte_length": 943,
+      "content_ref": {
+        "kind": "retained_blob",
+        "sha256": "03088f10d67dcdaf57d15e388e61536021fed39ad20ef424cb1c16ffcee604d8"
+      },
+      "unavailable_reason": null,
+      "parents": [],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/5",
+      "kind": "manifest",
+      "representation": {
+        "serialization": "exact-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "e59ad25d5484b20a5edeb5b14e272edaca08f321e05acb0b3973cd6dc59bf78b",
+      "byte_length": 42,
+      "content_ref": {
+        "kind": "retained_blob",
+        "sha256": "e59ad25d5484b20a5edeb5b14e272edaca08f321e05acb0b3973cd6dc59bf78b"
+      },
+      "unavailable_reason": null,
+      "parents": [
+        "artifact/0"
+      ],
+      "transform": {
+        "operation": "fixture.adapter.verify",
+        "version": "1",
+        "config_sha256": "b9bcb3222b6b04a10e4db641c61af94ce2cc2266b029661c57bf676c5d9e3fdb",
+        "inputs": [
+          "artifact/0"
+        ],
+        "exclusions": []
+      },
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/6",
+      "kind": "detector_response",
+      "representation": {
+        "serialization": "exact-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "a8198524f58e72b56283ab71ebddada22840f108b46ef7165bb3fca9919c5558",
+      "byte_length": 18,
+      "content_ref": {
+        "kind": "retained_blob",
+        "sha256": "a8198524f58e72b56283ab71ebddada22840f108b46ef7165bb3fca9919c5558"
+      },
+      "unavailable_reason": null,
+      "parents": [
+        "artifact/0"
+      ],
+      "transform": {
+        "operation": "fixture.adapter.verify",
+        "version": "1",
+        "config_sha256": "b9bcb3222b6b04a10e4db641c61af94ce2cc2266b029661c57bf676c5d9e3fdb",
+        "inputs": [
+          "artifact/0"
+        ],
+        "exclusions": []
+      },
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/7",
+      "kind": "adapter_response",
+      "representation": {
+        "serialization": "exact-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "33be0fbbcfeabee2402dd0873044f11996602100f5826558106562593ee01e74",
+      "byte_length": 718,
+      "content_ref": {
+        "kind": "retained_blob",
+        "sha256": "33be0fbbcfeabee2402dd0873044f11996602100f5826558106562593ee01e74"
+      },
+      "unavailable_reason": null,
+      "parents": [
+        "artifact/0"
+      ],
+      "transform": {
+        "operation": "fixture.adapter.verify",
+        "version": "1",
+        "config_sha256": "b9bcb3222b6b04a10e4db641c61af94ce2cc2266b029661c57bf676c5d9e3fdb",
+        "inputs": [
+          "artifact/0"
+        ],
+        "exclusions": []
+      },
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    }
+  ],
+  "anchors": [
+    {
+      "anchor_ref": "anchor/0",
+      "kind": "credential",
+      "artifact_ref": "artifact/5",
+      "execution_ref": "exec/5",
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      },
+      "locator": {
+        "version": "1",
+        "manifest_ref": "artifact/5",
+        "assertion_id": null,
+        "verification_execution_ref": "exec/5"
+      }
+    }
+  ],
+  "results": [
+    {
+      "result_ref": "result/0",
+      "execution_ref": "exec/2",
+      "kind": "structural_scan",
+      "contract_version": "1",
+      "anchor_refs": [],
+      "payload": {
+        "operation": "aletharsis.unicode.inventory",
+        "scope": {
+          "artifact_ref": "artifact/1",
+          "unit": "whole_artifact"
+        },
+        "outcome": "observations_present"
+      },
+      "limitations": []
+    },
+    {
+      "result_ref": "result/1",
+      "execution_ref": "exec/5",
+      "kind": "credential_verification",
+      "contract_version": "1",
+      "anchor_refs": [
+        "anchor/0"
+      ],
+      "payload": {
+        "operation": "fixture.adapter.verify",
+        "scope": {
+          "artifact_ref": "artifact/0",
+          "unit": "whole_artifact"
+        },
+        "input_ref": "artifact/0",
+        "manifest_ref": "artifact/5",
+        "discovery": "present",
+        "signature": "valid",
+        "binding": "mismatch",
+        "trust": "accepted",
+        "revocation": "not_checked",
+        "freshness": "unknown"
+      },
+      "limitations": [
+        "Synthetic contract example, not actual detection or verification."
+      ]
+    }
+  ],
+  "diagnostics": [],
+  "profile_assessments": [],
+  "view": {
+    "name": "audit",
+    "finding_categories": []
+  },
+  "adapter_runs": [
+    {
+      "execution_ref": "exec/3",
+      "protocol": "aletharsis.adapter-exchange/1",
+      "request_id": null,
+      "request_ref": null,
+      "response_ref": null,
+      "raw_result_ref": null,
+      "quarantined_refs": [],
+      "launch_profile": null,
+      "started": false,
+      "cleanup": "not_started"
+    },
+    {
+      "execution_ref": "exec/4",
+      "protocol": "aletharsis.adapter-exchange/1",
+      "request_id": null,
+      "request_ref": null,
+      "response_ref": null,
+      "raw_result_ref": null,
+      "quarantined_refs": [],
+      "launch_profile": null,
+      "started": false,
+      "cleanup": "not_started"
+    },
+    {
+      "execution_ref": "exec/5",
+      "protocol": "aletharsis.adapter-exchange/1",
+      "request_id": "e33615b44022db2528797574e69d1e1f58d77af74a47a5264a392dcba0716c02",
+      "request_ref": "artifact/4",
+      "response_ref": "artifact/7",
+      "raw_result_ref": "artifact/6",
+      "quarantined_refs": [],
+      "launch_profile": {
+        "id": "fixture.posix-worker",
+        "version": "1",
+        "policy_ref": "artifact/3"
+      },
+      "started": true,
+      "cleanup": "complete"
+    }
+  ]
+}
