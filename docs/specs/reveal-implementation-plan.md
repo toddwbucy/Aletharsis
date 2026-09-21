@@ -108,3 +108,42 @@ determinism, source/evidence immutability and failure budgets. Production code
 introduces no subprocess or filesystem writes. Safe publication, manifest/report
 linkage, single-snapshot CLI acquisition and bounded directory integration remain
 separate delivery gates; this increment does not complete #15.
+
+## Artifact publication primitive
+
+`internal/publication.Publish` accepts an already-open `os.Root` for a private,
+caller-controlled output directory, caller-verified source/report SHA-256 values,
+and named artifact bytes. It creates only flat, constrained lowercase names;
+source-derived relative paths are not accepted by this primitive. Directory
+layout and source/output alias checks remain responsibilities of the future
+acquisition/CLI layer, which must establish the private directory outside the
+source tree. Callers must prevent concurrent namespace mutation in that directory
+and concurrent mutation of supplied artifact bytes.
+
+All files use exclusive creation and mode 0600 (subject to platform permission
+semantics). Existing files, directories, hard links and symlinks cause failure;
+they are not replaced. Names and budgets are validated before the first write.
+Output is capped at 64 artifacts and 64 MiB including the manifest, or lower
+caller limits. The caller's artifact order remains unchanged; publication and
+manifest entries use sorted names.
+
+`manifest.json` is reserved and written last. Its internal bundle contract is
+`aletharsis.artifact-bundle/1`, recording `source_sha256`,
+`report_artifact_sha256`, and each artifact's `name`, `size`, and `sha256`.
+The receipt separately records the hash of the exact manifest bytes (JSON plus
+LF); timestamps and random identifiers are absent. These supplied source/report
+identities are not authenticated by the writer. This does not change a report
+wire schema or authorize cleanup.
+
+On create/write/close failure the writer rolls back only its own new files in
+reverse order, returning cleanup errors along with the initial failure. It never
+recursively deletes an output directory. Under its private-directory precondition
+this leaves existing collision targets untouched. It is not a hostile same-user
+filesystem sandbox, an atomic bundle transaction, or a crash/power-loss durability
+guarantee. A crash can leave incomplete output: consumers must parse the manifest
+and verify every listed artifact's size/hash before considering a bundle complete.
+
+Tests exercise deterministic exact manifests, artifact identity and permissions,
+source preservation through hard-link/symlink collisions, path rejection,
+preflight budgets including manifest bytes, and write/short-write/close/cleanup
+failures. This internal primitive performs no source acquisition or CLI work.
