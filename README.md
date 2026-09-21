@@ -16,8 +16,8 @@ workbench, and explicitly approved transformations into new files. See the
 
 Go **0.2.0** defaults to deterministic **report schema 1.0** output.
 Opt in to the new coverage contract with `--schema-version 2.0`.
-It audits one regular file at a time, up to **8 MiB**, on **Linux** with supported
-no-atime acquisition. Schema 2.0 also enforces report and per-record budgets;
+It audits regular files or bounded directories on **Linux** with supported
+no-atime acquisition, up to **8 MiB per file**. Schema 2.0 also enforces report and per-record budgets;
 some inputs below 8 MiB exceed those budgets and fail explicitly without a report.
 
 | Capability | Current behavior |
@@ -26,7 +26,8 @@ some inputs below 8 MiB exceed those budgets and fail explicitly without a repor
 | Unicode inspection | Invisible characters, bidi controls, selectors, tags, unusual whitespace, controls, combining characters, emoji candidates and limited mixed-script checks |
 | Pattern analysis | Zero-width binary candidates, periodic insertions, long selector/tag runs and identifier/provenance candidates |
 | Text evidence | Exact extracted text, code-point and byte positions, context samples, BOMs, line endings and normalization/comparison hashes |
-| Reporting | Escaped console output, complete JSON evidence, filtered finding views and severity-based exit codes |
+| Reporting | Escaped console output, complete JSON/JSONL corpus evidence, filtered single-file views and severity-based exit codes |
+| Corpus | Explicit recursion, sorted outcomes, rooted no-follow acquisition, resource bounds and aggregate summaries |
 | Reveal | Single-file revealed text, faithful/display diffs, coordinate mappings and hash manifest in a new private output directory |
 | Integrity | Read-only acquisition, source-change checks, rejection of symlink inputs and refusal to overwrite report destinations |
 
@@ -41,7 +42,7 @@ in extracted evidence. Malformed encodings fail without replacement; legacy
 encodings and BOM-less UTF-16/32 are unsupported. MIME hints do not establish
 full document validity.
 
-**Not implemented:** directory/recursive scans, JSONL,
+**Not implemented:** directory reveal exports,
 DOCX/ODT/PDF parsing, structured document metadata, expected-artifact profiles,
 C2PA validation, statistical watermark detectors, model fingerprinting, the web
 workbench, saved rules or cleanup. PDF and DOCX signatures are recognized and
@@ -84,6 +85,9 @@ aletharsis audit suspicious.txt --json
 aletharsis audit suspicious.txt --schema-version 2.0 --json
 aletharsis audit suspicious.txt --output report.json
 aletharsis audit suspicious.txt --reveal-out review-new --json
+aletharsis audit ./documents --recursive
+aletharsis audit ./documents --recursive --jsonl
+aletharsis audit ./documents --recursive --json --output corpus-report.json
 aletharsis unicode suspicious.txt
 aletharsis metadata suspicious.txt --json
 aletharsis structure suspicious.txt
@@ -96,6 +100,21 @@ aletharsis --help
 Reports contain extracted source text; handle them as evidence with the same
 sensitivity as the input. `--verbose` emits structured diagnostics on stderr.
 Console output escapes control, bidi and non-ASCII characters.
+
+Directory audits inspect immediate files by default; `--recursive` includes
+nested directories. Symlinks and special files are explicit skips. `--jsonl`
+streams a header, per-entry outcomes and final summary. `--json` produces one
+object containing those same header/entries/summary records; directory `--output`
+defaults to this JSON form unless `--jsonl` is selected. The output must be a new
+file outside the source tree, with real directory ancestors.
+
+A valid partial corpus report is retained with exit 4 when files fail or are
+unsupported. Missing completion records or transport errors mean the stream did
+not complete. No findings is not proof of absence; skipped and unsupported entries
+remain visible. Scans use one in-flight audit, at most 10,000 discovered entries,
+64 nested levels, 256 MiB aggregate acquisition and 128 MiB output by default.
+See the [directory CLI contract](docs/specs/directory-cli.md) for complete limits,
+outcome semantics and a compiled nested-corpus demonstration.
 
 `audit FILE --reveal-out NEW_DIRECTORY` publishes `report.json`, `revealed.txt`,
 `comparison.json`, `faithful.diff`, `display.diff`, and `manifest.json` from one

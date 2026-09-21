@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"os"
 	"unicode/utf8"
 
 	"github.com/toddwbucy/Aletharsis/internal/audit"
@@ -55,6 +56,17 @@ func newSummary() Summary {
 // incomplete stream and return an error; callers must not treat its prefix as a
 // completed scan. It does not render, publish, remediate or call external tools.
 func Run(ctx context.Context, path string, options Options, out io.Writer) (Summary, error) {
+	return run(ctx, path, options, out, nil)
+}
+
+// RunRoot uses the caller-owned pinned source root, without closing it.
+func RunRoot(ctx context.Context, path string, root *os.Root, options Options, out io.Writer) (Summary, error) {
+	if root == nil {
+		return newSummary(), ErrInvalid
+	}
+	return run(ctx, path, options, out, root)
+}
+func run(ctx context.Context, path string, options Options, out io.Writer, root *os.Root) (Summary, error) {
 	summary := newSummary()
 	if ctx == nil || out == nil || path == "" || !utf8.ValidString(path) || (options.Schema != "1.0" && options.Schema != "2.0") || options.InputBytes <= 0 || options.InputBytes > audit.MaxBytes || options.OutputBytes <= 0 || options.AcquisitionBytes <= 1 || options.Discovery.MaxEntries <= 0 || options.Discovery.MaxDepth < 0 || options.Discovery.PathBytes <= 0 {
 		return summary, ErrInvalid
@@ -77,11 +89,14 @@ func Run(ctx context.Context, path string, options Options, out io.Writer) (Summ
 	if err := ctx.Err(); err != nil {
 		return finishFailure(err)
 	}
-	root, err := workspace.Open(path)
-	if err != nil {
-		return finishFailure(err)
+	if root == nil {
+		var err error
+		root, err = workspace.Open(path)
+		if err != nil {
+			return finishFailure(err)
+		}
+		defer root.Close()
 	}
-	defer root.Close()
 	discovered, err := workspace.DiscoverRoot(ctx, root, options.Discovery)
 	if err != nil {
 		return finishFailure(err)

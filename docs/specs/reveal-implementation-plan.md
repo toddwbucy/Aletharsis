@@ -173,3 +173,11 @@ acquisition under one pinned directory, streams bounded JSONL for either report
 schema, and accounts for failed/unsupported/skipped/canceled candidates. The
 remaining delivery gate is directory CLI integration and safe source-relative
 reveal publication, including output-tree exclusion and nested demonstrations.
+
+## Directory audit CLI increment
+
+[Directory audit commands](directory-cli.md) now expose console, JSON and JSONL
+corpus output, explicit recursion, safe outside-tree report destinations and
+aggregate outcomes. Both report schemas and a compiled nested-corpus audit are
+validated. Directory `--reveal-out` remains rejected until source-relative
+artifact planning, collision handling and publication are implemented and tested.
