@@ -25,100 +25,100 @@
       "status": "partial",
       "detail": "G2 #38 recommends a bounded worker because Verify has no cancellation parameter. Production DA-001 execution, trust-policy and packaging gates remain incomplete.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-verifier.md",
+        "docs/reuse/evaluations/c2pa-verifier/manifest.json",
+        "experiments/c2pa-verifier/README.md"
       ]
     },
     "licenses_notices": {
       "status": "partial",
       "detail": "Root Apache-2.0 and fixture rights inspected; Linux C ABI/CLI graph contains 153 pinned packages. Declared licenses do not establish per-file redistribution or packaging-notice clearance.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-verifier.md",
+        "docs/reuse/evaluations/c2pa-verifier/manifest.json",
+        "experiments/c2pa-verifier/README.md"
       ]
     },
     "unit_contract": {
       "status": "partial",
       "detail": "11 final byte/trust cases completed without mismatches. Six c2pa-rs-origin assets provide independent fixtures, not independent verifier execution; production adapter conformance remains untested.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-verifier.md",
+        "docs/reuse/evaluations/c2pa-verifier/manifest.json",
+        "experiments/c2pa-verifier/README.md"
       ]
     },
     "live_adapter": {
       "status": "not_run",
       "detail": "No production DA-001 verifier exchange. Rust C ABI, CLI and Go byte probe executions do not establish a completed sidecar protocol.",
       "evidence": [
-        0
+        "docs/reuse/evaluations/c2pa-verifier.md"
       ]
     },
     "source_integrity": {
       "status": "partial",
       "detail": "Read-only fixtures retained unchanged file/buffer hashes; telemetry override cases left preferences unchanged. This does not validate production acquisition, manifest maps or raw-response identity enforcement.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-verifier.md",
+        "docs/reuse/evaluations/c2pa-verifier/manifest.json",
+        "experiments/c2pa-verifier/README.md"
       ]
     },
     "adversarial_fuzz": {
       "status": "partial",
       "detail": "Cases distinguish invalid signatures, hash mismatch, unsigned input, trust status and the size boundary; an observed-live worker was terminated/reaped. No full verifier fuzz campaign or independent algorithm validation.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-verifier.md",
+        "docs/reuse/evaluations/c2pa-verifier/manifest.json",
+        "experiments/c2pa-verifier/README.md"
       ]
     },
     "resources": {
       "status": "partial",
       "detail": "Rust build used 137.932 seconds wall, 113.642 CPU seconds and 648.3 MiB peak memory. Study used 2 GiB cgroup memory, 120-second case deadlines and a 32 MiB probe input cap; no production bound claimed.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-verifier.md",
+        "docs/reuse/evaluations/c2pa-verifier/manifest.json",
+        "experiments/c2pa-verifier/README.md"
       ]
     },
     "native_platforms": {
       "status": "partial",
       "detail": "Rust/CLI/CGO verifier executed only on Linux amd64. Linux arm64/macOS untested; Windows linker/packaging requires investigation.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-verifier.md",
+        "docs/reuse/evaluations/c2pa-verifier/manifest.json",
+        "experiments/c2pa-verifier/README.md"
       ]
     },
     "build_install": {
       "status": "partial",
       "detail": "Two clean Rust target directories produced matching static-library, shared-library and CLI hashes. CGO probe still requires system libraries/loader; offline installation, relocation and other platforms remain unvalidated.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-verifier.md",
+        "docs/reuse/evaluations/c2pa-verifier/manifest.json",
+        "experiments/c2pa-verifier/README.md"
       ]
     },
     "disable_rollback_missing": {
       "status": "not_run",
       "detail": "Worker termination/reaping was demonstrated, but no installed verifier adapter exists for disable, incompatible/missing runtime, rollback or uninstall drills.",
       "evidence": [
-        0
+        "docs/reuse/evaluations/c2pa-verifier.md"
       ]
     },
     "security_updates": {
       "status": "not_run",
       "detail": "Explicit telemetry-off overrides conflicting ambient settings in the study. Network isolation did not trace socket attempts; full transitive advisories, trust-update policy and security response review remain open.",
       "evidence": [
-        0
+        "docs/reuse/evaluations/c2pa-verifier.md"
       ]
     },
     "semantic_upgrade": {
       "status": "not_run",
       "detail": "11 final verifier cases and the corrected exploratory trust-label mismatch are retained. No accepted verification baseline, new-pin semantic comparison or production rollback drill exists.",
       "evidence": [
-        0
+        "docs/reuse/evaluations/c2pa-verifier.md"
       ]
     }
   },

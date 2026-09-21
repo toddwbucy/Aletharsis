@@ -72,3 +72,20 @@ including 105 adoption checks. Accepted rejection now requires matching registry
 status/decision/reference; stale scope waivers are rejected after status changes.
 Wording distinguishes pending automated review from accepted review and distinct
 withdrawal references from verified chronology. Neither component is approved.
+
+## Fifth review remediation validation
+
+Re-run on 2026-09-21 against the remediation tree based on `d19b4d1`, using
+Python 3.12.13 and the pinned CI requirements (including `rfc3339-validator`):
+456 full offline tests passed, including 121 adoption checks; the four focused
+files listed above passed 177 tests. Full-suite process measurements: 3.07 seconds
+wall, 3.01 seconds user CPU, 0.04 seconds system CPU, 94,616 KiB maximum RSS.
+
+New regressions start with both shipped pending records and exercise explicit
+human-reviewer handoff, complete approval/rejection decisions, duplicate registry
+IDs before indexing, exact URL termination, and path-keyed evidence citations
+that survive insertion/reordering and reject missing or positional references.
+CI checks citation presence, membership and hashes; human review still evaluates
+whether a cited document supports an observation or a declared unrun gap.
+The six retained evidence identities, study bytes, check statuses and pending
+acceptance are unchanged. No dependency is approved and no runtime code changed.

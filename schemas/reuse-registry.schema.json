@@ -60,7 +60,7 @@
         },
         "evaluation_issue": {
           "type": "string",
-          "pattern": "^https://github.com/toddwbucy/Aletharsis/issues/[1-9][0-9]*$"
+          "pattern": "^https://github\\.com/toddwbucy/Aletharsis/issues/[1-9][0-9]*(?![\\s\\S])"
         },
         "maintenance_owner": {
           "type": "string",
@@ -762,7 +762,7 @@
         },
         "record": {
           "type": "string",
-          "pattern": "^https://github\\.com/toddwbucy/Aletharsis/pull/[1-9][0-9]*$"
+          "pattern": "^https://github\\.com/toddwbucy/Aletharsis/pull/[1-9][0-9]*(?![\\s\\S])"
         },
         "reviewer": {
           "type": "string",

@@ -10,8 +10,23 @@ from jsonschema import Draft202012Validator, ValidationError
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = json.loads((ROOT / 'schemas/adoption-record-v1.schema.json').read_bytes())
 VALIDATOR = Draft202012Validator(SCHEMA)
-REGISTRY = {r['id']: r for r in json.loads((ROOT / 'docs/reuse/candidates.json').read_bytes())['components']}
+REGISTRY_SCHEMA = json.loads((ROOT / 'schemas/reuse-registry.schema.json').read_bytes())
+DECISION_VALIDATOR = Draft202012Validator(REGISTRY_SCHEMA['$defs']['decision'])
+
+
+def index_registry(components):
+    assert len({r['id'] for r in components}) == len(components), 'duplicate registry component id'
+    return {r['id']: r for r in components}
+
+
+REGISTRY = index_registry(json.loads((ROOT / 'docs/reuse/candidates.json').read_bytes())['components'])
 PATHS = sorted((ROOT / 'docs/reuse/adoptions').glob('*.json'))
+
+
+def decision(record, disposition):
+    return dict(disposition=disposition, record=record['evaluation_pr'],
+                reviewer='synthetic-owner', scope='Synthetic test scope',
+                gates=record['tracking'], reason='Synthetic lifecycle test')
 
 
 def validate(record):
@@ -38,7 +53,7 @@ def validate(record):
         assert path.is_file(), 'evidence must be an existing regular file'
         assert hashlib.sha256(path.read_bytes()).hexdigest() == e['sha256']
     for check in record['checks'].values():
-        assert all(i < len(record['evidence']) for i in check['evidence'])
+        assert set(check['evidence']) <= set(paths), 'unknown evidence path'
     acceptance = record['acceptance']
     if acceptance is not None:
         for actor in (acceptance['owner'], acceptance['technical_reviewer']):
@@ -47,8 +62,10 @@ def validate(record):
         assert acceptance['owner'] == record['owner']
         assert acceptance['technical_reviewer'] == record['technical_reviewer']
         assert acceptance['disposition'] == record['recommendation']
+    if acceptance is not None and record['recommendation'] in ('approve', 'reject'):
+        assert isinstance(component['decision'], dict), 'registry decision must record acceptance or withdrawal'
+        DECISION_VALIDATOR.validate(component['decision'])
     if record['recommendation'] == 'approve' and acceptance is not None:
-        assert isinstance(component['decision'], dict), 'registry decision must record approval or withdrawal'
         if component['adoption_status'] == 'approved':
             assert component['decision']['disposition'] == 'approve'
             assert component['decision']['record'] == acceptance['record']
@@ -56,8 +73,6 @@ def validate(record):
             withdrawals = {'retired': 'retire', 'deferred': 'defer', 'rejected': 'reject'}
             assert component['adoption_status'] in withdrawals, 'accepted record requires approval or recorded withdrawal'
             assert component['decision']['disposition'] == withdrawals[component['adoption_status']]
-            registry_schema = json.loads((ROOT / 'schemas/reuse-registry.schema.json').read_bytes())
-            Draft202012Validator(registry_schema['$defs']['decision']).validate(component['decision'])
             VALIDATOR.evolve(schema=SCHEMA['properties']['evaluation_pr']).validate(component['decision']['record'])
             assert component['decision']['record'] != acceptance['record'], 'withdrawal must reference a distinct decision'
     if record['recommendation'] == 'reject' and acceptance is not None:
@@ -96,7 +111,7 @@ def pending_record(monkeypatch):
     record.update(recommendation='revise', acceptance=None, technical_reviewer='synthetic-independent-reviewer')
     for check in record['checks'].values():
         check.clear()
-        check.update(status='partial', detail='Synthetic gate test.', evidence=[0])
+        check.update(status='partial', detail='Synthetic gate test.', evidence=[record['evidence'][0]['path']])
     component = deepcopy(REGISTRY[record['component']])
     component.update(adoption_status='evaluating', decision=None, technical_reviewer=record['technical_reviewer'])
     monkeypatch.setitem(REGISTRY, record['component'], component)
@@ -124,7 +139,7 @@ def test_invalid_records_rejected(mutation, pending_record):
     elif mutation == 'wrong_owner': record['owner'] = 'someone-else'
     elif mutation == 'missing_evidence': record['checks']['resources']['evidence'] = []
     elif mutation == 'stale_evidence': record['evidence'][0]['sha256'] = '0' * 64
-    elif mutation == 'invalid_reference': record['checks']['resources']['evidence'] = [len(record['evidence'])]
+    elif mutation == 'invalid_reference': record['checks']['resources']['evidence'] = ['docs/reuse/unlisted-evidence.md']
     elif mutation == 'directory_evidence': record['evidence'][0]['path'] = 'docs/reuse/evaluations'
     elif mutation == 'missing_file': record['evidence'][0]['path'] = 'docs/reuse/no-such-evidence.txt'
     elif mutation == 'unknown_component': record['component'] = 'unknown-component'
@@ -143,7 +158,7 @@ def test_recommendation_is_not_acceptance(pending_record):
     record = deepcopy(pending_record)
     record['recommendation'] = 'approve'
     for check in record['checks'].values():
-        check.update(status='passed', evidence=[0])
+        check.update(status='passed', evidence=[record['evidence'][0]['path']])
     # Shape-only example: schema checks completeness, not factual sufficiency.
     # Human reviewers must reject these unsupported synthetic pass assertions.
     validate(record)
@@ -157,17 +172,17 @@ def test_acceptance_lifecycle(disposition, monkeypatch, pending_record):
     record['recommendation'] = disposition
     if disposition == 'approve':
         for check in record['checks'].values():
-            check.update(status='passed', evidence=[0])
+            check.update(status='passed', evidence=[record['evidence'][0]['path']])
     record['acceptance'] = dict(owner=record['owner'],
         technical_reviewer=record['technical_reviewer'],
         record=record['evaluation_pr'], disposition=disposition)
     component = deepcopy(REGISTRY[record['component']])
     if disposition == 'approve':
         component['adoption_status'] = 'approved'
-        component['decision'] = dict(disposition='approve', record=record['evaluation_pr'])
+        component['decision'] = decision(record, 'approve')
     if disposition == 'reject':
         component['adoption_status'] = 'rejected'
-        component['decision'] = dict(disposition='reject', record=record['evaluation_pr'])
+        component['decision'] = decision(record, 'reject')
     monkeypatch.setitem(REGISTRY, record['component'], component)
     validate(record)
     if disposition == 'approve':
@@ -184,17 +199,17 @@ def test_not_applicable_requires_supported_scope(fault, pending_record):
     record = deepcopy(pending_record)
     record['recommendation'] = 'approve'
     for check in record['checks'].values():
-        check.update(status='passed', evidence=[0])
+        check.update(status='passed', evidence=[record['evidence'][0]['path']])
     check = record['checks']['live_adapter']
-    check.update(status='not_applicable', evidence=[0],
+    check.update(status='not_applicable', evidence=[record['evidence'][0]['path']],
                  scope_justification='Synthetic shape test: developer-only fixture oracle; no adapter shipped.')
     if fault == 'all_na':
         for check in record['checks'].values():
-            check.update(status='not_applicable', evidence=[0], scope_justification='Synthetic scope exclusion for schema testing.')
+            check.update(status='not_applicable', evidence=[record['evidence'][0]['path']], scope_justification='Synthetic scope exclusion for schema testing.')
     elif fault == 'ten_na':
         for name, check in record['checks'].items():
             if name not in ('prerequisites', 'licenses_notices'):
-                check.update(status='not_applicable', evidence=[0], scope_justification='Synthetic scope exclusion for schema testing.')
+                check.update(status='not_applicable', evidence=[record['evidence'][0]['path']], scope_justification='Synthetic scope exclusion for schema testing.')
     elif fault == 'short_justification': check['scope_justification'] = 'n/a'
     elif fault == 'no_evidence': check['evidence'] = []
     elif fault == 'no_justification': del check['scope_justification']
@@ -235,7 +250,7 @@ def test_required_approval_checks_cannot_be_waived(name, pending_record):
     record = deepcopy(pending_record)
     record['recommendation'] = 'approve'
     for check in record['checks'].values():
-        check.update(status='passed', evidence=[0])
+        check.update(status='passed', evidence=[record['evidence'][0]['path']])
     record['checks'][name].update(status='not_applicable',
         scope_justification='Synthetic long justification cannot waive this gate.')
     with pytest.raises(ValidationError):
@@ -243,7 +258,7 @@ def test_required_approval_checks_cannot_be_waived(name, pending_record):
 
 
 @pytest.mark.parametrize('suffix,valid', [('pull/60', True), ('issues/60', False),
-    ('pull/60#issuecomment-1', False), ('pull/0', False)])
+    ('pull/60#issuecomment-1', False), ('pull/0', False), ('pull/60\n', False)])
 def test_acceptance_url_agrees_with_registry(suffix, valid, pending_record):
     record = deepcopy(pending_record)
     url = 'https://github.com/toddwbucy/Aletharsis/' + suffix
@@ -282,7 +297,7 @@ def test_matching_registry_cannot_authorize_self_review(reviewer, pending_record
 def test_historical_approval_can_be_withdrawn(state, disposition, fault, pending_record):
     record = deepcopy(pending_record)
     record['recommendation'] = 'approve'
-    for check in record['checks'].values(): check.update(status='passed', evidence=[0])
+    for check in record['checks'].values(): check.update(status='passed', evidence=[record['evidence'][0]['path']])
     record['acceptance'] = dict(owner=record['owner'], technical_reviewer=record['technical_reviewer'],
                                 record=record['evaluation_pr'], disposition='approve')
     component = REGISTRY[record['component']]
@@ -352,7 +367,7 @@ def test_accepted_rejection_must_match_registry(fault, pending_record):
     pending_record['recommendation'] = 'reject'
     pending_record['acceptance'] = dict(owner=pending_record['owner'], technical_reviewer=pending_record['technical_reviewer'], record=pending_record['evaluation_pr'], disposition='reject')
     component = REGISTRY[pending_record['component']]
-    component.update(adoption_status='rejected', decision=dict(disposition='reject', record=pending_record['evaluation_pr']))
+    component.update(adoption_status='rejected', decision=decision(pending_record, 'reject'))
     if fault == 'status': component['adoption_status'] = 'evaluating'
     elif fault == 'missing_decision': component['decision'] = None
     elif fault == 'disposition': component['decision']['disposition'] = 'approve'
@@ -363,4 +378,77 @@ def test_accepted_rejection_must_match_registry(fault, pending_record):
 @pytest.mark.parametrize('status', ['passed','partial','failed','not_run'])
 def test_stale_scope_waiver_rejected(status, pending_record):
     pending_record['checks']['live_adapter'].update(status=status, scope_justification='Previously out of scope but no longer waived.')
+    assert not VALIDATOR.is_valid(pending_record)
+
+
+@pytest.mark.parametrize('path', PATHS, ids=lambda p: p.stem)
+def test_shipped_record_reviewer_handoff(path, monkeypatch):
+    # Start with the real pending record, without the synthetic fixture's handoff.
+    record = json.loads(path.read_bytes())
+    component = deepcopy(REGISTRY[record['component']])
+    monkeypatch.setitem(REGISTRY, record['component'], component)
+    record['acceptance'] = dict(owner=record['owner'], technical_reviewer=record['technical_reviewer'],
+                               record=record['evaluation_pr'], disposition=record['recommendation'])
+    with pytest.raises(AssertionError, match='automated identity'):
+        validate(record)
+    record['technical_reviewer'] = 'synthetic-specialist-reviewer'
+    record['acceptance']['technical_reviewer'] = record['technical_reviewer']
+    with pytest.raises(AssertionError):
+        validate(record)  # Updating the record alone does not update the registry.
+    component['technical_reviewer'] = record['technical_reviewer']
+    validate(record)  # Shape-only accepted revise; grants no production approval.
+
+
+@pytest.mark.parametrize('disposition', ['approve', 'reject'])
+@pytest.mark.parametrize('missing', ['reviewer', 'scope', 'gates', 'reason'])
+def test_all_accepted_decisions_require_complete_registry(disposition, missing, pending_record):
+    record = pending_record
+    record['recommendation'] = disposition
+    if disposition == 'approve':
+        for check in record['checks'].values(): check['status'] = 'passed'
+    record['acceptance'] = dict(owner=record['owner'], technical_reviewer=record['technical_reviewer'],
+                               record=record['evaluation_pr'], disposition=disposition)
+    component = REGISTRY[record['component']]
+    component.update(adoption_status={'approve': 'approved', 'reject': 'rejected'}[disposition],
+                     decision=decision(record, disposition))
+    del component['decision'][missing]
+    with pytest.raises(ValidationError): validate(record)
+
+
+def test_registry_index_rejects_duplicate_ids():
+    components = deepcopy(list(REGISTRY.values()))
+    duplicate = deepcopy(components[0])
+    duplicate['adoption_status'] = 'approved'
+    with pytest.raises(AssertionError, match='duplicate registry component id'):
+        index_registry([*components, duplicate])
+
+
+@pytest.mark.parametrize('suffix,valid', [('issues/37', True), ('issues/37\n', False)])
+def test_tracking_url_agrees_with_registry(suffix, valid):
+    url = 'https://github.com/toddwbucy/Aletharsis/' + suffix
+    tracking = Draft202012Validator(SCHEMA['properties']['tracking']['items'])
+    registry = Draft202012Validator(REGISTRY_SCHEMA['$defs']['component']['properties']['evaluation_issue'])
+    assert tracking.is_valid(url) == registry.is_valid(url) == valid
+
+
+def test_evidence_reordering_preserves_citations(pending_record):
+    record = pending_record
+    original = {e['path']: e['sha256'] for e in record['evidence']}
+    citations = deepcopy(record['checks'])
+    record['evidence'].reverse()
+    added_path = 'docs/reuse/adoptions/README.md'
+    record['evidence'].insert(0, dict(path=added_path,
+        sha256=hashlib.sha256((ROOT / added_path).read_bytes()).hexdigest(),
+        purpose='Synthetic insertion must not rebind existing evidence citations.'))
+    validate(record)
+    for name, check in record['checks'].items():
+        assert check['evidence'] == citations[name]['evidence']
+        for path in check['evidence']:
+            assert next(e['sha256'] for e in record['evidence'] if e['path'] == path) == original[path]
+    record['evidence'] = [e for e in record['evidence'] if e['path'] != next(iter(citations.values()))['evidence'][0]]
+    with pytest.raises(AssertionError, match='unknown evidence path'): validate(record)
+
+
+def test_positional_evidence_citations_rejected(pending_record):
+    pending_record['checks']['resources']['evidence'] = [0]
     assert not VALIDATOR.is_valid(pending_record)

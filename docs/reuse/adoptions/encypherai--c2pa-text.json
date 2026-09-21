@@ -25,100 +25,100 @@
       "status": "partial",
       "detail": "G2 #37 scoped four Go extraction APIs. HTML host validation and source mappings remain prerequisites alongside executable DA-001/report integration; no accepted extraction adapter.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
       ]
     },
     "licenses_notices": {
       "status": "partial",
       "detail": "Root MIT retained and x/text BSD-3-Clause inspected; no upstream code or vectors redistributed. Per-file/transitive notices and production redistribution clearance remain open.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
       ]
     },
     "unit_contract": {
       "status": "partial",
       "detail": "28 upstream tests passed; 39 independent cases completed with eight HTML host-context mismatches. These probes do not establish production normalization or adapter conformance.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
       ]
     },
     "live_adapter": {
       "status": "not_run",
       "detail": "No DA-001 extraction adapter executed; ExtractManifest/ValidateText/ExtractStructured/ExtractHTML probes are feasibility evidence only.",
       "evidence": [
-        0
+        "docs/reuse/evaluations/c2pa-text.md"
       ]
     },
     "source_integrity": {
       "status": "partial",
       "detail": "Synthetic input hashes checked after every case. Decomposed-text raw/NFC offsets differ and structured/HTML APIs omit spans; production acquisition and source mapping remain unvalidated.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
       ]
     },
     "adversarial_fuzz": {
       "status": "partial",
       "detail": "39 cases cover malformed VS wrappers, huge lengths, multiple carriers, Unicode coordinates and HTML host confusion. Eight HTML mismatches remain; no production fuzz campaign completed.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
       ]
     },
     "resources": {
       "status": "partial",
       "detail": "Build/upstream tests used 23.945 CPU seconds and 416.7 MiB peak memory; case run 0.265 CPU seconds and 153.3 MiB. Linux harness enforced 1 GiB memory and per-case deadlines; no production worst-case bound.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
       ]
     },
     "native_platforms": {
       "status": "partial",
       "detail": "Go 1.27.1 Linux/amd64 extraction study only. No other native detector platform executed; core cross-build CI is not evidence for these APIs.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
       ]
     },
     "build_install": {
       "status": "partial",
       "detail": "Two fresh offline Go probe builds and corpus runs yielded identical binary/result bytes. This does not establish cross-host reproducibility, install/relocation or accepted release packaging.",
       "evidence": [
-        0,
-        1,
-        2
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
       ]
     },
     "disable_rollback_missing": {
       "status": "not_run",
       "detail": "No installed extraction adapter; disable, missing-runtime and rollback behavior in native audits remains untested.",
       "evidence": [
-        0
+        "docs/reuse/evaluations/c2pa-text.md"
       ]
     },
     "security_updates": {
       "status": "not_run",
       "detail": "Carrier pin and x/text dependency identified, but no complete advisory, per-file notice or supported-update review for extraction adoption.",
       "evidence": [
-        0
+        "docs/reuse/evaluations/c2pa-text.md"
       ]
     },
     "semantic_upgrade": {
       "status": "not_run",
       "detail": "39-case carrier baseline is retained, including eight unresolved HTML discrepancies; no accepted baseline, replacement pin comparison or rollback drill yet.",
       "evidence": [
-        0
+        "docs/reuse/evaluations/c2pa-text.md"
       ]
     }
   },

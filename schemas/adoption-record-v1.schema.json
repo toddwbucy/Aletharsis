@@ -256,8 +256,7 @@
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "integer",
-            "minimum": 0
+            "$ref": "#/properties/evidence/items/properties/path"
           },
           "minItems": 1
         },

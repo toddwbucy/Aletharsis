@@ -20,16 +20,19 @@ Start new checks as `not_run` with explicit required evidence.
 Bind the record to the exact registry commit, source archive and license digests,
 requested scope, accountable owner, implementer, technical reviewer, evaluation
 PR and tracking issues. Add exact-byte SHA-256 references to retained commands,
-environment, results and artifact manifests. Evidence indices are local to this
-record. A repository name, CI badge, study pass count or artifact URL alone is not
+environment, results and artifact manifests. Checks cite evidence by its unique retained path, which resolves to the exact-byte
+digest in this record. Reordering the evidence inventory cannot rebind citations. A repository name, CI badge, study pass count or artifact URL alone is not
 adoption evidence. Nested manifests must be verified by their owning experiment
 checks; hashing a manifest alone does not validate the files it describes.
 
 Every checklist field is required. Use `passed`, `partial`, `failed`, `not_run` or
 `not_applicable`; the detail states what ran, what it proves and what it does not.
-Every status, including `not_run`, requires retained evidence supporting its
-observations or declared gap. Referencing a feasibility study does not turn an
-unrun adoption gate into an executed one. A
+Every status, including `not_run`, requires at least one retained citation. CI
+checks path membership and byte digests, not whether the document supports the
+claim. For `not_run`, citations identify the study/context used to declare the
+gap; they are not execution evidence. Human review must assess whether that basis
+supports the stated gap. Referencing a feasibility study does not turn an unrun
+adoption gate into an executed one. A
 not-applicable entry also requires a nonblank `scope_justification`, reviewed by
 the owner against that evidence;
 it is not an escape hatch for missing platforms or an unavailable test system.
@@ -47,7 +50,12 @@ Aletharsis PR URL, matching the registry decision contract; issue URLs and comme
 anchors can be retained in tracking/evidence but cannot replace that canonical URL.
 Known `coderabbitai` and `*[bot]` identifiers are rejected as acceptance owners
 or accepted technical reviewers. Pending records may name automated reviewers
-that supplied evaluation feedback. This is a limited guard, not identity authentication.
+that supplied evaluation feedback. Before recording acceptance in any disposition,
+assign an independent human technical reviewer and update `technical_reviewer` in
+both the adoption record and registry in the same reviewed change. The acceptance
+must name that reviewer. Preserve the original automated feedback in its linked
+evaluation review; reassignment does not erase that history or prove a human has
+accepted it. This is a limited guard, not identity authentication.
 The technical reviewer identifier must differ from the implementer (ignoring
 case and surrounding whitespace). An owner may implement work but cannot thereby
 self-review it. Specialist review must be assigned where automated review lacks
@@ -60,8 +68,9 @@ URL is not required and would not establish independence by itself. Pending reco
 naming an automated reviewer are not evidence of completed specialist acceptance.
 
 Acceptance must inspect evidence, not merely validate JSON. Schema checks cannot
-prove the truth of a pass assertion or that a linked reviewer accepted it. On
-approval, update the existing registry decision/status and accepted production
+prove the truth of a pass assertion or that a linked reviewer accepted it. For accepted approval or rejection, record a complete registry decision (reviewer,
+scope, gates, reason, disposition and canonical PR URL) and matching status. On
+approval, update the accepted production
 scope in the same reviewed change. A dev-only oracle can be approved with empty
 production scope, but its exact developer execution/redistribution scope still
 needs acceptance. Rejection or revision does not silently close other gate issues.
