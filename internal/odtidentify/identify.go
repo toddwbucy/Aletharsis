@@ -26,6 +26,7 @@ type Anchor struct {
 	Span             xmlparts.Span
 }
 type Entry struct {
+	Namespace, Kind                        string
 	SizeDeclared                           bool
 	Path, MediaType, Version, DeclaredSize string
 	Encrypted                              bool
@@ -282,7 +283,7 @@ func (r *Result) readManifest() bool {
 			r.issue("odt.manifest_entry_limit", part, i)
 			return false
 		}
-		entry := Entry{State: "declared", Encrypted: encrypted[i], Anchor: Anchor{part, r.ManifestSHA256, i, e.Full}}
+		entry := Entry{Namespace: e.Name.Namespace, Kind: e.Name.Local, State: "declared", Encrypted: encrypted[i], Anchor: Anchor{part, r.ManifestSHA256, i, e.Full}}
 		unknown := e.Name.Namespace != ManifestNS || e.Name.Local != "file-entry" || bad[i]
 		for _, a := range e.Attributes {
 			if a.NamespaceDeclaration {
@@ -322,22 +323,31 @@ func (r *Result) readManifest() bool {
 		if entry.Code != "" {
 			r.issue(entry.Code, part, i)
 		}
-		paths[entry.Path] = append(paths[entry.Path], len(r.Entries))
+		if entry.manifestEntry() {
+			paths[entry.Path] = append(paths[entry.Path], len(r.Entries))
+		}
 		r.Entries = append(r.Entries, entry)
 	}
 	for i := range r.Entries {
 		e := &r.Entries[i]
-		if e.Path != "" && len(paths[e.Path]) > 1 {
+		if e.manifestEntry() && e.Path != "" && len(paths[e.Path]) > 1 {
 			e.State, e.Code = "ambiguous", "odt.manifest_path_ambiguous"
 			r.issue(e.Code, part, e.Anchor.Element)
 		}
 	}
 	return true
 }
+func (e Entry) manifestEntry() bool {
+	return e.Namespace == ManifestNS && e.Kind == "file-entry"
+}
+
 func (r *Result) membership(parts map[string]int) {
 	declared := map[string]int{}
 	for i := range r.Entries {
 		e := &r.Entries[i]
+		if !e.manifestEntry() {
+			continue
+		}
 		declared[e.Path] = i
 		// Rejected/ambiguous declarations remain evidence, never membership authority.
 		if e.State != "declared" {

@@ -134,3 +134,9 @@ nonempty path, all entry anchors remain in `Entries`. `Membership.Entry` referen
 the last declaration in manifest order as a deterministic diagnostic anchor only;
 its ambiguous state/code remains authoritative and the reference grants no membership
 or extraction authority. Consumers can inspect all entries sharing that path.
+
+Entries retain expanded element namespace and local kind. Only manifest-namespace
+file-entry elements participate in path collision and membership lookup; a foreign
+element or different local kind remains unsupported evidence without claiming a
+real entry's path. Genuine defective/duplicate manifest declarations still block
+membership authority for their own paths.

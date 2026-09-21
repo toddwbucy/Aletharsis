@@ -23,8 +23,8 @@ const StrictWord = "http://purl.oclc.org/ooxml/wordprocessingml/main"
 const maxDeclarations = 4096
 
 type Declaration struct {
-	Kind, Key, ContentType, State, Code string
-	Anchor                              opcrels.Anchor
+	Namespace, Kind, Key, ContentType, State, Code string
+	Anchor                                         opcrels.Anchor
 }
 type Assignment struct {
 	Part, PartSHA256, ContentType, State, Code string
@@ -256,7 +256,7 @@ func (r *Result) readTypes() bool {
 			r.issue("opc.content_types_limit", r.TypesPart, i)
 			return false
 		}
-		dec := Declaration{Kind: e.Name.Local, State: "accepted", Anchor: opcrels.Anchor{Part: r.TypesPart, PartSHA256: r.TypesSHA256, Element: i, Span: e.Full}}
+		dec := Declaration{Namespace: e.Name.Namespace, Kind: e.Name.Local, State: "accepted", Anchor: opcrels.Anchor{Part: r.TypesPart, PartSHA256: r.TypesSHA256, Element: i, Span: e.Full}}
 		attrs := map[string]string{}
 		unknown := false
 		for _, a := range e.Attributes {
@@ -265,6 +265,7 @@ func (r *Result) readTypes() bool {
 			}
 			if a.Name.Namespace != "" {
 				unknown = true
+				continue
 			}
 			attrs[a.Name.Local] = a.Value
 		}
@@ -319,18 +320,25 @@ func (r *Result) readTypes() bool {
 			r.issue(dec.Code, r.TypesPart, i)
 		}
 		key := declarationKey(dec)
-		keys[key] = append(keys[key], len(r.Declarations))
+		if dec.typeDeclaration() {
+			keys[key] = append(keys[key], len(r.Declarations))
+		}
 		r.Declarations = append(r.Declarations, dec)
 	}
 	// Iterate declaration order for deterministic issue order, not map order.
 	for i := range r.Declarations {
 		dec := &r.Declarations[i]
-		if dec.Key != "" && len(keys[declarationKey(*dec)]) > 1 {
+		if dec.typeDeclaration() && dec.Key != "" && len(keys[declarationKey(*dec)]) > 1 {
 			dec.State, dec.Code = "ambiguous", "opc.content_type_ambiguous"
 			r.issue(dec.Code, r.TypesPart, dec.Anchor.Element)
 		}
 	}
 	return true
+}
+
+// Only expanded OPC element names can claim type lookup keys.
+func (d Declaration) typeDeclaration() bool {
+	return d.Namespace == TypesNamespace && (d.Kind == "Default" || d.Kind == "Override")
 }
 
 // Use the same lookup equivalence for duplicate detection and assignment,
@@ -345,6 +353,9 @@ func declarationKey(d Declaration) string {
 func (r *Result) assign(parts []packageparts.Part) {
 	defaults, overrides := map[string]int{}, map[string]int{}
 	for i, d := range r.Declarations {
+		if !d.typeDeclaration() {
+			continue
+		}
 		if d.Kind == "Default" {
 			defaults[fold(d.Key)] = i
 		} else if d.Kind == "Override" {
@@ -397,7 +408,7 @@ func (r *Result) assign(parts []packageparts.Part) {
 	}
 	// Overrides for absent targets remain observable package inconsistencies.
 	for _, d := range r.Declarations {
-		if d.Kind == "Override" && counts[fold(strings.TrimPrefix(d.Key, "/"))] == 0 {
+		if d.typeDeclaration() && d.Kind == "Override" && d.State == "accepted" && counts[fold(strings.TrimPrefix(d.Key, "/"))] == 0 {
 			r.issue("opc.override_target_missing", r.TypesPart, d.Anchor.Element)
 		}
 	}

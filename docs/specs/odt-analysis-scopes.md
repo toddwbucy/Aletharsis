@@ -17,7 +17,11 @@ notes, annotations, ruby components, revisions, unknown structures, comments and
 processing instructions therefore remain separate. Non-whitespace unselected data
 also ends a scope. All underlying OT-001 observations, unselected segments, issues
 and limitations remain in the result. Scope boundaries record the terminating token
-and reason when a selected scope was active; they are not a complete XML inventory.
+and reason when a selected scope was active, except `control_expansion_limit`:
+every omitted expansion retains its control-token anchor, even without an active
+scope (see resource behavior below). Repeated skips identify distinct controls,
+not repeated terminations of a nonexistent scope. These records are bounded by
+the parsed token inventory and are not a complete XML inventory.
 This policy intentionally leaves cross-boundary and cross-paragraph patterns unassessed.
 
 Admitted OT-001 text controls are an explicit exception: known `text:s` counts expand

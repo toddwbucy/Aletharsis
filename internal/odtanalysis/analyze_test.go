@@ -281,3 +281,18 @@ func TestLegacyContentStillAnalyzed(t *testing.T) {
 		t.Fatal("legacy findings unavailable")
 	}
 }
+
+func TestEachSkippedExpansionRetainsAnchorWithoutActiveScope(t *testing.T) {
+	r := analyze(t, document(`<text:p><text:s text:c="200001"/><text:s text:c="200002"/></text:p>`))
+	if r.State != "partial" || len(r.Scopes) != 0 || len(r.Boundaries) != 2 || len(r.Extraction.Controls) != 2 {
+		t.Fatal("lost skipped control evidence")
+	}
+	if r.Boundaries[0].Token == r.Boundaries[1].Token {
+		t.Fatal("duplicate rather than distinct anchor")
+	}
+	for _, b := range r.Boundaries {
+		if b.Reason != "control_expansion_limit" {
+			t.Fatal("wrong omission reason")
+		}
+	}
+}

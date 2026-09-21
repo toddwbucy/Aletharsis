@@ -151,3 +151,10 @@ Declarations with absent/empty keys retain their required-attribute defect rathe
 than being grouped as duplicate empty keys. Nonempty lookup-equivalent keys still
 invalidate every colliding declaration, including malformed slashless overrides;
 this avoids order-dependent assignment or fallback authority.
+
+Declaration records retain the expanded element namespace and local kind. Foreign
+attributes remain in located XML and mark coverage partial, but cannot overwrite
+unqualified key/content-type facts. Only OPC-namespace Default/Override elements
+participate in type lookup and collision detection; other elements remain evidence
+without claiming that keyspace. An absent-target diagnostic requires an accepted
+Override, not a missing or unsupported key.

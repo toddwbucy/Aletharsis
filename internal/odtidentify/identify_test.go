@@ -361,3 +361,37 @@ func TestDuplicateMembershipUsesLastDeclarationAsNonAuthoritativeAnchor(t *testi
 	}
 	t.Fatal("missing membership")
 }
+
+func TestForeignManifestElementsCannotClaimPaths(t *testing.T) {
+	for _, declaration := range []string{
+		`<x:file-entry xmlns:x="urn:foreign" m:full-path="content.xml" m:media-type="text/xml"/>`,
+		`<x:file-entry xmlns:x="urn:foreign" m:full-path="/" m:media-type="text/xml"/>`,
+		`<m:unknown m:full-path="content.xml" m:media-type="text/xml"/>`,
+	} {
+		for _, first := range []bool{false, true} {
+			p := base()
+			raw := p["META-INF/manifest.xml"]
+			if first {
+				i := strings.Index(raw, ">") + 1
+				raw = raw[:i] + declaration + raw[i:]
+			} else {
+				raw = strings.Replace(raw, `</m:manifest>`, declaration+`</m:manifest>`, 1)
+			}
+			p["META-INF/manifest.xml"] = raw
+			r := inspect(t, p)
+			if r.Format != "odt" || r.State != "partial" || r.ContentEntry < 0 || has(r, "odt.manifest_path_ambiguous") {
+				t.Fatal("foreign path claimed authority", r.Issues)
+			}
+			for _, e := range r.Entries {
+				if !e.manifestEntry() && e.State != "unsupported" {
+					t.Fatal("foreign declaration promoted", e)
+				}
+			}
+			for _, m := range r.Memberships {
+				if m.Part == "content.xml" && m.Entry != r.ContentEntry {
+					t.Fatal("foreign membership anchor", m)
+				}
+			}
+		}
+	}
+}

@@ -335,3 +335,66 @@ func TestMissingDeclarationKeysRetainSpecificDefect(t *testing.T) {
 		}
 	}
 }
+
+func TestForeignAttributesCannotOverwriteDeclarationFacts(t *testing.T) {
+	for _, attrs := range []string{
+		`PartName="/styles.xml" x:PartName="/evil.xml" ContentType="application/xml" x:ContentType="text/plain"`,
+		`x:PartName="/evil.xml" PartName="/styles.xml" x:ContentType="text/plain" ContentType="application/xml"`,
+	} {
+		p := base("word/document.xml")
+		p["styles.xml"] = "<styles/>"
+		p["[Content_Types].xml"] = strings.Replace(p["[Content_Types].xml"], `</Types>`, `<Override xmlns:x="urn:foreign" `+attrs+`/></Types>`, 1)
+		r := inspect(t, p)
+		d := r.Declarations[len(r.Declarations)-1]
+		if d.Key != "/styles.xml" || d.ContentType != "application/xml" || d.State != "unsupported" || d.Namespace != TypesNamespace {
+			t.Fatal("foreign attribute overwrote evidence", d)
+		}
+		if hasIssue(r, "opc.override_target_missing") {
+			t.Fatal("invented foreign target")
+		}
+	}
+}
+
+func TestForeignDeclarationsCannotClaimTypeKeys(t *testing.T) {
+	for _, declaration := range []string{
+		`<x:Override xmlns:x="urn:foreign" PartName="/_rels/.rels" ContentType="application/xml"/>`,
+		`<x:Override xmlns:x="urn:foreign" PartName="/word/document.xml" ContentType="application/xml"/>`,
+		`<x:Default xmlns:x="urn:foreign" Extension="rels" ContentType="application/xml"/>`,
+	} {
+		for _, first := range []bool{false, true} {
+			p := base("word/document.xml")
+			raw := p["[Content_Types].xml"]
+			if first {
+				i := strings.Index(raw, ">") + 1
+				raw = raw[:i] + declaration + raw[i:]
+			} else {
+				raw = strings.Replace(raw, `</Types>`, declaration+`</Types>`, 1)
+			}
+			p["[Content_Types].xml"] = raw
+			r := inspect(t, p)
+			if r.Format != "docx" || r.State != "partial" || hasIssue(r, "opc.content_type_ambiguous") || hasIssue(r, "docx.root_relationship_type_unknown") {
+				t.Fatal("foreign declaration claimed keys", r.Issues)
+			}
+			for _, d := range r.Declarations {
+				if d.Namespace == "urn:foreign" && d.State != "unsupported" {
+					t.Fatal("foreign declaration promoted", d)
+				}
+			}
+		}
+	}
+}
+
+func TestMissingTargetOnlyForAcceptedOverride(t *testing.T) {
+	for _, declaration := range []string{`<Override ContentType="application/xml"/>`, `<Override PartName="bad" ContentType="application/xml"/>`} {
+		p := base("word/document.xml")
+		p["[Content_Types].xml"] = strings.Replace(p["[Content_Types].xml"], `</Types>`, declaration+`</Types>`, 1)
+		if r := inspect(t, p); hasIssue(r, "opc.override_target_missing") {
+			t.Fatal("invented missing target", r.Issues)
+		}
+	}
+	p := base("word/document.xml")
+	p["[Content_Types].xml"] = strings.Replace(p["[Content_Types].xml"], `</Types>`, override("absent.xml", "application/xml")+`</Types>`, 1)
+	if r := inspect(t, p); !hasIssue(r, "opc.override_target_missing") {
+		t.Fatal("real missing target lost")
+	}
+}
