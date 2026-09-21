@@ -114,3 +114,6 @@ Validation record: Linux amd64 / Go 1.27.1 full suite, vet and odttext race chec
 passed, as did 265 offline contract tests. A three-second two-worker fuzz configuration
 exercised 172,110 inputs without failure (about four seconds including shutdown).
 These native checks do not establish full ODF conformance or renderer equivalence.
+
+[OA-001](odt-analysis-scopes.md) proposes the analysis consumer, with bounded inline
+assembly and separately classified origins for explicit whitespace expansion.
