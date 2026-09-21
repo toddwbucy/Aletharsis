@@ -123,7 +123,7 @@ func TestSpaceCountsAndMalformedControls(t *testing.T) {
 	}
 }
 func TestRootAdmissionAndSpoofing(t *testing.T) {
-	for _, source := range []string{`<document-content/>`, strings.Replace(document(""), `office:version="1.3"`, `office:version="1.4"`, 1), strings.Replace(document(""), "<office:text></office:text>", "<office:spreadsheet/>", 1), strings.Replace(document(""), "</office:body>", "<office:text/></office:body>", 1)} {
+	for _, source := range []string{`<document-content/>`, strings.Replace(document(""), "<office:text></office:text>", "<office:spreadsheet/>", 1), strings.Replace(document(""), "</office:body>", "<office:text/></office:body>", 1)} {
 		b := []byte(source)
 		if r, err := Extract(context.Background(), b, evidence.Hash(b)); r != nil || !errors.Is(err, ErrStructure) {
 			t.Fatal("root", err)
@@ -232,4 +232,14 @@ func FuzzExtract(f *testing.F) {
 			}
 		}
 	})
+}
+
+func TestUnknownVersionsRetainObservedText(t *testing.T) {
+	for _, version := range []string{"", "1.1", "1.4"} {
+		source := strings.Replace(document(`<text:p>A&#x200B;</text:p>`), `office:version="1.3"`, `office:version="`+version+`"`, 1)
+		r := extract(t, source)
+		if r.State != "partial" || len(r.Texts) != 1 || r.DocumentVersion != version || r.Issues[0].Code != "odt.content_version_unsupported" {
+			t.Fatal("lost version caveat or text", r)
+		}
+	}
 }

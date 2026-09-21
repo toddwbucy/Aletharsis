@@ -120,8 +120,16 @@ func TestBoundariesAndPartialCoverage(t *testing.T) {
 func TestGlobalExpansionBudget(t *testing.T) {
 	for _, body := range []string{`<text:p><text:s text:c="200001"/></text:p>`, `<text:p><text:s text:c="18446744073709551615"/></text:p>`, `<text:p><text:s text:c="100000"/></text:p><text:p><text:s text:c="100001"/></text:p>`, `<text:p>A<text:s text:c="200000"/></text:p>`} {
 		b := []byte(document(body))
-		if r, err := Analyze(context.Background(), b, evidence.Hash(b)); r != nil || !errors.Is(err, xmlparts.ErrLimit) {
-			t.Fatal("expansion limit", err)
+		r, err := Analyze(context.Background(), b, evidence.Hash(b))
+		if err != nil || r.State != "partial" || r.Extraction == nil {
+			t.Fatal("expansion coverage", err)
+		}
+		limited := false
+		for _, boundary := range r.Boundaries {
+			limited = limited || boundary.Reason == "control_expansion_limit"
+		}
+		if !limited {
+			t.Fatal("missing limit anchor")
 		}
 	}
 	r := analyze(t, document(`<text:p><text:s text:c="200000"/></text:p>`))
@@ -241,4 +249,35 @@ func FuzzAnalyze(f *testing.F) {
 			t.Fatal("unbounded expansion")
 		}
 	})
+}
+
+func TestExpansionLimitPreservesStoredEvidence(t *testing.T) {
+	half := strings.Repeat("\u200b\u200c", 8)
+	source := document(`<text:p>` + half + `<text:s text:c="200001"/>` + half + `😀</text:p>`)
+	r := analyze(t, source)
+	if r.State != "partial" || r.Extraction.State != "completed" || len(r.Scopes) != 2 || patterns(r) != 0 || r.Extraction.Controls[0].Count != 200001 {
+		t.Fatal("lost extraction or crossed limit boundary")
+	}
+	for _, s := range r.Scopes {
+		if len(s.Findings) == 0 {
+			t.Fatal("lost Unicode findings")
+		}
+	}
+	// A preceding expansion cannot consume capacity reserved for later stored text.
+	r = analyze(t, document(`<text:p><text:s text:c="200000"/></text:p><text:p>😀&#x200B;</text:p>`))
+	if r.State != "partial" || len(r.Scopes) != 1 || r.Scopes[0].Text != "😀\u200b" {
+		t.Fatal("stored text crowded out")
+	}
+	b := []byte(document(`<text:p>` + strings.Repeat("a", MaxScalars+1) + `</text:p>`))
+	if r, err := Analyze(context.Background(), b, evidence.Hash(b)); r != nil || !errors.Is(err, xmlparts.ErrLimit) {
+		t.Fatal("stored text budget", err)
+	}
+}
+
+func TestLegacyContentStillAnalyzed(t *testing.T) {
+	source := strings.Replace(document(`<text:p>😀&#x200B;</text:p>`), `office:version="1.3"`, `office:version="1.1"`, 1)
+	r := analyze(t, source)
+	if r.State != "partial" || r.Extraction.DocumentVersion != "1.1" || len(r.Scopes) != 1 || len(r.Scopes[0].Findings) < 2 {
+		t.Fatal("legacy findings unavailable")
+	}
 }

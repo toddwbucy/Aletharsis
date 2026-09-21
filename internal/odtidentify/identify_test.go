@@ -215,7 +215,11 @@ func TestInvalidManifestAndContent(t *testing.T) {
 			p := base()
 			tc.change(p)
 			r := inspect(t, p)
-			if r.Format != "" || r.State != "partial" || !has(r, tc.code) {
+			want := ""
+			if tc.name == "forbidden" || tc.name == "traversal" || tc.name == "unknown" {
+				want = "odt"
+			}
+			if r.Format != want || r.State != "partial" || !has(r, tc.code) {
 				t.Fatal("invalid evidence accepted", r.Format, r.Issues)
 			}
 		})
@@ -282,4 +286,45 @@ func FuzzODTManifest(f *testing.F) {
 			}
 		}
 	})
+}
+
+func TestLegacyVersionAndUnrelatedManifestGaps(t *testing.T) {
+	for _, mode := range []string{"legacy", "root_attribute", "entry_attribute"} {
+		p := base()
+		switch mode {
+		case "legacy":
+			p["META-INF/manifest.xml"] = strings.ReplaceAll(p["META-INF/manifest.xml"], ` m:version="1.3"`, ``)
+			p["content.xml"] = strings.ReplaceAll(p["content.xml"], `o:version="1.3"`, `o:version="1.1"`)
+		case "root_attribute":
+			p["META-INF/manifest.xml"] = strings.Replace(p["META-INF/manifest.xml"], `<m:manifest `, `<m:manifest foreign="x" `, 1)
+		case "entry_attribute":
+			add(p, entry("other.bin", "application/octet-stream", ` foreign="x"`))
+		}
+		r := inspect(t, p)
+		if r.Format != "odt" || r.State != "partial" || r.ContentXML == nil {
+			t.Fatal(mode, r.Issues)
+		}
+		if mode == "legacy" && !has(r, "odt.manifest_version_unsupported") {
+			t.Fatal("version caveat lost")
+		}
+	}
+	p := base()
+	p["META-INF/manifest.xml"] = strings.Replace(p["META-INF/manifest.xml"], `m:full-path="content.xml"`, `foreign="x" m:full-path="content.xml"`, 1)
+	r := inspect(t, p)
+	if r.Format != "" || r.ContentXML != nil {
+		t.Fatal("unsupported content declaration promoted")
+	}
+}
+func TestMissingTargetIsNotSizeMismatch(t *testing.T) {
+	p := base()
+	add(p, entry("Pictures/x.png", "image/png", ` m:size="10"`))
+	r := inspect(t, p)
+	if r.Format != "odt" || !has(r, "odt.manifest_target_missing") || has(r, "odt.declared_size_mismatch") {
+		t.Fatal(r.Issues)
+	}
+	for _, e := range r.Entries {
+		if e.Path == "Pictures/x.png" && (e.State != "missing" || e.Code != "odt.manifest_target_missing" || e.DeclaredSize != "10") {
+			t.Fatal("missing state lost", e)
+		}
+	}
 }

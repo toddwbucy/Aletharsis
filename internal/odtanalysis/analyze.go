@@ -38,6 +38,7 @@ type Boundary struct {
 }
 type Result struct {
 	Version     string
+	State       string
 	Extraction  *odttext.Result
 	Scopes      []Scope
 	Boundaries  []Boundary
@@ -49,7 +50,7 @@ func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	if err != nil {
 		return nil, err
 	}
-	r := &Result{Version: Version, Extraction: extracted, Scopes: []Scope{}, Boundaries: []Boundary{}, Limitations: []string{"odt.analysis_not_rendered_text", "odt.whitespace_not_collapsed", "odt.cross_paragraph_patterns_not_assessed", "odt.structural_boundaries_split_analysis", "odt.only_unicode_emoji_and_patterns_analyzed"}}
+	r := &Result{Version: Version, State: extracted.State, Extraction: extracted, Scopes: []Scope{}, Boundaries: []Boundary{}, Limitations: []string{"odt.analysis_not_rendered_text", "odt.whitespace_not_collapsed", "odt.cross_paragraph_patterns_not_assessed", "odt.structural_boundaries_split_analysis", "odt.only_unicode_emoji_and_patterns_analyzed"}}
 	d := extracted.XML.Document
 	texts := map[int]int{}
 	for i, t := range extracted.Texts {
@@ -64,6 +65,15 @@ func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	active := false
 	paragraph := -1
 	total := 0
+	// Reserve capacity for stored text so control expansion cannot crowd out
+	// observable characters later in the document.
+	remainingStored := 0
+	for _, t := range extracted.Texts {
+		remainingStored += len(extracted.XML.Segments[t.Segment].Scalars)
+		if remainingStored > MaxScalars {
+			return nil, xmlparts.ErrLimit
+		}
+	}
 	flush := func() {
 		if !active {
 			return
@@ -107,6 +117,7 @@ func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 				origins = append(origins, Origin{Kind: "stored", Transformation: m.Transformation, Text: idx, Segment: t.Segment, Scalar: m.Scalar, Control: -1, Repetition: -1, Source: m.Source, UTF8: xmlparts.Span{Start: start + m.UTF8.Start, End: start + m.UTF8.End}})
 			}
 			total += len(s.Scalars)
+			remainingStored -= len(s.Scalars)
 			builder.WriteString(s.Text)
 			continue
 		}
@@ -120,8 +131,11 @@ func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 				if token.Kind == "end" {
 					continue
 				}
-				if c.Count > uint64(MaxScalars-total) {
-					return nil, xmlparts.ErrLimit
+				if c.Count > uint64(MaxScalars-total-remainingStored) {
+					r.State = "partial"
+					r.Boundaries = append(r.Boundaries, Boundary{ti, "control_expansion_limit"})
+					flush()
+					continue
 				}
 				begin(ti, c.Paragraph)
 				char := byte(' ')

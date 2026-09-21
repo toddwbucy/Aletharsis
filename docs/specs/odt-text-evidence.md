@@ -6,11 +6,14 @@ part. It does not change report schemas or advertise ODT support in the CLI.
 
 ## Scope and identity
 
-Admission requires an `office:document-content` root with office version 1.2 or
-1.3, one direct `office:body`, and exactly one child element of that body:
+Admission requires an `office:document-content` root, one direct `office:body`,
+and exactly one child element of that body:
 `office:text`. Namespace URIs, not prefixes, determine element identity. The caller
 must separately establish package identity, part name, manifest membership and
-unencrypted content through OI-001. XML shape alone does not identify an ODT file.
+unencrypted content through OI-001. XML shape alone does not identify an ODT file. Versions other than 1.2/1.3
+(including an absent version) retain recognized text with partial state and
+`odt.content_version_unsupported`; this is observation of the admitted structures,
+not conformance certification or full semantic support for those versions.
 
 The result retains the complete XM-001 mapped XML and part SHA-256, parser version
 `odt-text/1`, document version, ordered text/control/declaration observations,

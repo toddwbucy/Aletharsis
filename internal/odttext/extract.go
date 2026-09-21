@@ -109,9 +109,6 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		return nil, ErrStructure
 	}
 	version, _ := attr(d.Elements[0], odtidentify.OfficeNS, "version")
-	if version != "1.2" && version != "1.3" {
-		return nil, ErrStructure
-	}
 	body, scope := -1, -1
 	for i, e := range d.Elements {
 		if e.Parent == 0 && named(e, odtidentify.OfficeNS, "body") {
@@ -137,6 +134,9 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		return nil, ErrStructure
 	}
 	r := &Result{Parser: Version, State: "completed", DocumentVersion: version, XML: mapped, Texts: []Text{}, Controls: []Control{}, Declarations: []int{}, Unselected: []Unselected{}, Issues: []Issue{}, Limitations: []string{"odt.rendering_not_performed", "odt.styles_unresolved", "odt.conditions_and_fields_not_evaluated", "odt.whitespace_not_rendered", "odt.cross_segment_assembly_not_performed", "odt.change_ranges_unresolved"}}
+	if version != "1.2" && version != "1.3" {
+		r.issue("odt.content_version_unsupported", 0)
+	}
 	n := len(d.Elements)
 	inside := make([]bool, n)
 	paragraphs := make([]int, n)

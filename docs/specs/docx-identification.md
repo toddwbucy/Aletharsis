@@ -53,7 +53,13 @@ Duplicate equivalent defaults/overrides mark every duplicate ambiguous, even whe
 values happen to agree. Unknown namespaces/elements/attributes, nested declaration
 content, non-whitespace character content and unsupported key/type forms prevent
 content-type selection authority. The complete parsed XML is retained for forensic
-inspection, so an unsupported declaration is not deleted from evidence.
+inspection, so an unsupported declaration is not deleted from evidence. Defects
+in unrelated declarations mark coverage partial but do not stop main-part
+inspection. Rejected or ambiguous declarations never supply assignments, and an
+invalid override cannot fall back to a valid default for the same part. Root
+structure failures and declaration-budget exhaustion still stop selection. A
+malformed media type and malformed key on one declaration each retain an issue;
+the declaration Code keeps the first validation failure.
 
 When declarations are usable, every non-directory package part except the special
 content-types item receives an assignment or an explicit unknown result. Missing

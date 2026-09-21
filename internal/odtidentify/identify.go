@@ -158,7 +158,7 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		r.issue("odt.root_identity_mismatch", manifest.Name, root.Anchor.Element)
 		return r, nil
 	}
-	if root.Version != "" && root.Version != r.ManifestVersion {
+	if root.Version != "" && r.ManifestVersion != "" && root.Version != r.ManifestVersion {
 		r.issue("odt.root_version_mismatch", manifest.Name, root.Anchor.Element)
 		return r, nil
 	}
@@ -196,7 +196,7 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		return r, nil
 	}
 	version, _ := attribute(d.Elements[0], OfficeNS, "version")
-	if version != r.ManifestVersion {
+	if r.ManifestVersion != "" && version != r.ManifestVersion {
 		r.issue("odt.content_version_mismatch", content.Name, 0)
 		return r, nil
 	}
@@ -332,13 +332,17 @@ func (r *Result) readManifest() bool {
 			r.issue(e.Code, part, e.Anchor.Element)
 		}
 	}
-	return r.State != "partial"
+	return true
 }
 func (r *Result) membership(parts map[string]int) {
 	declared := map[string]int{}
 	for i := range r.Entries {
 		e := &r.Entries[i]
 		declared[e.Path] = i
+		// Rejected/ambiguous declarations remain evidence, never membership authority.
+		if e.State != "declared" {
+			continue
+		}
 		switch {
 		case e.Path == "/":
 			r.RootEntry = i
@@ -370,7 +374,7 @@ func (r *Result) membership(parts map[string]int) {
 			default:
 				r.issue("odt.encrypted_entry_unavailable", "META-INF/manifest.xml", e.Anchor.Element)
 			}
-		} else if e.SizeDeclared {
+		} else if e.SizeDeclared && e.State == "resolved" {
 			size, err := strconv.ParseUint(e.DeclaredSize, 10, 64)
 			if index, ok := parts[e.Path]; err != nil || !ok || size != uint64(len(r.Package.Parts[index].Bytes)) {
 				e.State, e.Code = "unresolved", "odt.declared_size_mismatch"

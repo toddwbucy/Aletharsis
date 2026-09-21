@@ -245,6 +245,7 @@ func (r *Result) readTypes() bool {
 	}
 	if bad[0] {
 		r.issue("opc.content_types_structure_unknown", r.TypesPart, 0)
+		return false
 	}
 	keys := map[string][]int{}
 	for i, e := range d.Elements {
@@ -295,13 +296,22 @@ func (r *Result) readTypes() bool {
 			if dec.Kind == "Default" {
 				for _, c := range dec.Key {
 					if !(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '_' || c == '-') {
-						dec.State, dec.Code = "unsupported", "opc.extension_unsupported"
+						if dec.Code == "" {
+							dec.State, dec.Code = "unsupported", "opc.extension_unsupported"
+						} else {
+							r.issue("opc.extension_unsupported", r.TypesPart, i)
+						}
+						break
 					}
 				}
 			} else {
 				target, code := opcrels.ResolveInternalTarget("", dec.Key)
 				if !strings.HasPrefix(dec.Key, "/") || code != "" || target != strings.TrimPrefix(dec.Key, "/") {
-					dec.State, dec.Code = "unsupported", "opc.override_name_unsupported"
+					if dec.Code == "" {
+						dec.State, dec.Code = "unsupported", "opc.override_name_unsupported"
+					} else {
+						r.issue("opc.override_name_unsupported", r.TypesPart, i)
+					}
 				}
 			}
 		}
@@ -320,7 +330,7 @@ func (r *Result) readTypes() bool {
 			r.issue(dec.Code, r.TypesPart, dec.Anchor.Element)
 		}
 	}
-	return r.State != "partial"
+	return true
 }
 func (r *Result) assign(parts []packageparts.Part) {
 	defaults, overrides := map[string]int{}, map[string]int{}
@@ -359,8 +369,13 @@ func (r *Result) assign(parts []packageparts.Part) {
 				}
 			}
 			if a.Declaration >= 0 {
-				a.State = "assigned"
-				a.ContentType = r.Declarations[a.Declaration].ContentType
+				d := r.Declarations[a.Declaration]
+				if d.State == "accepted" {
+					a.State = "assigned"
+					a.ContentType = d.ContentType
+				} else {
+					a.Code = d.Code
+				}
 			} else {
 				a.Code = "opc.part_type_missing"
 			}

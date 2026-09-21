@@ -58,10 +58,15 @@ A leading FEFF in XML character data is not treated as a transport BOM.
 
 OT-001/XP-001/XM-001 bounds apply before assembly. OA-001 additionally admits at most
 200,000 projected scalars **across all scopes combined**, including both stored and
-expanded characters. Counts are compared to the remaining budget before expansion
-or integer conversion. Extremely large valid uint64 counts therefore fail with
-`xmlparts.ErrLimit` before creating large strings or origin arrays. Unknown or
-overflowing OT-001 counts remain partial extraction evidence and split scopes.
+expanded characters. Capacity for all selected stored text is reserved before any
+control expansion. Stored text alone exceeding this bound still returns
+`xmlparts.ErrLimit`. Counts exceeding the remaining expansion capacity are not
+expanded: the analysis State becomes `partial`, a `control_expansion_limit` boundary
+records the control token even when no scope is active, and analysis continues.
+The extraction and its known count remain unchanged; a resource limit does not
+make the observed count unknown. Scopes never join across the omitted control.
+Unknown or overflowing OT-001 counts also split scopes; analysis State inherits
+any partial extraction state. Counts are checked before allocation or conversion.
 
 Builders avoid repeated prefix copies. Token budgets bound scope/boundary counts.
 UTF-8 text is at most four bytes per admitted scalar, but origins, extraction data,

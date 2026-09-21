@@ -128,7 +128,11 @@ func TestAmbiguousAndUnsupportedTypes(t *testing.T) {
 			parts := base("word/document.xml")
 			parts["[Content_Types].xml"] = strings.Replace(parts["[Content_Types].xml"], "</Types>", tc.extra+"</Types>", 1)
 			r := inspect(t, parts)
-			if r.Format != "" || r.State != "partial" || !hasIssue(r, tc.code) || r.TypesXML == nil {
+			want := "docx"
+			if tc.extra == override("WORD/document.xml", MainContentType) {
+				want = ""
+			}
+			if r.Format != want || r.State != "partial" || !hasIssue(r, tc.code) || r.TypesXML == nil {
 				t.Fatal("type conflict hidden", r.Issues)
 			}
 		})
@@ -255,4 +259,34 @@ func FuzzMainXML(f *testing.F) {
 			}
 		}
 	})
+}
+
+func TestDefectiveDeclarationsCannotSupplyMainIdentity(t *testing.T) {
+	for _, extra := range []string{` foreign="x"`, ` xmlns:x="urn:foreign" x:attr="x"`} {
+		p := base("word/document.xml")
+		p["[Content_Types].xml"] = strings.Replace(p["[Content_Types].xml"], `<Override PartName=`, `<Override`+extra+` PartName=`, 1)
+		r := inspect(t, p)
+		if r.Format != "" || !hasIssue(r, "docx.main_type_unknown") {
+			t.Fatal("unsupported declaration promoted", r.Issues)
+		}
+	}
+	p := base("word/document.xml")
+	p["[Content_Types].xml"] = strings.Replace(p["[Content_Types].xml"], `</Types>`, `<Default xmlns:x="urn:foreign" x:attr="x" Extension="bin" ContentType="application/octet-stream"/></Types>`, 1)
+	r := inspect(t, p)
+	if r.Format != "docx" || r.MainXML == nil || r.State != "partial" {
+		t.Fatal("unrelated declaration blocked extraction", r.Issues)
+	}
+}
+func TestMediaTypeAndKeyDefectsBothRetained(t *testing.T) {
+	for _, tc := range []struct{ declaration, code string }{
+		{`<Default Extension="a b!" ContentType="not a media type"/>`, "opc.extension_unsupported"},
+		{`<Override PartName="bad" ContentType="not a media type"/>`, "opc.override_name_unsupported"},
+	} {
+		p := base("word/document.xml")
+		p["[Content_Types].xml"] = strings.Replace(p["[Content_Types].xml"], `</Types>`, tc.declaration+`</Types>`, 1)
+		r := inspect(t, p)
+		if !hasIssue(r, "opc.media_type_unsupported") || !hasIssue(r, tc.code) || r.Declarations[len(r.Declarations)-1].Code != "opc.media_type_unsupported" {
+			t.Fatal("overwritten issue", r.Issues)
+		}
+	}
 }

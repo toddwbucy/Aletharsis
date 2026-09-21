@@ -15,11 +15,15 @@ span. Stored-part identities are distinct from claimed plaintext sizes or conten
 
 Identification requires the exact ODT mimetype bytes, an uncompressed first ZIP item
 named `mimetype` with no local-header extra field, matching manifest package identity,
-an admitted manifest version, a usable unencrypted `content.xml` entry, and matching
+a usable unencrypted `content.xml` entry, and matching
 content XML with one `office:body` containing exactly one `office:text` element. The
 DP-001 ZIP admission guarantees make mimetype payload offset 38 an exact layout check.
 Supported manifest/content versions in this increment are 1.2 and 1.3; newer/other
-versions remain explicit limitations. No filename extension participates.
+versions remain explicit limitations. An absent manifest version may coexist with
+recognized content/body identity (including older content carrying version 1.1);
+this yields partial coverage, not a claim of full support for that ODF version.
+Conflicting declared versions still block format identification. No filename
+extension participates.
 
 The result identifies `odt` only after the whole supported chain succeeds. A known
 format can coexist with partial manifest coverage or an encrypted auxiliary entry.
@@ -39,8 +43,14 @@ prefix; an implicit directory receives no invented byte digest.
 Every file-entry preserves full path, media type, version, declared-size text, size
 presence, encryption presence and an exact anchor. Duplicate paths invalidate every
 occurrence. Namespace/structure ambiguity, missing required fields, forbidden self or
-mimetype entries, unsupported root versions and unknown manifest constructs block
-identification authority while preserving the original XML. This is a conservative
+mimetype entries and unknown file-entry constructs prevent those entries from
+providing membership authority while preserving their XML. Unrelated defective
+entries, unknown root attributes and unsupported/absent manifest versions mark
+coverage partial without stopping content-root/body inspection. Required root or
+content entries must still resolve unambiguously; invalid roots and entry-budget
+exhaustion stop inspection. Declared sizes are compared only for resolved plaintext
+entries, so a missing target retains its missing state and declared-size evidence.
+This is a conservative
 admitted subset, not a complete ODF manifest schema validator.
 
 Each retained file is linked to a manifest entry or marked unlisted or manifest-exempt.
