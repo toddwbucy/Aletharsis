@@ -1,4 +1,4 @@
-# Office report contract: owner decision required
+# Office report contract: decision record
 
 Status: owner authorized proceeding with best judgment and reviewable PRs; no main merges.
 Tracking: #40; prerequisite B1–B5 specification increment.
@@ -53,7 +53,7 @@ coordinate artifact and resolves through checked mappings to the source evidence
 This requires a typed Office representation; do not overload the flat-text array
 or relax existing text verification to admit it.
 
-## Options for owner disposition
+## Historical options presented to the owner
 
 1. **Recommended: authorize a versioned Office report extension.** Preserve
    accepted 1.0/2.0 semantics and importer behavior. Select the exact new version
@@ -68,8 +68,9 @@ or relax existing text verification to admit it.
    transparent wire compatibility; accept that consequence explicitly before
    specification work proceeds.
 
-Neither choice authorizes an implementation or a merge. The complete B1–B5
-specification still requires its own PR and acceptance gate.
+The owner subsequently authorized the recommended direction and implementation
+on reviewable branches, with review continuing during work. No merge is authorized.
+OI-001 is the proposed B1–B5 specification in PR #74; it remains subject to review.
 
 ## Independent comparator investigation
 
