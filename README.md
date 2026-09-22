@@ -1,279 +1,85 @@
 # Aletharsis
 
-**A local-first forensic document signal auditor.** Aletharsis inspects artifacts
-for information that ordinary viewing can miss: invisible Unicode, structured
-character patterns, identifiers, and provenance-bearing content. It preserves
-observable evidence and distinguishes it from interpretation.
+**A local-first forensic auditor for document signals.** Aletharsis inspects files for
+information that ordinary viewing can miss — invisible Unicode, structured character
+patterns, identifiers and provenance-bearing content — and keeps observable evidence
+separate from interpretation.
 
-> A suspicious artifact is not necessarily a watermark. Aletharsis reports observable evidence and structural patterns; intent and provenance may require additional investigation.
+> A suspicious artifact is not necessarily a watermark. Aletharsis reports observable
+> evidence and structural patterns; intent and provenance may require additional
+> investigation.
 
-The current release is a **read-only Go CLI for text and Unicode analysis**.
-The broader product will add document-format inspection, a local evidence review
-workbench, and explicitly approved transformations into new files. See the
-[roadmap](ROADMAP.md) for planned work and release gates.
+## What it does
 
-## What works today
+It reads a file without modifying it and produces a report describing what is actually
+there: exact characters and their positions, structural facts about the document, and
+findings classified by what kind of claim they support. A finding is an observation, not a
+verdict. The tool never calls a file clean, watermark-free or AI-generated, and an absence
+of findings is never evidence that nothing is present.
 
-Go **0.2.0** defaults to deterministic **report schema 1.0** output.
-Opt in to the new coverage contract with `--schema-version 2.0`.
-It audits regular files or bounded directories on **Linux** with supported
-no-atime acquisition, up to **8 MiB per file**. Directory audits in **both schemas**
-additionally enforce a 16 MiB / 4 Mi-node report budget; expanded text/offset evidence can exhaust it around 2 MiB of ASCII
-input, producing `execution.report_limit` with no retained report. Standalone
-schema 1.0 does not have this corpus budget. Schema 2.0 also enforces native report
-and per-record budgets. The 8 MiB source ceiling is not a promise that every
-smaller input fits all evidence budgets.
+Three principles shape the design:
 
-| Capability | Current behavior |
-| --- | --- |
-| File identity | Content signatures and MIME hints, source size, SHA-256, encoding and parser identity |
-| Unicode inspection | Invisible characters, bidi controls, selectors, tags, unusual whitespace, controls, combining characters, emoji candidates and limited mixed-script checks |
-| Pattern analysis | Zero-width binary candidates, periodic insertions, long selector/tag runs and identifier/provenance candidates |
-| Text evidence | Exact extracted text, code-point and byte positions, context samples, BOMs, line endings and normalization/comparison hashes |
-| Reporting | Escaped console output, complete JSON/JSONL corpus evidence, filtered single-file views and severity-based exit codes |
-| Corpus | Explicit recursion, sorted outcomes, rooted no-follow acquisition, resource bounds and aggregate summaries |
-| Reveal | File and source-relative directory reveals, faithful/display diffs, coordinate mappings and hash manifests in a new private output directory |
-| Integrity | Read-only acquisition, source-change checks, rejection of symlink inputs and refusal to overwrite report destinations |
+- **Evidence is preserved, not summarised.** Locations are exact, original bytes are
+  untouched, and output is deterministic and reproducible.
+- **Missing coverage stays visible.** What could not be analysed is declared rather than
+  silently omitted, so an empty result cannot be mistaken for a clean one.
+- **Detection, review and modification are separate authorities.** Auditing is read-only.
+  Any future change to a document is a distinct, explicitly confirmed operation producing
+  a new file.
 
-TXT, Markdown, RST, CSV, JSON, XML, HTML and source-code files are inspected as
-**literal text**. Unknown extensions and extensionless files are accepted when
-content passes Unicode-text identification. Comments, docstrings and string
-literals are included; the CLI does not interpret programming-language semantics,
-JSON escapes, HTML entities, CSS visibility or rendered markup.
+## Current state
 
-UTF-8 and BOM-marked UTF-16/32 in both byte orders are supported. BOMs are retained
-in extracted evidence. Malformed encodings fail without replacement; legacy
-encodings and BOM-less UTF-16/32 are unsupported. MIME hints do not establish
-full document validity.
+Pre-1.0 and under active development. The shipped interface is a Go command-line tool;
+auditing currently requires Linux, because acquisition depends on timestamp-preserving
+reads and fails closed rather than falling back.
 
-**Not implemented:** DOCX/ODT/PDF parsing, structured document metadata, expected-artifact profiles,
-C2PA validation, statistical watermark detectors, model fingerprinting, the web
-workbench, saved rules or cleanup. PDF and DOCX signatures are recognized and
-reported as unsupported, including when disguised with a text extension.
-No OCR, remote detector or AI-authorship classifier runs during an audit.
-
-## Build and try it
-
-From a checkout, build with Go 1.24 or newer:
+Capabilities are changing frequently enough that listing them here would be misleading.
+**[ROADMAP.md](ROADMAP.md) is the current statement of what is implemented, what is
+planned, and what is deliberately out of scope.** It also records the acceptance gates
+each capability has to clear.
 
 ```bash
-git clone https://github.com/toddwbucy/Aletharsis.git
-cd Aletharsis
 go build -trimpath -o bin/aletharsis ./cmd/aletharsis
-./bin/aletharsis --version
-./bin/aletharsis audit tests/fixtures/clean_ascii.txt
-./bin/aletharsis audit tests/fixtures/binary_zero_width.txt
+./bin/aletharsis --help
 ```
 
-The last fixture intentionally produces a HIGH finding and exit code **3**.
-Nonzero audit codes can describe findings rather than execution failure.
-Place the resulting binary on your `PATH` to use `aletharsis` directly.
+Audit exit codes describe findings rather than execution failure, so a nonzero exit is not
+necessarily an error. `--help` documents the current commands and flags.
 
-The binary needs no Python runtime. Unicode data and the pinned `golang.org/x/text`
-dependency are compiled in; audits require no network or external programs.
-Building may require downloading Go dependencies.
+## Documentation
 
-Run as the input file's owner on a Linux filesystem supporting `O_NOATIME`.
-If the required access is unavailable, Aletharsis fails instead of falling back to
-an ordinary read. macOS and Windows builds currently refuse acquisition; successful
-cross-compilation is not functional auditing support. See the
-[platform matrix](docs/testing/platforms.md).
+This file is an introduction and is descriptive only. Authoritative documentation lives in
+the product requirements and specifications:
 
-## Commands
-
-```bash
-aletharsis audit suspicious.txt
-aletharsis audit suspicious.txt --verbose
-aletharsis audit suspicious.txt --json
-aletharsis audit suspicious.txt --schema-version 2.0 --json
-aletharsis audit suspicious.txt --output report.json
-aletharsis audit suspicious.txt --reveal-out review-new --json
-aletharsis audit ./documents --recursive
-aletharsis audit ./documents --recursive --jsonl
-aletharsis audit ./documents --recursive --reveal-out review-tree-new --jsonl
-aletharsis audit ./documents --recursive --json --output corpus-report.json
-aletharsis unicode suspicious.txt
-aletharsis metadata suspicious.txt --json
-aletharsis structure suspicious.txt
-aletharsis audit -- -leading-dash.txt
-aletharsis --help
-```
-
-`--json` writes JSON to stdout. `--output` creates a new JSON report with mode
-`0600` and refuses an existing destination, including symlinks and hard links.
-Reports contain extracted source text; handle them as evidence with the same
-sensitivity as the input. `--verbose` emits structured diagnostics on stderr.
-Console output escapes control, bidi and non-ASCII characters.
-
-Directory audits inspect immediate files by default; `--recursive` includes
-nested directories. Symlinks and special files are explicit skips. `--jsonl`
-streams a header, per-entry outcomes and final summary. `--json` produces one
-object containing those same header/entries/summary records; directory `--output`
-defaults to this JSON form unless `--jsonl` is selected. The output must be a new
-file outside the source tree. Existing parent-directory aliases are resolved and
-checked before writes; the destination itself must not exist.
-
-A valid partial corpus report is retained with exit 4 when files fail or are
-unsupported. Missing completion records or transport errors mean the stream did
-not complete. No findings is not proof of absence; skipped and unsupported entries
-remain visible. Scans use one in-flight audit, at most 10,000 discovered entries,
-64 nested levels, 256 MiB aggregate acquisition and 128 MiB output by default.
-See the [directory CLI contract](docs/specs/directory-cli.md) for complete limits,
-outcome semantics and a compiled nested-corpus demonstration.
-
-`audit DIRECTORY --recursive --reveal-out NEW_DIRECTORY` publishes source-relative
-`revealed/`, `reports/`, `mappings/`, `diffs/` and `display-diffs/` trees, plus exact
-`corpus.jsonl` and a final `manifest.json`. Failed/unsupported files retain reports
-without invented revealed text; skipped/canceled observations remain in the ledger.
-The destination must be new and outside the source tree. Portable-name, case-fold,
-normalization and file/directory collisions fail explicitly rather than rename
-sources. `--output` cannot be combined with `--reveal-out`.
-
-Directory `reports/*.json` preserve canonical **raw UTF-8** evidence, including
-bidi controls: do not display them directly in a terminal. This intentionally
-differs from ASCII-escaped stdout JSON/JSONL and the schema-1 single-file
-`report.json`. Their byte hashes equal the corpus canonical report hashes. Treat
-them like raw revealed text and faithful diffs; use an escaping JSON viewer or
-`display-diffs/` for review. Manifests, directory `mappings/*.json`, and single-file
-`comparison.json` use ASCII-escaped JSON; decoding them restores exact source
-strings. Their artifact hashes identify the escaped serialized bytes.
-
-Publication finishes before stdout is delivered. A stdout failure leaves the
-committed tree available; publication failure attempts rollback of its own files.
-Corpus JSONL is buffered up to its 128 MiB default limit for commit, in addition
-to per-file processing memory. Total tree file bytes are bounded at 256 MiB.
-See the [directory reveal contract and demonstration](docs/specs/directory-reveal.md).
-
-`audit FILE --reveal-out NEW_DIRECTORY` publishes `report.json`, `revealed.txt`,
-`comparison.json`, `faithful.diff`, `display.diff`, and `manifest.json` from one
-acquired source snapshot. Both report schemas are supported. The output directory
-must be new; its parent must already exist. Parent aliases are resolved and the
-opened parent identity is checked; existing destinations are never followed. Files use
-mode `0600`, the directory `0700`. It cannot be combined with `--output`; the
-bundle already includes the exact report printed by `--json`.
-
-The faithful diff retains original controls and compares decoded UTF-8, not
-original UTF-16/32 bytes. Use `display.diff` for an ASCII-escaped review view.
-Neither diff is cleanup authorization. `comparison.json` retains the original,
-revealed and display mappings; literal marker-looking text remains distinguishable.
-The manifest binds source/report hashes and artifact sizes/hashes. Publication
-failures return 4 and attempt rollback; a crash may leave incomplete output, so
-verify every manifest entry before treating a bundle as complete. A stdout failure
-after successful publication also returns 4 but retains the complete bundle.
-See the [single-file reveal contract](docs/specs/reveal-cli.md).
-
-`unicode`, `metadata` and `structure` filter findings. Their summaries and exit
-codes apply to that view, but complete extracted evidence and parser failures
-remain in the report. The metadata view currently exposes text-level identifiers
-and provenance labels, not office/PDF metadata.
-
-| Exit code | Meaning |
+| Document | Purpose |
 | --- | --- |
-| 0 | Audit completed with no findings in the selected view |
-| 1 | Highest severity INFO or LOW |
-| 2 | Highest severity MEDIUM |
-| 3 | Highest severity HIGH |
-| 4 | Acquisition, parsing, audit, output or command-usage failure |
+| [Parent PRD](docs/product/aletharsis-PRD.md) | Product scope, invariants and the phase boundaries between detection, review and modification |
+| [Frontend PRD](docs/product/frontend-PRD.md) | The planned evidence review workbench |
+| [ROADMAP.md](ROADMAP.md) | Delivery tracks, reuse gates and current status |
+| [docs/specs/](docs/specs/) | Normative contracts for evidence, reports, formats and the CLI |
+| [docs/adr/](docs/adr/) | Accepted architectural decisions |
+| [docs/text-audit-reference.md](docs/text-audit-reference.md) | Detector thresholds and coordinate semantics |
+| [docs/testing/](docs/testing/) | CI, fuzzing, performance and platform validation |
 
-## Reading the evidence
+Where this README and a specification disagree, the specification is correct.
 
-Severity is review priority; confidence describes support for a stated observation
-or pattern. Neither establishes intent or a probability of AI authorship. Ordinary
-multilingual text, emoji and formatting can legitimately produce findings.
-Emoji-capable code points are inventoried in source files too; their presence is
-not an automatic exemption or a confirmed threat.
+## Scope and limits
 
-JSON retains file identity, status, summary, extracted evidence, findings and
-limitations. Locations use zero-based Unicode code-point and original-byte
-offsets, not grapheme positions or screen columns. Original-byte hashes and
-extracted-text hashes are distinct. Finding IDs name detector rules and can recur
-within a report; they are not unique occurrence IDs.
+Aletharsis performs structural analysis of what a file contains. It does not determine
+authorship, intent or provenance, and it does not detect statistical model-output
+watermarks — that would require a known algorithm and usually a key. Absence of structural
+findings says nothing about whether such a watermark exists.
 
-The [text audit reference](docs/text-audit-reference.md) documents detector
-thresholds, Unicode versions, emoji behavior, normalization hashes and coordinate
-semantics. The [JSON schema](schemas/report.schema.json) defines the strict wire
-contract. Schema validation alone does not verify source identity or coordinate
-integrity. The opt-in [schema 2.0 contract](schemas/report-v2.schema.json) adds
-capabilities, execution states, typed failures, artifact identities and verified
-anchors. Its console view displays coverage before findings. C2PA and statistical
-analysis remain disabled/unavailable declarations, not negative detector results.
-See the [v2 CLI contract](docs/specs/go-v2-cli.md) for migration and limits.
+Audits make no network requests, run no external programs, and never execute inspected
+content. Reports can contain the full source text, so treat them with the same sensitivity
+as the documents they describe.
 
-No structural findings is **not** evidence that a statistical watermark is absent.
-Statistical analysis is currently unimplemented. Future configured detectors must
-preserve their actual result semantics and limitations.
+## Contributing
 
-## Evidence integrity
-
-Aletharsis never rewrites, normalizes, sanitizes or removes content from source
-files. Comparisons happen in memory. Linux acquisition uses read-only, no-atime,
-no-follow and nonblocking flags, requires a regular file, and checks size, mtime
-and ctime before and after reading. It never restores timestamps by writing them.
-
-This detects ordinary concurrent changes; it is not an exclusive lock or a guarantee
-against an adversarial writer or filesystem behavior outside the supported
-acquisition contract. A forensic image or read-only mount can provide stronger
-isolation. Current audits make no network requests and do not execute inspected
-content.
-
-## Product direction
-
-The approved [parent PRD](docs/product/aletharsis-PRD.md) separates three phases:
-
-1. **Detection** establishes what is present without changing the source.
-2. **Evidence review and tagging** records human judgment and reusable rules.
-3. **Explicit apply** uses reviewed plans, dry runs and confirmation to produce
-   validated derivatives while preserving originals.
-
-Structural evidence, cryptographic provenance and statistical detector results
-have different meanings and location capabilities. Expected formatting is not
-trusted content. A saved rule never grants deletion authority; future bulk
-approval applies to an exact frozen match set.
-
-Intrinsic model fingerprinting is an **experimental stretch goal**, distinct from
-keyed watermark detection. The eventual plan uses WeaverTools as the first
-controlled reference-corpus producer, with portable hash-bound baselines and blind
-evaluation. It is not an implemented detector or a prerequisite for local auditing.
-See [PRD §5.5](docs/product/aletharsis-PRD.md#55-experimental-stretch-goal-intrinsic-model-fingerprint-analysis).
-
-The [frontend PRD](docs/product/frontend-PRD.md) is a draft rewrite; its changed
-requirements retain a separate review gate. The [roadmap](ROADMAP.md) maps backend
-tracks, frontend dependencies and the next specification work.
-
-## Development
-
-On a supported Linux host:
-
-```bash
-go test ./...
-go test -race ./...
-go vet ./...
-go build -trimpath -o bin/aletharsis ./cmd/aletharsis
-python3 scripts/check_parity.py bin/aletharsis
-python3 scripts/check_seeded.py bin/aletharsis
-```
-
-Go tests need no Python runtime. The optional parity command uses Python's standard
-library to compare frozen reports and verify reference hashes. CI also runs
-compiled-CLI integration tests, frozen seeded comparisons, bounded
-fuzzing and platform checks; some run in separate workflows. Resource measurements
-are documented separately. These checks validate the shipped backend, not future
-GUI or remediation workflows.
-
-The legacy Python application, packaging and live-oracle generators have been
-retired. Python remains only in development/test harnesses; it is not installed as
-an `aletharsis` command. The original 37 reports and Unicode oracle remain unchanged,
-and all 210 formerly live differential cases are now frozen references. See the
-[retirement record](docs/migration/python-retirement.md); do not regenerate reference
-artifacts to silence failures.
-
-- [Backend CI and integration tests](docs/testing/backend-ci.md)
-- [Fuzzing](docs/testing/fuzzing.md), [performance](docs/testing/performance.md), and [platform validation](docs/testing/platforms.md)
-- [Go migration record](docs/migration/go-backend-migration.md)
-- [Frozen reference manifest](reference/python-behavior/manifest.json)
-
-Implementation and contract changes proceed through reviewable PRs with relevant
-validation. Current work and open gates are tracked in [ROADMAP.md](ROADMAP.md) and the issue tracker.
+Work lands as bounded pull requests carrying the validation evidence for the relevant
+gate. Specifications and architectural decisions are accepted before implementation.
+[CLAUDE.md](CLAUDE.md) describes the repository layout, build and test commands, and the
+invariants that must not be eroded.
 
 ## License
 
