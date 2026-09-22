@@ -4899,6 +4899,22 @@
           "items": {
             "$ref": "#/$defs/officeIssue"
           }
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/officeSegment"
+          }
+        },
+        "mapper_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "controls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/officeControl"
+          }
         }
       },
       "required": [
@@ -4907,27 +4923,123 @@
         "parser_version",
         "tokens",
         "elements",
-        "issues"
+        "issues",
+        "segments",
+        "mapper_version",
+        "controls"
       ],
       "additionalProperties": false
     },
     "officeOrigin": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "stored"
+            },
+            "xml_ref": {
+              "$ref": "#/$defs/officeXmlRef"
+            },
+            "text_index": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "segment": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "scalar": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "source": {
+              "$ref": "#/$defs/officeSpan"
+            },
+            "utf8": {
+              "$ref": "#/$defs/officeSpan"
+            },
+            "transformation": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "kind",
+            "xml_ref",
+            "text_index",
+            "segment",
+            "scalar",
+            "source",
+            "utf8",
+            "transformation"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "control_expansion"
+            },
+            "xml_ref": {
+              "$ref": "#/$defs/officeXmlRef"
+            },
+            "control": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "element": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "repetition": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "source": {
+              "$ref": "#/$defs/officeSpan"
+            },
+            "utf8": {
+              "$ref": "#/$defs/officeSpan"
+            },
+            "transformation": {
+              "enum": [
+                "space",
+                "tab",
+                "line_break"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "xml_ref",
+            "control",
+            "element",
+            "repetition",
+            "source",
+            "utf8",
+            "transformation"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "officeScalar": {
       "type": "object",
       "properties": {
-        "xml_ref": {
-          "$ref": "#/$defs/officeXmlRef"
-        },
-        "text_index": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 9007199254740991
-        },
-        "segment": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 9007199254740991
-        },
         "scalar": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "code_point": {
           "type": "integer",
           "minimum": 0,
           "maximum": 9007199254740991
@@ -4944,13 +5056,103 @@
         }
       },
       "required": [
-        "xml_ref",
-        "text_index",
-        "segment",
         "scalar",
+        "code_point",
         "source",
         "utf8",
         "transformation"
+      ],
+      "additionalProperties": false
+    },
+    "officeSegment": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "element": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "token_span": {
+          "$ref": "#/$defs/officeSpan"
+        },
+        "content_span": {
+          "$ref": "#/$defs/officeSpan"
+        },
+        "cdata": {
+          "type": "boolean"
+        },
+        "text": {
+          "type": "string"
+        },
+        "sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "scalars": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/officeScalar"
+          }
+        }
+      },
+      "required": [
+        "token",
+        "element",
+        "token_span",
+        "content_span",
+        "cdata",
+        "text",
+        "sha256",
+        "scalars"
+      ],
+      "additionalProperties": false
+    },
+    "officeControl": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "element": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "kind": {
+          "enum": [
+            "space",
+            "tab",
+            "line_break"
+          ]
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "source": {
+          "$ref": "#/$defs/officeSpan"
+        }
+      },
+      "required": [
+        "index",
+        "element",
+        "kind",
+        "count",
+        "source"
       ],
       "additionalProperties": false
     },

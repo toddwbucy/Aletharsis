@@ -57,9 +57,29 @@ def build():
     d['officeXML'] = obj({'xml_ref': ref('officeXmlRef'), 'part_ref': ref('officePartRef'),
         'parser_version': name, 'tokens': array(ref('officeToken')),
         'elements': array(ref('officeElement')), 'issues': array(ref('officeIssue'))})
-    d['officeOrigin'] = obj({'xml_ref': ref('officeXmlRef'), 'text_index': integer,
-        'segment': integer, 'scalar': integer, 'source': ref('officeSpan'),
-        'utf8': ref('officeSpan'), 'transformation': name})
+    d['officeOrigin'] = {'oneOf': [obj({
+        'kind': {'const': 'stored'}, 'xml_ref': ref('officeXmlRef'),
+        'text_index': integer, 'segment': integer, 'scalar': integer,
+        'source': ref('officeSpan'), 'utf8': ref('officeSpan'), 'transformation': name}),
+        obj({'kind': {'const': 'control_expansion'}, 'xml_ref': ref('officeXmlRef'),
+             'control': integer, 'element': integer, 'repetition': integer,
+             'source': ref('officeSpan'), 'utf8': ref('officeSpan'),
+             'transformation': {'enum': ['space', 'tab', 'line_break']}})]}
+    d['officeScalar'] = obj({'scalar': integer, 'code_point': integer,
+        'source': ref('officeSpan'), 'utf8': ref('officeSpan'), 'transformation': name})
+    d['officeSegment'] = obj({'token': integer, 'element': nullable(integer),
+        'token_span': ref('officeSpan'), 'content_span': ref('officeSpan'),
+        'cdata': {'type': 'boolean'}, 'text': text, 'sha256': ref('digest'),
+        'scalars': array(ref('officeScalar'))})
+    d['officeXML']['properties']['segments'] = array(ref('officeSegment'))
+    d['officeXML']['required'].append('segments')
+    d['officeXML']['properties']['mapper_version'] = name
+    d['officeXML']['required'].append('mapper_version')
+    d['officeControl'] = obj({'index': integer, 'element': integer,
+        'kind': {'enum': ['space', 'tab', 'line_break']}, 'count': integer,
+        'source': ref('officeSpan')})
+    d['officeXML']['properties']['controls'] = array(ref('officeControl'))
+    d['officeXML']['required'].append('controls')
     d['officeBoundary'] = obj({'xml_ref': ref('officeXmlRef'), 'token': integer, 'reason': name})
     d['officeScope'] = obj({'scope_ref': ref('officeScopeRef'), 'part_ref': ref('officePartRef'),
         'local_id': name, 'extractor_version': name, 'assembler_version': name,
