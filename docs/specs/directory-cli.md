@@ -155,3 +155,12 @@ The `%PDF-1.7` plus LF fixture hash:
 
 This demonstrates directory **auditing**, not directory revealed derivatives.
 That workflow is demonstrated separately in the directory reveal specification.
+
+## Proposed Office consumer boundary
+
+This specification retains its existing versioned behavior. Proposed
+[OC-001 §6](office-cli-evidence.md#6-consumer-inventory-b5) defines the separate
+4.0 audit, corpus-v2 and reveal-tree-v2 contracts and selection rules. Single-file
+reveal remains limited to 1.0/2.0; directory Office presentation is explicitly
+unsupported while its audit evidence remains reportable. No legacy envelope is
+silently extended by that proposal.

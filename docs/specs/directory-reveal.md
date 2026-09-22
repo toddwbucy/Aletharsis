@@ -144,3 +144,12 @@ render/diff limit, where a report-only entry can still fit and the transaction
 can finish. A failed `Tree.Record` has already aborted the tree and cannot be
 converted to `corpus.ErrSourceLimit`. Retaining a prefix would require a separate
 checkpoint/partial-publication contract with reserved completion-record capacity.
+
+## Proposed Office consumer boundary
+
+This specification retains its existing versioned behavior. Proposed
+[OC-001 §6](office-cli-evidence.md#6-consumer-inventory-b5) defines the separate
+4.0 audit, corpus-v2 and reveal-tree-v2 contracts and selection rules. Single-file
+reveal remains limited to 1.0/2.0; directory Office presentation is explicitly
+unsupported while its audit evidence remains reportable. No legacy envelope is
+silently extended by that proposal.

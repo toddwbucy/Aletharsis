@@ -124,18 +124,21 @@ partial output. Inventories include zero-count success distinctly from an unrun
 operation. Every admitted text scope carries its complete exact text and SHA-256 on the
 wire. Importers hash that retained text and validate offsets without filesystem
 access; this proves internal consistency, not correspondence to the original ZIP.
-Never truncate a scope string or scalar-origin list. If its text or complete origin list exceeds the declared scope/report allowance,
+Never truncate a scope string or scalar-origin list. If its text or complete
+origin list exceeds its declared per-scope cap,
 omit that scope and dependent findings/origins, retain a located resource-limit
 outcome, and mark coverage incomplete. No hash-only or truncated scope variant
-is permitted in this increment. Global inability to emit a bounded failure report
-uses the existing report-limit failure path. Add over-limit scope tests verifying
+is permitted in this increment. The total report byte limit is not a scope-omission
+trigger: exceeding it fails report emission through the existing
+`execution.report_limit` path. Do not choose additional scopes to drop to fit it. Add over-limit scope tests verifying
 that no dependent coordinates survive, and hash-mismatch import rejection.
 
 For non-text inventories, bytes are not gratuitously duplicated in reports: identities and exact
 locators allow verification from the source snapshot; missing retained content
 is explicit. Report limits cap scopes, origins, diagnostic lists and string data.
 Inventory/list truncation must be declared and may not produce dangling graph
-references; text-scope strings are governed by the all-or-omitted rule above.
+references; text-scope strings and scalar-origin lists both follow the
+all-or-omitted rule above.
 
 Findings retain the four classifications and detector-specific evidence contracts.
 The Office text finding location is a closed, separately discriminated variant. Its
@@ -236,7 +239,13 @@ ordinary-part priority and retain the existing OPC diagnostic. Then admit ordina
 parts in ordinal name order. Never recursively promote arbitrary relationship
 chains. Shared parts are charged once. Thus unrelated customXml relationship
 parts cannot consume budget ahead of the selected comparison targets. The target
-set includes an attacker-count-controlled embedding group; large admitted
+set prioritizes main-related WT-001 text over embedding inventory by design:
+text coverage serves the core detection use case. Both groups are attacker-count-
+controlled; many or large text parts can consume the budget before embeddings,
+which then receive aggregate-limit gaps and incomplete inventory coverage, not a
+fatal failure. WT-001 parts not related from the main part (including glossary
+headers or targets reachable only from another part's relationships) retain
+ordinary priority. The embedding group is also attacker-count-controlled; large admitted
 embeddings can exhaust the budget before later relationship candidates. Those
 receive explicit aggregate-limit gaps, not a fatal package failure. The set
 remains subject to package-count, per-part and aggregate limits: enumeration
@@ -348,10 +357,10 @@ is in scope even when its filename is not listed here.
 | `identity.VerifyText`, selection hashing | Flat verification unchanged; Office verifier reuses source/part/XML identities and origins, no competing offset mapper |
 | `reporters/report.go`, `reporters/v2.go` | Existing serializers unchanged; 4.0 console/JSON prints typed inventory, source locations and coverage, inertly |
 | `wire`, `schemas/embed.go`, `reportimport` | Explicit 4.0 dispatch and closed schema/semantic validation; support-aware importer adds sibling support_reason while preserving legacy Read/status; distinguish unknown version, known-unimplemented version and feature; retain EC-002/EC-003 regressions and bounded bytes |
-| CLI version flags and all audit subviews | Accept 4.0 deliberately for audit/subviews, except single-file reveal as specified below; finding filters never remove required evidence/coverage or break reference closure |
+| CLI version flags and all audit subviews | Dispatch every single-file audit site by exact version with no fallback to 1.0/2.0; reject unlisted versions before acquisition. Accept 4.0 deliberately for audit/subviews, except single-file reveal as specified below; finding filters never remove required evidence/coverage or break reference closure |
 | `cli/reveal.go`, `reveal` | Single-file reveal rejects schema 4.0 as usage (exit 4) in this increment before audit dispatch; flat reveal retains its completed-only guard for 1.0/2.0; Office presentation unsupported; no ZIP passed to flat verifier |
 | `cli/directory_reveal.go` | Under reveal-tree-v2 retain report/digest and verified snapshots for partial entries; present supported flat text, declare Office unsupported; source limits degrade one entry; version reveal-tree enum |
-| `corpus`, `cli/directory.go` | Derive corpus-v2 entry state from report status, never exit 4; retain partial evidence distinctly from failed entries for both 2.0 and 4.0; stream records declare report version |
+| `corpus`, `cli/directory.go` | Dispatch corpus workers by exact supported version with no else-to-RunV2 fallback; reject unlisted versions before discovery/work. Derive corpus-v2 entry state from report status, never exit 4; retain partial evidence distinctly from failed entries for both 2.0 and 4.0; stream records declare report version |
 | `workspace` format discovery | Admit requested Office candidates deterministically; do not follow uncontrolled links or trust extension as identity |
 | `publication` | File safety/rollback unchanged; do not publish fictitious Office reveal products |
 | Profile evaluator | Existing content unchanged; bind assessments to retained observations, preserve gaps |
@@ -370,8 +379,12 @@ Thus `--schema-version 2.0 --corpus-version 2` exercises the new semantics witho
 changing any existing v1 stream. The wire increment must encode this matrix. Directory reveal selects reveal-tree-v1 exactly when corpus-v1 is selected, and
 reveal-tree-v2 exactly when corpus-v2 is selected (including explicit 2.0/v2).
 There is no independent reveal-tree flag. V2 retains detection entry state
-(including partial) separately from presentation outcome (revealed, failed or
-unsupported); successful reveal never promotes partial coverage to completed.
+(including partial) separately from presentation outcome (`revealed`, `failed`,
+`unsupported`, or `not_attempted`). Use `not_attempted` when detection is failed,
+canceled, unsupported or skipped, or no usable report exists; do not turn audit
+failure into presentation failure. If an otherwise eligible completed/partial
+Office report reaches presentation, its outcome is `unsupported`. Successful
+reveal never promotes partial coverage to completed.
 The wire increment must define this closed v2 envelope and test the full matrix.
 Never mutate corpus-v1/reveal-tree-v1 meanings.
 
@@ -413,8 +426,7 @@ limit, corpus-document-v2 entry state is failed; reveal-tree-v2 detection state
 remains partial and presentation outcome is failed with execution.resource_limit.
 This intentional difference records detection separately from publication failure.
 Widen the observer source-limit guard to every report-bearing v2 state, including
-partial; never overwrite the retained report's own detection status. It remains an entry failure, unlike partial detection
-coverage. `execution.report_limit` (no serializable report) likewise remains failed
+partial; never overwrite the retained report's own detection status. `execution.report_limit` (no serializable report) likewise remains failed
 with its existing reason. These no-report/presentation failures are explicit
 exceptions to deriving state from an available report. Test both 2.0 and 4.0
 partial reports beside good neighbors and observer failures.
@@ -425,6 +437,15 @@ report identity in a presentation outcome.
 ## 7. Validation requirements
 
 Before claiming B1–B5 delivered, tests must establish:
+
+- Single-file `audit FILE --reveal-out DIR --schema-version 4.0` exits 4 as usage
+  before acquisition: no source read, report or bundle directory. Usage keeps
+  `1.0|2.0` on the FILE reveal form while ordinary audit gains 4.0. Directory
+  schema-4.0 reveal follows its separate envelope/presentation rules.
+- Unlisted versions at single-file and corpus dispatch fail as usage/options,
+  never execute a legacy audit by default. A total report limit that bites yields
+  the same report-limit outcome across permuted ZIP member order; no opportunistic
+  scope dropping changes the result or any emitted bounded diagnostics.
 
 - Compiled CLI identifies DOCX/ODT despite misleading extensions; 4.0 output
   validates; old-version requests produce valid unsupported outcomes.
@@ -487,6 +508,13 @@ Large embeddings beside main-related headers/footnotes/comments must leave those
 text parts prioritized: their findings survive when they fit their own limits,
 while excluded embeddings produce explicit gaps and partial coverage. Test an
 over-limit origin list as whole-scope omission with no dependent findings.
+Also exercise many/large main-related text parts ahead of a small embedding:
+text findings survive, the embedding has an aggregate-limit gap and inventory
+coverage is incomplete, without fatal failure and independent of ZIP order.
+Priority tests must reach decompression: use deflate-compressible members below
+the source acquisition cap or lower configurable aggregate limits, not stored
+oversized archives rejected before priority selection. Assert the expected
+footnote finding and embedding gap so acquisition failure cannot satisfy the test.
 
 Merge policy: this proposal and implementation increments remain reviewable;
 "no merge authorization" records the current owner instruction, not an inherent

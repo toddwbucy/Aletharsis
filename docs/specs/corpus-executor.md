@@ -123,3 +123,12 @@ because `errors.Is` also finds the resource sentinel.
 Callbacks are not a serialized plugin mechanism and cannot be supplied by document,
 rule or profile data. They must not mutate or retain evidence; no callback authorizes
 source modification.
+
+## Proposed Office consumer boundary
+
+This specification retains its existing versioned behavior. Proposed
+[OC-001 §6](office-cli-evidence.md#6-consumer-inventory-b5) defines the separate
+4.0 audit, corpus-v2 and reveal-tree-v2 contracts and selection rules. Single-file
+reveal remains limited to 1.0/2.0; directory Office presentation is explicitly
+unsupported while its audit evidence remains reportable. No legacy envelope is
+silently extended by that proposal.
