@@ -1,0 +1,1755 @@
+[
+  {
+    "id": "empty",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "",
+    "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "decoded_text": "",
+    "decoded_utf8_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [],
+    "interpretation": "Empty literal text; no observations expected."
+  },
+  {
+    "id": "ascii",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "6f7264696e61727920746578740d0a6e657874206c696e650a",
+    "source_sha256": "f367df87a7e66697e79d201c5b3d6149e78b4a669964f19abeab02be92438437",
+    "decoded_text": "ordinary text\r\nnext line\n",
+    "decoded_utf8_sha256": "f367df87a7e66697e79d201c5b3d6149e78b4a669964f19abeab02be92438437",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [],
+    "interpretation": "ASCII line endings are ordinary; preserve bytes."
+  },
+  {
+    "id": "multilingual",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "e697a5e69cace8aa9e20636166c3a920d981d8a7d8b1d8b3db8c",
+    "source_sha256": "b9071b5f329ae85a0269a993c0ee7cd584a035288dbea9561c1226839ca6df8f",
+    "decoded_text": "\u65e5\u672c\u8a9e caf\u00e9 \u0641\u0627\u0631\u0633\u06cc",
+    "decoded_utf8_sha256": "b9071b5f329ae85a0269a993c0ee7cd584a035288dbea9561c1226839ca6df8f",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [],
+    "interpretation": "Visible multilingual prose is not hidden data."
+  },
+  {
+    "id": "isolated_zwsp",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "68656c6c6fe2808b776f726c64",
+    "source_sha256": "b8a413953f9f5b1b60b494711a5e92cc5f692d9d562bdcedfa582676cc50864a",
+    "decoded_text": "hello\u200bworld",
+    "decoded_utf8_sha256": "b8a413953f9f5b1b60b494711a5e92cc5f692d9d562bdcedfa582676cc50864a",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 5,
+        "byte_start": 5,
+        "byte_end": 8,
+        "utf16_start": 5,
+        "code_point": "U+200B"
+      }
+    ],
+    "interpretation": "Isolated zero-width character; intent undetermined."
+  },
+  {
+    "id": "persian_zwnj",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "d985db8ce2808cd8b1d988d985",
+    "source_sha256": "b5992bb1f025974c6317d8ffc13487b6103034b9ccfca1e04a633c4ebd614dd4",
+    "decoded_text": "\u0645\u06cc\u200c\u0631\u0648\u0645",
+    "decoded_utf8_sha256": "b5992bb1f025974c6317d8ffc13487b6103034b9ccfca1e04a633c4ebd614dd4",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 2,
+        "byte_start": 4,
+        "byte_end": 7,
+        "utf16_start": 2,
+        "code_point": "U+200C"
+      }
+    ],
+    "interpretation": "Legitimate Persian joining context; retain observation without watermark claim."
+  },
+  {
+    "id": "arabic_zwj",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "d8a8e2808dd8a8",
+    "source_sha256": "19ca3ec3906a5140f0c0b1a0a24e0a5c7cce236aad79cc52952c150b4e358618",
+    "decoded_text": "\u0628\u200d\u0628",
+    "decoded_utf8_sha256": "19ca3ec3906a5140f0c0b1a0a24e0a5c7cce236aad79cc52952c150b4e358618",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 2,
+        "byte_end": 5,
+        "utf16_start": 1,
+        "code_point": "U+200D"
+      }
+    ],
+    "interpretation": "Joining control in Arabic script; context is not universal permission."
+  },
+  {
+    "id": "emoji_zwj",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "f09f91a9e2808df09f92bb",
+    "source_sha256": "427274538f1f24ef137872891551ffb4263f6edd90c80c533534578e8a5a9893",
+    "decoded_text": "\ud83d\udc69\u200d\ud83d\udcbb",
+    "decoded_utf8_sha256": "427274538f1f24ef137872891551ffb4263f6edd90c80c533534578e8a5a9893",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 0,
+        "byte_start": 0,
+        "byte_end": 4,
+        "utf16_start": 0,
+        "code_point": "U+1F469"
+      },
+      {
+        "scalar": 1,
+        "byte_start": 4,
+        "byte_end": 7,
+        "utf16_start": 2,
+        "code_point": "U+200D"
+      },
+      {
+        "scalar": 2,
+        "byte_start": 7,
+        "byte_end": 11,
+        "utf16_start": 3,
+        "code_point": "U+1F4BB"
+      }
+    ],
+    "interpretation": "Emoji plus joiner: source-code review may care; no automatic watermark claim."
+  },
+  {
+    "id": "emoji_selector",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "e29da4efb88f",
+    "source_sha256": "16e81418a36c58995e00aeb9c261c9ef7fb739b37c72351f511dc3b3a89e5962",
+    "decoded_text": "\u2764\ufe0f",
+    "decoded_utf8_sha256": "16e81418a36c58995e00aeb9c261c9ef7fb739b37c72351f511dc3b3a89e5962",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 0,
+        "byte_start": 0,
+        "byte_end": 3,
+        "utf16_start": 0,
+        "code_point": "U+2764"
+      },
+      {
+        "scalar": 1,
+        "byte_start": 3,
+        "byte_end": 6,
+        "utf16_start": 1,
+        "code_point": "U+FE0F"
+      }
+    ],
+    "interpretation": "Recognized emoji presentation selector; policy exclusion must remain distinguishable."
+  },
+  {
+    "id": "orphan_selector",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "78efb88f",
+    "source_sha256": "3d05bf09a3349159a71a3acc2367a53743e6f88f718153807cc6c414494f5884",
+    "decoded_text": "x\ufe0f",
+    "decoded_utf8_sha256": "3d05bf09a3349159a71a3acc2367a53743e6f88f718153807cc6c414494f5884",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 1,
+        "byte_end": 4,
+        "utf16_start": 1,
+        "code_point": "U+FE0F"
+      }
+    ],
+    "interpretation": "Same selector without recognized emoji context."
+  },
+  {
+    "id": "cjk_selector",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "e6bca2f3a08480",
+    "source_sha256": "c20187ffb870125e25825ac9fcb355879a3a05d07892f2ae9a6b4d72a3cce7a8",
+    "decoded_text": "\u6f22\udb40\udd00",
+    "decoded_utf8_sha256": "c20187ffb870125e25825ac9fcb355879a3a05d07892f2ae9a6b4d72a3cce7a8",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 3,
+        "byte_end": 7,
+        "utf16_start": 1,
+        "code_point": "U+E0100"
+      }
+    ],
+    "interpretation": "Ideographic variation sequence; legitimate context must not erase inventory."
+  },
+  {
+    "id": "word_typography",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "e2809c776f7264e2809de280946974e2809973e280a6c2a078e280af79",
+    "source_sha256": "718c60cf1eb18ab09190ff424b5928b498ee86e7df24be7c83fee28169617539",
+    "decoded_text": "\u201cword\u201d\u2014it\u2019s\u2026\u00a0x\u202fy",
+    "decoded_utf8_sha256": "718c60cf1eb18ab09190ff424b5928b498ee86e7df24be7c83fee28169617539",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 0,
+        "byte_start": 0,
+        "byte_end": 3,
+        "utf16_start": 0,
+        "code_point": "U+201C"
+      },
+      {
+        "scalar": 5,
+        "byte_start": 7,
+        "byte_end": 10,
+        "utf16_start": 5,
+        "code_point": "U+201D"
+      },
+      {
+        "scalar": 6,
+        "byte_start": 10,
+        "byte_end": 13,
+        "utf16_start": 6,
+        "code_point": "U+2014"
+      },
+      {
+        "scalar": 9,
+        "byte_start": 15,
+        "byte_end": 18,
+        "utf16_start": 9,
+        "code_point": "U+2019"
+      },
+      {
+        "scalar": 11,
+        "byte_start": 19,
+        "byte_end": 22,
+        "utf16_start": 11,
+        "code_point": "U+2026"
+      },
+      {
+        "scalar": 12,
+        "byte_start": 22,
+        "byte_end": 24,
+        "utf16_start": 12,
+        "code_point": "U+00A0"
+      },
+      {
+        "scalar": 14,
+        "byte_start": 25,
+        "byte_end": 28,
+        "utf16_start": 14,
+        "code_point": "U+202F"
+      }
+    ],
+    "interpretation": "Visible Word-like punctuation and no-break spaces, not confirmed watermark."
+  },
+  {
+    "id": "bidi",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "78e280ae79e280ac20e281a67ae281a9",
+    "source_sha256": "2cf0250444752ac55fb43f4d862a6241168d02f09b303b0d322aa8458ba1ae44",
+    "decoded_text": "x\u202ey\u202c \u2066z\u2069",
+    "decoded_utf8_sha256": "2cf0250444752ac55fb43f4d862a6241168d02f09b303b0d322aa8458ba1ae44",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 1,
+        "byte_end": 4,
+        "utf16_start": 1,
+        "code_point": "U+202E"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 5,
+        "byte_end": 8,
+        "utf16_start": 3,
+        "code_point": "U+202C"
+      },
+      {
+        "scalar": 5,
+        "byte_start": 9,
+        "byte_end": 12,
+        "utf16_start": 5,
+        "code_point": "U+2066"
+      },
+      {
+        "scalar": 7,
+        "byte_start": 13,
+        "byte_end": 16,
+        "utf16_start": 7,
+        "code_point": "U+2069"
+      }
+    ],
+    "interpretation": "Bidi formatting and isolation controls with exact positions."
+  },
+  {
+    "id": "arabic_letter_mark",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "61d89c62",
+    "source_sha256": "391de934490d7e23a5783ae0cb089a2ac8615cd1498f2d24f03bb785a8eba1b1",
+    "decoded_text": "a\u061cb",
+    "decoded_utf8_sha256": "391de934490d7e23a5783ae0cb089a2ac8615cd1498f2d24f03bb785a8eba1b1",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 1,
+        "byte_end": 3,
+        "utf16_start": 1,
+        "code_point": "U+061C"
+      }
+    ],
+    "interpretation": "Arabic Letter Mark inventory boundary."
+  },
+  {
+    "id": "controls",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "61001b7fc28562",
+    "source_sha256": "2a2204adefc2e76d1da76d5fa260a1042f22aba061b4bb1be5bab1de685ed368",
+    "decoded_text": "a\u0000\u001b\u007f\u0085b",
+    "decoded_utf8_sha256": "2a2204adefc2e76d1da76d5fa260a1042f22aba061b4bb1be5bab1de685ed368",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 1,
+        "byte_end": 2,
+        "utf16_start": 1,
+        "code_point": "U+0000"
+      },
+      {
+        "scalar": 2,
+        "byte_start": 2,
+        "byte_end": 3,
+        "utf16_start": 2,
+        "code_point": "U+001B"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 3,
+        "byte_end": 4,
+        "utf16_start": 3,
+        "code_point": "U+007F"
+      },
+      {
+        "scalar": 4,
+        "byte_start": 4,
+        "byte_end": 6,
+        "utf16_start": 4,
+        "code_point": "U+0085"
+      }
+    ],
+    "interpretation": "Literal control bytes; binary-file identification may reject this sample."
+  },
+  {
+    "id": "soft_combining",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "636fc2ad6f7065726174652065cc8120cd8f",
+    "source_sha256": "5be2c471690e695b0aa8ed5913a03e17b86836c95dcf37155de339418f8ba6dc",
+    "decoded_text": "co\u00adoperate e\u0301 \u034f",
+    "decoded_utf8_sha256": "5be2c471690e695b0aa8ed5913a03e17b86836c95dcf37155de339418f8ba6dc",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 2,
+        "byte_start": 2,
+        "byte_end": 4,
+        "utf16_start": 2,
+        "code_point": "U+00AD"
+      },
+      {
+        "scalar": 12,
+        "byte_start": 13,
+        "byte_end": 15,
+        "utf16_start": 12,
+        "code_point": "U+0301"
+      },
+      {
+        "scalar": 14,
+        "byte_start": 16,
+        "byte_end": 18,
+        "utf16_start": 14,
+        "code_point": "U+034F"
+      }
+    ],
+    "interpretation": "Soft hyphen and combining marks; do not normalize source."
+  },
+  {
+    "id": "invisible_math",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "61e281a0e281a1e281a2e281a3e281a462",
+    "source_sha256": "a36a5a5dcab31d824cf653f0d62a2ab6d079d73032b738ee69e28a1d46fd4ecd",
+    "decoded_text": "a\u2060\u2061\u2062\u2063\u2064b",
+    "decoded_utf8_sha256": "a36a5a5dcab31d824cf653f0d62a2ab6d079d73032b738ee69e28a1d46fd4ecd",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 1,
+        "byte_end": 4,
+        "utf16_start": 1,
+        "code_point": "U+2060"
+      },
+      {
+        "scalar": 2,
+        "byte_start": 4,
+        "byte_end": 7,
+        "utf16_start": 2,
+        "code_point": "U+2061"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 7,
+        "byte_end": 10,
+        "utf16_start": 3,
+        "code_point": "U+2062"
+      },
+      {
+        "scalar": 4,
+        "byte_start": 10,
+        "byte_end": 13,
+        "utf16_start": 4,
+        "code_point": "U+2063"
+      },
+      {
+        "scalar": 5,
+        "byte_start": 13,
+        "byte_end": 16,
+        "utf16_start": 5,
+        "code_point": "U+2064"
+      }
+    ],
+    "interpretation": "Word joiner and mathematical invisible operators."
+  },
+  {
+    "id": "binary_sequence",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "78e2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808ce2808be2808c79",
+    "source_sha256": "a592160700c27134662785c0e304d83191ae8adfb01d115850c29f37b1be7056",
+    "decoded_text": "x\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200c\u200b\u200cy",
+    "decoded_utf8_sha256": "a592160700c27134662785c0e304d83191ae8adfb01d115850c29f37b1be7056",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 1,
+        "byte_end": 4,
+        "utf16_start": 1,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 2,
+        "byte_start": 4,
+        "byte_end": 7,
+        "utf16_start": 2,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 7,
+        "byte_end": 10,
+        "utf16_start": 3,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 4,
+        "byte_start": 10,
+        "byte_end": 13,
+        "utf16_start": 4,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 5,
+        "byte_start": 13,
+        "byte_end": 16,
+        "utf16_start": 5,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 6,
+        "byte_start": 16,
+        "byte_end": 19,
+        "utf16_start": 6,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 7,
+        "byte_start": 19,
+        "byte_end": 22,
+        "utf16_start": 7,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 8,
+        "byte_start": 22,
+        "byte_end": 25,
+        "utf16_start": 8,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 9,
+        "byte_start": 25,
+        "byte_end": 28,
+        "utf16_start": 9,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 10,
+        "byte_start": 28,
+        "byte_end": 31,
+        "utf16_start": 10,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 11,
+        "byte_start": 31,
+        "byte_end": 34,
+        "utf16_start": 11,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 12,
+        "byte_start": 34,
+        "byte_end": 37,
+        "utf16_start": 12,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 13,
+        "byte_start": 37,
+        "byte_end": 40,
+        "utf16_start": 13,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 14,
+        "byte_start": 40,
+        "byte_end": 43,
+        "utf16_start": 14,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 15,
+        "byte_start": 43,
+        "byte_end": 46,
+        "utf16_start": 15,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 16,
+        "byte_start": 46,
+        "byte_end": 49,
+        "utf16_start": 16,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 17,
+        "byte_start": 49,
+        "byte_end": 52,
+        "utf16_start": 17,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 18,
+        "byte_start": 52,
+        "byte_end": 55,
+        "utf16_start": 18,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 19,
+        "byte_start": 55,
+        "byte_end": 58,
+        "utf16_start": 19,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 20,
+        "byte_start": 58,
+        "byte_end": 61,
+        "utf16_start": 20,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 21,
+        "byte_start": 61,
+        "byte_end": 64,
+        "utf16_start": 21,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 22,
+        "byte_start": 64,
+        "byte_end": 67,
+        "utf16_start": 22,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 23,
+        "byte_start": 67,
+        "byte_end": 70,
+        "utf16_start": 23,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 24,
+        "byte_start": 70,
+        "byte_end": 73,
+        "utf16_start": 24,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 25,
+        "byte_start": 73,
+        "byte_end": 76,
+        "utf16_start": 25,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 26,
+        "byte_start": 76,
+        "byte_end": 79,
+        "utf16_start": 26,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 27,
+        "byte_start": 79,
+        "byte_end": 82,
+        "utf16_start": 27,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 28,
+        "byte_start": 82,
+        "byte_end": 85,
+        "utf16_start": 28,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 29,
+        "byte_start": 85,
+        "byte_end": 88,
+        "utf16_start": 29,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 30,
+        "byte_start": 88,
+        "byte_end": 91,
+        "utf16_start": 30,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 31,
+        "byte_start": 91,
+        "byte_end": 94,
+        "utf16_start": 31,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 32,
+        "byte_start": 94,
+        "byte_end": 97,
+        "utf16_start": 32,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 33,
+        "byte_start": 97,
+        "byte_end": 100,
+        "utf16_start": 33,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 34,
+        "byte_start": 100,
+        "byte_end": 103,
+        "utf16_start": 34,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 35,
+        "byte_start": 103,
+        "byte_end": 106,
+        "utf16_start": 35,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 36,
+        "byte_start": 106,
+        "byte_end": 109,
+        "utf16_start": 36,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 37,
+        "byte_start": 109,
+        "byte_end": 112,
+        "utf16_start": 37,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 38,
+        "byte_start": 112,
+        "byte_end": 115,
+        "utf16_start": 38,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 39,
+        "byte_start": 115,
+        "byte_end": 118,
+        "utf16_start": 39,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 40,
+        "byte_start": 118,
+        "byte_end": 121,
+        "utf16_start": 40,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 41,
+        "byte_start": 121,
+        "byte_end": 124,
+        "utf16_start": 41,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 42,
+        "byte_start": 124,
+        "byte_end": 127,
+        "utf16_start": 42,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 43,
+        "byte_start": 127,
+        "byte_end": 130,
+        "utf16_start": 43,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 44,
+        "byte_start": 130,
+        "byte_end": 133,
+        "utf16_start": 44,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 45,
+        "byte_start": 133,
+        "byte_end": 136,
+        "utf16_start": 45,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 46,
+        "byte_start": 136,
+        "byte_end": 139,
+        "utf16_start": 46,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 47,
+        "byte_start": 139,
+        "byte_end": 142,
+        "utf16_start": 47,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 48,
+        "byte_start": 142,
+        "byte_end": 145,
+        "utf16_start": 48,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 49,
+        "byte_start": 145,
+        "byte_end": 148,
+        "utf16_start": 49,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 50,
+        "byte_start": 148,
+        "byte_end": 151,
+        "utf16_start": 50,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 51,
+        "byte_start": 151,
+        "byte_end": 154,
+        "utf16_start": 51,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 52,
+        "byte_start": 154,
+        "byte_end": 157,
+        "utf16_start": 52,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 53,
+        "byte_start": 157,
+        "byte_end": 160,
+        "utf16_start": 53,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 54,
+        "byte_start": 160,
+        "byte_end": 163,
+        "utf16_start": 54,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 55,
+        "byte_start": 163,
+        "byte_end": 166,
+        "utf16_start": 55,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 56,
+        "byte_start": 166,
+        "byte_end": 169,
+        "utf16_start": 56,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 57,
+        "byte_start": 169,
+        "byte_end": 172,
+        "utf16_start": 57,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 58,
+        "byte_start": 172,
+        "byte_end": 175,
+        "utf16_start": 58,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 59,
+        "byte_start": 175,
+        "byte_end": 178,
+        "utf16_start": 59,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 60,
+        "byte_start": 178,
+        "byte_end": 181,
+        "utf16_start": 60,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 61,
+        "byte_start": 181,
+        "byte_end": 184,
+        "utf16_start": 61,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 62,
+        "byte_start": 184,
+        "byte_end": 187,
+        "utf16_start": 62,
+        "code_point": "U+200C"
+      },
+      {
+        "scalar": 63,
+        "byte_start": 187,
+        "byte_end": 190,
+        "utf16_start": 63,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 64,
+        "byte_start": 190,
+        "byte_end": 193,
+        "utf16_start": 64,
+        "code_point": "U+200C"
+      }
+    ],
+    "interpretation": "Synthetic two-state sequence; possible structural encoding, no vendor attribution."
+  },
+  {
+    "id": "selector_sequence",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "78efb880efb881efb880efb881efb880efb881efb880efb881efb880efb881efb880efb881efb880efb881efb880efb881",
+    "source_sha256": "f51a354748cc6a8a61bf2969ace6336ce05f99e60df6c5103aaecd1e26863f89",
+    "decoded_text": "x\ufe00\ufe01\ufe00\ufe01\ufe00\ufe01\ufe00\ufe01\ufe00\ufe01\ufe00\ufe01\ufe00\ufe01\ufe00\ufe01",
+    "decoded_utf8_sha256": "f51a354748cc6a8a61bf2969ace6336ce05f99e60df6c5103aaecd1e26863f89",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 1,
+        "byte_end": 4,
+        "utf16_start": 1,
+        "code_point": "U+FE00"
+      },
+      {
+        "scalar": 2,
+        "byte_start": 4,
+        "byte_end": 7,
+        "utf16_start": 2,
+        "code_point": "U+FE01"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 7,
+        "byte_end": 10,
+        "utf16_start": 3,
+        "code_point": "U+FE00"
+      },
+      {
+        "scalar": 4,
+        "byte_start": 10,
+        "byte_end": 13,
+        "utf16_start": 4,
+        "code_point": "U+FE01"
+      },
+      {
+        "scalar": 5,
+        "byte_start": 13,
+        "byte_end": 16,
+        "utf16_start": 5,
+        "code_point": "U+FE00"
+      },
+      {
+        "scalar": 6,
+        "byte_start": 16,
+        "byte_end": 19,
+        "utf16_start": 6,
+        "code_point": "U+FE01"
+      },
+      {
+        "scalar": 7,
+        "byte_start": 19,
+        "byte_end": 22,
+        "utf16_start": 7,
+        "code_point": "U+FE00"
+      },
+      {
+        "scalar": 8,
+        "byte_start": 22,
+        "byte_end": 25,
+        "utf16_start": 8,
+        "code_point": "U+FE01"
+      },
+      {
+        "scalar": 9,
+        "byte_start": 25,
+        "byte_end": 28,
+        "utf16_start": 9,
+        "code_point": "U+FE00"
+      },
+      {
+        "scalar": 10,
+        "byte_start": 28,
+        "byte_end": 31,
+        "utf16_start": 10,
+        "code_point": "U+FE01"
+      },
+      {
+        "scalar": 11,
+        "byte_start": 31,
+        "byte_end": 34,
+        "utf16_start": 11,
+        "code_point": "U+FE00"
+      },
+      {
+        "scalar": 12,
+        "byte_start": 34,
+        "byte_end": 37,
+        "utf16_start": 12,
+        "code_point": "U+FE01"
+      },
+      {
+        "scalar": 13,
+        "byte_start": 37,
+        "byte_end": 40,
+        "utf16_start": 13,
+        "code_point": "U+FE00"
+      },
+      {
+        "scalar": 14,
+        "byte_start": 40,
+        "byte_end": 43,
+        "utf16_start": 14,
+        "code_point": "U+FE01"
+      },
+      {
+        "scalar": 15,
+        "byte_start": 43,
+        "byte_end": 46,
+        "utf16_start": 15,
+        "code_point": "U+FE00"
+      },
+      {
+        "scalar": 16,
+        "byte_start": 46,
+        "byte_end": 49,
+        "utf16_start": 16,
+        "code_point": "U+FE01"
+      }
+    ],
+    "interpretation": "Repeated selector alphabet; distinguish pattern from isolated selectors."
+  },
+  {
+    "id": "tag_sequence",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "78f3a081a1f3a081a2f3a081a3f3a081bf",
+    "source_sha256": "0bd8b600eba9d7cd02de5e0d96704027f40a53ef6a84533f796c050d9b5b2f85",
+    "decoded_text": "x\udb40\udc61\udb40\udc62\udb40\udc63\udb40\udc7f",
+    "decoded_utf8_sha256": "0bd8b600eba9d7cd02de5e0d96704027f40a53ef6a84533f796c050d9b5b2f85",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 1,
+        "byte_end": 5,
+        "utf16_start": 1,
+        "code_point": "U+E0061"
+      },
+      {
+        "scalar": 2,
+        "byte_start": 5,
+        "byte_end": 9,
+        "utf16_start": 3,
+        "code_point": "U+E0062"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 9,
+        "byte_end": 13,
+        "utf16_start": 5,
+        "code_point": "U+E0063"
+      },
+      {
+        "scalar": 4,
+        "byte_start": 13,
+        "byte_end": 17,
+        "utf16_start": 7,
+        "code_point": "U+E007F"
+      }
+    ],
+    "interpretation": "Known ASCII projection abc plus cancel tag; inert evidence only."
+  },
+  {
+    "id": "tag_run",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "78f3a081a1f3a081a2f3a081a3f3a081a4f3a081a5f3a081a6f3a081a7f3a081a8f3a081a9f3a081aaf3a081abf3a081acf3a081adf3a081aef3a081aff3a081bf",
+    "source_sha256": "66769503d69c7112ba717b2eb4ba4c344d387fb4e6d65c584270219ba3b54303",
+    "decoded_text": "x\udb40\udc61\udb40\udc62\udb40\udc63\udb40\udc64\udb40\udc65\udb40\udc66\udb40\udc67\udb40\udc68\udb40\udc69\udb40\udc6a\udb40\udc6b\udb40\udc6c\udb40\udc6d\udb40\udc6e\udb40\udc6f\udb40\udc7f",
+    "decoded_utf8_sha256": "66769503d69c7112ba717b2eb4ba4c344d387fb4e6d65c584270219ba3b54303",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 1,
+        "byte_end": 5,
+        "utf16_start": 1,
+        "code_point": "U+E0061"
+      },
+      {
+        "scalar": 2,
+        "byte_start": 5,
+        "byte_end": 9,
+        "utf16_start": 3,
+        "code_point": "U+E0062"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 9,
+        "byte_end": 13,
+        "utf16_start": 5,
+        "code_point": "U+E0063"
+      },
+      {
+        "scalar": 4,
+        "byte_start": 13,
+        "byte_end": 17,
+        "utf16_start": 7,
+        "code_point": "U+E0064"
+      },
+      {
+        "scalar": 5,
+        "byte_start": 17,
+        "byte_end": 21,
+        "utf16_start": 9,
+        "code_point": "U+E0065"
+      },
+      {
+        "scalar": 6,
+        "byte_start": 21,
+        "byte_end": 25,
+        "utf16_start": 11,
+        "code_point": "U+E0066"
+      },
+      {
+        "scalar": 7,
+        "byte_start": 25,
+        "byte_end": 29,
+        "utf16_start": 13,
+        "code_point": "U+E0067"
+      },
+      {
+        "scalar": 8,
+        "byte_start": 29,
+        "byte_end": 33,
+        "utf16_start": 15,
+        "code_point": "U+E0068"
+      },
+      {
+        "scalar": 9,
+        "byte_start": 33,
+        "byte_end": 37,
+        "utf16_start": 17,
+        "code_point": "U+E0069"
+      },
+      {
+        "scalar": 10,
+        "byte_start": 37,
+        "byte_end": 41,
+        "utf16_start": 19,
+        "code_point": "U+E006A"
+      },
+      {
+        "scalar": 11,
+        "byte_start": 41,
+        "byte_end": 45,
+        "utf16_start": 21,
+        "code_point": "U+E006B"
+      },
+      {
+        "scalar": 12,
+        "byte_start": 45,
+        "byte_end": 49,
+        "utf16_start": 23,
+        "code_point": "U+E006C"
+      },
+      {
+        "scalar": 13,
+        "byte_start": 49,
+        "byte_end": 53,
+        "utf16_start": 25,
+        "code_point": "U+E006D"
+      },
+      {
+        "scalar": 14,
+        "byte_start": 53,
+        "byte_end": 57,
+        "utf16_start": 27,
+        "code_point": "U+E006E"
+      },
+      {
+        "scalar": 15,
+        "byte_start": 57,
+        "byte_end": 61,
+        "utf16_start": 29,
+        "code_point": "U+E006F"
+      },
+      {
+        "scalar": 16,
+        "byte_start": 61,
+        "byte_end": 65,
+        "utf16_start": 31,
+        "code_point": "U+E007F"
+      }
+    ],
+    "interpretation": "Sixteen tag characters: independent known ASCII projection abcdefghijklmno and cancel tag; compare with short tag case."
+  },
+  {
+    "id": "hangul_fillers",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "78e1859fe185a0e385a4efbea079",
+    "source_sha256": "09553952c8d5e219a790a0e1f536cbfac009e32d77fbc3128d2ed0deeb108a49",
+    "decoded_text": "x\u115f\u1160\u3164\uffa0y",
+    "decoded_utf8_sha256": "09553952c8d5e219a790a0e1f536cbfac009e32d77fbc3128d2ed0deeb108a49",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 1,
+        "byte_end": 4,
+        "utf16_start": 1,
+        "code_point": "U+115F"
+      },
+      {
+        "scalar": 2,
+        "byte_start": 4,
+        "byte_end": 7,
+        "utf16_start": 2,
+        "code_point": "U+1160"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 7,
+        "byte_end": 10,
+        "utf16_start": 3,
+        "code_point": "U+3164"
+      },
+      {
+        "scalar": 4,
+        "byte_start": 10,
+        "byte_end": 13,
+        "utf16_start": 4,
+        "code_point": "U+FFA0"
+      }
+    ],
+    "interpretation": "Letter-category fillers can be visually blank despite not being format controls."
+  },
+  {
+    "id": "khmer_vowels",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "78e19eb4e19eb579",
+    "source_sha256": "576cfe096256db7d8ad4a6d3371f1009c3542fd2c6dd761d9a8918d065ca109f",
+    "decoded_text": "x\u17b4\u17b5y",
+    "decoded_utf8_sha256": "576cfe096256db7d8ad4a6d3371f1009c3542fd2c6dd761d9a8918d065ca109f",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 1,
+        "byte_end": 4,
+        "utf16_start": 1,
+        "code_point": "U+17B4"
+      },
+      {
+        "scalar": 2,
+        "byte_start": 4,
+        "byte_end": 7,
+        "utf16_start": 2,
+        "code_point": "U+17B5"
+      }
+    ],
+    "interpretation": "Language-specific invisible marks; preserve legitimate context."
+  },
+  {
+    "id": "mongolian_selectors",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "78e1a08be1a08ce1a08d79",
+    "source_sha256": "c8ddee48e9ed5901ead53abf4dc6af4dc5a8ddc140adb3b6b1ebaa60cfbfed6c",
+    "decoded_text": "x\u180b\u180c\u180dy",
+    "decoded_utf8_sha256": "c8ddee48e9ed5901ead53abf4dc6af4dc5a8ddc140adb3b6b1ebaa60cfbfed6c",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 1,
+        "byte_start": 1,
+        "byte_end": 4,
+        "utf16_start": 1,
+        "code_point": "U+180B"
+      },
+      {
+        "scalar": 2,
+        "byte_start": 4,
+        "byte_end": 7,
+        "utf16_start": 2,
+        "code_point": "U+180C"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 7,
+        "byte_end": 10,
+        "utf16_start": 3,
+        "code_point": "U+180D"
+      }
+    ],
+    "interpretation": "Mongolian selectors are combining marks outside generic VS ranges."
+  },
+  {
+    "id": "boundary_offsets",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "f09f988065cc81e2808b0d0aefbbbf7a",
+    "source_sha256": "446bce423910085b4321b6b3f708e5e7e268ef79a8d0258a2c77165f0909d063",
+    "decoded_text": "\ud83d\ude00e\u0301\u200b\r\n\ufeffz",
+    "decoded_utf8_sha256": "446bce423910085b4321b6b3f708e5e7e268ef79a8d0258a2c77165f0909d063",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 0,
+        "byte_start": 0,
+        "byte_end": 4,
+        "utf16_start": 0,
+        "code_point": "U+1F600"
+      },
+      {
+        "scalar": 2,
+        "byte_start": 5,
+        "byte_end": 7,
+        "utf16_start": 3,
+        "code_point": "U+0301"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 7,
+        "byte_end": 10,
+        "utf16_start": 4,
+        "code_point": "U+200B"
+      },
+      {
+        "scalar": 6,
+        "byte_start": 12,
+        "byte_end": 15,
+        "utf16_start": 7,
+        "code_point": "U+FEFF"
+      }
+    ],
+    "interpretation": "Non-BMP, decomposed scalar, CRLF and embedded BOM exercise coordinate units."
+  },
+  {
+    "id": "leading_bom",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "efbbbf61efbbbf62",
+    "source_sha256": "ee3c9317a6ef9f77cbd9e3cb8158aee81ec8d631534c75ca547f01538cf6300d",
+    "decoded_text": "\ufeffa\ufeffb",
+    "decoded_utf8_sha256": "ee3c9317a6ef9f77cbd9e3cb8158aee81ec8d631534c75ca547f01538cf6300d",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 0,
+        "byte_start": 0,
+        "byte_end": 3,
+        "utf16_start": 0,
+        "code_point": "U+FEFF"
+      },
+      {
+        "scalar": 2,
+        "byte_start": 4,
+        "byte_end": 7,
+        "utf16_start": 2,
+        "code_point": "U+FEFF"
+      }
+    ],
+    "interpretation": "Leading and embedded BOM retained; comparator may deliberately omit first."
+  },
+  {
+    "id": "literal_marker",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-8",
+    "raw_hex": "e29fa6552b32303042205a45524f205749445448205350414345e29fa7",
+    "source_sha256": "a0bd0c730ca6dd8d0a126cb6a8d2a713f9f9511b9a8ccb5e40a63861789bf7be",
+    "decoded_text": "\u27e6U+200B ZERO WIDTH SPACE\u27e7",
+    "decoded_utf8_sha256": "a0bd0c730ca6dd8d0a126cb6a8d2a713f9f9511b9a8ccb5e40a63861789bf7be",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-8",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [],
+    "interpretation": "Visible marker-looking text is not actual U+200B."
+  },
+  {
+    "id": "encoded_utf-16-le",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-16-le",
+    "raw_hex": "fffe3dd800de61000b200d000a00",
+    "source_sha256": "c22f94fbc04cffad2524a99162ebd72b37c88c7146b2c971c834196675957844",
+    "decoded_text": "\ufeff\ud83d\ude00a\u200b\r\n",
+    "decoded_utf8_sha256": "b9183c3a4a5e3cff9b422954ccdd91981285d637fcb628ba6ac00d6790db7df4",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-16-le",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 0,
+        "byte_start": 0,
+        "byte_end": 2,
+        "utf16_start": 0,
+        "code_point": "U+FEFF"
+      },
+      {
+        "scalar": 1,
+        "byte_start": 2,
+        "byte_end": 6,
+        "utf16_start": 1,
+        "code_point": "U+1F600"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 8,
+        "byte_end": 10,
+        "utf16_start": 4,
+        "code_point": "U+200B"
+      }
+    ],
+    "interpretation": "BOM-marked encoding; comparator input is explicit literal decoding, not its file parser."
+  },
+  {
+    "id": "encoded_utf-16-be",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-16-be",
+    "raw_hex": "feffd83dde000061200b000d000a",
+    "source_sha256": "5677c3141599c9aa50151ce6896c6d13f6d42fe387c12c2a14f0c2768a5363b4",
+    "decoded_text": "\ufeff\ud83d\ude00a\u200b\r\n",
+    "decoded_utf8_sha256": "b9183c3a4a5e3cff9b422954ccdd91981285d637fcb628ba6ac00d6790db7df4",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-16-be",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 0,
+        "byte_start": 0,
+        "byte_end": 2,
+        "utf16_start": 0,
+        "code_point": "U+FEFF"
+      },
+      {
+        "scalar": 1,
+        "byte_start": 2,
+        "byte_end": 6,
+        "utf16_start": 1,
+        "code_point": "U+1F600"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 8,
+        "byte_end": 10,
+        "utf16_start": 4,
+        "code_point": "U+200B"
+      }
+    ],
+    "interpretation": "BOM-marked encoding; comparator input is explicit literal decoding, not its file parser."
+  },
+  {
+    "id": "encoded_utf-32-le",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-32-le",
+    "raw_hex": "fffe000000f60100610000000b2000000d0000000a000000",
+    "source_sha256": "83bdf3b4e6d1f96c109ac431fbb5eb0886a1405a9d7f08c4cd1dfd1e97ced450",
+    "decoded_text": "\ufeff\ud83d\ude00a\u200b\r\n",
+    "decoded_utf8_sha256": "b9183c3a4a5e3cff9b422954ccdd91981285d637fcb628ba6ac00d6790db7df4",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-32-le",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 0,
+        "byte_start": 0,
+        "byte_end": 4,
+        "utf16_start": 0,
+        "code_point": "U+FEFF"
+      },
+      {
+        "scalar": 1,
+        "byte_start": 4,
+        "byte_end": 8,
+        "utf16_start": 1,
+        "code_point": "U+1F600"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 12,
+        "byte_end": 16,
+        "utf16_start": 4,
+        "code_point": "U+200B"
+      }
+    ],
+    "interpretation": "BOM-marked encoding; comparator input is explicit literal decoding, not its file parser."
+  },
+  {
+    "id": "encoded_utf-32-be",
+    "license": "Apache-2.0",
+    "origin": "independently authored Aletharsis synthetic fixture",
+    "artifact_kind": "literal source bytes",
+    "serialization": "utf-32-be",
+    "raw_hex": "0000feff0001f600000000610000200b0000000d0000000a",
+    "source_sha256": "22554bfb736b4159731df870f0edfe2b19ecee3cdae124d15a60c96c64a2ccb0",
+    "decoded_text": "\ufeff\ud83d\ude00a\u200b\r\n",
+    "decoded_utf8_sha256": "b9183c3a4a5e3cff9b422954ccdd91981285d637fcb628ba6ac00d6790db7df4",
+    "transformations": [
+      {
+        "operation": "strict literal decoding",
+        "from": "utf-32-be",
+        "to": "Unicode scalars; no BOM stripping, newline conversion or normalization"
+      }
+    ],
+    "expected_observations": [
+      {
+        "scalar": 0,
+        "byte_start": 0,
+        "byte_end": 4,
+        "utf16_start": 0,
+        "code_point": "U+FEFF"
+      },
+      {
+        "scalar": 1,
+        "byte_start": 4,
+        "byte_end": 8,
+        "utf16_start": 1,
+        "code_point": "U+1F600"
+      },
+      {
+        "scalar": 3,
+        "byte_start": 12,
+        "byte_end": 16,
+        "utf16_start": 4,
+        "code_point": "U+200B"
+      }
+    ],
+    "interpretation": "BOM-marked encoding; comparator input is explicit literal decoding, not its file parser."
+  }
+]

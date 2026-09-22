@@ -147,7 +147,7 @@
       "repository": "https://github.com/juriku/hidden-characters-detector",
       "component": "Unicode inventory and legitimate-use comparison.",
       "integration_class": "reference_oracle",
-      "adoption_status": "proposed",
+      "adoption_status": "evaluating",
       "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/39",
       "maintenance_owner": "toddwbucy",
       "implementer": "Codex",
@@ -157,7 +157,7 @@
         "commit": "c75a379a181750eab788cf2eb668109caa8b88e6",
         "source_tree_git_sha1": "20628b514dd83b6ba8939b28e63e7fe48c37189c",
         "tag": null,
-        "artifact_sha256": null
+        "artifact_sha256": "e00598a843224d60f6c2a0d458812265ce8963f8ff22105557c578e411ff2c6f"
       },
       "license": {
         "spdx": "MIT",
@@ -175,9 +175,9 @@
       },
       "runtime": {
         "assessment": "unverified",
-        "dependencies": "Python requirements present; dependency closure unverified.",
+        "dependencies": "Study: Python 3.12.13 and hash-pinned emoji 2.15.0; pathspec absent, directory traversal excluded. No production dependency.",
         "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
-        "side_effects": "README marks deprecated in favor of juriku/untrace; cleanup commands excluded. Successor needs its own pin/review."
+        "side_effects": "Read-only line detector executed in offline namespaces; source hashes unchanged. Expected missing-pathspec warning retained. Word/emoji/leading-BOM exclusions differ from raw inventory. Cleaning not invoked; successor untrace remains unadopted."
       },
       "supported_scope": {
         "production": [],
@@ -189,7 +189,7 @@
         "requirement": "Before use record origin/license, exact artifact bytes SHA-256, generator pin and raw/rendered/post-processed lineage with independent expected observations."
       },
       "assessment": {
-        "observed_on": "2026-09-20",
+        "observed_on": "2026-09-21",
         "readme_url": "https://github.com/juriku/hidden-characters-detector/blob/c75a379a181750eab788cf2eb668109caa8b88e6/README.md",
         "archived": false,
         "last_push": "2026-08-17T09:05:06Z",
@@ -204,7 +204,7 @@
         "tree_listing_truncated": false,
         "build_reproducibility": "not_tested",
         "vulnerability_review": "pending",
-        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+        "maintenance_conclusion": "Issue #39: 30 independent synthetic cases compared with native Aletharsis and two pinned upstream probes, repeated raw outputs identical. Differences adjudicated as inventory, policy, parser or coverage, not majority-vote truth. See docs/reuse/evaluations/unicode.md. Recommendation revise; G6 and production adoption remain unapproved."
       },
       "disable_or_replace": "Remove comparator from dev harness; retain licensed fixtures and independent expectations.",
       "decision": null
@@ -214,7 +214,7 @@
       "repository": "https://github.com/Hiberius/hiberius-unicode-toolkit",
       "component": "Unicode legitimate-use and known-carrier comparison.",
       "integration_class": "reference_oracle",
-      "adoption_status": "proposed",
+      "adoption_status": "evaluating",
       "evaluation_issue": "https://github.com/toddwbucy/Aletharsis/issues/39",
       "maintenance_owner": "toddwbucy",
       "implementer": "Codex",
@@ -224,7 +224,7 @@
         "commit": "1d86b8d951fca3cd7efbe637267f57e391dd7570",
         "source_tree_git_sha1": "cda2c47a13702ea31b616ebd356e303f25f7e878",
         "tag": null,
-        "artifact_sha256": null
+        "artifact_sha256": "14c18b6ffb2cebafb78d0e93dc4de3cf8e49a369e7981584c421af04d501a437"
       },
       "license": {
         "spdx": "MIT",
@@ -242,9 +242,9 @@
       },
       "runtime": {
         "assessment": "unverified",
-        "dependencies": "README claims standalone browser JavaScript; no runtime adopted.",
+        "dependencies": "Study: existing distro Node 26.8.2 executes unchanged scan handler using an inert DOM facade; not a complete browser test or production dependency.",
         "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
-        "side_effects": "UI also exposes sanitization and encoding; evaluation must isolate read-only inspection."
+        "side_effects": "Offline read-only scan probe retained source identity; no clean/inject/clipboard/download action invoked. Scalar positions reconstructed from scan nodes. Pinned inventory omits variation selectors/tags and generally marks language joiners without contextual exclusion."
       },
       "supported_scope": {
         "production": [],
@@ -256,7 +256,7 @@
         "requirement": "Before use record origin/license, exact artifact bytes SHA-256, generator pin and raw/rendered/post-processed lineage with independent expected observations."
       },
       "assessment": {
-        "observed_on": "2026-09-20",
+        "observed_on": "2026-09-21",
         "readme_url": "https://github.com/Hiberius/hiberius-unicode-toolkit/blob/1d86b8d951fca3cd7efbe637267f57e391dd7570/README.md",
         "archived": false,
         "last_push": "2026-09-18T01:44:21Z",
@@ -273,7 +273,7 @@
         "tree_listing_truncated": false,
         "build_reproducibility": "not_tested",
         "vulnerability_review": "pending",
-        "maintenance_conclusion": "Desk inventory only; release cadence, advisories, response effectiveness and reproducibility require the linked evaluation. A policy file is not proof of security."
+        "maintenance_conclusion": "Issue #39: 30 independent synthetic cases compared with native Aletharsis and two pinned upstream probes, repeated raw outputs identical. Differences adjudicated as inventory, policy, parser or coverage, not majority-vote truth. See docs/reuse/evaluations/unicode.md. Recommendation revise; G6 and production adoption remain unapproved."
       },
       "disable_or_replace": "Remove dev comparator; independent expected corpus remains usable.",
       "decision": null

@@ -89,6 +89,13 @@ The [EC-004 wire proposal](../specs/report-v3-wire-and-import.md) supplies the
 closed report-3.0 schema, full positive/negative reports and retained synthetic
 evidence. Go parity and production migration acceptance remain subsequent gates.
 
+## Unicode comparison evidence
+
+The [G3 Unicode study](evaluations/unicode.md) compares thirty independent cases
+against two pinned read-only probes, preserves policy/inventory/coverage/parser
+differences and identifies a native Hangul-filler inventory gap for #14. Neither
+comparator is adopted as a production dependency.
+
 ## Per-component adoption
 
 The [G6 checklist and gap records](adoptions/README.md) bind each recommendation to

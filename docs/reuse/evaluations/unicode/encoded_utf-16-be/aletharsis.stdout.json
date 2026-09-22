@@ -1,0 +1,189 @@
+{
+  "aletharsis_version": "0.2.0",
+  "schema_version": "1.0",
+  "file": {
+    "path": "/input.txt",
+    "filename": "input.txt",
+    "extension": ".txt",
+    "mime": "text/plain",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "size": 14,
+    "sha256": "5677c3141599c9aa50151ce6896c6d13f6d42fe387c12c2a14f0c2768a5363b4",
+    "parser": "text-source-v1"
+  },
+  "status": "completed",
+  "evidence": {
+    "texts": [
+      {
+        "source": "file",
+        "text": "\ufeff\ud83d\ude00a\u200b\r\n",
+        "encoding": "utf-16-be",
+        "byte_offsets": [
+          0,
+          2,
+          6,
+          8,
+          10,
+          12,
+          14
+        ],
+        "bom": "feff",
+        "line_endings": {
+          "cr": 0,
+          "crlf": 1,
+          "lf": 0
+        },
+        "hashes": {
+          "formatting_removed_sha256": "8a9d5de1e55687402b0778fb63207ce0ce4b46e988052f63872f1316e55b3253",
+          "nfc_text_sha256": "b9183c3a4a5e3cff9b422954ccdd91981285d637fcb628ba6ac00d6790db7df4",
+          "nfkc_text_sha256": "b9183c3a4a5e3cff9b422954ccdd91981285d637fcb628ba6ac00d6790db7df4",
+          "raw_text_sha256": "b9183c3a4a5e3cff9b422954ccdd91981285d637fcb628ba6ac00d6790db7df4"
+        },
+        "normalization": {
+          "formatting_removed_count": 2,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        }
+      }
+    ],
+    "metadata": {},
+    "structure": {
+      "byte_length": 14,
+      "inspection": "literal source text"
+    }
+  },
+  "findings": [
+    {
+      "id": "unicode.emoji",
+      "severity": "LOW",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "Emoji-capable U+1F600 GRINNING FACE detected",
+      "description": "Review whether this content is required for the application or document. Comments, docstrings, string literals and test data are not automatically exempt. Presence does not establish hidden encoding, malicious intent or permission to remove it. Some symbols also have ordinary text presentation; counts refer to code points, not rendered emoji.",
+      "evidence": {
+        "code_point": "U+1F600",
+        "contexts": [
+          {
+            "character_offset": 1,
+            "escaped_text": "\\ufeff\\U0001f600a\\u200b\\r\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "count_unit": "code_point",
+        "emoji_data_version": "17.0",
+        "match_basis": "unicode_emoji_property",
+        "name": "GRINNING FACE",
+        "requires_context_review": true
+      },
+      "location": {
+        "byte_offsets": [
+          2
+        ],
+        "character_offsets": [
+          1
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.zero_width",
+      "severity": "LOW",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+200B ZERO WIDTH SPACE detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200B",
+        "contexts": [
+          {
+            "character_offset": 3,
+            "escaped_text": "\\ufeff\\U0001f600a\\u200b\\r\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "ZERO WIDTH SPACE"
+      },
+      "location": {
+        "byte_offsets": [
+          8
+        ],
+        "character_offsets": [
+          3
+        ],
+        "source": "file"
+      }
+    },
+    {
+      "id": "text.bom",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "document_structure",
+      "classification": "observed_fact",
+      "title": "Byte order mark detected",
+      "description": "An initial BOM is an ordinary encoding marker.",
+      "evidence": {
+        "encoding": "utf-16-be",
+        "hex": "feff"
+      },
+      "location": {
+        "byte_offset": 0,
+        "source": "file"
+      }
+    },
+    {
+      "id": "unicode.zero_width",
+      "severity": "INFO",
+      "confidence": 1,
+      "category": "unicode",
+      "classification": "observed_fact",
+      "title": "U+FEFF ZERO WIDTH NO-BREAK SPACE detected",
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+FEFF",
+        "contexts": [
+          {
+            "character_offset": 0,
+            "escaped_text": "\\ufeff\\U0001f600a\\u200b\\r\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": true,
+        "name": "ZERO WIDTH NO-BREAK SPACE"
+      },
+      "location": {
+        "byte_offsets": [
+          0
+        ],
+        "character_offsets": [
+          0
+        ],
+        "source": "file"
+      }
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "summary": {
+    "exit_code": 1,
+    "findings": 4,
+    "high": 0,
+    "info": 2,
+    "low": 2,
+    "medium": 0
+  }
+}

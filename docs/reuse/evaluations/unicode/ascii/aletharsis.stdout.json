@@ -1,0 +1,112 @@
+{
+  "aletharsis_version": "0.2.0",
+  "schema_version": "1.0",
+  "file": {
+    "path": "/input.txt",
+    "filename": "input.txt",
+    "extension": ".txt",
+    "mime": "text/plain",
+    "format": "text",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "size": 25,
+    "sha256": "f367df87a7e66697e79d201c5b3d6149e78b4a669964f19abeab02be92438437",
+    "parser": "text-source-v1"
+  },
+  "status": "completed",
+  "evidence": {
+    "texts": [
+      {
+        "source": "file",
+        "text": "ordinary text\r\nnext line\n",
+        "encoding": "utf-8",
+        "byte_offsets": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25
+        ],
+        "bom": null,
+        "line_endings": {
+          "cr": 0,
+          "crlf": 1,
+          "lf": 1
+        },
+        "hashes": {
+          "formatting_removed_sha256": "f367df87a7e66697e79d201c5b3d6149e78b4a669964f19abeab02be92438437",
+          "nfc_text_sha256": "f367df87a7e66697e79d201c5b3d6149e78b4a669964f19abeab02be92438437",
+          "nfkc_text_sha256": "f367df87a7e66697e79d201c5b3d6149e78b4a669964f19abeab02be92438437",
+          "raw_text_sha256": "f367df87a7e66697e79d201c5b3d6149e78b4a669964f19abeab02be92438437"
+        },
+        "normalization": {
+          "formatting_removed_count": 0,
+          "hash_encoding": "utf-8",
+          "nfc_changed": false,
+          "nfkc_changed": false,
+          "removal_policy": "zero_width,bidi_control,variation_selector,tag,soft_hyphen",
+          "unicode_version": "15.0.0"
+        }
+      }
+    ],
+    "metadata": {},
+    "structure": {
+      "byte_length": 25,
+      "inspection": "literal source text"
+    }
+  },
+  "findings": [
+    {
+      "id": "text.line_endings",
+      "severity": "LOW",
+      "confidence": 1,
+      "category": "document_structure",
+      "classification": "observed_fact",
+      "title": "Mixed or legacy line endings detected",
+      "description": "Line-ending differences can result from ordinary editing or platform conversion.",
+      "evidence": {
+        "cr": 0,
+        "crlf": 1,
+        "lf": 1
+      },
+      "location": {
+        "source": "file"
+      }
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "summary": {
+    "exit_code": 1,
+    "findings": 1,
+    "high": 0,
+    "info": 0,
+    "low": 1,
+    "medium": 0
+  }
+}
