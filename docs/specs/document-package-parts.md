@@ -133,10 +133,4 @@ parsers or profile suppression by itself.
 
 ## Proposed Office coordinator boundary
 
-[OI-001](office-cli-evidence.md) adds an outcome-based package path and
-verified-package inspector entry points for the 4.0 coordinator. Existing
-`Read`/`Inspect` contracts here remain strict and unchanged. New entry points
-consume one shared, bounded package outcome, preserving unassessed/failed parts
-and incomplete prerequisites without re-running the strict reader or
-decompressing again. OI-001's staged identification-priority budget applies to
-that new path; it does not silently change this legacy API's failure semantics.
+The existing API remains unchanged; proposed [OC-001 §4](office-cli-evidence.md#4-producers-and-orchestration-b1b2) defines the separate outcome-based coordinator and budget policy.

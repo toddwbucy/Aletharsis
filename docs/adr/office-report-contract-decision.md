@@ -9,7 +9,7 @@ Inspected baseline: `5b1ca93168c8f2a51751a05cac995d8657960fc8`.
 Proceed with a versioned Office report extension (proposed 4.0). The owner also
 authorized continued work during review; no procedural wait is required unless
 further work needs a merge. The complete specification is proposed in
-[OI-001](../specs/office-cli-evidence.md). Comparator clearance remains independent.
+[OC-001](../specs/office-cli-evidence.md). Comparator clearance remains independent.
 
 ## Original conflict
 
@@ -41,17 +41,9 @@ package evidence.
 
 ## Proposed coordinate decision
 
-Keep flat-file `Text.ByteOffsets` and `VerifyText` unchanged. For Office, retain
-three explicit identities: acquired container bytes, decompressed part bytes,
-and assembled analysis text bytes. Retain container/part digests and extraction
-identity; reuse XP-001/XM-001 and WA-001/ODT origins for every scalar mapping.
-Compressed ZIP spans identify the encoded part, not individual characters.
-Discontinuous lexical regions remain separate; generated controls remain derived.
-No envelope across XML markup is an edit range. Every finding identifies its
-coordinate artifact and resolves through checked mappings to the source evidence.
-
-This requires a typed Office representation; do not overload the flat-text array
-or relax existing text verification to admit it.
+[OC-001 §§2–3](../specs/office-cli-evidence.md#2-evidence-representations-and-exact-coordinates-b3)
+defines the normative coordinate contract. This decision records the choice of a
+new version rather than duplicating that contract.
 
 ## Historical options presented to the owner
 
@@ -70,7 +62,7 @@ or relax existing text verification to admit it.
 
 The owner subsequently authorized the recommended direction and implementation
 on reviewable branches, with review continuing during work. No merge is authorized.
-OI-001 is the proposed B1–B5 specification in PR #74; it remains subject to review.
+OC-001 is the proposed B1–B5 specification in PR #74; it remains subject to review.
 
 ## Independent comparator investigation
 
@@ -108,3 +100,7 @@ The eventual comparison still covers all four targets, independent expected
 identities, six reachable adjudication categories, original-byte preservation,
 licensed fixtures, unsupported checks and the stated resource budgets. None of
 those requirements is satisfied by this decision brief.
+
+Merge posture is the current owner restriction, not a permanent ban on accepting
+this decision. Only explicit owner authorization permits a later merge; accepting
+documentation does not clear runtime or comparator gates. OC-001 is normative.

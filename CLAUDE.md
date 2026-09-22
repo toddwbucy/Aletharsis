@@ -95,7 +95,7 @@ Identity is `internal/docxidentify` / `internal/odtidentify`; extraction is `int
   `schemas/embed.go` — only 1.0 and 2.0 are embedded, and no URL inside a report selects a schema.
 - **3.0** is `schemas/report-v3.schema.json` plus an offline Python conformance oracle in
   `tests/contracts_v3/`. No Go code implements it.
-- **4.0 (proposed, not implemented)** — [OI-001](docs/specs/office-cli-evidence.md),
+- **4.0 (proposed, not implemented)** — [OC-001](docs/specs/office-cli-evidence.md),
   PR #74: Office evidence and corpus-v2; retains the 3.0 adapter envelope.
   Existing runtime support remains 1.0/2.0 only.
 
@@ -128,7 +128,9 @@ is a declaration of coverage, never a negative detector result.
   extraction `State` to `partial`. Silently dropping content while reporting `completed` is as much a
   defect as a false finding.
 - **Exit codes combine severity and operational outcome**: 0 none, 1 INFO/LOW, 2 MEDIUM, 3 HIGH,
-  4 acquisition/parse/output/usage failure or incomplete coverage. Read report status and
+  4 acquisition/parse/output/usage failure. In report 2.0 (and proposed 4.0),
+  incomplete coverage also yields 4; report 1.0 partial extraction alone may yield
+  0–3. Read report status and
   coverage to distinguish partial from failed; exit 4 alone is not a retry policy. A failed audit still emits a schema-valid report
   carrying a `parser.failure` finding.
 - **Locations are zero-based code-point indices plus original-file byte offsets** — never graphemes
@@ -201,8 +203,8 @@ text and the fact that the grammar rewrite kept every legitimate construct analy
 - `docs/specs/` — `evidence-contract-v2.md` (EC-001) and the `go-v2-*` specs are normative for the
   2.0 model; `report-v3-*` covers the in-flight wire contract; `word-analysis-scopes.md`,
   `word-text-evidence.md`, `odt-*`, `docx-identification.md`, `opc-relationship-evidence.md`,
-  `corpus-executor.md`, `directory-cli.md`, `directory-reveal.md` and `reveal-*` cover the rest.
-- `docs/adr/` — ADR-0001 evidence/capability contract, ADR-0002 detector reuse policy.
+  `office-cli-evidence.md` (proposed OC-001), `corpus-executor.md`, `directory-cli.md`, `directory-reveal.md` and `reveal-*` cover the rest.
+- `docs/adr/` — ADR-0001 evidence/capability contract, ADR-0002 detector reuse policy, and `office-report-contract-decision.md` (proposed).
 - `docs/reuse/` — the gated detector-reuse program: candidate registry, adoption records and
   evaluation evidence. Adoption records bind exact bytes; do not rewrite historical identities.
 - `docs/testing/` — CI, fuzzing, performance, platform matrix.

@@ -1,16 +1,16 @@
-# OI-001 — Office CLI evidence and consumer integration
+# OC-001 — Office CLI evidence and consumer integration
 
 | Attribute | Value |
 | --- | --- |
 | Status | Proposed; implementation may proceed on reviewable branches, no merge authorization |
-| Tracking | #40 (B1–B5), #14, #21, #7 |
+| Tracking | #40 (B1–B5), #14, #21; historical testing tracker #7 (closed) |
 | Inspected baseline | `5b1ca93`; subsequent main changes were documentation only |
 | Wire target | Explicit opt-in report `4.0`; 1.0/2.0 remain unchanged; 4.0 includes the 3.0 adapter envelope plus Office evidence |
 | Authority | Owner authorized version selection and continued work during review; owner retains merges and gate dispositions |
 
 ## 1. Scope and delivery
 
-Connect acquired Office packages to the CLI using existing PP-001, XP-001/XM-001,
+Connect acquired Office packages to the CLI using existing DP-001, XP-001/XM-001,
 OPC, DOCX/ODT identity, WT-001/OT-001, WA-001/OA-001 and profile implementations.
 Add DOCX core/application metadata and embedded-object inventory. Preserve all
 four #40 comparison targets: package parts, metadata, relationships, embedded
@@ -33,24 +33,23 @@ unsupported, preserving the bounded imported bytes rather than claiming validati
 Wire validity and runtime support are separate declarations.
 
 Version dispatch uses exact supported versions, never numeric comparisons.
-A new support-aware importer API exposes `support_reason` beside the unchanged
-EC-002 `status` (not in its place); the legacy `Read` API and its closed statuses
-remain unchanged: legacy `reportimport.Read` continues to dispatch only 1.0/2.0;
-all 4.0 input remains unsupported to that older API. The new `ReadSupported` API
-performs exact 4.0 dispatch and exposes the 4.0 decoded view only after full
-supported semantic validation. Future 4.0 import/CLI consumers must call this
-new API; there are no production `reportimport` callers to migrate at the inspected
-baseline. Legacy fixtures/tests continue exercising `Read`. The support-aware
-API's compatibility status may cover unsupported features as well as versions;
-that broader meaning does not change EC-002's legacy API. Import identifies 3.0 as a known contract with unimplemented Go support
-(`known_version_unimplemented`), distinct from an unrecognized version
-(`unknown_version`). The support-aware result has
-`status: unsupported_version` for both, with the distinguishing `support_reason`.
-For a wire-valid 4.0 report requiring nonempty adapter runs before that feature is
-implemented, retain the same compatibility status with
-`support_reason: known_feature_unimplemented`. Supported imports have a null
-support reason. These sibling reasons do not rename existing importer statuses,
-report failure codes or the historical EC-002/EC-003 behavior.
+The proposed `ReadSupported` API is a superset dispatcher for exact versions
+1.0, 2.0 and native-only 4.0. For 1.0/2.0 it delegates to legacy `Read`, preserving
+its decoded views, validation, statuses and errors, with null `support_reason`.
+Legacy `Read` itself remains unchanged and supports only 1.0/2.0; it continues to
+reject 3.0/4.0 with its existing `unsupported_version` status.
+
+The new API adds `unsupported_feature` to its own result status contract, without
+changing EC-002's legacy enum. A structurally wire-valid 4.0 report with nonempty
+`adapter_runs` returns `unsupported_feature` and
+`support_reason: known_feature_unimplemented` until adapter semantics are supported.
+The proposed dispatcher returns `unsupported_version` for 3.0 with
+`support_reason: known_version_unimplemented`, or for unrecognized versions with
+`support_reason: unknown_version`. These are new requirements, not current Go
+behavior. Supported 4.0 exposes a decoded view only after full supported semantic
+validation. New consumers use `ReadSupported` for all admitted versions; legacy
+fixtures/tests continue exercising `Read`. Successful 4.0 imports also have null
+`support_reason`. Report failure codes are unchanged.
 All unsupported cases retain bounded original bytes/digest and unknown coverage;
 no decoded report is exposed as validated. Strict JSON and input limits precede
 support dispatch. For implemented versions, structural wire errors remain errors,
@@ -73,7 +72,8 @@ Each coordinate names its byte artifact. Three representations are distinct:
    bytes; they do not map individual XML characters into ZIP offsets.
 3. Analysis scope: exact UTF-8 text/hash, scope identity, role and assembly version.
    Office `scope_character_offsets` and `scope_byte_offsets` refer to this artifact.
-   Every Office location requires `scope_ref` and `coordinate_artifact_ref`. Every scalar
+   Every text-scope location requires `scope_ref`; the referenced scope identifies
+   its assembled-text coordinate artifact. Structural locations have no scope. Every scalar
    retains the existing WA-001/OA-001 origin, including XP/XM segment identity,
    lexical part span and transformation. Generated ODT controls stay derived.
 
@@ -101,8 +101,8 @@ source correspondence. Imported reports never trigger filesystem access.
 
 The wire increment defines explicit closed `$defs`, Go records, positive fixtures
 and negative semantic tests for the following logical records. This specification
-fixes their required information. The four Office location names `scope_ref`,
-`coordinate_artifact_ref`, `scope_character_offsets` and `scope_byte_offsets` below
+fixes their required information. The three Office text-location names `scope_ref`,
+`scope_character_offsets` and `scope_byte_offsets` below
 are normative and may not be renamed in the wire increment. The wire PR fixes
 remaining property spellings and canonical reference grammar before production
 emission.
@@ -127,16 +127,18 @@ is explicit. Report limits cap scopes, origins, diagnostic lists and string data
 Truncation must be declared and may not produce dangling graph references.
 
 Findings retain the four classifications and detector-specific evidence contracts.
-The Office finding location is a closed, separately discriminated variant. Its
-`scope_ref` resolves to exactly one Office scope record; `coordinate_artifact_ref`
-must equal that scope's assembled-text artifact reference. The occurrence arrays
+The Office text finding location is a closed, separately discriminated variant. Its
+`scope_ref` resolves to exactly one Office scope record, which supplies the
+assembled-text artifact reference; locations do not duplicate that reference. The occurrence arrays
 are named `scope_character_offsets` and `scope_byte_offsets`, never legacy
 `character_offsets`/`byte_offsets`. Legacy location keys are forbidden in this
-variant. Scope-wide findings retain the same two references without fabricated
+variant. Scope-wide findings retain the same scope reference without fabricated
 occurrence arrays; structural observations instead use the structural-anchor
-variant and may not include scope-coordinate arrays.
+variant and may not include `scope_ref` or scope-coordinate arrays. Structural
+anchors require part identity and applicable element/token index and part-byte
+region; opaque object anchors use object/part identity without text coordinates.
 
-For report serialization, OI-001 supersedes WA-001/OA-001 finding-location key
+For report serialization, OC-001 supersedes WA-001/OA-001 finding-location key
 naming; scope-relative coordinate semantics are unchanged. WA/OA library results
 retain their existing local field names and are not themselves report wire records.
 Existing WA/OA analyzers may continue using temporary `evidence.Text` inputs with
@@ -146,7 +148,7 @@ UTF-8 byte starts, scope hash and scalar-origin linkage. A dedicated 4.0 coordin
 validator resolves the Office scope table and artifact references, not
 `document.Texts`. It does not call v2 `findingCoordinates` for Office findings.
 Flat-file findings keep the legacy validator and meanings unchanged. Tests reject
-mixed coordinate variants, mismatched scope/artifact pairs, duplicate scope IDs,
+mixed coordinate variants, scope records with invalid artifact references, duplicate scope IDs,
 dangling references and byte offsets that point into the container instead.
 Context, profile assessments, detection and human judgment remain separate.
 A finding is not needed for every ordinary inventory entry.
@@ -201,18 +203,28 @@ the existing inspector rules, without guessing `word/document.xml`, following
 external targets, or recursively prioritizing arbitrary relationships. If both
 candidate paths exist, process ODF content first, then the OPC target; a shared
 part is charged only once. Inconsistent/ambiguous declarations retain a gap, not
-an arbitrary target. Only after these prerequisites are checked does ordinal
-allocation begin. This prevents large Pictures/customXml payloads from starving
-otherwise verifiable main-content identity. No extra total budget is created.
-Missing critical names consume no reservation. An oversized critical part still
-yields a bounded explicit gap; this policy improves identification availability
-but does not promise identification when required bytes cannot be verified.
-A part whose declared size exceeds the remaining budget is unassessed; that part
-and all subsequent parts in this priority order get the aggregate-limit reason
-(no opportunistic fit of later small parts). Charge a reserved admitted size even if decompression
-later fails; partial output never refunds budget to later parts. Actual output is
-also bounded against the reservation. This deterministic allocation applies before
-workers are scheduled. ZIP storage order/concurrency cannot change coverage sets.
+an arbitrary target. A third priority phase admits all validated OPC relationship
+parts in ordinal name order, then uniquely resolved core/app metadata targets in
+ordinal name order, then embedded-object candidates (recognized internal relationship
+targets and conventional embedding-directory candidates) in ordinal name order.
+Resolve these from verified declarations only; do not follow external targets.
+Inventory all candidates even if their bytes cannot be admitted. Shared parts are
+charged once. Only then allocate ordinary parts in ordinal name order. Thus unrelated
+Pictures/customXml payloads cannot consume the budget ahead of the four declared
+comparison targets. Finite limits can still exclude targets; report those gaps
+rather than promising complete comparison coverage.
+
+Missing critical names consume no reservation. Check per-part limits before the
+aggregate budget: an over-per-part-limit member gets that reason, no reservation,
+and processing continues, including when it is a decoy prerequisite. For every
+priority tier, a member larger than the remaining aggregate allowance gets an
+aggregate-limit gap without reservation; continue considering later members.
+There is no all-subsequent cutoff. This deterministic bounded-fit policy means
+an oversized decoy cannot starve a later small prerequisite. Charge a reserved
+admitted size even if decompression later fails; partial output never refunds it.
+Actual output is also bounded against the reservation. Within each phase,
+allocation is deterministic before its workers are scheduled; dependent phases
+wait for the preceding declarations to be verified. ZIP storage order/concurrency cannot change coverage sets.
 Aggregate decompression limits remain hard limits. Never continue by disabling
 CRC or bounds verification.
 
@@ -322,9 +334,13 @@ schema 1.0/2.0 selects corpus-v1, preserving existing defaults. Explicit corpus-
 admits report 2.0 and 4.0; report 1.0 is deliberately not admitted in this increment.
 Reject unsupported combinations before discovery; corpus-v1 with 4.0 is invalid.
 Thus `--schema-version 2.0 --corpus-version 2` exercises the new semantics without
-changing any existing v1 stream. The wire increment must encode this matrix. Review-tree changes
-also require a versioned envelope if presentation-only failures cannot be expressed
-by its existing contract; never mutate corpus-v1/reveal-tree-v1 meanings.
+changing any existing v1 stream. The wire increment must encode this matrix. Directory reveal selects reveal-tree-v1 exactly when corpus-v1 is selected, and
+reveal-tree-v2 exactly when corpus-v2 is selected (including explicit 2.0/v2).
+There is no independent reveal-tree flag. V2 retains detection entry state
+(including partial) separately from presentation outcome (revealed, failed or
+unsupported); successful reveal never promotes partial coverage to completed.
+The wire increment must define this closed v2 envelope and test the full matrix.
+Never mutate corpus-v1/reveal-tree-v1 meanings.
 
 Corpus-v2 classifies entries from their report status and typed acquisition outcome,
 never from exit code 4 alone. A `partial` report yields a `partial` entry and
@@ -403,7 +419,7 @@ negative cases must also show that valid neighboring content is still analyzed.
    with unit tests, including unrelated bad-CRC parts and identification-priority
    budgeting beside large images.
 4. Office orchestration, capability/graph assembly, import/CLI/consumer integration
-   and compiled end-to-end tests. Stack branches as necessary; no main merges.
+   and compiled end-to-end tests. Stack branches as necessary; each merge requires separate owner authorization.
 5. Cleared comparator provisioning and independent #40 corpus/comparison receipts.
 
 B0 proceeds separately before comparator execution/artifacts. Full oletools
@@ -418,3 +434,14 @@ measured zero. Native package limits may be stricter. Stop at the first ceiling
 with partial receipts and a revise/reject recommendation. Independent expected
 identities, six reachable adjudication categories and object-specific exemptions
 remain mandatory. Only the owner disposes of #40/#21 gates.
+
+Required budget regressions include large ordinary Pictures/customXml payloads
+beside metadata, relationship and embedding targets, and an oversized decoy
+`[Content_Types].xml` beside a valid ODT manifest/content pair. Assert target
+coverage under the stated remaining budget, stable selection across ZIP/worker
+order, explicit per-part versus aggregate reasons, and no budget refunds.
+
+Merge policy: this proposal and implementation increments remain reviewable;
+"no merge authorization" records the current owner instruction, not an inherent
+ban on accepting this specification. A later explicit owner instruction may
+merge the documentation alone without clearing implementation or comparator gates.

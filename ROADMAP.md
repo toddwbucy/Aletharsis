@@ -151,7 +151,7 @@ remains.
 | **P6 — Advanced analysis** | Vetted new steganographic/statistical/cross-format analysis; experimental intrinsic fingerprints | Detector-specific assumptions, positive/negative controls, held-out evaluation, measured error limits and unknown outcomes. Separate specification and validation before product integration. |
 | **P7 — Controlled derivatives** | Reviewed text edits and later format-aware writers, dry runs, new files, manifests and re-audits | Accepted P4 review/plan contracts and relevant parsers/locations; source/plan revalidation, explicit confirmation, no overwrite, validation and independent integrity tests. |
 
-P2 integration is proposed in [OI-001](docs/specs/office-cli-evidence.md): opt-in
+P2 integration is proposed in [OC-001](docs/specs/office-cli-evidence.md): opt-in
 report 4.0 with explicit Office coordinates and corpus-v2, preserving 1.0/2.0.
 This is under review in [PR #74](https://github.com/toddwbucy/Aletharsis/pull/74),
 not delivered CLI support.

@@ -116,10 +116,10 @@ do not establish ODF conformance or independent Office-oracle acceptance.
 
 ## Office report serialization boundary
 
-[OI-001](office-cli-evidence.md) supersedes this specification's finding-location
+[OC-001](office-cli-evidence.md) supersedes this specification's finding-location
 key names only when serializing Office findings into report 4.0. Library results
 keep `character_offsets` and `byte_offsets` with their existing scope-relative
 semantics; the report assembler translates to `scope_character_offsets` and
-`scope_byte_offsets`, with required `scope_ref` and `coordinate_artifact_ref`.
+`scope_byte_offsets`, with required `scope_ref`; its scope record identifies the coordinate artifact.
 These local library findings must not be serialized directly as legacy file-byte
 locations. The 4.0 scope-table validator verifies the translated coordinates.
