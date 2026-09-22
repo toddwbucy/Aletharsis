@@ -229,3 +229,57 @@ func TestSourceChangeInsideReadIsRejected(t *testing.T) {
 		t.Fatalf("changed source accepted: %q %v", data, err)
 	}
 }
+
+func TestCountedSnapshotAccountsDiscardedBytes(t *testing.T) {
+	for _, tc := range []struct {
+		name        string
+		reader      io.Reader
+		size        int64
+		afterSize   int64
+		statFailure int
+		want        int
+	}{
+		{"pre_read_oversize", strings.NewReader("oversize"), 40, 40, 0, 0},
+		{"partial_error", partialReadError{}, 7, 7, 0, 7},
+		{"post_read_stat_error", strings.NewReader("abc"), 3, 3, 2, 3},
+		{"changed", strings.NewReader("abc"), 3, 4, 0, 3},
+		{"grew_over_limit", strings.NewReader(strings.Repeat("x", 40)), 3, 40, 0, 33},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			consumed := 0
+			f := &snapshotStub{reader: tc.reader, before: snapshotInfo{size: tc.size}, after: snapshotInfo{size: tc.afterSize}, statFailure: tc.statFailure}
+			data, err := readSnapshotWithOpen("source.txt", 32, func(string, int) (snapshotFile, error) {
+				return countedSnapshot{snapshotFile: f, consumed: &consumed}, nil
+			})
+			if err == nil || data != nil || consumed != tc.want {
+				t.Fatalf("data=%q consumed=%d err=%v", data, consumed, err)
+			}
+		})
+	}
+}
+
+func TestSeparateAcquisitionCeilings(t *testing.T) {
+	for _, tc := range []struct {
+		name     string
+		size     int64
+		data     string
+		code     failure.Code
+		consumed int
+	}{
+		{"aggregate_pre_read", 5, "valid", failure.ResourceLimit, 0},
+		{"file_pre_read", 9, "oversized", failure.TooLarge, 0},
+		{"grew_past_aggregate", 2, "valid", failure.ResourceLimit, 4},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			consumed := 0
+			f := &snapshotStub{reader: strings.NewReader(tc.data), before: snapshotInfo{size: tc.size}, after: snapshotInfo{size: int64(len(tc.data))}}
+			data, err := readSnapshotWithOpenLimits("source.txt", 3, 8, func(string, int) (snapshotFile, error) {
+				return countedSnapshot{snapshotFile: f, consumed: &consumed}, nil
+			})
+			var typed *failure.Error
+			if !errors.As(err, &typed) || typed.Code() != tc.code || data != nil || consumed != tc.consumed || f.closes != 1 {
+				t.Fatalf("data=%q consumed=%d err=%v", data, consumed, err)
+			}
+		})
+	}
+}

@@ -19,14 +19,12 @@ def assert_no_snapshot(result, validator):
     return report
 
 
-@pytest.mark.parametrize('kind', ['directory', 'fifo', 'socket', 'symlink'])
+@pytest.mark.parametrize('kind', ['fifo', 'socket', 'symlink'])
 def test_nonregular_sources_fail_without_blocking(run_cli, validator, tmp_path, kind):
     path = tmp_path / 'source'
     sock = None
     target = None
-    if kind == 'directory':
-        path.mkdir()
-    elif kind == 'fifo':
+    if kind == 'fifo':
         os.mkfifo(path)
     elif kind == 'socket':
         sock = socket.socket(socket.AF_UNIX)

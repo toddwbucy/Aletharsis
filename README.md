@@ -16,9 +16,13 @@ workbench, and explicitly approved transformations into new files. See the
 
 Go **0.2.0** defaults to deterministic **report schema 1.0** output.
 Opt in to the new coverage contract with `--schema-version 2.0`.
-It audits one regular file at a time, up to **8 MiB**, on **Linux** with supported
-no-atime acquisition. Schema 2.0 also enforces report and per-record budgets;
-some inputs below 8 MiB exceed those budgets and fail explicitly without a report.
+It audits regular files or bounded directories on **Linux** with supported
+no-atime acquisition, up to **8 MiB per file**. Directory audits in **both schemas**
+additionally enforce a 16 MiB / 4 Mi-node report budget; expanded text/offset evidence can exhaust it around 2 MiB of ASCII
+input, producing `execution.report_limit` with no retained report. Standalone
+schema 1.0 does not have this corpus budget. Schema 2.0 also enforces native report
+and per-record budgets. The 8 MiB source ceiling is not a promise that every
+smaller input fits all evidence budgets.
 
 | Capability | Current behavior |
 | --- | --- |
@@ -26,7 +30,9 @@ some inputs below 8 MiB exceed those budgets and fail explicitly without a repor
 | Unicode inspection | Invisible characters, bidi controls, selectors, tags, unusual whitespace, controls, combining characters, emoji candidates and limited mixed-script checks |
 | Pattern analysis | Zero-width binary candidates, periodic insertions, long selector/tag runs and identifier/provenance candidates |
 | Text evidence | Exact extracted text, code-point and byte positions, context samples, BOMs, line endings and normalization/comparison hashes |
-| Reporting | Escaped console output, complete JSON evidence, filtered finding views and severity-based exit codes |
+| Reporting | Escaped console output, complete JSON/JSONL corpus evidence, filtered single-file views and severity-based exit codes |
+| Corpus | Explicit recursion, sorted outcomes, rooted no-follow acquisition, resource bounds and aggregate summaries |
+| Reveal | File and source-relative directory reveals, faithful/display diffs, coordinate mappings and hash manifests in a new private output directory |
 | Integrity | Read-only acquisition, source-change checks, rejection of symlink inputs and refusal to overwrite report destinations |
 
 TXT, Markdown, RST, CSV, JSON, XML, HTML and source-code files are inspected as
@@ -40,8 +46,7 @@ in extracted evidence. Malformed encodings fail without replacement; legacy
 encodings and BOM-less UTF-16/32 are unsupported. MIME hints do not establish
 full document validity.
 
-**Not implemented:** directory/recursive scans, JSONL, reveal/diff exports,
-DOCX/ODT/PDF parsing, structured document metadata, expected-artifact profiles,
+**Not implemented:** DOCX/ODT/PDF parsing, structured document metadata, expected-artifact profiles,
 C2PA validation, statistical watermark detectors, model fingerprinting, the web
 workbench, saved rules or cleanup. PDF and DOCX signatures are recognized and
 reported as unsupported, including when disguised with a text extension.
@@ -82,6 +87,11 @@ aletharsis audit suspicious.txt --verbose
 aletharsis audit suspicious.txt --json
 aletharsis audit suspicious.txt --schema-version 2.0 --json
 aletharsis audit suspicious.txt --output report.json
+aletharsis audit suspicious.txt --reveal-out review-new --json
+aletharsis audit ./documents --recursive
+aletharsis audit ./documents --recursive --jsonl
+aletharsis audit ./documents --recursive --reveal-out review-tree-new --jsonl
+aletharsis audit ./documents --recursive --json --output corpus-report.json
 aletharsis unicode suspicious.txt
 aletharsis metadata suspicious.txt --json
 aletharsis structure suspicious.txt
@@ -94,6 +104,63 @@ aletharsis --help
 Reports contain extracted source text; handle them as evidence with the same
 sensitivity as the input. `--verbose` emits structured diagnostics on stderr.
 Console output escapes control, bidi and non-ASCII characters.
+
+Directory audits inspect immediate files by default; `--recursive` includes
+nested directories. Symlinks and special files are explicit skips. `--jsonl`
+streams a header, per-entry outcomes and final summary. `--json` produces one
+object containing those same header/entries/summary records; directory `--output`
+defaults to this JSON form unless `--jsonl` is selected. The output must be a new
+file outside the source tree. Existing parent-directory aliases are resolved and
+checked before writes; the destination itself must not exist.
+
+A valid partial corpus report is retained with exit 4 when files fail or are
+unsupported. Missing completion records or transport errors mean the stream did
+not complete. No findings is not proof of absence; skipped and unsupported entries
+remain visible. Scans use one in-flight audit, at most 10,000 discovered entries,
+64 nested levels, 256 MiB aggregate acquisition and 128 MiB output by default.
+See the [directory CLI contract](docs/specs/directory-cli.md) for complete limits,
+outcome semantics and a compiled nested-corpus demonstration.
+
+`audit DIRECTORY --recursive --reveal-out NEW_DIRECTORY` publishes source-relative
+`revealed/`, `reports/`, `mappings/`, `diffs/` and `display-diffs/` trees, plus exact
+`corpus.jsonl` and a final `manifest.json`. Failed/unsupported files retain reports
+without invented revealed text; skipped/canceled observations remain in the ledger.
+The destination must be new and outside the source tree. Portable-name, case-fold,
+normalization and file/directory collisions fail explicitly rather than rename
+sources. `--output` cannot be combined with `--reveal-out`.
+
+Directory `reports/*.json` preserve canonical **raw UTF-8** evidence, including
+bidi controls: do not display them directly in a terminal. This intentionally
+differs from ASCII-escaped stdout JSON/JSONL and the schema-1 single-file
+`report.json`. Their byte hashes equal the corpus canonical report hashes. Treat
+them like raw revealed text and faithful diffs; use an escaping JSON viewer or
+`display-diffs/` for review. Manifests, directory `mappings/*.json`, and single-file
+`comparison.json` use ASCII-escaped JSON; decoding them restores exact source
+strings. Their artifact hashes identify the escaped serialized bytes.
+
+Publication finishes before stdout is delivered. A stdout failure leaves the
+committed tree available; publication failure attempts rollback of its own files.
+Corpus JSONL is buffered up to its 128 MiB default limit for commit, in addition
+to per-file processing memory. Total tree file bytes are bounded at 256 MiB.
+See the [directory reveal contract and demonstration](docs/specs/directory-reveal.md).
+
+`audit FILE --reveal-out NEW_DIRECTORY` publishes `report.json`, `revealed.txt`,
+`comparison.json`, `faithful.diff`, `display.diff`, and `manifest.json` from one
+acquired source snapshot. Both report schemas are supported. The output directory
+must be new; its parent must already exist. Parent aliases are resolved and the
+opened parent identity is checked; existing destinations are never followed. Files use
+mode `0600`, the directory `0700`. It cannot be combined with `--output`; the
+bundle already includes the exact report printed by `--json`.
+
+The faithful diff retains original controls and compares decoded UTF-8, not
+original UTF-16/32 bytes. Use `display.diff` for an ASCII-escaped review view.
+Neither diff is cleanup authorization. `comparison.json` retains the original,
+revealed and display mappings; literal marker-looking text remains distinguishable.
+The manifest binds source/report hashes and artifact sizes/hashes. Publication
+failures return 4 and attempt rollback; a crash may leave incomplete output, so
+verify every manifest entry before treating a bundle as complete. A stdout failure
+after successful publication also returns 4 but retains the complete bundle.
+See the [single-file reveal contract](docs/specs/reveal-cli.md).
 
 `unicode`, `metadata` and `structure` filter findings. Their summaries and exit
 codes apply to that view, but complete extracted evidence and parser failures
