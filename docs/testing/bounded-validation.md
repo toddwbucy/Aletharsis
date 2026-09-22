@@ -82,26 +82,35 @@ reported unit before continuing validation. ExecStopPost paths are transported
 over D-Bus with systemd C-escape handling for backslashes (including literal
 backslash-t/backslash-x paths); percent and dollar characters remain literal.
 
-Second-pass validation: 36 offline regressions passed. A live `/bin/true` run
+Second-pass validation ran 33 offline regressions. Its live `/bin/true` run
 with `%` and `$` in TMPDIR reported `completed`, verified enforcement and
-confirmed cleanup (8.3 MiB peak). This verifies the receipt-path regression.
+confirmed cleanup (8.3 MiB peak). The later eacb144 revision passed 36 tests;
+these are separate validation observations.
 
-Runtime timeout/memory-limit statuses require a signalled main process. A main
-process that exits successfully followed by a shutdown/descendant limit is
-`supervisor_failed`, retaining its exit code and service result. `launcher_timeout`
-means the supervising systemd-run call exceeded its deadline; `supervisor_timeout`
-means a service timeout before guard verification. On interruption or launcher_timeout, enforcement_verified may be false and
-service_result null because receipts were unread, not because enforcement failed.
+Runtime timeout/memory-limit statuses require a signalled main process.
+`launcher_timeout` means the supervising systemd-run call exceeded its deadline;
+`supervisor_timeout` means a service timeout before guard verification. When the
+launcher wait is interrupted or times out, receipts are not read: the resulting
+`interrupted`/`launcher_timeout` report has `enforcement_verified: false` and
+`service_result`, `command_exit_code` and `command_signal` all null. Those values
+carry no evidence either way, even when cleanup succeeded and receipts existed.
 The post-stop receipt helper must remain the last ExecStopPost action.
 
-A command that catches SIGTERM at the runtime deadline and exits normally is
-also classified `supervisor_failed`: main-process exit status cannot distinguish
-that case from a descendant shutdown timeout. Consumers must treat a verified
-`service_result: timeout` as a service budget event even when status is
-supervisor_failed and command_exit_code is zero; it must not count as successful
-validation. Do not use the status alone to attribute which process timed out.
+With `enforcement_verified: true`, any `service_result: timeout` whose main
+process exited (any `command_exit_code`, `command_signal: null`) is classified
+`supervisor_failed`. This includes a command that catches SIGTERM at the runtime
+deadline and exits with zero or nonzero status, and a main process that exits
+before a descendant exceeds the shutdown allowance. The outcome line cannot
+distinguish these cases. Treat this as a service-side timeout (runtime deadline
+or shutdown allowance), never successful validation; do not cite it as proof of
+which allowance was exceeded or which process caused it. Absence of
+`status: timeout` does not establish that the runtime budget was met. Systemd's
+human runtime prose is not an additional machine-readable contract.
 
 The Python ExecStopPost helper shares the limited cgroup. Near-limit tmpfs pages
 left by the command can prevent the helper from starting or completing, losing
 the receipt. The inspection fallback may also race unit collection; missing
-outcome evidence remains failure/unknown, never proof of a completed run.
+outcome evidence remains failure/unknown, never proof of a completed run. If the
+fallback succeeds, `supervisor_failed`, main exit 0 and `service_result: oom-kill`
+can describe a killed receipt helper or a descendant OOM after a clean main exit;
+the outcome line cannot distinguish them.
