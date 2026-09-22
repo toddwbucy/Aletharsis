@@ -95,3 +95,9 @@ The [G3 Unicode study](evaluations/unicode.md) compares thirty independent cases
 against two pinned read-only probes, preserves policy/inventory/coverage/parser
 differences and identifies a native Hangul-filler inventory gap for #14. Neither
 comparator is adopted as a production dependency.
+
+## Per-component adoption
+
+The [G6 checklist and gap records](adoptions/README.md) bind each recommendation to
+its exact pin, evidence, missing checks and owner acceptance. The first two C2PA
+records recommend revision; neither approves a production dependency.

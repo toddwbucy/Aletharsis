@@ -67,7 +67,7 @@
         "tree_listing_truncated": false,
         "build_reproducibility": "verified",
         "vulnerability_review": "pending",
-        "maintenance_conclusion": "Issue #37 bounded Linux/amd64 study: 28 upstream tests pass; 39 independent cases execute, eight HTML expectation mismatches. Two fresh builds/results compared; this is not cross-platform conformance. Recommendation revise before adoption; adapter G1 and G6 remain open. Proposed DA-001 exchange contract and conformance cases: docs/specs/detector-adapter-v1.md (#36); report migration and production enforcement still require separate review."
+        "maintenance_conclusion": "Issue #37 bounded Linux/amd64 study: 28 upstream tests pass; 39 independent cases execute, eight HTML expectation mismatches. Two fresh builds/results compared; this is not cross-platform conformance. Recommendation revise before adoption; adapter G1 and G6 remain open. Proposed DA-001 exchange contract and conformance cases: docs/specs/detector-adapter-v1.md (#36); report migration and production enforcement still require separate review. Per-component G6 gap record: docs/reuse/adoptions/encypherai--c2pa-text.json; recommendation revise, acceptance pending."
       },
       "disable_or_replace": "Disable adapter and retain native Unicode observations; substitute independently validated carrier extractor.",
       "decision": null
@@ -137,7 +137,7 @@
         "tree_listing_truncated": false,
         "build_reproducibility": "verified",
         "vulnerability_review": "pending",
-        "maintenance_conclusion": "Issue #38 Linux/amd64 study: eleven final byte/trust/side-effect cases pass; same-environment Rust rebuild hashes match. Recommend worker design under #36 before adoption; other native targets and independent-verifier/security validation remain open. Proposed DA-001 exchange contract and conformance cases: docs/specs/detector-adapter-v1.md (#36); report migration and production enforcement still require separate review."
+        "maintenance_conclusion": "Issue #38 Linux/amd64 study: eleven final byte/trust/side-effect cases pass; same-environment Rust rebuild hashes match. Recommend worker design under #36 before adoption; other native targets and independent-verifier/security validation remain open. Proposed DA-001 exchange contract and conformance cases: docs/specs/detector-adapter-v1.md (#36); report migration and production enforcement still require separate review. Per-component G6 gap record: docs/reuse/adoptions/encypherai--encypher-c2pa.json; recommendation revise, acceptance pending."
       },
       "disable_or_replace": "Disable verifier and report verification unavailable; preserve extracted credentials; alternative verifier needs same gates.",
       "decision": null
