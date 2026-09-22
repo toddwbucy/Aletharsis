@@ -117,8 +117,15 @@ including shutdown). These checks do not establish full OOXML conformance.
 scopes with native Unicode/emoji/pattern findings and explicit scalar source maps.
 
 Controls nested anywhere in same-namespace Word property subtrees (`rPr`, `pPr`,
-`sectPr`, `tblPr`, `tblPrEx`, `trPr`, `tcPr`) are not admitted to `Controls`.
+`sectPr`, `tblPr`, `tblPrEx`, `trPr`, `tcPr`, `sdtPr`, `tblGrid`) are not admitted to `Controls`.
 They retain their located XML elements and yield
 `word.control_structure_unsupported`; ordinary tab-stop declarations under
 `tabs` remain formatting without that issue. This ancestry check does not turn
 similarly named foreign elements into Word formatting declarations.
+
+Selected text in these non-body property/grid subtrees remains located extraction
+evidence and emits `word.formatting_text_not_analyzed`, making extraction partial.
+WA-001 records a `formatting_text_not_analyzed` boundary for each excluded selected
+segment even with no active scope, including whitespace-only segments. These
+records declare an analysis coverage gap, not a negative detector result, and do
+not claim to enumerate every possible non-body Word container.

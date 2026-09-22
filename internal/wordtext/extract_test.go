@@ -237,7 +237,7 @@ func FuzzExtract(f *testing.F) {
 
 func TestFormattingControlsRemainLocatedXMLOnly(t *testing.T) {
 	for _, ns := range []string{docxidentify.TransitionalWord, docxidentify.StrictWord} {
-		for _, property := range []string{"rPr", "pPr", "sectPr", "tblPr", "tblPrEx", "trPr", "tcPr"} {
+		for _, property := range []string{"rPr", "pPr", "sectPr", "tblPr", "tblPrEx", "trPr", "tcPr", "sdtPr", "tblGrid"} {
 			for _, control := range []string{"tab", "br", "cr"} {
 				t.Run(ns+"/"+property+"/"+control, func(t *testing.T) {
 					body := `<w:p><w:r><w:` + property + `><w:r><w:` + control + `/></w:r></w:` + property + `><w:t>x</w:t><w:` + control + `/></w:r></w:p>`

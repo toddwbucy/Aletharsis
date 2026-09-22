@@ -128,7 +128,7 @@ func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 					boundary(ti, "unresolved_control")
 					continue
 				}
-				if token.Kind == "end" {
+				if token.Kind == "end" || c.Count == 0 {
 					continue
 				}
 				if c.Count > uint64(MaxScalars-total-remainingStored) {

@@ -112,7 +112,7 @@ func TestBoundariesAndPartialCoverage(t *testing.T) {
 	if len(r.Scopes) != 2 || patterns(r) != 0 {
 		t.Fatal("mixed conditional fields")
 	}
-	r = analyze(t, document(`<text:p>A<text:s text:c="0"/>B</text:p>`))
+	r = analyze(t, document(`<text:p>A<text:s text:c="-1"/>B</text:p>`))
 	if r.Extraction.State != "partial" || len(r.Scopes) != 2 || r.Scopes[0].Text != "A" || r.Scopes[1].Text != "B" {
 		t.Fatal("unresolved count omitted without boundary")
 	}
@@ -294,5 +294,22 @@ func TestEachSkippedExpansionRetainsAnchorWithoutActiveScope(t *testing.T) {
 		if b.Reason != "control_expansion_limit" {
 			t.Fatal("wrong omission reason")
 		}
+	}
+}
+
+func TestZeroSpaceControlPreservesPatternAndCreatesNoScope(t *testing.T) {
+	half := strings.Repeat("\u200b\u200c", 12)
+	r := analyze(t, document(`<text:p>`+half+`<text:s text:c="0"/>`+half+`</text:p>`))
+	if r.State != "completed" || r.Extraction.State != "completed" || len(r.Scopes) != 1 || patterns(r) != 1 || r.Scopes[0].Text != half+half || len(r.Scopes[0].Origins) != 48 || len(r.Extraction.Controls) != 1 {
+		t.Fatal("zero count split or changed text", r)
+	}
+	for _, origin := range r.Scopes[0].Origins {
+		if origin.Kind != "stored" {
+			t.Fatal("zero count fabricated origin")
+		}
+	}
+	empty := analyze(t, document(`<text:p><text:s text:c="0"/></text:p>`))
+	if empty.State != "completed" || len(empty.Scopes) != 0 || len(empty.Extraction.Controls) != 1 {
+		t.Fatal("zero count manufactured scope", empty)
 	}
 }

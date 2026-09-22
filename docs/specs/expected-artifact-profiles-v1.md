@@ -232,3 +232,9 @@ and exact source/compressed/decompressed identities, with retained DOCX/ODT pack
 It is a separate parser prerequisite, not an approved context producer or profile
 bundle. XML locations, format validation, real profile evaluation and report/CLI
 integration remain required before closing #14.
+
+A profile scope mismatch retains `profile_scope_mismatch` as the primary reason
+regardless of coverage/mapping gaps or pattern signals. Exact pattern targets can
+still raise expectedness to suspicious; `Overrides`/`UnmappedSignals` retain their
+independent evidence. A mismatched profile never suppresses an observation or
+supplies rule matches.

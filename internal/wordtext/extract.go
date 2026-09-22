@@ -219,6 +219,9 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		if len(unknown) > 0 {
 			r.issue("word.wrapper_context_unresolved", s.Element)
 		}
+		if formatting[s.Element] {
+			r.issue("word.formatting_text_not_analyzed", s.Element)
+		}
 		r.Texts = append(r.Texts, item)
 	}
 	for i, e := range d.Elements {
@@ -326,7 +329,7 @@ func FormattingSubtrees(d *xmlparts.Document, namespace string) []bool {
 		}
 		if e.Name.Namespace == namespace {
 			switch e.Name.Local {
-			case "rPr", "pPr", "sectPr", "tblPr", "tblPrEx", "trPr", "tcPr":
+			case "rPr", "pPr", "sectPr", "tblPr", "tblPrEx", "trPr", "tcPr", "sdtPr", "tblGrid":
 				result[i] = true
 			}
 		}

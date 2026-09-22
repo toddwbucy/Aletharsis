@@ -60,7 +60,7 @@ kind and exact full-element span. They do not produce scalar mappings or synthes
 characters. A future assembly layer must describe any expansion as a transformation
 linked to the element rather than pretend generated spaces existed in source bytes.
 
-Space counts default to one. An explicit text:c admits positive decimal integers,
+Space counts default to one. An explicit text:c admits nonnegative decimal integers,
 XML whitespace at the ends, an optional plus and leading zeroes; counts must fit
 uint64. Invalid/overflowing values, unexpected attributes, child elements, non-whitespace
 content or missing paragraph context produce an unknown count and partial result.
@@ -120,3 +120,8 @@ These native checks do not establish full ODF conformance or renderer equivalenc
 
 [OA-001](odt-analysis-scopes.md) proposes the analysis consumer, with bounded inline
 assembly and separately classified origins for explicit whitespace expansion.
+
+A known zero space count is legal under the [ODF 1.3 schema](https://docs.oasis-open.org/office/OpenDocument/v1.3/os/schemas/OpenDocument-v1.3-schema.rng)
+(`text:c` uses `nonNegativeInteger`). `CountState` distinguishes known zero from
+unknown counts. Zero contributes no characters or origins and does not split an
+analysis scope or create an empty scope; its control/XML evidence remains retained.

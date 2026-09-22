@@ -219,6 +219,11 @@ func (r *Registry) Assess(id, version string, observations []Observation, signal
 			a.OmitDefault = false
 			a.Reason = "pattern_override"
 		}
+		// Scope selection is independently invalid even when pattern evidence
+		// raises review priority. Preserve its diagnostic and all signal links.
+		if o.Scope != profile.definition.Scope {
+			a.Reason = "profile_scope_mismatch"
+		}
 		result = append(result, a)
 	}
 	return result, nil

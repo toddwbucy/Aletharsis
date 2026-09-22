@@ -224,7 +224,7 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		}
 		if kind == "spaces" {
 			if value, ok := attr(e, TextNS, "c"); ok {
-				count, valid := positiveCount(value)
+				count, valid := nonNegativeCount(value)
 				if !valid {
 					c.CountState = "unknown"
 				} else {
@@ -266,7 +266,7 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 
 // No expansion is performed. Overflows stay unknown rather than allocating from
 // attacker-controlled repetition counts. XML Schema whitespace and '+' accepted.
-func positiveCount(value string) (uint64, bool) {
+func nonNegativeCount(value string) (uint64, bool) {
 	s := strings.Trim(value, " \t\r\n")
 	s = strings.TrimPrefix(s, "+")
 	if s == "" {
@@ -278,5 +278,5 @@ func positiveCount(value string) (uint64, bool) {
 		}
 	}
 	v, err := strconv.ParseUint(s, 10, 64)
-	return v, err == nil && v > 0
+	return v, err == nil
 }

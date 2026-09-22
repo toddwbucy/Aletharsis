@@ -23,7 +23,8 @@ data splits scopes. XML indentation is not added to selected text.
 CDATA boundaries and character-reference syntax do not split the selected character
 sequence. Empty text can retain an empty scope. No synthetic separator or rendered
 character is introduced. Scope boundaries record the terminating token and reason
-when there was an active selected scope; this is not an inventory of every structural
+when there was an active selected scope, except the explicit formatting-text
+coverage records described below; this is not an inventory of every structural
 element. Complete structural evidence remains in the retained WT-001 result.
 
 This is an explicit stored-text analysis projection, not a reconstruction of what a
@@ -106,7 +107,14 @@ shutdown). These checks are bounded native validation, not renderer equivalence 
 independent Office-oracle acceptance.
 
 Selected character data nested inside same-namespace Word property subtrees
-(`rPr`, `pPr`, `sectPr`, `tblPr`, `tblPrEx`, `trPr`, `tcPr`) remains in WT-001
+(`rPr`, `pPr`, `sectPr`, `tblPr`, `tblPrEx`, `trPr`, `tcPr`, `sdtPr`, `tblGrid`) remains in WT-001
 extraction evidence but is excluded from analyzer scopes. It splits surrounding
 stored text, including when the excluded selected content is only whitespace;
 formatting content cannot manufacture adjacency or a text-pattern finding.
+
+Selected text in these non-body property/grid subtrees remains located extraction
+evidence and emits `word.formatting_text_not_analyzed`, making extraction partial.
+WA-001 records a `formatting_text_not_analyzed` boundary for each excluded selected
+segment even with no active scope, including whitespace-only segments. These
+records declare an analysis coverage gap, not a negative detector result, and do
+not claim to enumerate every possible non-body Word container.

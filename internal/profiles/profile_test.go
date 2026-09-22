@@ -463,3 +463,37 @@ func TestSingleSignalTargetBudgetUsesLimitSentinel(t *testing.T) {
 		t.Fatal("malformed target misclassified", err)
 	}
 }
+
+func TestScopeMismatchDiagnosticSurvivesCoverageAndSignals(t *testing.T) {
+	r, d := registeredFixture(t, "text")
+	for _, partial := range []bool{false, true} {
+		for _, exact := range []bool{false, true} {
+			for _, signalKind := range []string{"none", "unmapped", "mapped"} {
+				o := observation(d)
+				o.Scope.Variant = "other"
+				o.Exact = exact
+				if partial {
+					o.Coverage = "partial"
+				}
+				var signals []Signal
+				if signalKind != "none" {
+					signals = []Signal{{ID: "signal.a", ArtifactSHA256: artifact, Targets: []string{o.ID}, MappingComplete: signalKind == "mapped"}}
+				}
+				if signalKind == "unmapped" {
+					signals[0].Targets = nil
+				}
+				got := assess(t, r, d, []Observation{o}, signals)[0]
+				expected := "unknown"
+				if signalKind == "mapped" {
+					expected = "suspicious"
+				}
+				if got.Reason != "profile_scope_mismatch" || got.OmitDefault || got.Expectedness != expected || len(got.Matches) != 0 {
+					t.Fatal("masked mismatch", got)
+				}
+				if signalKind == "mapped" && len(got.Overrides) != 1 || signalKind == "unmapped" && len(got.UnmappedSignals) != 1 {
+					t.Fatal("lost signal", got)
+				}
+			}
+		}
+	}
+}

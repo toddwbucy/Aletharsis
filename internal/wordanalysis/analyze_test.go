@@ -203,7 +203,7 @@ func TestFormattingSubtreeTextDoesNotEnterAnalysis(t *testing.T) {
 				}
 			}
 		}
-		if len(r.Boundaries) == 0 || r.Boundaries[0].Reason != "unselected_character_data" {
+		if len(r.Boundaries) == 0 || r.Boundaries[0].Reason != "formatting_text_not_analyzed" {
 			t.Fatal("missing formatting-data boundary")
 		}
 	}
@@ -211,7 +211,7 @@ func TestFormattingSubtreeTextDoesNotEnterAnalysis(t *testing.T) {
 
 func TestPropertyContainersCannotManufactureFindings(t *testing.T) {
 	for _, ns := range []string{docxidentify.TransitionalWord, docxidentify.StrictWord} {
-		for _, property := range []string{"rPr", "pPr", "sectPr", "tblPr", "tblPrEx", "trPr", "tcPr"} {
+		for _, property := range []string{"rPr", "pPr", "sectPr", "tblPr", "tblPrEx", "trPr", "tcPr", "sdtPr", "tblGrid"} {
 			t.Run(ns+"/"+property, func(t *testing.T) {
 				hidden := run(strings.Repeat("\u200b\u200c", 24))
 				body := `<w:p>` + run("before") + `<w:` + property + `><w:rPr>` + hidden + `</w:rPr></w:` + property + `>` + run("after") + `</w:p>`
@@ -236,5 +236,25 @@ func TestOrdinaryLargePartFailsExplicitlyAtMappingBudget(t *testing.T) {
 	}
 	if r, err := Analyze(context.Background(), source, evidence.Hash(source)); r != nil || !errors.Is(err, xmlparts.ErrLimit) {
 		t.Fatalf("result %v, error %v", r, err)
+	}
+}
+
+func TestFormattingOnlyStoryDeclaresEveryExcludedSegment(t *testing.T) {
+	for _, ns := range []string{docxidentify.TransitionalWord, docxidentify.StrictWord} {
+		for _, property := range []string{"rPr", "pPr", "sectPr", "tblPr", "tblPrEx", "trPr", "tcPr", "sdtPr", "tblGrid"} {
+			t.Run(ns+"/"+property, func(t *testing.T) {
+				body := `<w:p><w:` + property + `>` + run(strings.Repeat("\u200b\u200c", 24)) + run(" ") + `</w:` + property + `></w:p>`
+				r := analyze(t, strings.ReplaceAll(document(body), docxidentify.TransitionalWord, ns))
+				if r.Extraction.State != "partial" || len(r.Extraction.Texts) != 2 || len(r.Extraction.Issues) != 2 || len(r.Scopes) != 0 || len(r.Boundaries) != 2 {
+					t.Fatal("undeclared exclusion", r)
+				}
+				for i, b := range r.Boundaries {
+					text := r.Extraction.Texts[i]
+					if b.Reason != "formatting_text_not_analyzed" || b.Token != r.Extraction.XML.Segments[text.Segment].Token || r.Extraction.Issues[i].Code != "word.formatting_text_not_analyzed" || r.Extraction.Issues[i].Element != text.Element {
+						t.Fatal("lost exclusion anchor", r)
+					}
+				}
+			})
+		}
 	}
 }

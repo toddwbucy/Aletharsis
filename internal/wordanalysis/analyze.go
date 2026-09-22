@@ -89,7 +89,8 @@ func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		if textIndex, ok := byToken[ti]; ok {
 			t := extracted.Texts[textIndex]
 			if properties[t.Element] {
-				boundary(ti, "unselected_character_data")
+				r.Boundaries = append(r.Boundaries, Boundary{ti, "formatting_text_not_analyzed"})
+				flush()
 				continue
 			}
 			if previous >= 0 {

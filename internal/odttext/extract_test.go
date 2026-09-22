@@ -98,7 +98,7 @@ func TestSpaceCountsAndMalformedControls(t *testing.T) {
 		count uint64
 	}{
 		{"1", true, 1}, {"+0003", true, 3}, {" 2 ", true, 2}, {"18446744073709551615", true, ^uint64(0)},
-		{"18446744073709551616", false, 0}, {"0", false, 0}, {"-1", false, 0}, {"1e2", false, 0}, {"", false, 0}, {"1 2", false, 0}, {"١", false, 0},
+		{"18446744073709551616", false, 0}, {"0", true, 0}, {"+000", true, 0}, {"-1", false, 0}, {"1e2", false, 0}, {"", false, 0}, {"1 2", false, 0}, {"١", false, 0},
 	} {
 		t.Run(tc.value, func(t *testing.T) {
 			r := extract(t, document(`<text:p><text:s text:c="`+tc.value+`"/></text:p>`))
