@@ -28,8 +28,17 @@ func TestCompleteFlatReportRecordDecoding(t *testing.T) {
 			if r.Schema != "4.0" || len(r.AdapterRuns) != 0 {
 				t.Fatal("incorrect native view")
 			}
-			if _, err := IndexTrace(r.Trace); err != nil {
+			trace, err := IndexTrace(r.Trace)
+			if err != nil {
 				t.Fatal(err)
+			}
+			if err := validateSummary(r, trace); err != nil {
+				t.Fatal(err)
+			}
+			changedReport := r
+			changedReport.Summary = map[string]int{"exit_code": 0}
+			if validateSummary(changedReport, trace) == nil {
+				t.Fatal("accepted incorrect summary")
 			}
 			if len(r.Evidence.Office.Packages) != 0 {
 				t.Fatal("flat report gained Office data")

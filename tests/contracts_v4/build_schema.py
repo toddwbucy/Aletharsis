@@ -43,7 +43,7 @@ def build():
     d['officeIssue'] = obj({'code': ref('code'), 'diagnostic_ref': nullable(ref('diagnosticRef')),
                            'part_ref': nullable(ref('officePartRef'))})
     d['officeSpan'] = obj({'start': integer, 'end': integer})
-    d['officeOutcome'] = obj({'operation': name, 'part_ref': nullable(ref('officePartRef')),
+    d['officeOutcome'] = obj({'operation': name, 'execution_ref': ref('executionRef'), 'part_ref': nullable(ref('officePartRef')),
         'state': state, 'codes': array(ref('code')), 'diagnostic_refs': array(ref('diagnosticRef')),
         'assessed': array(ref('officeSpan')), 'excluded': array(ref('officeSpan'))})
     d['officePart'] = obj({'part_ref': ref('officePartRef'), 'package_ref': ref('officePackageRef'),

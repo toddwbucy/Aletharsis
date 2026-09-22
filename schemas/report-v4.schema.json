@@ -4741,6 +4741,9 @@
           "type": "string",
           "minLength": 1
         },
+        "execution_ref": {
+          "$ref": "#/$defs/executionRef"
+        },
         "part_ref": {
           "anyOf": [
             {
@@ -4787,6 +4790,7 @@
       },
       "required": [
         "operation",
+        "execution_ref",
         "part_ref",
         "state",
         "codes",

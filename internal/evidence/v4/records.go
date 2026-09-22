@@ -16,6 +16,7 @@ type Issue struct {
 
 type Outcome struct {
 	Operation      string   `json:"operation"`
+	ExecutionRef   string   `json:"execution_ref"`
 	PartRef        *string  `json:"part_ref"`
 	State          string   `json:"state"`
 	Codes          []string `json:"codes"`
