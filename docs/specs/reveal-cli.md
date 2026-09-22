@@ -114,3 +114,11 @@ with `go build -trimpath -o bin/aletharsis ./cmd/aletharsis`, then, for example:
 bin/aletharsis audit tests/fixtures/isolated_zwsp.txt \
   --schema-version 2.0 --json --reveal-out review-isolated-new
 ```
+
+## Proposed Office consumer boundary
+
+This specification retains its existing versioned behavior.
+[OC-001 §6](office-cli-evidence.md#6-consumer-inventory-b5) defines the separate
+Office consumer contract; no legacy envelope is silently extended.
+Single-file reveal rejects schema 4.0 as usage (exit 4) before acquisition;
+only 1.0/2.0 retain the existing completed-only reveal path.

@@ -1,0 +1,7 @@
+Running as unit: aletharsis-validation-ca564b048c7b4e79baee30d52d336bc8.service; invocation ID: 151132f5a6754e52abe7ce3ed775bae2
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 118ms
+             CPU time consumed: 124ms
+                   Memory peak: 26.4M (swap: 0B)
+ALETHARSIS_VALIDATION_RESULT={"cleanup_confirmed": true, "command_exit_code": 0, "command_signal": null, "enforcement_verified": true, "launcher_returncode": 0, "memory_mib": 1024, "service_result": "success", "status": "completed", "timeout_seconds": 60, "unit": "aletharsis-validation-ca564b048c7b4e79baee30d52d336bc8.service"}

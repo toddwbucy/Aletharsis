@@ -123,3 +123,11 @@ because `errors.Is` also finds the resource sentinel.
 Callbacks are not a serialized plugin mechanism and cannot be supplied by document,
 rule or profile data. They must not mutate or retain evidence; no callback authorizes
 source modification.
+
+## Proposed Office consumer boundary
+
+This specification retains its existing versioned behavior.
+[OC-001 §6](office-cli-evidence.md#6-consumer-inventory-b5) defines the separate
+Office consumer contract; no legacy envelope is silently extended.
+Corpus-v2 derives entry state from report status, retains partial evidence and
+dispatches workers by exact report version without a legacy fallback.

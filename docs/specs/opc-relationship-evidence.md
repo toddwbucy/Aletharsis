@@ -146,3 +146,7 @@ exists, the primary code is also the resource limit. No additional per-relations
 records are produced after the cap; the inventory count is a retained-prefix count,
 not a total declared count. The parsed XML remains available where parsing completed,
 but callers must not infer complete relationship coverage from that XML or prefix.
+
+## Proposed Office coordinator boundary
+
+The existing API remains unchanged; proposed [OC-001 §4](office-cli-evidence.md#4-producers-and-orchestration-b1b2) defines the separate outcome-based coordinator and budget policy.

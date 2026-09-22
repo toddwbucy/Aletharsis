@@ -130,3 +130,7 @@ external provider, network audit, model, or format conformance validator ran.
 structure and exact part-byte token spans, with conservative mapping for transformed
 text. It preserves package/part identity boundaries and does not enable format-specific
 parsers or profile suppression by itself.
+
+## Proposed Office coordinator boundary
+
+The existing API remains unchanged; proposed [OC-001 §4](office-cli-evidence.md#4-producers-and-orchestration-b1b2) defines the separate outcome-based coordinator and budget policy.

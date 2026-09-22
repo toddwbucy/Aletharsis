@@ -1,0 +1,13 @@
+?   	github.com/toddwbucy/Aletharsis/cmd/aletharsis	[no test files]
+ok  	github.com/toddwbucy/Aletharsis/internal/analyzers	1.020s
+ok  	github.com/toddwbucy/Aletharsis/internal/audit	10.602s
+ok  	github.com/toddwbucy/Aletharsis/internal/benchmarks	1.739s
+ok  	github.com/toddwbucy/Aletharsis/internal/capability	1.049s
+ok  	github.com/toddwbucy/Aletharsis/internal/cli	17.925s
+Running as unit: aletharsis-validation-3dd6fed1ef4d4be696beea004f16ea65.service; invocation ID: d0a3258c3df34a6d8e32c24aa8aa060f
+          Finished with result: oom-kill
+Main processes terminated with: code=killed, status=9/KILL
+               Service runtime: 40.948s
+             CPU time consumed: 39.765s
+                   Memory peak: 1G (swap: 0B)
+ALETHARSIS_VALIDATION_RESULT={"cleanup_confirmed": true, "command_exit_code": null, "command_signal": 9, "enforcement_verified": true, "launcher_returncode": 1, "memory_mib": 1024, "service_result": "oom-kill", "status": "memory_limit", "timeout_seconds": 60, "unit": "aletharsis-validation-3dd6fed1ef4d4be696beea004f16ea65.service"}

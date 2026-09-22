@@ -158,3 +158,7 @@ unqualified key/content-type facts. Only OPC-namespace Default/Override elements
 participate in type lookup and collision detection; other elements remain evidence
 without claiming that keyspace. An absent-target diagnostic requires an accepted
 Override, not a missing or unsupported key.
+
+## Proposed Office coordinator boundary
+
+The existing API remains unchanged; proposed [OC-001 §4](office-cli-evidence.md#4-producers-and-orchestration-b1b2) defines the separate outcome-based coordinator and budget policy.

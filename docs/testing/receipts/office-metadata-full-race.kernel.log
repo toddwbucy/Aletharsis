@@ -1,0 +1,7 @@
+2026-09-22T14:01:30-05:00 thinkpad kernel: corpus.test invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=200
+2026-09-22T14:01:30-05:00 thinkpad kernel: memory: usage 1048576kB, limit 1048576kB, failcnt 21
+2026-09-22T14:01:30-05:00 thinkpad kernel: [ 576014]  1000 576014   777802   257357   254936      474      1947  2486272        0           200 corpus.test
+2026-09-22T14:01:30-05:00 thinkpad kernel: oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=user@1000.service,mems_allowed=0,oom_memcg=/user.slice/user-1000.slice/user@1000.service/app.slice/aletharsis-validation-3dd6fed1ef4d4be696beea004f16ea65.service,task_memcg=/user.slice/user-1000.slice/user@1000.service/app.slice/aletharsis-validation-3dd6fed1ef4d4be696beea004f16ea65.service,task=corpus.test,pid=576014,uid=1000
+2026-09-22T14:01:30-05:00 thinkpad kernel: Memory cgroup out of memory: Killed process 576014 (corpus.test) total-vm:3111208kB, anon-rss:1019744kB, file-rss:1896kB, shmem-rss:7788kB, UID:1000 pgtables:2428kB oom_score_adj:200
+2026-09-22T14:01:30-05:00 thinkpad kernel: Tasks in /user.slice/user-1000.slice/user@1000.service/app.slice/aletharsis-validation-3dd6fed1ef4d4be696beea004f16ea65.service are going to be killed due to memory.oom.group set
+2026-09-22T14:01:30-05:00 thinkpad kernel: Memory cgroup out of memory: Killed process 575740 (go) total-vm:1277236kB, anon-rss:14504kB, file-rss:20kB, shmem-rss:14084kB, UID:1000 pgtables:168kB oom_score_adj:200

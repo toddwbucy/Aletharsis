@@ -140,3 +140,7 @@ file-entry elements participate in path collision and membership lookup; a forei
 element or different local kind remains unsupported evidence without claiming a
 real entry's path. Genuine defective/duplicate manifest declarations still block
 membership authority for their own paths.
+
+## Proposed Office coordinator boundary
+
+The existing API remains unchanged; proposed [OC-001 §4](office-cli-evidence.md#4-producers-and-orchestration-b1b2) defines the separate outcome-based coordinator and budget policy.

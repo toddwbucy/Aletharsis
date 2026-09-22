@@ -155,3 +155,12 @@ The `%PDF-1.7` plus LF fixture hash:
 
 This demonstrates directory **auditing**, not directory revealed derivatives.
 That workflow is demonstrated separately in the directory reveal specification.
+
+## Proposed Office consumer boundary
+
+This specification retains its existing versioned behavior.
+[OC-001 §6](office-cli-evidence.md#6-consumer-inventory-b5) defines the separate
+Office consumer contract; no legacy envelope is silently extended.
+The proposed `--corpus-version 1|2` defaults to v1 for report 1.0/2.0 and v2
+for 4.0. Explicit v2 admits only 2.0/4.0; v1 excludes 4.0. Reject unsupported
+combinations before discovery.

@@ -1,0 +1,115 @@
+{
+  "status": "validation_resumed",
+  "authorization": "Owner authorized continued work with configurable enforced 1 GiB ceiling; no merges.",
+  "historical_receipt": "office-metadata-preflight.json",
+  "historical_breach_superseded": false,
+  "runner_commit": "054f65b",
+  "source_sha256": {
+    "internal/officemetadata/extract_test.go": "638ac1da80e8683a5c0efed9dcdab1f5da80e25e5e930bbddef08b60d49cca8f",
+    "internal/officemetadata/extract.go": "d01ad9b7fdc766f6173275bd06875e709b709b2849e036b464358a7a937a87fa"
+  },
+  "runs": [
+    {
+      "command": [
+        "python3",
+        "/tmp/aletharsis-memory-limit/scripts/run_bounded.py",
+        "--",
+        "/usr/bin/env",
+        "GOCACHE=/tmp/aletharsis-go-cache",
+        "GOTOOLCHAIN=local",
+        "GOMAXPROCS=2",
+        "/tmp/go/bin/go",
+        "test",
+        "-race",
+        "-count=1",
+        "-p",
+        "1",
+        "./internal/officemetadata",
+        "./internal/xmlparts"
+      ],
+      "log": "office-metadata-resumed-race.log",
+      "log_sha256": "1ef53d8985787db3960f04c44342bd1989ed6dedec49c54107cd76c9ca1f65d8",
+      "supervisor": {
+        "cleanup_confirmed": true,
+        "command_exit_code": 0,
+        "command_signal": null,
+        "enforcement_verified": true,
+        "launcher_returncode": 0,
+        "memory_mib": 1024,
+        "service_result": "success",
+        "status": "completed",
+        "timeout_seconds": 60,
+        "unit": "aletharsis-validation-b30a0d9c265b48349cc309ed9dca0fd7.service"
+      }
+    },
+    {
+      "command": [
+        "python3",
+        "/tmp/aletharsis-memory-limit/scripts/run_bounded.py",
+        "--",
+        "/usr/bin/env",
+        "GOCACHE=/tmp/aletharsis-go-cache",
+        "GOTOOLCHAIN=local",
+        "GOMAXPROCS=2",
+        "/tmp/go/bin/go",
+        "test",
+        "-count=1",
+        "-p",
+        "1",
+        "./..."
+      ],
+      "log": "office-metadata-resumed-full.log",
+      "log_sha256": "e0d01759ecb51e0797ad632e5b59f96764e0303ec49df27727102f2ddb08dfea",
+      "supervisor": {
+        "cleanup_confirmed": true,
+        "command_exit_code": 0,
+        "command_signal": null,
+        "enforcement_verified": true,
+        "launcher_returncode": 0,
+        "memory_mib": 1024,
+        "service_result": "success",
+        "status": "completed",
+        "timeout_seconds": 60,
+        "unit": "aletharsis-validation-c99d309b06f24f83bed0dfd767f326c2.service"
+      }
+    },
+    {
+      "command": [
+        "python3",
+        "/tmp/aletharsis-memory-limit/scripts/run_bounded.py",
+        "--",
+        "/usr/bin/env",
+        "GOCACHE=/tmp/aletharsis-go-cache",
+        "GOTOOLCHAIN=local",
+        "GOMAXPROCS=2",
+        "/tmp/go/bin/go",
+        "vet",
+        "./internal/officemetadata"
+      ],
+      "log": "office-metadata-resumed-vet.log",
+      "log_sha256": "642bc13bd732643d45998bbc341351636944014dafef32149d3e818f145a6cf2",
+      "supervisor": {
+        "cleanup_confirmed": true,
+        "command_exit_code": 0,
+        "command_signal": null,
+        "enforcement_verified": true,
+        "launcher_returncode": 0,
+        "memory_mib": 1024,
+        "service_result": "success",
+        "status": "completed",
+        "timeout_seconds": 60,
+        "unit": "aletharsis-validation-ca564b048c7b4e79baee30d52d336bc8.service"
+      }
+    }
+  ],
+  "limitations": [
+    "Logs retain systemd-reported peak and CPU values; not whole-study cumulative accounting.",
+    "Earlier 166.5/449.6 MiB runs were reported in conversation but not retained on the branch; these are fresh replacement validation runs, not reconstructed receipts."
+  ],
+  "runner_dependency": {
+    "pr": 77,
+    "branch": "test/configurable-memory-limit",
+    "commit": "054f65b",
+    "script": "scripts/run_bounded.py"
+  }
+}

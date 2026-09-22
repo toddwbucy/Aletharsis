@@ -1,0 +1,38 @@
+?   	github.com/toddwbucy/Aletharsis/cmd/aletharsis	[no test files]
+ok  	github.com/toddwbucy/Aletharsis/internal/analyzers	0.003s
+ok  	github.com/toddwbucy/Aletharsis/internal/audit	1.346s
+ok  	github.com/toddwbucy/Aletharsis/internal/benchmarks	0.042s
+ok  	github.com/toddwbucy/Aletharsis/internal/capability	0.006s
+ok  	github.com/toddwbucy/Aletharsis/internal/cli	2.002s
+ok  	github.com/toddwbucy/Aletharsis/internal/corpus	2.083s
+ok  	github.com/toddwbucy/Aletharsis/internal/docxidentify	0.017s
+ok  	github.com/toddwbucy/Aletharsis/internal/evidence	0.001s
+ok  	github.com/toddwbucy/Aletharsis/internal/evidence/v2	0.132s
+ok  	github.com/toddwbucy/Aletharsis/internal/failure	0.002s
+ok  	github.com/toddwbucy/Aletharsis/internal/identity	0.005s
+ok  	github.com/toddwbucy/Aletharsis/internal/odtanalysis	0.098s
+ok  	github.com/toddwbucy/Aletharsis/internal/odtidentify	0.013s
+ok  	github.com/toddwbucy/Aletharsis/internal/odttext	0.033s
+ok  	github.com/toddwbucy/Aletharsis/internal/officemetadata	0.022s
+ok  	github.com/toddwbucy/Aletharsis/internal/opcrels	0.111s
+ok  	github.com/toddwbucy/Aletharsis/internal/packageparts	0.003s
+ok  	github.com/toddwbucy/Aletharsis/internal/parsers	0.002s
+ok  	github.com/toddwbucy/Aletharsis/internal/profiles	0.022s
+ok  	github.com/toddwbucy/Aletharsis/internal/publication	0.008s
+ok  	github.com/toddwbucy/Aletharsis/internal/reporters	0.031s
+ok  	github.com/toddwbucy/Aletharsis/internal/reportimport	0.061s
+ok  	github.com/toddwbucy/Aletharsis/internal/reveal	0.020s
+ok  	github.com/toddwbucy/Aletharsis/internal/unicoderef	0.617s
+ok  	github.com/toddwbucy/Aletharsis/internal/wire	0.080s
+ok  	github.com/toddwbucy/Aletharsis/internal/wordanalysis	0.023s
+ok  	github.com/toddwbucy/Aletharsis/internal/wordtext	0.035s
+ok  	github.com/toddwbucy/Aletharsis/internal/workspace	0.003s
+ok  	github.com/toddwbucy/Aletharsis/internal/xmlparts	0.003s
+?   	github.com/toddwbucy/Aletharsis/schemas	[no test files]
+Running as unit: aletharsis-validation-c99d309b06f24f83bed0dfd767f326c2.service; invocation ID: 6503f4a816174064ad84835705e840e7
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 9.185s
+             CPU time consumed: 10.739s
+                   Memory peak: 410.6M (swap: 0B)
+ALETHARSIS_VALIDATION_RESULT={"cleanup_confirmed": true, "command_exit_code": 0, "command_signal": null, "enforcement_verified": true, "launcher_returncode": 0, "memory_mib": 1024, "service_result": "success", "status": "completed", "timeout_seconds": 60, "unit": "aletharsis-validation-c99d309b06f24f83bed0dfd767f326c2.service"}

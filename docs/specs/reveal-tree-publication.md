@@ -84,3 +84,13 @@ failed/skipped ledger records, alias/prefix collisions, invalid names, resource
 bounds, missing ledger entries, late manifest collisions and identity-preserving
 rollback. Corpus callbacks, CLI wiring and the nested demonstration are documented in
 the directory reveal integration. Review/merge acceptance remains separate.
+
+## Proposed Office consumer boundary
+
+This specification retains its existing versioned behavior.
+[OC-001 §6](office-cli-evidence.md#6-consumer-inventory-b5) defines the separate
+Office consumer contract; no legacy envelope is silently extended.
+Publication selects reveal-tree-v2 exactly with corpus-v2 (mandatory for 4.0,
+optional for 2.0). Its detection state is separate from presentation outcome
+(`revealed`, `failed`, `unsupported`, `not_attempted`); eligible Office
+presentation is unsupported while the report remains retained.
