@@ -192,3 +192,38 @@ Cgroup measurements: run 1 used 3.529 seconds wall, 2.665 seconds CPU and 108.8 
 peak memory; run 2 used 3.550 seconds wall, 2.737 seconds CPU and 63.5 MiB peak.
 The full offline suite passed 402 tests, including 67 study/harness checks.
 No production detector or component-adoption status changed.
+
+## Fifth review remediation
+
+Re-ran the bounded offline study twice on 2026-09-21 after restricting comparator
+inventory/visible-emoji exceptions to reviewed case/code-point pairs, rejecting
+blank written verdicts and missing chip categories, and checking every stable
+execution-identity field across both runs. New contexts now require adjudication;
+no verdict write remains distinct from a written empty string. Both environment
+files' complete probe maps are checked against the retained probe source.
+
+Re-provisioned only the three already-approved, hash-pinned archives and verified
+the existing tree inventories and root licenses. Rebuilt the same native commit
+`abc513e354e864a38d3d57649667c22ba6080cc7` offline with Go 1.27.1, `-p=1 -trimpath`,
+and the documented 512 MiB cgroup. The new executable hash is
+`f36771b5de8651aa2aab2e0fe3eeb82421dd3e0e1b7677a7ac63ad5b51f8b642`;
+it is not byte-identical to the historical build. Current environments retain this
+new identity. `review-rebuild.stderr` records 10.395 seconds service runtime,
+9.956 seconds cgroup CPU and 288.9 MiB peak memory. An initial build launcher
+omitted the working directory and failed before compilation; its diagnostic is
+retained in `review-build-attempt.stderr`, not presented as a successful build.
+
+All 30 source fixtures, 90 stdout files and 90 stderr files are byte-identical
+between both runs and the preceding evidence; the 167 comparison rows are
+unchanged. The current manifest identifies 231 artifacts, including fresh run
+metadata and seven additional build/run logs. Run 1 used 3.431 seconds service
+runtime, 2.622 seconds cgroup CPU and 98.4 MiB peak memory; run 2 used 3.346 seconds,
+2.586 seconds CPU and 63.7 MiB peak memory. These are execution observations, not
+estimates of total engineering effort. Historical measurements above retain their
+original scope.
+
+Validation: 421 full offline tests passed, including 86 study/harness checks,
+using Python 3.12.13 and pinned CI requirements (including the date-time format
+validator). Full-suite measurements: 4.27 seconds wall, 4.13 seconds user CPU,
+0.12 seconds system CPU and 94,072 KiB maximum RSS. `git diff --check` passed.
+No production Go detector or component-adoption status changed.

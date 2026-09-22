@@ -101,8 +101,11 @@ the input. These are **probe-derived** positions, not an upstream location API.
 This is not a browser rendering, clipboard, download or HTML-security test.
 Initialization and the Scan invocation each have a 1-second VM deadline inside
 the outer process limits. The VM is not a security sandbox. Status is derived from
-the observed verdict and visualization, including `no_verdict_emitted`; empty input
-is not assumed unscanned just because it is empty. The facade does not parse HTML
+whether the handler wrote a verdict, including `no_verdict_emitted` when it did
+not. A written blank verdict fails explicitly rather than becoming missing coverage;
+empty input is not assumed unscanned just because it is empty. Each observation
+must expose a nonblank string category; an unsupported class assignment fails
+rather than silently dropping `native_category`. The facade does not parse HTML
 attributes: secret visibility is unknown until the handler assigns `hidden`. The scanner
 may call its known-carrier decoder; recovered content remains inert output.
 
@@ -116,12 +119,18 @@ that explicit transformation must not be mistaken for their file-parser coverage
 expectations. Visible punctuation and emoji policies differ legitimately. No
 majority-vote truth, generic AI attribution, or “watermark found” claim is inferred.
 Run twice with fresh output directories and compare every raw stdout/stderr byte;
-wall-time/environment paths may differ. CI verifies retained raw identities,
+per-run command paths, CPU measurements and retained-byte counts may differ.
+All other recorded environment fields must match, including native/interpreter
+binary hashes, versions, platform and the full probe hash map. Both runs’ probe
+hashes are checked against the checkout. CI verifies retained raw identities,
 independent coordinate expectations, interpretation and comparison reproducibility
 without downloading or executing these upstream tools.
 
 Probe identities cover the explicit executable/configuration file list in `PROBE_FILES`;
-README and PLAN are documentation, not executed probe inputs. Unknown inventory misses
+README and PLAN are documentation, not executed probe inputs. Comparator inventory
+and visible-emoji exceptions are keyed by reviewed case and code point; leading-BOM
+policy is likewise restricted to the reviewed BOM cases. A new context does not
+inherit an exception merely by reusing a code point. Unknown inventory misses
 remain unadjudicated; unexpected native omissions and candidate offset mismatches
 require investigation. Non-completed HIBERIUS scans cannot establish absence.
 The DOM facade rejects unsupported document events and requires visualization/verdict
@@ -138,3 +147,11 @@ so an added unlisted helper cannot execute unnoticed from the checkout.
 The hidden-state facade accepts direct boolean assignments only. A non-boolean
 assignment fails the probe rather than becoming unknown visibility. HTML attributes,
 CSS visibility and browser rendering remain outside this facade's coverage.
+
+The current evidence includes a fresh offline Go 1.27.1 build at the recorded
+native commit; see `review-rebuild.stderr` and the current environment binary hash.
+Its executable bytes differ from the historical build, while every raw audit result
+matches. Historical build logs remain historical, not evidence of binary identity
+with the new run. The runner’s `retained_bytes` measures case/corpus/results files
+before `environment.json` is written; the final manifest separately hashes the
+complete retained artifact set, including environment and resource logs.

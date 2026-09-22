@@ -1,4 +1,5 @@
 """Offline verification of independent Unicode corpus and retained probe evidence."""
+from copy import deepcopy
 import hashlib
 import importlib.util
 import json
@@ -56,9 +57,12 @@ def test_independent_generator_and_adjudication():
     assert not {'/python', '/emoji'} & set(environment['example_argv']['hiberius'])
     assert environment['python'] == '3.12.13'
     assert len(environment['python_binary_sha256']) == 64
-    assert environment['python_binary_sha256'] == json.loads((DATA/'reproduction-environment.json').read_bytes())['python_binary_sha256']
-    for name,digest in environment['probe_sha256'].items():
-        assert hashlib.sha256((PROBE/name).read_bytes()).hexdigest()==digest
+    replay_environment=json.loads((DATA/'reproduction-environment.json').read_bytes())
+    validate_reproduction_identity(environment, replay_environment)
+    for recorded in (environment, replay_environment):
+        assert set(recorded['probe_sha256']) == {'corpus.py', 'adjudicate.py', 'run_cases.py', 'juriku_probe.py', 'hiberius_probe.cjs', 'input-trees.json', 'provision.py'}
+        for name,digest in recorded['probe_sha256'].items():
+            assert hashlib.sha256((PROBE/name).read_bytes()).hexdigest()==digest
 
 
 @pytest.mark.parametrize('case',CORPUS,ids=lambda c:c['id'])
@@ -100,6 +104,8 @@ def test_fixture_coordinates_and_raw_results(case):
         assert result['input_unchanged']
         rows=result['observations'] if tool=='hiberius' else result['results']['inventory']+result['results']['word_exclusions']
         for row in rows:
+            if tool == 'hiberius':
+                assert isinstance(row['native_category'], str) and row['native_category'].strip()
             position=row['scalar'] if tool=='hiberius' else row['char_idx']
             assert row['code_point']==f'U+{ord(text[position]):04X}'
 
@@ -129,3 +135,19 @@ def test_documented_node_runtime_matches_retained_execution():
     version = json.loads((DATA/'environment.json').read_bytes())['node'].removeprefix('v')
     for path in [ROOT/'docs/reuse/candidates.json', ROOT/'docs/reuse/evaluations/unicode.md', PROBE/'README.md']:
         assert 'Node '+version in path.read_text()
+
+
+def validate_reproduction_identity(first, second):
+    # Per-run source paths and measurements differ; all other recorded identity
+    # fields, including any future additions, must match exactly.
+    volatile = {'example_argv', 'child_cpu_seconds', 'retained_bytes'}
+    assert {k: v for k, v in first.items() if k not in volatile} == {k: v for k, v in second.items() if k not in volatile}
+
+
+@pytest.mark.parametrize('field', ['binary_sha256', 'python_binary_sha256', 'node_binary_sha256', 'probe_sha256', 'python', 'node', 'platform'])
+def test_reproduction_rejects_identity_drift(field):
+    first = json.loads((DATA/'environment.json').read_bytes())
+    second = deepcopy(first)
+    if field == 'probe_sha256': second[field]['hiberius_probe.cjs'] = '0' * 64
+    else: second[field] = 'changed'
+    with pytest.raises(AssertionError): validate_reproduction_identity(first, second)

@@ -36,13 +36,16 @@ for (const child of get('scanViz').children) {
   const cp = child.textContent.replace(/^·/, '');
   if (scalar >= input.length) throw new Error('visual map overran input');
   if (cp !== 'U+'+input[scalar].codePointAt(0).toString(16).toUpperCase().padStart(4,'0')) throw new Error('visual position mismatch');
+  if (typeof child.className !== 'string' || !child.className.trim()) throw new Error('scan category contract drift');
   observations.push({scalar, code_point:cp, native_category:child.className});
   scalar++;
 }
 if (scalar !== input.length) throw new Error('visual map incomplete');
 const verdict = get('scanVerdict').textContent;
+const verdictWritten = get('scanVerdict').writes > 0;
+if (verdictWritten && !verdict.trim()) throw new Error('empty written scan verdict');
 const hidden = get('scanSecret').hidden; // null means the facade observed no assignment.
 process.stdout.write(JSON.stringify({position_units:'Unicode scalar indices reconstructed from scanViz child order',
-  observations, verdict, scan_status:verdict === '' && observations.length === 0 ? 'no_verdict_emitted' : 'completed',
+  observations, verdict, scan_status:verdictWritten ? 'completed' : 'no_verdict_emitted',
   secret_visible:typeof hidden === 'boolean' ? !hidden : null,
   secret_text:get('scanSecret').textContent, input_unchanged:get('scanInput').value === request.text})+'\n');

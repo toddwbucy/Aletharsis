@@ -25,7 +25,7 @@ def load(name, monkeypatch):
     ('aletharsis', 'U+2026', 'policy'),
     ('hiberius', 'U+2026', 'policy'),
     ('aletharsis', 'U+1F600', 'defect'),
-    ('hiberius', 'U+1F600', 'coverage'),
+    ('hiberius', 'U+1F600', 'unadjudicated'),
 ])
 def test_tool_specific_adjudication(monkeypatch, tool, cp, expected):
     category, detail = load('adjudicate', monkeypatch).reason(tool, 'word_typography', cp, 0, 'completed')
@@ -83,6 +83,7 @@ def test_defensive_output_budget_retains_result(tmp_path, monkeypatch, size, exc
     ("", 'no_verdict_emitted'),
     ("document.getElementById('scanVerdict').textContent='scanned empty'; document.getElementById('scanSecret').hidden=true;", 'completed'),
     ("const n=document.createElement('span'); n.textContent='U+200B'; document.getElementById('scanViz').appendChild(n);", 'visual map overran input'),
+    ("document.getElementById('scanVerdict').textContent='';", 'empty written scan verdict'),
     ("while(true) {}", 'Script execution timed out'),
     ("document.getElementById('scanSecret').hidden='';", 'non-boolean hidden assignment'),
 ])
@@ -222,3 +223,51 @@ def test_runtime_probe_uses_bounded_executor(monkeypatch):
         return dict(reaped=True,timed_out=False,output_limit_exceeded=False,returncode=0)
     monkeypatch.setattr(runner,'execute',execute)
     assert runner.runtime_version(['synthetic'])=='3.12.13'
+
+
+@pytest.mark.parametrize('tool,known_case,cp,category', [
+    ('hiberius', 'emoji_selector', 'U+FE0F', 'inventory'),
+    ('hiberius', 'emoji_zwj', 'U+1F469', 'coverage'),
+    ('juriku_inventory', 'arabic_letter_mark', 'U+061C', 'inventory'),
+    ('juriku_word', 'tag_sequence', 'U+E0061', 'inventory'),
+    ('juriku_inventory', 'boundary_offsets', 'U+1F600', 'coverage'),
+    ('juriku_word', 'leading_bom', 'U+FEFF', 'policy'),
+])
+def test_comparator_exemptions_do_not_cover_new_contexts(monkeypatch, tool, known_case, cp, category):
+    reason = load('adjudicate', monkeypatch).reason
+    assert reason(tool, known_case, cp, 0, 'completed')[0] == category
+    assert reason(tool, 'new-context', cp, 0, 'completed')[0] == 'unadjudicated'
+
+
+@pytest.mark.parametrize('category_assignment,valid', [
+    ("n.className='chip hidden';", True),
+    ("n.setAttribute('class', 'chip hidden');", False),
+    ("", False), ("n.className='';", False),
+])
+def test_probe_requires_observed_category(tmp_path, category_assignment, valid):
+    node = shutil.which('node')
+    if node is None: pytest.skip('Node required for synthetic facade checks')
+    html = tmp_path/'index.html'
+    html.write_text("<script>document.getElementById('btnScan').addEventListener('click',()=>{"
+        "const n=document.createElement('span'); n.textContent='U+200B';" + category_assignment +
+        "document.getElementById('scanViz').appendChild(n); document.getElementById('scanVerdict').textContent='found';});</script>")
+    code = (PROBE/'hiberius_probe.cjs').read_text().replace("'/upstream/index.html'", json.dumps(str(html)))
+    result = subprocess.run([node, '-e', code], input=json.dumps({'text': '\u200b'}), text=True, capture_output=True, timeout=5)
+    if valid:
+        assert result.returncode == 0, result.stderr
+        assert json.loads(result.stdout)['observations'][0]['native_category'] == 'chip hidden'
+    else:
+        assert result.returncode != 0 and 'scan category contract drift' in result.stderr
+
+
+
+def test_nonempty_blank_verdict_is_not_missing_coverage(tmp_path):
+    node = shutil.which('node')
+    if node is None: pytest.skip('Node required for synthetic facade checks')
+    html = tmp_path/'index.html'
+    html.write_text("<script>document.getElementById('btnScan').addEventListener('click',()=>{"
+        "document.getElementById('scanViz').appendChild(document.createTextNode('a'));"
+        "document.getElementById('scanVerdict').textContent='';});</script>")
+    code = (PROBE/'hiberius_probe.cjs').read_text().replace("'/upstream/index.html'", json.dumps(str(html)))
+    result = subprocess.run([node, '-e', code], input='{"text":"a"}', text=True, capture_output=True, timeout=5)
+    assert result.returncode != 0 and 'empty written scan verdict' in result.stderr
