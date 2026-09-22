@@ -26,7 +26,7 @@ func (denyLoader) Load(string) (any, error) {
 
 var compiled = sync.OnceValues(func() (map[string]*jsonschema.Schema, error) {
 	result := map[string]*jsonschema.Schema{}
-	for _, version := range []string{"1.0", "2.0"} {
+	for _, version := range []string{"1.0", "2.0", "4.0"} {
 		raw, _ := schemas.Report(version)
 		value, err := jsonschema.UnmarshalJSON(bytes.NewReader(raw))
 		if err != nil {
@@ -52,7 +52,7 @@ var compiled = sync.OnceValues(func() (map[string]*jsonschema.Schema, error) {
 // rounding must not turn a fractional/unsafe coordinate into an accepted integer.
 // Errors deliberately omit payloads from the upstream validator's diagnostics.
 func Validate(version string, raw []byte, limits identity.Limits) ([]byte, error) {
-	if version != "1.0" && version != "2.0" {
+	if version != "1.0" && version != "2.0" && version != "4.0" {
 		return nil, ErrVersion
 	}
 	canonical, err := identity.Canonicalize(raw, limits)

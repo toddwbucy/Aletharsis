@@ -107,8 +107,12 @@ def build():
         rule = d[variant['$ref'].split('/')[-1]]
         location = rule['properties']['location']
         original = deepcopy(location)
-        rule['properties']['location'] = {'oneOf': [original,
-            ref('officeScopeLocation'), ref('officeOffsetLocation'), ref('officeStructuralLocation')]}
+        # Only analyzers admitted by WA/OA receive Office scope coordinates.
+        # Inventory/structure records are not fabricated native findings.
+        if variant['$ref'].split('/')[-1].startswith(('unicode_', 'pattern_')):
+            office_location = ('officeOffsetLocation' if original == ref('offsetLocation')
+                               else 'officeScopeLocation')
+            rule['properties']['location'] = {'oneOf': [original, ref(office_location)]}
     return schema
 
 

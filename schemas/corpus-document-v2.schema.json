@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aletharsis.local/schemas/corpus-document-v2.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "header",
+    "entries",
+    "summary"
+  ],
+  "properties": {
+    "header": {
+      "$ref": "corpus-v2.schema.json#/$defs/header"
+    },
+    "entries": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {
+        "$ref": "corpus-v2.schema.json#/$defs/entry"
+      }
+    },
+    "summary": {
+      "$ref": "corpus-v2.schema.json#/$defs/summary"
+    }
+  }
+}

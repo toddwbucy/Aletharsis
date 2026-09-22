@@ -1,0 +1,486 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aletharsis.local/schemas/corpus-v2.schema.json",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/header"
+    },
+    {
+      "$ref": "#/$defs/entry"
+    },
+    {
+      "$ref": "#/$defs/summary"
+    }
+  ],
+  "$defs": {
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "contract",
+        "workspace",
+        "report_schema",
+        "limits"
+      ],
+      "properties": {
+        "type": {
+          "const": "header"
+        },
+        "contract": {
+          "const": "aletharsis.corpus/2"
+        },
+        "workspace": {
+          "type": "string",
+          "minLength": 1
+        },
+        "report_schema": {
+          "enum": [
+            "2.0",
+            "4.0"
+          ]
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file_input_bytes",
+            "acquisition_bytes",
+            "output_bytes",
+            "concurrency",
+            "entries",
+            "depth",
+            "path_bytes"
+          ],
+          "properties": {
+            "file_input_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "acquisition_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "output_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "concurrency": {
+              "const": 1
+            },
+            "entries": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "depth": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "path_bytes": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "relative_path",
+        "state",
+        "reason"
+      ],
+      "properties": {
+        "type": {
+          "const": "entry"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state": {
+          "enum": [
+            "no_reported_findings",
+            "requires_review",
+            "unsupported",
+            "failed",
+            "skipped",
+            "canceled",
+            "partial"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "report": {
+          "oneOf": [
+            {
+              "$ref": "report-v2.schema.json"
+            },
+            {
+              "$ref": "report-v4.schema.json"
+            }
+          ]
+        },
+        "report_canonical_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "report_schema": {
+          "enum": [
+            "2.0",
+            "4.0"
+          ]
+        },
+        "highest_finding_severity": {
+          "enum": [
+            null,
+            "INFO",
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ]
+        }
+      },
+      "dependentRequired": {
+        "report": [
+          "report_canonical_sha256",
+          "report_schema",
+          "highest_finding_severity"
+        ],
+        "report_canonical_sha256": [
+          "report"
+        ],
+        "report_schema": [
+          "report"
+        ],
+        "highest_finding_severity": [
+          "report"
+        ]
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "no_reported_findings",
+                  "requires_review",
+                  "partial"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "report"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "skipped"
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "required": [
+                "report"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "report_schema"
+            ],
+            "properties": {
+              "report_schema": {
+                "const": "2.0"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "report": {
+                "properties": {
+                  "schema_version": {
+                    "const": "2.0"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "report_schema"
+            ],
+            "properties": {
+              "report_schema": {
+                "const": "4.0"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "report": {
+                "properties": {
+                  "schema_version": {
+                    "const": "4.0"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "report"
+            ],
+            "properties": {
+              "state": {
+                "const": "partial"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "report": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "partial"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "report"
+            ],
+            "properties": {
+              "state": {
+                "const": "no_reported_findings"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "report": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "completed"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "report"
+            ],
+            "properties": {
+              "state": {
+                "const": "requires_review"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "report": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "completed"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "report"
+            ],
+            "properties": {
+              "state": {
+                "const": "unsupported"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "report": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "failed"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "report"
+            ],
+            "properties": {
+              "state": {
+                "const": "canceled"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "report": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "canceled"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "state",
+        "reason",
+        "discovery_complete",
+        "entries",
+        "counts",
+        "exit_code",
+        "finding_severity_counts"
+      ],
+      "properties": {
+        "type": {
+          "const": "summary"
+        },
+        "state": {
+          "enum": [
+            "completed",
+            "partial",
+            "failed",
+            "canceled"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "discovery_complete": {
+          "type": "boolean"
+        },
+        "entries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "no_reported_findings",
+            "requires_review",
+            "unsupported",
+            "failed",
+            "skipped",
+            "canceled",
+            "partial"
+          ],
+          "properties": {
+            "no_reported_findings": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requires_review": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unsupported": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "skipped": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "canceled": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "partial": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "exit_code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "finding_severity_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "INFO",
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ],
+          "properties": {
+            "INFO": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "LOW": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "MEDIUM": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "HIGH": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    }
+  }
+}

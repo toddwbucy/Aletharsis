@@ -1082,13 +1082,7 @@
               "$ref": "#/$defs/offsetLocation"
             },
             {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
               "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1114,13 +1108,7 @@
               "$ref": "#/$defs/offsetLocation"
             },
             {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
               "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1146,13 +1134,7 @@
               "$ref": "#/$defs/offsetLocation"
             },
             {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
               "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1178,13 +1160,7 @@
               "$ref": "#/$defs/offsetLocation"
             },
             {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
               "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1210,13 +1186,7 @@
               "$ref": "#/$defs/offsetLocation"
             },
             {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
               "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1242,13 +1212,7 @@
               "$ref": "#/$defs/offsetLocation"
             },
             {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
               "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1274,13 +1238,7 @@
               "$ref": "#/$defs/offsetLocation"
             },
             {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
               "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1306,13 +1264,7 @@
               "$ref": "#/$defs/offsetLocation"
             },
             {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
               "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1339,12 +1291,6 @@
             },
             {
               "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
-              "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1370,13 +1316,7 @@
               "$ref": "#/$defs/offsetLocation"
             },
             {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
               "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1402,13 +1342,7 @@
               "$ref": "#/$defs/offsetLocation"
             },
             {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
               "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1434,13 +1368,7 @@
               "$ref": "#/$defs/offsetLocation"
             },
             {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
               "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1466,13 +1394,7 @@
               "$ref": "#/$defs/offsetLocation"
             },
             {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
               "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1498,13 +1420,7 @@
               "$ref": "#/$defs/offsetLocation"
             },
             {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
               "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
             }
           ]
         },
@@ -1525,20 +1441,7 @@
           "$ref": "#/$defs/lineEndings"
         },
         "location": {
-          "oneOf": [
-            {
-              "$ref": "#/$defs/sourceLocation"
-            },
-            {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
-              "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
-            }
-          ]
+          "$ref": "#/$defs/sourceLocation"
         },
         "mechanism": {
           "const": "structural"
@@ -1557,20 +1460,7 @@
           "$ref": "#/$defs/bomEvidence"
         },
         "location": {
-          "oneOf": [
-            {
-              "$ref": "#/$defs/bomLocation"
-            },
-            {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
-              "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
-            }
-          ]
+          "$ref": "#/$defs/bomLocation"
         },
         "mechanism": {
           "const": "structural"
@@ -1589,20 +1479,7 @@
           "$ref": "#/$defs/countEvidence"
         },
         "location": {
-          "oneOf": [
-            {
-              "$ref": "#/$defs/offsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
-              "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
-            }
-          ]
+          "$ref": "#/$defs/offsetLocation"
         },
         "mechanism": {
           "const": "structural"
@@ -1621,20 +1498,7 @@
           "$ref": "#/$defs/mixedScriptEvidence"
         },
         "location": {
-          "oneOf": [
-            {
-              "$ref": "#/$defs/offsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
-              "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
-            }
-          ]
+          "$ref": "#/$defs/offsetLocation"
         },
         "mechanism": {
           "const": "structural"
@@ -1653,20 +1517,7 @@
           "$ref": "#/$defs/encodedEvidence"
         },
         "location": {
-          "oneOf": [
-            {
-              "$ref": "#/$defs/offsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
-              "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
-            }
-          ]
+          "$ref": "#/$defs/offsetLocation"
         },
         "mechanism": {
           "const": "structural"
@@ -1685,20 +1536,7 @@
           "$ref": "#/$defs/uuidEvidence"
         },
         "location": {
-          "oneOf": [
-            {
-              "$ref": "#/$defs/offsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
-              "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
-            }
-          ]
+          "$ref": "#/$defs/offsetLocation"
         },
         "mechanism": {
           "const": "structural"
@@ -1717,20 +1555,7 @@
           "$ref": "#/$defs/provenanceEvidence"
         },
         "location": {
-          "oneOf": [
-            {
-              "$ref": "#/$defs/offsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
-              "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
-            }
-          ]
+          "$ref": "#/$defs/offsetLocation"
         },
         "mechanism": {
           "const": "structural"
@@ -1749,20 +1574,7 @@
           "$ref": "#/$defs/metadataEvidence"
         },
         "location": {
-          "oneOf": [
-            {
-              "$ref": "#/$defs/emptyObject"
-            },
-            {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
-              "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
-            }
-          ]
+          "$ref": "#/$defs/emptyObject"
         },
         "mechanism": {
           "const": "structural"
@@ -1781,20 +1593,7 @@
           "$ref": "#/$defs/failureEvidence"
         },
         "location": {
-          "oneOf": [
-            {
-              "$ref": "#/$defs/emptyObject"
-            },
-            {
-              "$ref": "#/$defs/officeScopeLocation"
-            },
-            {
-              "$ref": "#/$defs/officeOffsetLocation"
-            },
-            {
-              "$ref": "#/$defs/officeStructuralLocation"
-            }
-          ]
+          "$ref": "#/$defs/emptyObject"
         },
         "mechanism": {
           "type": "null"

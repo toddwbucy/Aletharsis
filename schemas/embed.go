@@ -19,6 +19,9 @@ var report1 string
 //go:embed report-v2.schema.json
 var report2 string
 
+//go:embed report-v4.schema.json
+var report4 string
+
 // Report returns an independent copy of a known, bundled contract.
 func Report(version string) ([]byte, bool) {
 	switch version {
@@ -26,6 +29,8 @@ func Report(version string) ([]byte, bool) {
 		return []byte(report1), true
 	case "2.0":
 		return []byte(report2), true
+	case "4.0":
+		return []byte(report4), true
 	default:
 		return nil, false
 	}

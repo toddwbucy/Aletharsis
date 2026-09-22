@@ -1,0 +1,263 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "corpus",
+    "sources"
+  ],
+  "properties": {
+    "contract": {
+      "const": "aletharsis.reveal-tree/2"
+    },
+    "corpus": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/artifact"
+        },
+        {
+          "properties": {
+            "name": {
+              "const": "corpus.jsonl"
+            }
+          }
+        }
+      ]
+    },
+    "sources": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aletharsis.local/schemas/reveal-tree-v2.schema.json",
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "size",
+        "sha256"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 268435456
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relative_path",
+        "reason",
+        "artifacts",
+        "detection_state",
+        "presentation_outcome"
+      ],
+      "properties": {
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "artifacts": {
+          "type": "array",
+          "maxItems": 5,
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        },
+        "source_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "report_artifact_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "detection_state": {
+          "enum": [
+            "no_reported_findings",
+            "requires_review",
+            "unsupported",
+            "failed",
+            "skipped",
+            "canceled",
+            "partial"
+          ]
+        },
+        "presentation_outcome": {
+          "enum": [
+            "revealed",
+            "failed",
+            "unsupported",
+            "not_attempted"
+          ]
+        }
+      },
+      "dependentRequired": {
+        "source_sha256": [
+          "report_artifact_sha256"
+        ]
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "presentation_outcome": {
+                "const": "revealed"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "source_sha256",
+              "report_artifact_sha256"
+            ],
+            "properties": {
+              "reason": {
+                "const": ""
+              },
+              "artifacts": {
+                "minItems": 5
+              },
+              "detection_state": {
+                "enum": [
+                  "no_reported_findings",
+                  "requires_review",
+                  "partial"
+                ]
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "reason": {
+                "pattern": "^[a-z][a-z0-9_.-]{0,127}$"
+              },
+              "artifacts": {
+                "maxItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "detection_state": {
+                "const": "skipped"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "artifacts": {
+                "maxItems": 0
+              }
+            },
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "source_sha256"
+                  ]
+                },
+                {
+                  "required": [
+                    "report_artifact_sha256"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "artifacts": {
+                "minItems": 1
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "report_artifact_sha256"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "report_artifact_sha256"
+            ]
+          },
+          "then": {
+            "properties": {
+              "artifacts": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "detection_state": {
+                "enum": [
+                  "failed",
+                  "unsupported",
+                  "skipped",
+                  "canceled"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "presentation_outcome": {
+                "const": "not_attempted"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "presentation_outcome": {
+                "enum": [
+                  "revealed",
+                  "unsupported"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "report_artifact_sha256"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
