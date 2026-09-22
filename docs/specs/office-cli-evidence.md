@@ -124,7 +124,7 @@ partial output. Inventories include zero-count success distinctly from an unrun
 operation. Every admitted text scope carries its complete exact text and SHA-256 on the
 wire. Importers hash that retained text and validate offsets without filesystem
 access; this proves internal consistency, not correspondence to the original ZIP.
-Never truncate a scope string. If it exceeds the scope/string/report allowance,
+Never truncate a scope string or scalar-origin list. If its text or complete origin list exceeds the declared scope/report allowance,
 omit that scope and dependent findings/origins, retain a located resource-limit
 outcome, and mark coverage incomplete. No hash-only or truncated scope variant
 is permitted in this increment. Global inability to emit a bounded failure report
@@ -215,13 +215,21 @@ the existing inspector rules, without guessing `word/document.xml`, following
 external targets, or recursively prioritizing arbitrary relationships. If both
 candidate paths exist, process ODF content first, then the OPC target; a shared
 part is charged only once. Inconsistent/ambiguous declarations retain a gap, not
-an arbitrary target. Three sequential dependent phases follow: first the uniquely resolved main
-part's own canonical relationship part; wait for admission, decompression and
-relationship parsing to finish. Second, admit the core/app targets resolved from
-verified root declarations and wait for that phase to finish. Third, admit embedded targets resolved from those main-part
-relationships and conventional embedding-directory candidates, each group in
-ordinal name order. Names are candidates, not XML-validated relationships until
-their bytes have been admitted and parsed. Ambiguous declarations retain gaps.
+an arbitrary target. In this same prerequisite phase, after the main targets,
+admit core/app targets from verified root declarations in ordinal name order;
+they do not depend on main-part relationship parsing.
+
+Next admit the uniquely resolved main part's canonical relationship part and
+wait for admission, decompression and parsing to finish. From that parsed result,
+admit verified internal WT-001 text-part targets (header, footer, comments,
+footnotes, endnotes) in ordinal name order before any embedding target. Existing
+WT-001 namespace/type/context admission rules still apply; priority alone cannot
+authorize text extraction. Then admit relationship-resolved embedded targets in
+ordinal name order, followed by conventional embedding-directory candidates not
+already admitted, also in ordinal name order. These groups have explicit barriers
+before later allocation; shared parts are charged once. Names are candidates,
+not XML-validated relationships until their bytes are admitted and parsed.
+Ambiguous or missing declarations retain gaps, not guessed targets.
 After this target-dependent set, process all other canonical relationship-part
 candidates in ordinal name order; non-canonical relationship-like names receive
 ordinary-part priority and retain the existing OPC diagnostic. Then admit ordinary
@@ -300,6 +308,11 @@ Unicode/emoji/pattern operations declare Office analysis scopes separately from
 flat source text. Other native text analyzers must not acquire Office coverage
 merely because strings exist. Disabled statistical/C2PA declarations stay disabled.
 Capabilities declare fixed per-source/part limits, never remaining corpus budgets.
+They also declare `max_scope_text_utf8_bytes` and `max_scope_scalar_origins`;
+report serialization declares its fixed total byte limit. Record these values in
+the report capability/limit records so scope omission is reproducible. An origin
+limit omits the whole scope and dependent findings just like a text-size limit;
+no retained scope may carry an incomplete origin chain.
 
 Each operation records executed, skipped or failed scope. Parent operation state
 aggregates part outcomes: recoverable bad children yield partial, not completed;
@@ -335,8 +348,8 @@ is in scope even when its filename is not listed here.
 | `identity.VerifyText`, selection hashing | Flat verification unchanged; Office verifier reuses source/part/XML identities and origins, no competing offset mapper |
 | `reporters/report.go`, `reporters/v2.go` | Existing serializers unchanged; 4.0 console/JSON prints typed inventory, source locations and coverage, inertly |
 | `wire`, `schemas/embed.go`, `reportimport` | Explicit 4.0 dispatch and closed schema/semantic validation; support-aware importer adds sibling support_reason while preserving legacy Read/status; distinguish unknown version, known-unimplemented version and feature; retain EC-002/EC-003 regressions and bounded bytes |
-| CLI version flags and all audit subviews | Accept 4.0 deliberately; finding filters never remove required evidence/coverage or break reference closure |
-| `cli/reveal.go`, `reveal` | Single-file flat reveal retains its completed-only guard, including report 2.0; Office presentation unsupported; no ZIP passed to flat verifier |
+| CLI version flags and all audit subviews | Accept 4.0 deliberately for audit/subviews, except single-file reveal as specified below; finding filters never remove required evidence/coverage or break reference closure |
+| `cli/reveal.go`, `reveal` | Single-file reveal rejects schema 4.0 as usage (exit 4) in this increment before audit dispatch; flat reveal retains its completed-only guard for 1.0/2.0; Office presentation unsupported; no ZIP passed to flat verifier |
 | `cli/directory_reveal.go` | Under reveal-tree-v2 retain report/digest and verified snapshots for partial entries; present supported flat text, declare Office unsupported; source limits degrade one entry; version reveal-tree enum |
 | `corpus`, `cli/directory.go` | Derive corpus-v2 entry state from report status, never exit 4; retain partial evidence distinctly from failed entries for both 2.0 and 4.0; stream records declare report version |
 | `workspace` format discovery | Admit requested Office candidates deterministically; do not follow uncontrolled links or trust extension as identity |
@@ -395,7 +408,12 @@ the directory console state list and the reveal-tree state enum are all consumer
 Add a versioned reveal-tree envelope for new states rather than changing v1.
 An observer `ErrSourceLimit` on any report-bearing state degrades that entry with
 `execution.resource_limit`, retains available evidence, and continues the run;
-it must not abort the stream. It remains an entry failure, unlike partial detection
+it must not abort the stream. For a partial report whose observer hits this
+limit, corpus-document-v2 entry state is failed; reveal-tree-v2 detection state
+remains partial and presentation outcome is failed with execution.resource_limit.
+This intentional difference records detection separately from publication failure.
+Widen the observer source-limit guard to every report-bearing v2 state, including
+partial; never overwrite the retained report's own detection status. It remains an entry failure, unlike partial detection
 coverage. `execution.report_limit` (no serializable report) likewise remains failed
 with its existing reason. These no-report/presentation failures are explicit
 exceptions to deriving state from an available report. Test both 2.0 and 4.0
@@ -465,6 +483,10 @@ order, explicit per-part versus aggregate reasons, and no budget refunds. Large
 customXml/_rels members must not displace main relationships/core/app/embedding
 targets. The mirror case (large embeddings ahead of customXml relationships)
 must retain deterministic aggregate-limit gaps and continue without fatal failure.
+Large embeddings beside main-related headers/footnotes/comments must leave those
+text parts prioritized: their findings survive when they fit their own limits,
+while excluded embeddings produce explicit gaps and partial coverage. Test an
+over-limit origin list as whole-scope omission with no dependent findings.
 
 Merge policy: this proposal and implementation increments remain reviewable;
 "no merge authorization" records the current owner instruction, not an inherent
