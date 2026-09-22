@@ -1,0 +1,15 @@
+Running as unit: aletharsis-validation-692a394d671f4612a1f1e847dcf26a8f.service; invocation ID: 260d315d47fe4fb3a65f066ab0d153f1
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 68ms
+             CPU time consumed: 54ms
+                   Memory peak: 8.3M (swap: 0B)
+ALETHARSIS_VALIDATION_RESULT={"cleanup_confirmed": true, "command_exit_code": 0, "command_signal": null, "enforcement_verified": true, "launcher_returncode": 0, "memory_mib": 1024, "service_result": "success", "status": "completed", "timeout_seconds": 60, "unit": "aletharsis-validation-692a394d671f4612a1f1e847dcf26a8f.service"}
+
+Running as unit: aletharsis-validation-72452e201a074f18a27f8112e55e279a.service
+          Finished with result: timeout
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 5.279s
+             CPU time consumed: 57ms
+                   Memory peak: 8.2M (swap: 0B)
+ALETHARSIS_VALIDATION_RESULT={"cleanup_confirmed": true, "command_exit_code": 0, "command_signal": null, "enforcement_verified": true, "launcher_returncode": 1, "memory_mib": 1024, "service_result": "timeout", "status": "supervisor_failed", "timeout_seconds": 60, "unit": "aletharsis-validation-72452e201a074f18a27f8112e55e279a.service"}
