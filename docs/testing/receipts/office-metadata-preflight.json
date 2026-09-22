@@ -1,0 +1,35 @@
+{
+  "status": "budget_stop",
+  "recommendation": "revise_execution_plan_before_continuing",
+  "study": "issue-40-office-comparison",
+  "observed_on": "2026-09-22",
+  "engineering_interval_start_utc": "2026-09-22T15:43:53Z",
+  "last_pre_completion_storage_observation_utc": "2026-09-22T16:21:13Z",
+  "measurement": "/usr/bin/time -f wall_seconds=%e,user_cpu_seconds=%U,system_cpu_seconds=%S,max_rss_kib=%M",
+  "memory_limit_kib": 1048576,
+  "memory_limit_enforced": false,
+  "runs": [
+    {"command": "go test ./...", "wall_seconds": 3.08, "user_cpu_seconds": 17.05, "system_cpu_seconds": 2.32, "max_rss_kib": 348068, "result": "passed"},
+    {"command": "go test -race ./internal/officemetadata", "wall_seconds": 1.40, "user_cpu_seconds": 0.43, "system_cpu_seconds": 0.16, "max_rss_kib": 154820, "result": "passed"},
+    {"command": "go vet ./...", "wall_seconds": 0.17, "user_cpu_seconds": 0.98, "system_cpu_seconds": 0.38, "max_rss_kib": 39164, "result": "passed"},
+    {"command": "go test -race ./...", "wall_seconds": 24.68, "user_cpu_seconds": 80.14, "system_cpu_seconds": 5.52, "max_rss_kib": 1127740, "result": "tests_passed_memory_budget_exceeded"},
+    {"command": "python -m pytest -q", "wall_seconds": 5.57, "user_cpu_seconds": 5.24, "system_cpu_seconds": 0.26, "max_rss_kib": 95816, "result": "612_passed"}
+  ],
+  "storage_observations_kib": {
+    "office_contract_worktree": 10068,
+    "office_clearance_worktree": 10112,
+    "office_metadata_worktree": 10084,
+    "office_archive_scratch": 3264,
+    "shared_go_cache": 645684,
+    "shared_go_toolchain": 281440,
+    "shared_python_venv": 12916
+  },
+  "limitations": [
+    "Earlier preflight and focused-test CPU was not instrumented; listed CPU is a measured subset, not the complete goal total.",
+    "Storage observations precede test completion and are not a final peak or a quota-enforced measurement.",
+    "The timed full race invocation reports peak RSS above the per-process ceiling; the specific descendant process has not been identified.",
+    "The original and final race runs bracket the XML-whitespace correction; the final full race suite and Python suite ran after that correction.",
+    "No upstream comparator executed; no Office differential comparison results exist."
+  ],
+  "next_execution_requirement": "Owner disposition after the observed ceiling breach; use enforced process/cgroup limits with retained timeout, memory and cleanup outcomes before resuming tests or comparison."
+}
