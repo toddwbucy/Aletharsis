@@ -1,7 +1,8 @@
 # Bounded local validation
 
 `scripts/run_bounded.py` is the shared launcher for new trusted development
-commands. It requires Linux, a user systemd manager and cgroup v2 memory controls.
+commands. It requires Linux, a user systemd manager and cgroup v2 memory controls,
+including swap accounting (`memory.swap.max` must exist even on swapless hosts).
 It is not an audit-time detector adapter or a sandbox for adversarial commands.
 Existing pinned C2PA study launchers are historical reproduction artifacts; this
 change does not rewrite their recipes or retroactively strengthen their evidence.
@@ -27,7 +28,8 @@ python3 scripts/run_bounded.py -- /usr/bin/env GOMAXPROCS=2 GOTOOLCHAIN=local go
 ```
 
 The working directory and an explicit environment allowlist (`ENVIRONMENT` in
-the script: PATH, HOME and named Go/toolchain/cache variables) come from the caller.
+the script: PATH, HOME, TMPDIR, XDG_CACHE_HOME, PYTHONHASHSEED and named
+Go/toolchain/cache variables, including GOEXPERIMENT/GOWORK/GOENV) come from the caller.
 Allowlisted variables absent in the caller are explicitly unset in the service,
 not inherited from stale manager configuration. Other environment settings still
 come from the user manager; this is not a hermetic build environment. Supply other
@@ -45,7 +47,8 @@ The JSON separates `status`, `service_result`, `enforcement_verified`,
 `cleanup_confirmed`, `launcher_returncode`, `command_exit_code` and
 `command_signal`, alongside unit name and requested limits. Status values include
 completed, command_failed, command_signaled, command_start_failed, memory_limit,
-timeout, enforcement_unavailable, supervisor_failed, supervisor_timeout and
+timeout, enforcement_unavailable, supervisor_failed, supervisor_memory_limit,
+supervisor_timeout and
 interrupted. A command exiting 125 is command_failed with command_exit_code 125,
 not evidence of unavailable enforcement. An unconfirmed cleanup remains explicit
 and always makes the wrapper fail, regardless of its primary status.
@@ -69,3 +72,15 @@ sleep deadline (`timeout`), command exit 125 (`command_failed`) and successful
 commands. Each applied-limit probe reported enforcement_verified and confirmed
 cleanup. Reserving zero-filled pages alone is not an OOM test; the probe touches
 each page. Historical PR #76's breach remains recorded and is not erased.
+
+A limit reached before the guard verifies enforcement is reported as
+`supervisor_memory_limit` or `supervisor_timeout`, not a command breach. An
+`exit-code` service failure with successful main status is `supervisor_failed`
+(for example, a failed post-stop helper). A second interrupt during cleanup
+preserves the outcome line with `cleanup_confirmed: false`; inspect/stop the
+reported unit before continuing validation. ExecStopPost paths are transported
+literally over D-Bus, including percent characters.
+
+Second-pass validation: 33 offline regressions passed. A live `/bin/true` run
+with `%` and `$` in TMPDIR reported `completed`, verified enforcement and
+confirmed cleanup (8.3 MiB peak). This verifies the receipt-path regression.

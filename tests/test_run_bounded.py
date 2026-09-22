@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import shlex
 from unittest.mock import patch
 
 import pytest
@@ -56,6 +57,9 @@ def test_applied_limits_and_missing_controller(tmp_path):
 @pytest.mark.parametrize("result,code,status,ack,want", [
     ("success","1","0",True,"completed"),
     ("exit-code","1","1",True,"command_failed"),
+    ("exit-code","1","0",True,"supervisor_failed"),
+    ("oom-kill","2","9",False,"supervisor_memory_limit"),
+    ("timeout","2","15",False,"supervisor_timeout"),
     ("exit-code","1","125",True,"command_failed"),
     ("oom-kill","2","9",True,"memory_limit"),
     ("timeout","2","15",True,"timeout"),
@@ -98,3 +102,51 @@ def test_cleanup_failure_is_not_confirmed():
 def test_invalid_options_do_not_launch(options):
     with patch.object(runner.subprocess,"run") as run, pytest.raises(SystemExit): runner.main(options)
     run.assert_not_called()
+
+
+def test_receipt_path_preserved(tmp_path):
+    receipt = tmp_path / "we%ird$dir space" / "guard.json"
+    argv = runner.command_line(["/bin/true"], 1024, 60, "test.service", tmp_path, receipt)
+    stop = next(arg.removeprefix("--property=ExecStopPost=:") for arg in argv if arg.startswith("--property=ExecStopPost=:"))
+    assert shlex.split(stop)[-2:] == ["--service-result", str(receipt.with_name("service.json"))]
+    assert str(receipt.with_name("service.json")) in stop
+
+
+@pytest.mark.parametrize("present", [True, False])
+def test_reproducibility_environment(present, tmp_path):
+    names = ("TMPDIR", "XDG_CACHE_HOME", "PYTHONHASHSEED", "GOEXPERIMENT", "GOWORK", "GOENV")
+    with patch.dict(os.environ, {name: "value" for name in names} if present else {}, clear=True):
+        argv = runner.command_line(["/bin/true"], 1024, 60, "test.service", tmp_path, tmp_path / "guard.json")
+    unset = next((arg.removeprefix("--property=UnsetEnvironment=").split() for arg in argv if arg.startswith("--property=UnsetEnvironment=")), [])
+    for name in names:
+        assert ("--setenv=" + name in argv) is present
+        assert (name in unset) is not present
+
+
+def test_active_cleanup_stops_rechecks_and_resets():
+    states = [{"LoadState": "loaded", "ActiveState": "active"}, {"LoadState": "loaded", "ActiveState": "inactive"}]
+    with patch.object(runner, "inspect", side_effect=states) as inspect, patch.object(runner.subprocess, "run") as run:
+        assert runner.cleanup("test.service")
+    assert inspect.call_count == 2
+    assert [call.args[0][2] for call in run.call_args_list] == ["stop", "reset-failed"]
+
+
+def test_second_interrupt_during_stop_retains_receipt(capsys):
+    def run(argv, **kwargs):
+        raise KeyboardInterrupt
+    with patch.object(runner.subprocess, "run", side_effect=run), patch.object(runner, "inspect", return_value={"LoadState": "loaded", "ActiveState": "active"}):
+        assert runner.main(["--", "/bin/true"]) == 1
+    output = capsys.readouterr().err
+    assert output.count("ALETHARSIS_VALIDATION_RESULT=") == 1
+    receipt = json.loads(output.split("ALETHARSIS_VALIDATION_RESULT=")[1])
+    assert receipt["status"] == "interrupted"
+    assert receipt["cleanup_confirmed"] is False
+
+
+def test_missing_swap_accounting_refuses_execution(tmp_path):
+    (tmp_path / "membership").write_text("0::/test\n")
+    group = tmp_path / "test"
+    group.mkdir()
+    (group / "memory.max").write_text("33554432")
+    with pytest.raises(OSError):
+        runner.verify_memory(33554432, tmp_path / "membership", tmp_path)

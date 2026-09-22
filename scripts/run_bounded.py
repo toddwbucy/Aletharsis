@@ -10,7 +10,7 @@ import sys
 import tempfile
 import uuid
 
-ENVIRONMENT = ("PATH", "HOME", "GOCACHE", "GOMODCACHE", "GOFLAGS", "GOTOOLCHAIN", "GOMAXPROCS", "GOMEMLIMIT", "GOPATH", "GOROOT", "GOPROXY", "GOSUMDB", "GOPRIVATE", "GONOPROXY", "GONOSUMDB", "CGO_ENABLED")
+ENVIRONMENT = ("PATH", "HOME", "TMPDIR", "XDG_CACHE_HOME", "PYTHONHASHSEED", "GOEXPERIMENT", "GOWORK", "GOENV", "GOCACHE", "GOMODCACHE", "GOFLAGS", "GOTOOLCHAIN", "GOMAXPROCS", "GOMEMLIMIT", "GOPATH", "GOROOT", "GOPROXY", "GOSUMDB", "GOPRIVATE", "GONOPROXY", "GONOSUMDB", "CGO_ENABLED")
 
 
 def positive(value):
@@ -63,7 +63,7 @@ def command_line(command, memory_mib, timeout_seconds, unit, cwd, receipt):
             "--property=TimeoutStopSec=5"]
     # ExecStopPost receives systemd's outcome even if the unit is subsequently GC'd.
     stop = [sys.executable, str(Path(__file__).resolve()), "--service-result", str(receipt.with_name("service.json"))]
-    argv += ["--property=ExecStopPost=:" + shlex.join(stop).replace("%", "%%")]
+    argv += ["--property=ExecStopPost=:" + shlex.join(stop)]
     absent = []
     for name in ENVIRONMENT:
         if name in os.environ:
@@ -102,16 +102,16 @@ def cleanup(unit):
             subprocess.run(["systemctl", "--user", "reset-failed", unit], timeout=10,
                            check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return stopped
-    except (OSError, subprocess.TimeoutExpired, RuntimeError):
+    except (OSError, subprocess.TimeoutExpired, RuntimeError, KeyboardInterrupt):
         return False
 
 
 def outcome(state, acknowledgment):
     result = state.get("Result")
     if result == "oom-kill":
-        return "memory_limit"
+        return "memory_limit" if acknowledgment.get("verified") else "supervisor_memory_limit"
     if result == "timeout":
-        return "timeout"
+        return "timeout" if acknowledgment.get("verified") else "supervisor_timeout"
     if not acknowledgment.get("verified"):
         return "enforcement_unavailable"
     if acknowledgment.get("exec_error"):
@@ -120,7 +120,7 @@ def outcome(state, acknowledgment):
         return "command_signaled"
     if result == "success" and state.get("ExecMainCode") == "1" and state.get("ExecMainStatus") == "0":
         return "completed"
-    if result == "exit-code" and state.get("ExecMainCode") == "1":
+    if result == "exit-code" and state.get("ExecMainCode") == "1" and state.get("ExecMainStatus") not in (None, "", "0"):
         return "command_failed"
     return "supervisor_failed"
 
