@@ -1,0 +1,468 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "component": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "commit": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}(?![\\s\\S])"
+    },
+    "archive_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+    },
+    "license_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "implementer": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "technical_reviewer": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "tracking": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^https://github\\.com/toddwbucy/Aletharsis/(issues|pull)/[1-9][0-9]*(#.*)?(?![\\s\\S])"
+      },
+      "minItems": 3,
+      "uniqueItems": true
+    },
+    "evaluation_pr": {
+      "type": "string",
+      "pattern": "^https://github\\.com/toddwbucy/Aletharsis/pull/[1-9][0-9]*(?![\\s\\S])"
+    },
+    "recommendation": {
+      "enum": [
+        "approve",
+        "revise",
+        "reject"
+      ]
+    },
+    "acceptance": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "technical_reviewer": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "record": {
+              "type": "string",
+              "pattern": "^https://github\\.com/toddwbucy/Aletharsis/pull/[1-9][0-9]*(?![\\s\\S])"
+            },
+            "disposition": {
+              "enum": [
+                "approve",
+                "revise",
+                "reject"
+              ]
+            }
+          },
+          "required": [
+            "owner",
+            "technical_reviewer",
+            "record",
+            "disposition"
+          ]
+        }
+      ]
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "prerequisites": {
+          "$ref": "#/$defs/check"
+        },
+        "licenses_notices": {
+          "$ref": "#/$defs/check"
+        },
+        "unit_contract": {
+          "$ref": "#/$defs/check"
+        },
+        "live_adapter": {
+          "$ref": "#/$defs/check"
+        },
+        "source_integrity": {
+          "$ref": "#/$defs/check"
+        },
+        "adversarial_fuzz": {
+          "$ref": "#/$defs/check"
+        },
+        "resources": {
+          "$ref": "#/$defs/check"
+        },
+        "native_platforms": {
+          "$ref": "#/$defs/check"
+        },
+        "build_install": {
+          "$ref": "#/$defs/check"
+        },
+        "disable_rollback_missing": {
+          "$ref": "#/$defs/check"
+        },
+        "security_updates": {
+          "$ref": "#/$defs/check"
+        },
+        "semantic_upgrade": {
+          "$ref": "#/$defs/check"
+        }
+      },
+      "required": [
+        "prerequisites",
+        "licenses_notices",
+        "unit_contract",
+        "live_adapter",
+        "source_integrity",
+        "adversarial_fuzz",
+        "resources",
+        "native_platforms",
+        "build_install",
+        "disable_rollback_missing",
+        "security_updates",
+        "semantic_upgrade"
+      ]
+    },
+    "evidence": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/evidencePath"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "sha256",
+          "purpose"
+        ]
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "component",
+    "commit",
+    "archive_sha256",
+    "license_sha256",
+    "scope",
+    "owner",
+    "implementer",
+    "technical_reviewer",
+    "tracking",
+    "evaluation_pr",
+    "recommendation",
+    "acceptance",
+    "checks",
+    "evidence",
+    "limitations",
+    "next_actions"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aletharsis.invalid/schemas/adoption-record-v1.schema.json",
+  "$defs": {
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "passed",
+            "partial",
+            "failed",
+            "not_run",
+            "not_applicable"
+          ]
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "evidence": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/evidencePath"
+          },
+          "minItems": 1
+        },
+        "scope_justification": {
+          "type": "string",
+          "pattern": "^(?:\\s*\\S){20}",
+          "minLength": 20
+        }
+      },
+      "required": [
+        "status",
+        "detail",
+        "evidence"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "not_applicable"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "scope_justification"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "scope_justification"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "evidencePath": {
+      "type": "string",
+      "pattern": "^(docs|experiments)/([A-Za-z0-9_.-]*[A-Za-z0-9_-][A-Za-z0-9_.-]*/)*[A-Za-z0-9_.-]*[A-Za-z0-9_-][A-Za-z0-9_.-]*(?![\\s\\S])"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "recommendation": {
+            "const": "approve"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "checks": {
+            "properties": {
+              "prerequisites": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  }
+                }
+              },
+              "licenses_notices": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  }
+                }
+              },
+              "unit_contract": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  }
+                }
+              },
+              "live_adapter": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "not_applicable"
+                    ]
+                  }
+                }
+              },
+              "source_integrity": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  }
+                }
+              },
+              "adversarial_fuzz": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  }
+                }
+              },
+              "resources": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  }
+                }
+              },
+              "native_platforms": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  }
+                }
+              },
+              "build_install": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  }
+                }
+              },
+              "disable_rollback_missing": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  }
+                }
+              },
+              "security_updates": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  }
+                }
+              },
+              "semantic_upgrade": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "recommendation": {
+            "const": "approve"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "acceptance": {
+            "properties": {
+              "disposition": {
+                "const": "approve"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "recommendation": {
+            "const": "revise"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "acceptance": {
+            "properties": {
+              "disposition": {
+                "const": "revise"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "recommendation": {
+            "const": "reject"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "acceptance": {
+            "properties": {
+              "disposition": {
+                "const": "reject"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "title": "G6 component adoption record 1.0 \u2014 proposed gate, not an approval"
+}

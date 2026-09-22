@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "component": "encypherai--c2pa-text",
+  "commit": "ad4eaee3705ea5edb610ab37041be496d012e583",
+  "archive_sha256": "e66fb4ff79e9807104620ae4797b6ad2ed17d097b85f9001eb086a81e487ce26",
+  "license_sha256": "69e809a12ae0fd3df05046880b9073cc4e72f4ccb26a3122f8ceb80d66ca3022",
+  "scope": [
+    "Text provenance carrier extraction only; no signing or cleanup.",
+    "Bounded Linux/amd64 feasibility only; no accepted production capability."
+  ],
+  "owner": "toddwbucy",
+  "implementer": "Codex",
+  "technical_reviewer": "coderabbitai",
+  "tracking": [
+    "https://github.com/toddwbucy/Aletharsis/issues/37",
+    "https://github.com/toddwbucy/Aletharsis/issues/45",
+    "https://github.com/toddwbucy/Aletharsis/issues/21",
+    "https://github.com/toddwbucy/Aletharsis/issues/7"
+  ],
+  "evaluation_pr": "https://github.com/toddwbucy/Aletharsis/pull/47",
+  "recommendation": "revise",
+  "acceptance": null,
+  "checks": {
+    "prerequisites": {
+      "status": "partial",
+      "detail": "G2 #37 scoped four Go extraction APIs. HTML host validation and source mappings remain prerequisites alongside executable DA-001/report integration; no accepted extraction adapter.",
+      "evidence": [
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
+      ]
+    },
+    "licenses_notices": {
+      "status": "partial",
+      "detail": "Root MIT retained and x/text BSD-3-Clause inspected; no upstream code or vectors redistributed. Per-file/transitive notices and production redistribution clearance remain open.",
+      "evidence": [
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
+      ]
+    },
+    "unit_contract": {
+      "status": "partial",
+      "detail": "28 upstream tests passed; 39 independent cases completed with eight HTML host-context mismatches. These probes do not establish production normalization or adapter conformance.",
+      "evidence": [
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
+      ]
+    },
+    "live_adapter": {
+      "status": "not_run",
+      "detail": "No DA-001 extraction adapter executed; ExtractManifest/ValidateText/ExtractStructured/ExtractHTML probes are feasibility evidence only.",
+      "evidence": [
+        "docs/reuse/evaluations/c2pa-text.md"
+      ]
+    },
+    "source_integrity": {
+      "status": "partial",
+      "detail": "Synthetic input hashes checked after every case. Decomposed-text raw/NFC offsets differ and structured/HTML APIs omit spans; production acquisition and source mapping remain unvalidated.",
+      "evidence": [
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
+      ]
+    },
+    "adversarial_fuzz": {
+      "status": "partial",
+      "detail": "39 cases cover malformed VS wrappers, huge lengths, multiple carriers, Unicode coordinates and HTML host confusion. Eight HTML mismatches remain; no production fuzz campaign completed.",
+      "evidence": [
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
+      ]
+    },
+    "resources": {
+      "status": "partial",
+      "detail": "Build/upstream tests used 23.945 CPU seconds and 416.7 MiB peak memory; case run 0.265 CPU seconds and 153.3 MiB. Linux harness enforced 1 GiB memory and per-case deadlines; no production worst-case bound.",
+      "evidence": [
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
+      ]
+    },
+    "native_platforms": {
+      "status": "partial",
+      "detail": "Go 1.27.1 Linux/amd64 extraction study only. No other native detector platform executed; core cross-build CI is not evidence for these APIs.",
+      "evidence": [
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
+      ]
+    },
+    "build_install": {
+      "status": "partial",
+      "detail": "Two fresh offline Go probe builds and corpus runs yielded identical binary/result bytes. This does not establish cross-host reproducibility, install/relocation or accepted release packaging.",
+      "evidence": [
+        "docs/reuse/evaluations/c2pa-text.md",
+        "docs/reuse/evaluations/c2pa-text/manifest.json",
+        "experiments/c2pa-text/README.md"
+      ]
+    },
+    "disable_rollback_missing": {
+      "status": "not_run",
+      "detail": "No installed extraction adapter; disable, missing-runtime and rollback behavior in native audits remains untested.",
+      "evidence": [
+        "docs/reuse/evaluations/c2pa-text.md"
+      ]
+    },
+    "security_updates": {
+      "status": "not_run",
+      "detail": "Carrier pin and x/text dependency identified, but no complete advisory, per-file notice or supported-update review for extraction adoption.",
+      "evidence": [
+        "docs/reuse/evaluations/c2pa-text.md"
+      ]
+    },
+    "semantic_upgrade": {
+      "status": "not_run",
+      "detail": "39-case carrier baseline is retained, including eight unresolved HTML discrepancies; no accepted baseline, replacement pin comparison or rollback drill yet.",
+      "evidence": [
+        "docs/reuse/evaluations/c2pa-text.md"
+      ]
+    }
+  },
+  "evidence": {
+    "docs/reuse/evaluations/c2pa-text.md": {
+      "sha256": "8b97a5561e5a4048ee934ece4b967e305161b7d2b0395b0cd8072deac96539de",
+      "purpose": "Observed results, environment and residual limitations"
+    },
+    "docs/reuse/evaluations/c2pa-text/manifest.json": {
+      "sha256": "db2c4a0e8eb5517a7236ba7eef1e03c7fa8c850d4c855cc9d55c558bf67dc40d",
+      "purpose": "Exact retained experiment artifacts, toolchain and result identities"
+    },
+    "experiments/c2pa-text/README.md": {
+      "sha256": "62f2a8939e2d5a86b90e63b85a74ed2aa7546789634904ca4977ff2c63699535",
+      "purpose": "Reproducible pinned provisioning and offline commands"
+    }
+  },
+  "limitations": [
+    "Eight of 39 independent HTML cases disagree with expected host syntax/context.",
+    "NFC derivative coordinates differ from raw input; structured/HTML APIs omit source spans.",
+    "Passing 28 upstream tests does not establish production interoperability."
+  ],
+  "next_actions": [
+    "Finish report wire and executable adapter contract gates under #36.",
+    "Scope extraction APIs and define format-aware host validation and source mappings.",
+    "Obtain reviewed production test/platform/resource and license/security plans before adoption."
+  ]
+}

@@ -99,7 +99,7 @@ capabilities. It complements #17's contract work and #7's ongoing validation.
 | **G3 — Structural comparison corpora** | Unicode first; Office/PDF comparisons as parsers arrive | Independently expected and licensed fixtures; disagreements classified by inventory, parsing, offsets, policy and coverage; P2/P3 gates for structured formats |
 | **G4 — Optional statistical sidecar** | Protocol first, then a selected configured detector | G1; pinned environment, actual score semantics, bounded process lifecycle and tests with runtime/access absent |
 | **G5 — Weaver interoperability and research** | Portable baseline exporter/consumer contract and optional fingerprint experiment | Accepted corpus identities, linked producer/consumer issues and compatibility tests; blind/open-set validation before any fingerprint claim |
-| **G6 — Release and lifecycle** | Per-component release, maintenance and rollback decision | #7 validation evidence, native supported-platform checks, conformance corpus, dependency notices and reviewed upgrade semantics |
+| **G6 — Release and lifecycle** | [Per-component checklist and gap records](docs/reuse/adoptions/README.md), release, maintenance and rollback decision | #7 validation evidence, native supported-platform checks, conformance corpus, dependency notices and reviewed upgrade semantics |
 
 The carrier/verifier studies are accepted in PRs #47/#48, and the
 [DA-001 exchange contract](docs/specs/detector-adapter-v1.md) is accepted in PR #49.

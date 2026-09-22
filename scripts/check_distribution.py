@@ -13,6 +13,7 @@ import sys
 import tempfile
 
 import jsonschema
+from referencing import Registry, Resource
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -24,6 +25,38 @@ def run(command, *, timeout=10, env=None):
 def require(condition, message):
     if not condition:
         raise AssertionError(message)
+
+
+def corpus_validator():
+    """Resolve corpus and embedded-report contracts exclusively from local schemas."""
+    names = ('corpus-document-v1.schema.json', 'corpus-v1.schema.json',
+             'report.schema.json', 'report-v2.schema.json')
+    schemas = {name: json.loads((ROOT / 'schemas' / name).read_bytes()) for name in names}
+    registry = Registry().with_resources(
+        ('https://aletharsis.local/schemas/' + name, Resource.from_contents(schema))
+        for name, schema in schemas.items())
+    return jsonschema.Draft202012Validator(schemas[names[0]], registry=registry)
+
+
+def validate_directory(report, code, system, version, validator):
+    """Check directory outcomes without accepting a file-report envelope."""
+    validator.validate(report)
+    require(report['header']['report_schema'] == version, 'Wrong corpus report version')
+    summary = report['summary']
+    require(code == summary['exit_code'], 'Corpus exit/report mismatch')
+    if system != 'Linux':
+        require(code == 4 and summary['state'] == 'failed', 'Unsupported host scanned directory')
+        require(summary['reason'] == 'integrity.no_atime_unavailable', 'Wrong discovery failure')
+        require(not summary['discovery_complete'], 'Unsupported discovery reported complete')
+        require(report['entries'] == [] and summary['entries'] == 0, 'Unavailable discovery leaked entries')
+        require(all(count == 0 for count in summary['counts'].values()), 'Unavailable discovery counted evidence')
+    else:
+        require(code == 0 and summary['state'] == 'completed' and summary['discovery_complete'],
+                'Clean Linux corpus did not complete')
+        require(summary['entries'] == len(report['entries']), 'Corpus count mismatch')
+        require(summary['counts']['no_reported_findings'] == len(report['entries']), 'Clean corpus classification')
+        require(all(count == 0 for key, count in summary['counts'].items()
+                    if key != 'no_reported_findings'), 'Unexpected clean corpus outcome')
 
 
 def main():
@@ -38,6 +71,7 @@ def main():
     validator = validator_type(schema)
     v2_schema = json.loads((ROOT / 'schemas/report-v2.schema.json').read_bytes())
     v2_validator = jsonschema.Draft202012Validator(v2_schema)
+    directory_validator = corpus_validator()
     sys.path.insert(0, str(ROOT / 'tests/contracts'))
     from support import validate_semantics
     results = {'system': system, 'machine': platform.machine(), 'checks': [],
@@ -60,7 +94,11 @@ def main():
         unicode_file.write_bytes('A😀\u200bB\r\n'.encode())
         malformed = root / 'invalid.txt'
         malformed.write_bytes(b'\xff')
-        sources = [clean, unicode_file, malformed]
+        corpus_root = root / 'corpus'
+        corpus_root.mkdir()
+        corpus_source = corpus_root / 'clean.txt'
+        corpus_source.write_bytes(b'ordinary corpus words\n')
+        sources = [clean, unicode_file, malformed, corpus_source]
         expected = {p: p.read_bytes() for p in sources}
         before = {p: p.stat() for p in sources}
         runtime_env = os.environ | {'PATH': ''}
@@ -70,7 +108,7 @@ def main():
                 require(process.returncode == 0 and needle.lower() in process.stdout.lower(),
                         f'{binary.name} {option} failed: {process.stderr!r}')
                 require(not process.stderr, 'Unexpected help/version stderr')
-            candidates = sources if system == 'Linux' else sources + [root / 'missing.txt', root]
+            candidates = sources if system == 'Linux' else sources + [root / 'missing.txt']
             for source in candidates:
                 for view in ('audit', 'unicode', 'metadata', 'structure'):
                     for version in ('1.0', '2.0'):
@@ -116,6 +154,46 @@ def main():
                                 require(first.returncode == 0 and not report['findings'], 'Clean text reported findings')
                         results['checks'].append({'binary': 'built' if binary == built else 'installed',
                                                   'source': source.name, 'view': view, 'schema_version': version, 'exit_code': first.returncode})
+            for version in ('1.0', '2.0'):
+                for output_format in ('--json', '--jsonl'):
+                    command = [str(binary), 'audit', str(corpus_root), output_format,
+                               '--schema-version=' + version]
+                    first, second = run(command, env=runtime_env), run(command, env=runtime_env)
+                    require((first.returncode, first.stdout, first.stderr) ==
+                            (second.returncode, second.stdout, second.stderr), 'Nondeterministic corpus output')
+                    require(not first.stderr, 'Unexpected corpus stderr')
+                    if output_format == '--jsonl':
+                        records = [json.loads(line) for line in first.stdout.splitlines()]
+                        report = {'header': records[0], 'entries': records[1:-1], 'summary': records[-1]}
+                    else:
+                        report = json.loads(first.stdout)
+                    validate_directory(report, first.returncode, system, version, directory_validator)
+                    if system == 'Linux':
+                        require(len(report['entries']) == 1, 'Missing corpus fixture')
+                        entry = report['entries'][0]
+                        require(entry['relative_path'] == 'clean.txt' and entry['state'] == 'no_reported_findings',
+                                'Wrong corpus entry')
+                        require(entry['report']['file']['sha256'] == hashlib.sha256(expected[corpus_source]).hexdigest(),
+                                'Wrong corpus source digest')
+                        if version == '2.0':
+                            validate_semantics(entry['report'])
+                    results['checks'].append({'binary': 'built' if binary == built else 'installed',
+                                              'source': 'corpus', 'view': 'audit', 'format': output_format,
+                                              'schema_version': version, 'exit_code': first.returncode})
+                target = root / ('corpus-' + binary.parent.name + '-' + version + '.json')
+                saved = run([str(binary), 'audit', str(corpus_root), '--output', str(target),
+                             '--schema-version=' + version], env=runtime_env)
+                require(not saved.stdout and not saved.stderr, 'Unexpected saved corpus output')
+                validate_directory(json.loads(target.read_bytes()), saved.returncode, system, version, directory_validator)
+                for view in ('unicode', 'metadata', 'structure'):
+                    process = run([str(binary), view, str(corpus_root), '--json',
+                                   '--schema-version=' + version], env=runtime_env)
+                    require(process.returncode == 4 and process.stdout and not process.stderr,
+                            'Directory subview did not emit a failure report')
+                    report = json.loads(process.stdout)
+                    (validator if version == '1.0' else v2_validator).validate(report)
+                    require(report['schema_version'] == version, 'Wrong subview report schema')
+                    require(report['summary']['exit_code'] == 4, 'Subview failure lost')
         # Stat before validation reads: reading fixtures in the test can update atime.
         for source in sources:
             after = source.stat()
