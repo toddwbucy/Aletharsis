@@ -352,3 +352,29 @@ func TestMissingInputFlagSelectsDocumentedEnvelope(t *testing.T) {
 		}
 	}
 }
+
+func TestInvalidUTF8WorkspaceIsInputFailureBeforeOutput(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("arbitrary byte filenames are tested on Linux")
+	}
+	dir := filepath.Join(t.TempDir(), "d\xffir")
+	if err := os.Mkdir(dir, 0700); err != nil {
+		t.Fatal(err)
+	}
+	for _, schema := range []string{"1.0", "2.0"} {
+		for _, mode := range []string{"--jsonl", "--json", "--output", "--reveal-out"} {
+			var out, stderr bytes.Buffer
+			args := []string{"audit", dir, "--schema-version", schema, mode}
+			destination := filepath.Join(t.TempDir(), "new-output")
+			if mode == "--output" || mode == "--reveal-out" {
+				args = append(args, destination)
+			}
+			if code := Run(args, &out, &stderr); code != 4 || out.Len() != 0 || !strings.Contains(stderr.String(), "input.open_failed") || strings.Contains(stderr.String(), "output.write_failed") {
+				t.Fatalf("%s %s: incorrect diagnostic: %d %q %q", schema, mode, code, out.Bytes(), stderr.Bytes())
+			}
+			if _, err := os.Stat(destination); !os.IsNotExist(err) {
+				t.Fatalf("created output: %v", err)
+			}
+		}
+	}
+}

@@ -29,7 +29,7 @@ func TestDirectoryRevealCompleteWorkflow(t *testing.T) {
 		t.Fatal(err)
 	}
 	delete(files, unsafe)
-	extras := map[string][]byte{"bidi.txt": []byte("invoice\u202e.txt"), "nested/binary.md": []byte(strings.Repeat("\u200b\u200c", 32)), "nested/日本語.md": []byte("Café 日本語 e\u0301 👩\u200d💻\r\n"), "empty.txt": {}, "utf16.txt": {0xff, 0xfe, 'a', 0, 0x0b, 0x20}, "utf32.txt": {0, 0, 0xfe, 0xff, 0, 0, 0, 97, 0, 0, 0x20, 0x0b}}
+	extras := map[string][]byte{"invoice\u202egnp.txt": []byte("invoice\u202e.txt"), "nested/binary.md": []byte(strings.Repeat("\u200b\u200c", 32)), "nested/日本語.md": []byte("Café 日本語 e\u0301 👩\u200d💻\r\n"), "empty.txt": {}, "utf16.txt": {0xff, 0xfe, 'a', 0, 0x0b, 0x20}, "utf32.txt": {0, 0, 0xfe, 0xff, 0, 0, 0, 97, 0, 0, 0x20, 0x0b}}
 	for name, data := range extras {
 		files[name] = data
 		if err := os.WriteFile(filepath.Join(dir, name), data, 0600); err != nil {
@@ -69,6 +69,7 @@ func TestDirectoryRevealCompleteWorkflow(t *testing.T) {
 					t.Fatal("nondeterministic tree")
 				}
 				previous = raw
+				assertASCIIJSON(t, raw)
 				var manifest publication.TreeManifest
 				if err := json.Unmarshal(raw, &manifest); err != nil {
 					t.Fatal(err)
@@ -94,7 +95,7 @@ func TestDirectoryRevealCompleteWorkflow(t *testing.T) {
 					if err := json.Unmarshal(line, &entry); err != nil {
 						t.Fatal(err)
 					}
-					if entry.RelativePath == "bidi.txt" {
+					if entry.RelativePath == "invoice\u202egnp.txt" {
 						bidiEntry = entry
 					}
 				}
@@ -102,7 +103,7 @@ func TestDirectoryRevealCompleteWorkflow(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				savedBidi, err := os.ReadFile(filepath.Join(output, "reports", "bidi.txt.json"))
+				savedBidi, err := os.ReadFile(filepath.Join(output, "reports", "invoice\u202egnp.txt.json"))
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -141,6 +142,7 @@ func TestDirectoryRevealCompleteWorkflow(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
+					assertASCIIJSON(t, data)
 					var comparison reveal.Comparison
 					if err := json.Unmarshal(data, &comparison); err != nil {
 						t.Fatal(err)

@@ -23,6 +23,11 @@ and failed terminal summary (exit 4), not a file report or a usage-only error.
 Without a directory-only flag, a missing path follows ordinary file auditing.
 A successfully identified non-directory rejects these flags as usage errors.
 Consumers must select the corpus schema when requesting corpus-only options.
+The workspace argument itself must be valid UTF-8. Otherwise the CLI rejects it
+before output begins with `input.open_failed` and exit 4, across stdout, report-file
+and reveal-tree modes; no corpus envelope or destination is created. Arbitrary
+invalid path bytes cannot be represented faithfully in the current JSON path
+contract. This is an input preflight failure, not a transport failure.
 
 ## Presentations
 

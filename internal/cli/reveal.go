@@ -2,7 +2,6 @@ package cli
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -70,14 +69,14 @@ func runReveal(path, output, schema string, jsonOutput, verbose bool, out, errou
 	if err != nil {
 		return v2Failure(errout, "reveal.failed", "could not produce a bounded verified comparison")
 	}
-	mapping, err := json.Marshal(comparison)
+	mapping, err := reporters.JSON(comparison, false)
 	if err != nil {
 		return v2Failure(errout, "reveal.failed", "could not serialize comparison")
 	}
 	artifacts := []publication.Artifact{
 		{Name: "report.json", Data: report},
 		{Name: "revealed.txt", Data: []byte(comparison.Reveal.Text)},
-		{Name: "comparison.json", Data: append(mapping, '\n')},
+		{Name: "comparison.json", Data: []byte(mapping)},
 		{Name: "faithful.diff", Data: []byte(comparison.Faithful.Text)},
 		{Name: "display.diff", Data: []byte(comparison.Presentation.Diff.Text)},
 	}

@@ -21,7 +21,7 @@ func TestRevealEndToEnd(t *testing.T) {
 	if runtime.GOOS != "linux" {
 		t.Skip("verified no-atime acquisition is Linux-only")
 	}
-	samples := map[string][]byte{"clean": []byte("plain\r\n"), "zero": []byte("a\u200bb"), "binary": []byte(strings.Repeat("\u200b\u200c", 32)), "multilingual": []byte("日本語 café e\u0301 👩\u200d💻\r\n"), "utf16": {0xff, 0xfe, 'a', 0, 0x0b, 0x20}, "utf32": {0, 0, 0xfe, 0xff, 0, 0, 0, 97, 0, 0, 0x20, 0x0b}}
+	samples := map[string][]byte{"bidi": []byte("invoice\u202egnp.txt"), "clean": []byte("plain\r\n"), "zero": []byte("a\u200bb"), "binary": []byte(strings.Repeat("\u200b\u200c", 32)), "multilingual": []byte("日本語 café e\u0301 👩\u200d💻\r\n"), "utf16": {0xff, 0xfe, 'a', 0, 0x0b, 0x20}, "utf32": {0, 0, 0xfe, 0xff, 0, 0, 0, 97, 0, 0, 0x20, 0x0b}}
 	for name, data := range samples {
 		for _, schema := range []string{"1.0", "2.0"} {
 			t.Run(name+schema, func(t *testing.T) {
@@ -55,6 +55,7 @@ func TestRevealEndToEnd(t *testing.T) {
 						t.Fatal("bundle nondeterministic")
 					}
 					firstManifest = raw
+					assertASCIIJSON(t, raw)
 					var m publication.Manifest
 					if err := json.Unmarshal(raw, &m); err != nil {
 						t.Fatal(err)
@@ -75,9 +76,13 @@ func TestRevealEndToEnd(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
+					assertASCIIJSON(t, raw)
 					var comparison reveal.Comparison
 					if err := json.Unmarshal(raw, &comparison); err != nil {
 						t.Fatal(err)
+					}
+					if name == "bidi" && comparison.DecodedText != string(data) {
+						t.Fatal("JSON escaping changed decoded evidence")
 					}
 					if comparison.Reveal.SourceSHA256 != m.SourceSHA256 {
 						t.Fatal("comparison has different source")
@@ -220,6 +225,18 @@ func TestRevealAcceptsResolvedParentAlias(t *testing.T) {
 		}
 		if _, err := os.Stat(filepath.Join(outside, name, "manifest.json")); err != nil {
 			t.Fatal(err)
+		}
+	}
+}
+
+func assertASCIIJSON(t *testing.T, raw []byte) {
+	t.Helper()
+	if !json.Valid(raw) {
+		t.Fatal("invalid JSON artifact")
+	}
+	for _, b := range raw {
+		if b > 127 {
+			t.Fatal("raw Unicode in presentation JSON artifact")
 		}
 	}
 }

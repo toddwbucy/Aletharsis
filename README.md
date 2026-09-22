@@ -134,7 +134,9 @@ bidi controls: do not display them directly in a terminal. This intentionally
 differs from ASCII-escaped stdout JSON/JSONL and the schema-1 single-file
 `report.json`. Their byte hashes equal the corpus canonical report hashes. Treat
 them like raw revealed text and faithful diffs; use an escaping JSON viewer or
-`display-diffs/` for review.
+`display-diffs/` for review. Manifests, directory `mappings/*.json`, and single-file
+`comparison.json` use ASCII-escaped JSON; decoding them restores exact source
+strings. Their artifact hashes identify the escaped serialized bytes.
 
 Publication finishes before stdout is delivered. A stdout failure leaves the
 committed tree available; publication failure attempts rollback of its own files.

@@ -13,6 +13,7 @@ import (
 	"github.com/toddwbucy/Aletharsis/internal/corpus"
 	"github.com/toddwbucy/Aletharsis/internal/evidence"
 	"github.com/toddwbucy/Aletharsis/internal/publication"
+	"github.com/toddwbucy/Aletharsis/internal/reporters"
 	"github.com/toddwbucy/Aletharsis/internal/reveal"
 	"github.com/toddwbucy/Aletharsis/internal/workspace"
 )
@@ -72,12 +73,12 @@ func (o *treeObserver) Visit(entry corpus.Entry, snapshot corpus.Snapshot) error
 			}
 			return err
 		}
-		mapping, err := json.Marshal(comparison)
+		mapping, err := reporters.JSON(comparison, false)
 		if err != nil {
 			return err
 		}
 		artifacts["revealed"] = []byte(comparison.Reveal.Text)
-		artifacts["mapping"] = append(mapping, '\n')
+		artifacts["mapping"] = []byte(mapping)
 		artifacts["faithful"] = []byte(comparison.Faithful.Text)
 		artifacts["display"] = []byte(comparison.Presentation.Diff.Text)
 		state = "revealed"

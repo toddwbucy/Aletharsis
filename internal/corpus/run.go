@@ -158,9 +158,9 @@ func run(ctx context.Context, path string, options Options, out io.Writer, root 
 					report = []byte(text)
 				} else {
 					settings := audit.DefaultV2Options()
-					settings.InputBytes = attemptLimit
+					settings.InputBytes = options.InputBytes
 					settings.RetainSnapshot = options.Observer != nil
-					result, err, consumed := audit.RunV2RootCounted(ctx, root, candidate.RelativePath, settings, options.InputBytes)
+					result, err, consumed := audit.RunV2RootCounted(ctx, root, candidate.RelativePath, settings, attemptLimit)
 					charge = consumed
 					runErr = err
 					if err == nil {

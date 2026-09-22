@@ -60,8 +60,11 @@ display artifacts. Handle them like raw revealed text and faithful diffs; review
 with an escaping JSON viewer or the escaped display diffs. Corpus stdout JSON/JSONL
 is ASCII-escaped, as is the schema-1 single-file bundle report; directory reports
 intentionally use canonical bytes instead to preserve this hash binding.
-Mappings retain
-source, decoded, revealed and display identities and exact occurrence spans.
+Manifests and mapping JSON use ASCII escaping for source-controlled names and
+text. Parsing restores the exact Unicode strings; artifact sizes/hashes bind the
+escaped bytes, and publication budgets count those bytes. Mappings retain source,
+decoded, revealed and display identities and exact occurrence spans. The single-file
+`comparison.json` follows the same escaping rule.
 Finding reference indices resolve into the saved report’s finding order for either
 schema. The manifest binds every artifact size/hash and the exact corpus stream. A saved
 manifest is necessary but not sufficient: import must validate paths, all hashes,

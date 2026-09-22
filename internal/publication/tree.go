@@ -1,7 +1,6 @@
 package publication
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -14,6 +13,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/toddwbucy/Aletharsis/internal/evidence"
+	"github.com/toddwbucy/Aletharsis/internal/reporters"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/unicode/norm"
 )
@@ -265,11 +265,11 @@ func (t *Tree) Commit(corpus []byte) (*TreeReceipt, error) {
 		manifest.Sources = append(manifest.Sources, record)
 	}
 	sort.Slice(manifest.Sources, func(i, j int) bool { return manifest.Sources[i].RelativePath < manifest.Sources[j].RelativePath })
-	raw, err := json.Marshal(manifest)
+	encoded, err := reporters.JSON(manifest, false)
 	if err != nil {
 		return nil, t.fail(err)
 	}
-	raw = append(raw, '\n')
+	raw := []byte(encoded)
 	if len(corpus) > t.remaining || len(raw) > t.remaining-len(corpus) {
 		return nil, t.fail(ErrLimit)
 	}

@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/toddwbucy/Aletharsis/internal/corpus"
 	u "github.com/toddwbucy/Aletharsis/internal/unicoderef"
@@ -17,6 +18,9 @@ import (
 )
 
 func runDirectory(path, output, schema string, recursive, jsonOutput, jsonl, verbose bool, out, errout io.Writer) int {
+	if !utf8.ValidString(path) {
+		return v2Failure(errout, "input.open_failed", "workspace path must be valid UTF-8; no corpus output was created")
+	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 	options := corpus.DefaultOptions()

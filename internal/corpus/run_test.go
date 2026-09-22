@@ -389,3 +389,77 @@ func TestRemainingBudgetDoesNotClaimPerFileOversize(t *testing.T) {
 		}
 	}
 }
+
+func TestV2CapabilityLimitDoesNotDependOnRemainingPool(t *testing.T) {
+	linux(t)
+	dir := t.TempDir()
+	put(t, filepath.Join(dir, "a.txt"), []byte("abc"))
+	put(t, filepath.Join(dir, "b.txt"), []byte("ok"))
+	options := DefaultOptions()
+	options.Schema, options.InputBytes, options.AcquisitionBytes = "2.0", 8, 7
+	root, err := os.OpenRoot(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer root.Close()
+	settings := audit.DefaultV2Options()
+	settings.InputBytes = options.InputBytes
+	standalone, err := audit.RunV2Root(context.Background(), root, "b.txt", settings)
+	if err != nil {
+		t.Fatal(err)
+	}
+	canonical, err := identity.Canonicalize(standalone.JSON, settings.ReportLimits)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var previous Entry
+	for pass := 0; pass < 2; pass++ {
+		var out bytes.Buffer
+		if _, err := Run(context.Background(), dir, options, &out); err != nil {
+			t.Fatal(err)
+		}
+		var target Entry
+		for _, row := range records(t, out.Bytes())[1:] {
+			var entry Entry
+			if err := json.Unmarshal(row, &entry); err != nil {
+				t.Fatal(err)
+			}
+			if entry.RelativePath == "b.txt" {
+				target = entry
+			}
+		}
+		if !bytes.Equal(target.Report, canonical) {
+			t.Fatal("corpus report differs from same-path rooted standalone report")
+		}
+		var report struct {
+			Capabilities []struct {
+				Limits struct {
+					InputBytes *int `json:"input_bytes"`
+				} `json:"limits"`
+			} `json:"capabilities"`
+		}
+		if err := json.Unmarshal(target.Report, &report); err != nil {
+			t.Fatal(err)
+		}
+		limited := 0
+		for _, capability := range report.Capabilities {
+			if capability.Limits.InputBytes != nil {
+				limited++
+				if *capability.Limits.InputBytes != options.InputBytes {
+					t.Fatal("transient allowance advertised as capability limit")
+				}
+			}
+		}
+		if limited < 2 {
+			t.Fatal("missing acquisition/parser limits")
+		}
+		if pass == 0 {
+			previous = target
+			if err := os.Remove(filepath.Join(dir, "a.txt")); err != nil {
+				t.Fatal(err)
+			}
+		} else if !bytes.Equal(previous.Report, target.Report) || previous.ReportCanonicalSHA256 != target.ReportCanonicalSHA256 {
+			t.Fatal("successful report identity changed with remaining acquisition pool")
+		}
+	}
+}

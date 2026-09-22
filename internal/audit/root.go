@@ -27,10 +27,12 @@ func InspectRootCounted(root *os.Root, relative string, limit, fileLimit int) (O
 }
 
 // RunV2RootCounted retains consumption even if later report construction fails.
-func RunV2RootCounted(ctx context.Context, root *os.Root, relative string, options V2Options, fileLimit int) (*V2Output, error, int) {
+// options.InputBytes declares the configured capability limit; allowance is the
+// remaining corpus acquisition budget and only constrains this read.
+func RunV2RootCounted(ctx context.Context, root *os.Root, relative string, options V2Options, allowance int) (*V2Output, error, int) {
 	consumed := 0
 	result, err := runV2WithReader(ctx, relative, options, func(_ string, limit int) ([]byte, error) {
-		return readRootSnapshotCounted(root, relative, limit, fileLimit, &consumed)
+		return readRootSnapshotCounted(root, relative, allowance, limit, &consumed)
 	}, nil)
 	return result, err, consumed
 }

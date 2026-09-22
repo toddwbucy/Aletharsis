@@ -88,6 +88,12 @@ the retained native failure message identifies the corpus allowance in both sche
 per-file ceiling. Both checks use the acquired descriptor; pre-read rejections
 charge zero bytes, allowing later smaller candidates to use the remaining pool.
 
+Schema-2 capability limits describe the configured per-file ceiling, not the
+shrinking corpus allowance. The allowance constrains only snapshot acquisition.
+With the same relative path and configured options, a successfully audited file
+retains its report identity regardless of earlier candidates consuming the pool;
+failed acquisition still records the actual failure and may depend on scan scope.
+
 Aggregate acquisition defaults to 256 MiB, hard-capped at 1 GiB. A rooted-reader
 counter charges actual bytes returned by Read, including partial errors, changed
 snapshots, and oversize sentinel bytes, even when downstream reporting fails.

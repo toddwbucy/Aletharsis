@@ -3,7 +3,6 @@
 package publication
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -12,6 +11,7 @@ import (
 	"sort"
 
 	"github.com/toddwbucy/Aletharsis/internal/evidence"
+	"github.com/toddwbucy/Aletharsis/internal/reporters"
 )
 
 var ErrInvalid = errors.New("invalid publication request")
@@ -87,11 +87,11 @@ func publish(dir destination, sourceSHA256, reportSHA256 string, artifacts []Art
 		budget -= len(a.Data)
 		m.Artifacts = append(m.Artifacts, Entry{Name: a.Name, Size: len(a.Data), SHA256: evidence.Hash(a.Data)})
 	}
-	raw, err := json.Marshal(m)
+	encoded, err := reporters.JSON(m, false)
 	if err != nil {
 		return nil, err
 	}
-	raw = append(raw, '\n')
+	raw := []byte(encoded)
 	if len(raw) > budget {
 		return nil, ErrLimit
 	}
