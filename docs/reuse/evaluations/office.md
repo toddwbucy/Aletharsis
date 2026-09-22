@@ -95,8 +95,56 @@ those budgets silently to accommodate tooling or failed attempts.
 
 Each license entry in the static inventory has a repository-relative `retained_path`.
 `tests/test_office_clearance.py` verifies those exact bytes and sizes offline,
-requires the complete four-notice set, and checks registry/archive/root-license
+derives the retained-notice set from the archive notice-member inventory, and checks registry/archive/root-license
 linkage. Git disables text conversion for the narrative, inventory and notices.
 These checks detect retained-notice drift; they do not recompute upstream module
 or archive hashes without their separately provisioned source artifacts. Static
 import statements are AST renderings, not verbatim source lines or runtime traces.
+
+## Rights-record follow-up (review pass 2)
+
+The inventory now enumerates every regular `LICENSE*`/`COPYING*` basename
+(case-insensitive) in both pinned archives, including documentation copies and
+unrelated vendored licenses. Each has an explicit retention decision/reason.
+The package-local `oletools/LICENSE.txt` is retained as
+[oletools-package-license.txt](office/oletools-package-license.txt), in addition
+to the root notice. Documentation copies under `oletools/doc/` and `olefile/doc/`
+are inventoried but not provisioned; unrelated thirdparty notices are outside the
+candidate closure. Completeness is a pinned-archive inspection claim; offline CI
+checks its internal linkage and retained bytes, not an independently downloaded
+archive. Both package and root oletools notices include BSD-2-Clause and MIT
+material, so neither is shortened to a blanket BSD-only rights record.
+
+Each candidate module records copyright-header observations from the first 100
+physical source lines. Header absence does not establish absence of copyright;
+codeauthor/changelog credits are not asserted as rights-holder notices. Root
+package coverage outside thirdparty is a proposed basis for owner review, not
+an invented per-file attribution. Exceptions requiring that explicit decision:
+
+| Module | Observed exception / proposed basis |
+| --- | --- |
+| `oletools/__init__.py` | No header attribution; package grant proposed |
+| `oletools/ppt_record_parser.py` | BSD disclaimer but no copyright-holder line; package grant proposed |
+| `oletools/common/__init__.py` | No header attribution; package grant proposed |
+| `oletools/common/io_encoding.py` | Header names msodde (2017–2018 Lagadec), not io_encoding; package grant proposed |
+| `oletools/common/log_helper/__init__.py` | No header attribution; package grant proposed |
+| `oletools/common/log_helper/_json_formatter.py` | No header attribution; package grant proposed |
+| `oletools/common/log_helper/_logger_adapter.py` | No header attribution; package grant proposed |
+| `oletools/common/log_helper/_root_logger_wrapper.py` | No header attribution; package grant proposed |
+| `oletools/thirdparty/__init__.py` | Empty initializer, no header; root excludes thirdparty, so no governing notice asserted |
+| `oletools/thirdparty/xglob/__init__.py` | No header attribution; separate xglob subpackage notice proposed |
+
+Per-notice records include holders observed in the notice and an SPDX field.
+The olefile copies remain `NOASSERTION` for the combined SPDX expression, with
+BSD-2-Clause plus the inherited PIL permission notice stated explicitly. The owner
+must settle that expression/clearance; this revision does not assume that HPND's
+exact template matches both historical copies. Olefile's wheel and both notice
+digests are linked from the registry and checked against this inventory.
+
+Provisioning must also exclude write behavior present in the closure:
+`OleFileIO.open(..., write_mode=False)` admits a write-mode argument;
+`OleFileIO.write_sect` and `OleFileIO.write_stream` write data;
+`record_base.OleRecordFile.open(..., **kwargs)` forwards those arguments.
+A helper-name allowlist alone is insufficient: read-only input mounts and tests
+that reject write-mode calls remain required, alongside the previously excluded
+`oleobj.process_file` and CLI extraction paths. No such runtime is cleared here.

@@ -15,12 +15,35 @@
   "candidate_modules": [
     {
       "archive_member": "oletools/__init__.py",
+      "header_notice": {
+        "holders": [],
+        "observed_lines": [],
+        "proposed_governing_notice": "LICENSE.md",
+        "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "absent"
+      },
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "size": 0,
       "static_import_statements": []
     },
     {
       "archive_member": "oletools/ooxml.py",
+      "header_notice": {
+        "holders": [
+          "Philippe Lagadec"
+        ],
+        "observed_lines": [
+          {
+            "line": 19,
+            "text": "# ooxml is copyright (c) 2017-2020 Philippe Lagadec (http://www.decalage.info)"
+          }
+        ],
+        "proposed_governing_notice": "LICENSE.md",
+        "qualification": "Observed header attribution; not a clearance decision.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "observed"
+      },
       "sha256": "69df0360da68f6d5d257aa2612c4006a9d13c76241a9e4dbbef42445d2b7b8d6",
       "size": 28156,
       "static_import_statements": [
@@ -37,6 +60,21 @@
     },
     {
       "archive_member": "oletools/oleobj.py",
+      "header_notice": {
+        "holders": [
+          "Philippe Lagadec"
+        ],
+        "observed_lines": [
+          {
+            "line": 17,
+            "text": "# oleobj is copyright (c) 2015-2022 Philippe Lagadec (http://www.decalage.info)"
+          }
+        ],
+        "proposed_governing_notice": "LICENSE.md",
+        "qualification": "Observed header attribution; not a clearance decision.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "observed"
+      },
       "sha256": "c7091b24b689bd2cdd4c211683b009950c94dff01bf69ea86bfef37b110c28b6",
       "size": 41074,
       "static_import_statements": [
@@ -59,6 +97,14 @@
     },
     {
       "archive_member": "oletools/ppt_record_parser.py",
+      "header_notice": {
+        "holders": [],
+        "observed_lines": [],
+        "proposed_governing_notice": "LICENSE.md",
+        "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "absent"
+      },
       "sha256": "a17a633212b83e7e91c6577cfefbba458398d0ae5eda233d9e7a4fa841aa663e",
       "size": 29559,
       "static_import_statements": [
@@ -73,6 +119,21 @@
     },
     {
       "archive_member": "oletools/record_base.py",
+      "header_notice": {
+        "holders": [
+          "Philippe Lagadec"
+        ],
+        "observed_lines": [
+          {
+            "line": 13,
+            "text": "# record_base is copyright (c) 2014-2024 Philippe Lagadec (http://www.decalage.info)"
+          }
+        ],
+        "proposed_governing_notice": "LICENSE.md",
+        "qualification": "Observed header attribution; not a clearance decision.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "observed"
+      },
       "sha256": "53f7b9e9aefe46eff510eca103ee5770f11bcb8e5403d79f9776785aac663558",
       "size": 14862,
       "static_import_statements": [
@@ -86,12 +147,35 @@
     },
     {
       "archive_member": "oletools/common/__init__.py",
+      "header_notice": {
+        "holders": [],
+        "observed_lines": [],
+        "proposed_governing_notice": "LICENSE.md",
+        "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "absent"
+      },
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "size": 0,
       "static_import_statements": []
     },
     {
       "archive_member": "oletools/common/io_encoding.py",
+      "header_notice": {
+        "holders": [
+          "Philippe Lagadec"
+        ],
+        "observed_lines": [
+          {
+            "line": 21,
+            "text": "# msodde is copyright (c) 2017-2018 Philippe Lagadec (http://www.decalage.info)"
+          }
+        ],
+        "proposed_governing_notice": "LICENSE.md",
+        "qualification": "Header names msodde, not io_encoding; package-level grant proposed, pending clearance.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "mismatched"
+      },
       "sha256": "aad2a23e527ce39f97f718a7b53eb9ae1f67cd1c5e1d5e5a61e1c42a574efc28",
       "size": 8117,
       "static_import_statements": [
@@ -106,6 +190,14 @@
     },
     {
       "archive_member": "oletools/common/log_helper/__init__.py",
+      "header_notice": {
+        "holders": [],
+        "observed_lines": [],
+        "proposed_governing_notice": "LICENSE.md",
+        "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "absent"
+      },
       "sha256": "d2203c8a187a4bb1cbaa63cb1fc7b062a4292cbe6da9fa3a62d5ad3c4ea4d5c2",
       "size": 104,
       "static_import_statements": [
@@ -114,6 +206,21 @@
     },
     {
       "archive_member": "oletools/common/log_helper/log_helper.py",
+      "header_notice": {
+        "holders": [
+          "Philippe Lagadec"
+        ],
+        "observed_lines": [
+          {
+            "line": 31,
+            "text": "# oletools is copyright (c) 2012-2021, Philippe Lagadec (http://www.decalage.info)"
+          }
+        ],
+        "proposed_governing_notice": "LICENSE.md",
+        "qualification": "Observed header attribution; not a clearance decision.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "observed"
+      },
       "sha256": "befcad56f1ac166ddaa7faeb37e5e31a6d998c0ce76284edc23bb0690e10ce76",
       "size": 10114,
       "static_import_statements": [
@@ -128,6 +235,14 @@
     },
     {
       "archive_member": "oletools/common/log_helper/_json_formatter.py",
+      "header_notice": {
+        "holders": [],
+        "observed_lines": [],
+        "proposed_governing_notice": "LICENSE.md",
+        "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "absent"
+      },
       "sha256": "bccb52bfbce831be3741eac7042dea916d396263e2cb739e2b939b7db0a3bd0d",
       "size": 2505,
       "static_import_statements": [
@@ -137,6 +252,14 @@
     },
     {
       "archive_member": "oletools/common/log_helper/_logger_adapter.py",
+      "header_notice": {
+        "holders": [],
+        "observed_lines": [],
+        "proposed_governing_notice": "LICENSE.md",
+        "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "absent"
+      },
       "sha256": "20a7486bde7150345a7868bc8b050212880399e89fd97a0103b17be94fbf957e",
       "size": 2672,
       "static_import_statements": [
@@ -146,6 +269,14 @@
     },
     {
       "archive_member": "oletools/common/log_helper/_root_logger_wrapper.py",
+      "header_notice": {
+        "holders": [],
+        "observed_lines": [],
+        "proposed_governing_notice": "LICENSE.md",
+        "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "absent"
+      },
       "sha256": "07ace597b52e430822a0ba325d496e0dd4289f9c55ff239f4fb8378ded69be10",
       "size": 530,
       "static_import_statements": [
@@ -154,12 +285,28 @@
     },
     {
       "archive_member": "oletools/thirdparty/__init__.py",
+      "header_notice": {
+        "holders": [],
+        "observed_lines": [],
+        "proposed_governing_notice": null,
+        "qualification": "Empty thirdparty package initializer; root excludes thirdparty and no local notice is asserted. Retain this scope exception for owner disposition.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "absent"
+      },
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "size": 0,
       "static_import_statements": []
     },
     {
       "archive_member": "oletools/thirdparty/xglob/__init__.py",
+      "header_notice": {
+        "holders": [],
+        "observed_lines": [],
+        "proposed_governing_notice": "oletools/thirdparty/xglob/LICENSE.txt",
+        "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "absent"
+      },
       "sha256": "b3ff17460fe6a347136ceeb3bc5d80aca55a7ac671d7fcb8787d953b8c0818a8",
       "size": 20,
       "static_import_statements": [
@@ -168,6 +315,21 @@
     },
     {
       "archive_member": "oletools/thirdparty/xglob/xglob.py",
+      "header_notice": {
+        "holders": [
+          "Philippe Lagadec"
+        ],
+        "observed_lines": [
+          {
+            "line": 23,
+            "text": "# xglob is copyright (c) 2013-2018, Philippe Lagadec (http://www.decalage.info)"
+          }
+        ],
+        "proposed_governing_notice": "oletools/thirdparty/xglob/LICENSE.txt",
+        "qualification": "Observed header attribution; not a clearance decision.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "observed"
+      },
       "sha256": "db811c3fe91343ad4f6de765795661f07a1537d1102da71547a1627b3c249951",
       "size": 9244,
       "static_import_statements": [
@@ -176,6 +338,31 @@
     },
     {
       "archive_member": "olefile/__init__.py",
+      "header_notice": {
+        "holders": [
+          "Philippe Lagadec",
+          "Secret Labs AB",
+          "Fredrik Lundh"
+        ],
+        "observed_lines": [
+          {
+            "line": 11,
+            "text": "olefile is copyright (c) 2005-2023 Philippe Lagadec (https://www.decalage.info)"
+          },
+          {
+            "line": 18,
+            "text": "    Copyright (c) 1997-2009 by Secret Labs AB"
+          },
+          {
+            "line": 19,
+            "text": "    Copyright (c) 1995-2009 by Fredrik Lundh"
+          }
+        ],
+        "proposed_governing_notice": "olefile/LICENSE.txt",
+        "qualification": "Observed header attribution; not a clearance decision.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "observed"
+      },
       "sha256": "719e959251c94a8332354270e733ff8638781bf1ec6a9f921902a0b055692456",
       "size": 967,
       "static_import_statements": [
@@ -185,6 +372,43 @@
     },
     {
       "archive_member": "olefile/olefile.py",
+      "header_notice": {
+        "holders": [
+          "Philippe Lagadec",
+          "Secret Labs AB",
+          "Fredrik Lundh"
+        ],
+        "observed_lines": [
+          {
+            "line": 11,
+            "text": "olefile is copyright (c) 2005-2023 Philippe Lagadec"
+          },
+          {
+            "line": 19,
+            "text": "Copyright (c) 1997-2009 by Secret Labs AB"
+          },
+          {
+            "line": 20,
+            "text": "Copyright (c) 1995-2009 by Fredrik Lundh"
+          },
+          {
+            "line": 34,
+            "text": "# olefile (formerly OleFileIO_PL) is copyright (c) 2005-2023 Philippe Lagadec"
+          },
+          {
+            "line": 66,
+            "text": "#    Copyright (c) 1997-2009 by Secret Labs AB"
+          },
+          {
+            "line": 67,
+            "text": "#    Copyright (c) 1995-2009 by Fredrik Lundh"
+          }
+        ],
+        "proposed_governing_notice": "olefile/LICENSE.txt",
+        "qualification": "Observed header attribution; not a clearance decision.",
+        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
+        "status": "observed"
+      },
       "sha256": "dcce514efdcbd04fa689bc920531a1985df0837c92b57fe3af0c45c46f1bbd87",
       "size": 125455,
       "static_import_statements": [
@@ -200,30 +424,68 @@
     {
       "archive_member": "LICENSE.md",
       "component": "oletools",
+      "holders": [
+        "Philippe Lagadec",
+        "John William Davison"
+      ],
+      "license_description": "Package BSD-2-Clause grant plus MIT officeparser notice; excludes thirdparty.",
       "retained_path": "docs/reuse/licenses/decalage2--oletools.txt",
       "sha256": "558732356f0c4fce779f9805dc946e9329b3e1753da13dc9f8c652f7ccebeb11",
-      "size": 2733
+      "size": 2733,
+      "spdx": "BSD-2-Clause AND MIT"
     },
     {
       "archive_member": "oletools/thirdparty/xglob/LICENSE.txt",
-      "component": "oletools",
+      "component": "oletools.thirdparty.xglob",
+      "holders": [
+        "Philippe Lagadec"
+      ],
+      "license_description": "Separate xglob notice, excluded from the root package grant.",
       "retained_path": "docs/reuse/evaluations/office/xglob-license.txt",
       "sha256": "e49b9488a651edd1bd00d5e3bec0ba279bd095fd04f84171b529f3da2eeefab7",
-      "size": 1376
+      "size": 1376,
+      "spdx": "BSD-2-Clause"
     },
     {
       "archive_member": "olefile/LICENSE.txt",
       "component": "olefile",
+      "holders": [
+        "Philippe Lagadec",
+        "Secret Labs AB",
+        "Fredrik Lundh"
+      ],
+      "license_description": "BSD-2-Clause plus inherited PIL permission notice; combined SPDX interpretation remains pending owner clearance.",
       "retained_path": "docs/reuse/evaluations/office/olefile-package-license.txt",
       "sha256": "0c349bed31cd2af10983a8d95e7455e2d15744b98585b55941ca35bd70f5bcd7",
-      "size": 2915
+      "size": 2915,
+      "spdx": "NOASSERTION"
     },
     {
       "archive_member": "olefile-0.47.dist-info/LICENSE.txt",
       "component": "olefile",
+      "holders": [
+        "Philippe Lagadec",
+        "Secret Labs AB",
+        "Fredrik Lundh"
+      ],
+      "license_description": "BSD-2-Clause plus inherited PIL permission notice; combined SPDX interpretation remains pending owner clearance.",
       "retained_path": "docs/reuse/evaluations/office/olefile-distribution-license.txt",
       "sha256": "cf1498d5b834b3758a89d06d224a1502c54a28b3a852f46130b761deaa4890d1",
-      "size": 2846
+      "size": 2846,
+      "spdx": "NOASSERTION"
+    },
+    {
+      "archive_member": "oletools/LICENSE.txt",
+      "component": "oletools",
+      "holders": [
+        "Philippe Lagadec",
+        "John William Davison"
+      ],
+      "license_description": "Package BSD-2-Clause grant plus MIT officeparser notice; excludes thirdparty.",
+      "retained_path": "docs/reuse/evaluations/office/oletools-package-license.txt",
+      "sha256": "c66e503e1dee453afe1c07b23d64a43c16f54497f1d7b55b9ec3e2d332ab7243",
+      "size": 2774,
+      "spdx": "BSD-2-Clause AND MIT"
     }
   ],
   "limitations": [
@@ -231,6 +493,108 @@
     "Python 2 compatibility modules are excluded from the proposed Python 3.12 runtime.",
     "Optional lxml must be absent and ambient site packages inaccessible.",
     "No comparison results, provisioning acceptance, or runtime clearance are claimed."
+  ],
+  "notice_inventory_scope": "Every regular archive member whose basename starts with LICENSE or COPYING (case-insensitive), across both pinned archives; documentation and outside-closure notices explicitly excluded below.",
+  "notice_members": [
+    {
+      "archive": "oletools.tar.gz",
+      "archive_member": "LICENSE.md",
+      "reason": "Provisioned candidate notice or retained root rights context.",
+      "retained": true,
+      "retained_path": "docs/reuse/licenses/decalage2--oletools.txt",
+      "sha256": "558732356f0c4fce779f9805dc946e9329b3e1753da13dc9f8c652f7ccebeb11",
+      "size": 2733
+    },
+    {
+      "archive": "oletools.tar.gz",
+      "archive_member": "oletools/LICENSE.txt",
+      "reason": "Provisioned candidate notice or retained root rights context.",
+      "retained": true,
+      "retained_path": "docs/reuse/evaluations/office/oletools-package-license.txt",
+      "sha256": "c66e503e1dee453afe1c07b23d64a43c16f54497f1d7b55b9ec3e2d332ab7243",
+      "size": 2774
+    },
+    {
+      "archive": "oletools.tar.gz",
+      "archive_member": "oletools/doc/License.html",
+      "reason": "Documentation-only notice; documentation excluded from candidate provisioning.",
+      "retained": false,
+      "retained_path": null,
+      "sha256": "92316048e5ee12afaed369e9eadc4a41528add68076a5761e2418734f9856dea",
+      "size": 4675
+    },
+    {
+      "archive": "oletools.tar.gz",
+      "archive_member": "oletools/doc/License.md",
+      "reason": "Documentation-only notice; documentation excluded from candidate provisioning.",
+      "retained": false,
+      "retained_path": null,
+      "sha256": "2db3cc414d355fc8dfcc1ed31ea98fe56afa8b4f426d866a9ef8e6d04a7b1478",
+      "size": 3377
+    },
+    {
+      "archive": "oletools.tar.gz",
+      "archive_member": "oletools/thirdparty/prettytable/COPYING",
+      "reason": "Notice for an unrelated vendored component outside the candidate module closure.",
+      "retained": false,
+      "retained_path": null,
+      "sha256": "57a33810a67fb178d3d291818b083d06d87cd5cebeeffda0ec1af9a4bfb4976e",
+      "size": 1613
+    },
+    {
+      "archive": "oletools.tar.gz",
+      "archive_member": "oletools/thirdparty/xglob/LICENSE.txt",
+      "reason": "Provisioned candidate notice or retained root rights context.",
+      "retained": true,
+      "retained_path": "docs/reuse/evaluations/office/xglob-license.txt",
+      "sha256": "e49b9488a651edd1bd00d5e3bec0ba279bd095fd04f84171b529f3da2eeefab7",
+      "size": 1376
+    },
+    {
+      "archive": "oletools.tar.gz",
+      "archive_member": "oletools/thirdparty/xxxswf/LICENSE.txt",
+      "reason": "Notice for an unrelated vendored component outside the candidate module closure.",
+      "retained": false,
+      "retained_path": null,
+      "sha256": "c53a65c2fd561c87eaabf1072ef5dcab8653042bc15308465f52413585eb6271",
+      "size": 35146
+    },
+    {
+      "archive": "olefile-0.47-py2.py3-none-any.whl",
+      "archive_member": "olefile-0.47.dist-info/LICENSE.txt",
+      "reason": "Provisioned candidate notice or retained root rights context.",
+      "retained": true,
+      "retained_path": "docs/reuse/evaluations/office/olefile-distribution-license.txt",
+      "sha256": "cf1498d5b834b3758a89d06d224a1502c54a28b3a852f46130b761deaa4890d1",
+      "size": 2846
+    },
+    {
+      "archive": "olefile-0.47-py2.py3-none-any.whl",
+      "archive_member": "olefile/LICENSE.txt",
+      "reason": "Provisioned candidate notice or retained root rights context.",
+      "retained": true,
+      "retained_path": "docs/reuse/evaluations/office/olefile-package-license.txt",
+      "sha256": "0c349bed31cd2af10983a8d95e7455e2d15744b98585b55941ca35bd70f5bcd7",
+      "size": 2915
+    },
+    {
+      "archive": "olefile-0.47-py2.py3-none-any.whl",
+      "archive_member": "olefile/doc/License.html",
+      "reason": "Documentation-only notice; documentation excluded from candidate provisioning.",
+      "retained": false,
+      "retained_path": null,
+      "sha256": "0dbceed92e36dbdc11d21154b2b4c40b7e0d766c0c12d6e704df3edca8974ff9",
+      "size": 3833
+    },
+    {
+      "archive": "olefile-0.47-py2.py3-none-any.whl",
+      "archive_member": "olefile/doc/License.md",
+      "reason": "Documentation-only notice; documentation excluded from candidate provisioning.",
+      "retained": false,
+      "retained_path": null,
+      "sha256": "17cc0185ea7dac964e318ad80b7000bd65c09485c3fdec8617c7422ea54a9105",
+      "size": 3191
+    }
   ],
   "upstream_executed": false
 }
