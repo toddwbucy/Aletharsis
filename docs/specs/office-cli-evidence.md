@@ -35,7 +35,14 @@ Wire validity and runtime support are separate declarations.
 Version dispatch uses exact supported versions, never numeric comparisons.
 A new support-aware importer API exposes `support_reason` beside the unchanged
 EC-002 `status` (not in its place); the legacy `Read` API and its closed statuses
-remain unchanged. Import identifies 3.0 as a known contract with unimplemented Go support
+remain unchanged: legacy `reportimport.Read` continues to dispatch only 1.0/2.0;
+all 4.0 input remains unsupported to that older API. The new `ReadSupported` API
+performs exact 4.0 dispatch and exposes the 4.0 decoded view only after full
+supported semantic validation. Future 4.0 import/CLI consumers must call this
+new API; there are no production `reportimport` callers to migrate at the inspected
+baseline. Legacy fixtures/tests continue exercising `Read`. The support-aware
+API's compatibility status may cover unsupported features as well as versions;
+that broader meaning does not change EC-002's legacy API. Import identifies 3.0 as a known contract with unimplemented Go support
 (`known_version_unimplemented`), distinct from an unrecognized version
 (`unknown_version`). The support-aware result has
 `status: unsupported_version` for both, with the distinguishing `support_reason`.
@@ -179,9 +186,24 @@ local decompression. This validation is independent of canonical processing orde
 a disagreement or overlap is a fatal container identity error, never permission to
 skip a check. After that pass, allocate the aggregate decompression budget first
 to present identification-critical parts in this fixed order: `mimetype`, `[Content_Types].xml`,
-`_rels/.rels`, `META-INF/manifest.xml`; then to remaining parts in ordinal name
-order. Use exact validated names, with no case-folded or duplicate aliases entering
-the priority list. Priority does not prove a part's type or bypass any local limit.
+`_rels/.rels`, `META-INF/manifest.xml`; then the resolved content prerequisites
+below; then remaining parts in ordinal name order. Use validated names, with no duplicate aliases entering
+the priority list. ODF prerequisite names are exact and case-sensitive. For OPC,
+resolve fixed prerequisite names using the inspectors' existing ASCII case
+comparison: a unique case-equivalent candidate receives the same slot; ambiguous
+case-equivalent candidates produce an identity gap and are not selected arbitrarily.
+The candidate's original name/digest remain authoritative. Priority does not prove
+a part's type or bypass any local limit.
+Before ordinary parts, a second prerequisite phase admits `content.xml` for an
+ODF candidate and the unique internal main part resolved from verified OPC root
+relationships plus content-type declarations for a DOCX candidate. Resolve using
+the existing inspector rules, without guessing `word/document.xml`, following
+external targets, or recursively prioritizing arbitrary relationships. If both
+candidate paths exist, process ODF content first, then the OPC target; a shared
+part is charged only once. Inconsistent/ambiguous declarations retain a gap, not
+an arbitrary target. Only after these prerequisites are checked does ordinal
+allocation begin. This prevents large Pictures/customXml payloads from starving
+otherwise verifiable main-content identity. No extra total budget is created.
 Missing critical names consume no reservation. An oversized critical part still
 yields a bounded explicit gap; this policy improves identification availability
 but does not promise identification when required bytes cannot be verified.
@@ -275,15 +297,15 @@ is in scope even when its filename is not listed here.
 | `audit/audit.go` | Dispatch Office only through new orchestration; preserve text path and acquisition invariants |
 | `parsers/identify.go`, `docxidentify`, `odtidentify` | New 4.0 bounded signature/package dispatch bypasses the raw ZIP-member sniff; add verified-package entry points to OPC and both format inspectors; share one parsed outcome/OPC result, no strict-reader re-entry or duplicate decompression |
 | `evidence/model.go`, analyzer location helper | Existing flat records unchanged; new typed Office records and explicit coordinate artifacts |
-| `audit/v2.go`, `v2_findings.go`, native trace | Leave 2.0 frozen; new assembler handles multiple parts/scopes and per-part execution outcomes |
+| `audit/v2.go`, `v2_findings.go`, native trace | Leave 2.0 frozen; new assembler handles multiple parts/scopes and per-part outcomes; allow verified partial flat-text snapshots for corpus-v2 presentation |
 | `capability/registry.go`, native data identity | New versioned catalog with exact supported inputs/limits; old catalog unchanged |
 | `evidence/v2` graph, anchors, aggregate | Preserve old validators; new graph validates Office origin chains and partial child outcomes without fabricating native text pointers |
 | `identity.VerifyText`, selection hashing | Flat verification unchanged; Office verifier reuses source/part/XML identities and origins, no competing offset mapper |
 | `reporters/report.go`, `reporters/v2.go` | Existing serializers unchanged; 4.0 console/JSON prints typed inventory, source locations and coverage, inertly |
 | `wire`, `schemas/embed.go`, `reportimport` | Explicit 4.0 dispatch and closed schema/semantic validation; support-aware importer adds sibling support_reason while preserving legacy Read/status; distinguish unknown version, known-unimplemented version and feature; retain EC-002/EC-003 regressions and bounded bytes |
 | CLI version flags and all audit subviews | Accept 4.0 deliberately; finding filters never remove required evidence/coverage or break reference closure |
-| `cli/reveal.go`, `reveal` | Flat reveal unchanged; Office presentation unsupported in this increment, typed explanation, no ZIP passed to flat verifier |
-| `cli/directory_reveal.go` | Retain Office audit entry with explicit unsupported presentation outcome; continue with supported neighbors |
+| `cli/reveal.go`, `reveal` | Flat reveal unchanged; Office presentation unsupported; partial flat text may be presented only after VerifyText, no ZIP passed to flat verifier |
+| `cli/directory_reveal.go` | Retain report/digest and verified snapshots for partial entries; present supported flat text, declare Office unsupported; source limits degrade one entry; version reveal-tree enum |
 | `corpus`, `cli/directory.go` | Derive corpus-v2 entry state from report status, never exit 4; retain partial evidence distinctly from failed entries for both 2.0 and 4.0; stream records declare report version |
 | `workspace` format discovery | Admit requested Office candidates deterministically; do not follow uncontrolled links or trust extension as identity |
 | `publication` | File safety/rollback unchanged; do not publish fictitious Office reveal products |
@@ -294,7 +316,13 @@ Corpus and reveal wrapper schemas are independently versioned. `corpus-v1` and
 `corpus-document-v1` currently admit only 1.0/2.0 reports, and `corpus.Run` rejects
 other versions. New `corpus-v2` and `corpus-document-v2` schemas, exact runtime
 selection/validation and updated option guards are mandatory for initial directory
-4.0 support. Preserve the v1 streams unchanged for 1.0/2.0. Review-tree changes
+4.0 support. Add `--corpus-version 1|2` for directory commands and an explicit
+wrapper-version option to `corpus.Run`. When omitted, schema 4.0 selects corpus-v2;
+schema 1.0/2.0 selects corpus-v1, preserving existing defaults. Explicit corpus-v2
+admits report 2.0 and 4.0; report 1.0 is deliberately not admitted in this increment.
+Reject unsupported combinations before discovery; corpus-v1 with 4.0 is invalid.
+Thus `--schema-version 2.0 --corpus-version 2` exercises the new semantics without
+changing any existing v1 stream. The wire increment must encode this matrix. Review-tree changes
 also require a versioned envelope if presentation-only failures cannot be expressed
 by its existing contract; never mutate corpus-v1/reveal-tree-v1 meanings.
 
@@ -311,7 +339,29 @@ retain their distinct existing precedence. Corpus-v1 compatibility is unchanged;
 its current exit-derived classification must not be copied into corpus-v2.
 Regression cases cover completed/partial/failed reports of both versions, including
 partial plus HIGH findings, and prove failed counts remain zero for partial-only
-runs. The new corpus wrapper is not limited to 4.0 report items.
+runs. Every report-bearing corpus-v2 entry carries `highest_finding_severity`
+(null for no findings, otherwise INFO/LOW/MEDIUM/HIGH), independent of its state
+and exit code. Summary `finding_severity_counts` counts documents by that field,
+including partial entries; these counts overlap operational counts intentionally.
+Partial plus HIGH must increment partial and HIGH, never failed. Console summaries
+show both coverage-state and severity counts.
+
+Treat partial as report-bearing across the entire observer/presentation chain:
+retain report/canonical digest and any verified acquired snapshot; do not clear it
+solely because state is partial. A partial 2.0 report with one independently verified
+flat text is eligible for reveal; Office remains explicitly unsupported. Audit v2
+snapshot retention must allow this verified partial-text case instead of its current
+completed-only guard. No partial snapshot is assumed valid without `VerifyText`.
+`corpus.Observer.Visit`, its source-limit handling, directory-reveal's state guard,
+the directory console state list and the reveal-tree state enum are all consumers.
+Add a versioned reveal-tree envelope for new states rather than changing v1.
+An observer `ErrSourceLimit` on any report-bearing state degrades that entry with
+`execution.resource_limit`, retains available evidence, and continues the run;
+it must not abort the stream. It remains an entry failure, unlike partial detection
+coverage. `execution.report_limit` (no serializable report) likewise remains failed
+with its existing reason. These no-report/presentation failures are explicit
+exceptions to deriving state from an available report. Test both 2.0 and 4.0
+partial reports beside good neighbors and observer failures.
 
 A failed Office presentation is separate from successful audit evidence. Include the originating
 report identity in a presentation outcome.

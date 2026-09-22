@@ -130,3 +130,13 @@ external provider, network audit, model, or format conformance validator ran.
 structure and exact part-byte token spans, with conservative mapping for transformed
 text. It preserves package/part identity boundaries and does not enable format-specific
 parsers or profile suppression by itself.
+
+## Proposed Office coordinator boundary
+
+[OI-001](office-cli-evidence.md) adds an outcome-based package path and
+verified-package inspector entry points for the 4.0 coordinator. Existing
+`Read`/`Inspect` contracts here remain strict and unchanged. New entry points
+consume one shared, bounded package outcome, preserving unassessed/failed parts
+and incomplete prerequisites without re-running the strict reader or
+decompressing again. OI-001's staged identification-priority budget applies to
+that new path; it does not silently change this legacy API's failure semantics.
