@@ -33,12 +33,23 @@ unsupported, preserving the bounded imported bytes rather than claiming validati
 Wire validity and runtime support are separate declarations.
 
 Version dispatch uses exact supported versions, never numeric comparisons.
-Import identifies 3.0 as a known contract with unimplemented Go support
+A new support-aware importer API exposes `support_reason` beside the unchanged
+EC-002 `status` (not in its place); the legacy `Read` API and its closed statuses
+remain unchanged. Import identifies 3.0 as a known contract with unimplemented Go support
 (`known_version_unimplemented`), distinct from an unrecognized version
-(`unknown_version`). These are new importer support reasons, not edits to frozen
-report failure-code enums. Both retain bounded input bytes/digest and unknown
-coverage; neither is an audit success or a silent conversion to 4.0. Native-only
-4.0 reports declare disabled provenance/statistical capabilities as before.
+(`unknown_version`). The support-aware result has
+`status: unsupported_version` for both, with the distinguishing `support_reason`.
+For a wire-valid 4.0 report requiring nonempty adapter runs before that feature is
+implemented, retain the same compatibility status with
+`support_reason: known_feature_unimplemented`. Supported imports have a null
+support reason. These sibling reasons do not rename existing importer statuses,
+report failure codes or the historical EC-002/EC-003 behavior.
+All unsupported cases retain bounded original bytes/digest and unknown coverage;
+no decoded report is exposed as validated. Strict JSON and input limits precede
+support dispatch. For implemented versions, structural wire errors remain errors,
+not unsupported-feature results. This does not claim adapter semantic validation
+on a wire-valid unsupported report. No unsupported case is an audit success or
+conversion. Native-only 4.0 reports declare disabled provenance/statistical capabilities as before.
 
 No remediation, renderer, Office writer, external resource fetching, macro
 execution, style inference, new profile content, or production Python dependency.
@@ -83,8 +94,11 @@ source correspondence. Imported reports never trigger filesystem access.
 
 The wire increment defines explicit closed `$defs`, Go records, positive fixtures
 and negative semantic tests for the following logical records. This specification
-fixes their required information; the wire PR fixes exact property spellings and
-canonical reference grammar before any production producer emits them.
+fixes their required information. The four Office location names `scope_ref`,
+`coordinate_artifact_ref`, `scope_character_offsets` and `scope_byte_offsets` below
+are normative and may not be renamed in the wire increment. The wire PR fixes
+remaining property spellings and canonical reference grammar before production
+emission.
 
 | Record | Required information |
 | --- | --- |
@@ -115,6 +129,9 @@ variant. Scope-wide findings retain the same two references without fabricated
 occurrence arrays; structural observations instead use the structural-anchor
 variant and may not include scope-coordinate arrays.
 
+For report serialization, OI-001 supersedes WA-001/OA-001 finding-location key
+naming; scope-relative coordinate semantics are unchanged. WA/OA library results
+retain their existing local field names and are not themselves report wire records.
 Existing WA/OA analyzers may continue using temporary `evidence.Text` inputs with
 UTF-8 boundary maps internally. The 4.0 assembler translates their locations to
 the Office variant before serialization. It checks count agreement, scalar bounds,
@@ -134,8 +151,16 @@ A finding is not needed for every ordinary inventory entry.
 After acquisition, perform only a bounded signature check before package validation.
 For the 4.0 Office path, do not call the legacy `parsers.Identify` ZIP-member sniff:
 it uses `archive/zip.NewReader` before the hardened package limits. Validate the
-container through `packageparts`, then explicitly call `docxidentify.Inspect` and
-`odtidentify.Inspect` on the verified package. Extensions are hints, never authority.
+container through `packageparts`, then dispatch identification over that one result.
+Add verified-package entry points to `opcrels`, `docxidentify` and `odtidentify`:
+the current `Inspect(ctx, source, hash)` functions do not accept package evidence
+and recursively invoke the strict reader. Preserve those legacy entry points;
+the new 4.0 coordinator never calls them. The new entry points accept the bounded,
+identity-checked package outcome view, including failed/unassessed part identities,
+and must not re-decompress or rerun the all-or-nothing reader. OPC inventory is
+computed once and shared with DOCX identification and later producers. Each format
+inspector runs at most once per source; it reports incomplete prerequisites rather
+than losing good package evidence because an unrelated part failed. Extensions are hints, never authority.
 The legacy version paths remain unchanged; this is a new bounded dispatch path,
 not an assertion that the legacy ZIP sniff is already hardened. Preserve conflicting or incomplete identity
 as diagnostics. A ZIP that cannot be safely identified is not plain text.
@@ -152,14 +177,22 @@ keep its current strict API for existing callers rather than quietly changing it
 Global span-contiguity/header validation happens in physical offset order before
 local decompression. This validation is independent of canonical processing order:
 a disagreement or overlap is a fatal container identity error, never permission to
-skip a check. After that pass, consume the aggregate decompression budget in ordinal
-part-name order. A part whose declared size exceeds the remaining budget is unassessed;
-that part and all subsequent parts get the aggregate-limit reason (no opportunistic
-fit of later small parts). Charge a reserved admitted size even if decompression
+skip a check. After that pass, allocate the aggregate decompression budget first
+to present identification-critical parts in this fixed order: `mimetype`, `[Content_Types].xml`,
+`_rels/.rels`, `META-INF/manifest.xml`; then to remaining parts in ordinal name
+order. Use exact validated names, with no case-folded or duplicate aliases entering
+the priority list. Priority does not prove a part's type or bypass any local limit.
+Missing critical names consume no reservation. An oversized critical part still
+yields a bounded explicit gap; this policy improves identification availability
+but does not promise identification when required bytes cannot be verified.
+A part whose declared size exceeds the remaining budget is unassessed; that part
+and all subsequent parts in this priority order get the aggregate-limit reason
+(no opportunistic fit of later small parts). Charge a reserved admitted size even if decompression
 later fails; partial output never refunds budget to later parts. Actual output is
 also bounded against the reservation. This deterministic allocation applies before
 workers are scheduled. ZIP storage order/concurrency cannot change coverage sets.
-Aggregate decompression limits remain hard limits. Never continue by disabling CRC or bounds verification.
+Aggregate decompression limits remain hard limits. Never continue by disabling
+CRC or bounds verification.
 
 ### Metadata
 
@@ -240,18 +273,18 @@ is in scope even when its filename is not listed here.
 | Consumer / assumption | Required behavior |
 | --- | --- |
 | `audit/audit.go` | Dispatch Office only through new orchestration; preserve text path and acquisition invariants |
-| `parsers/identify.go`, `docxidentify`, `odtidentify` | New 4.0 bounded signature/package dispatch bypasses the raw ZIP-member sniff; explicitly wire both format inspectors after hardened container validation; do not run a second unbounded reader |
+| `parsers/identify.go`, `docxidentify`, `odtidentify` | New 4.0 bounded signature/package dispatch bypasses the raw ZIP-member sniff; add verified-package entry points to OPC and both format inspectors; share one parsed outcome/OPC result, no strict-reader re-entry or duplicate decompression |
 | `evidence/model.go`, analyzer location helper | Existing flat records unchanged; new typed Office records and explicit coordinate artifacts |
 | `audit/v2.go`, `v2_findings.go`, native trace | Leave 2.0 frozen; new assembler handles multiple parts/scopes and per-part execution outcomes |
 | `capability/registry.go`, native data identity | New versioned catalog with exact supported inputs/limits; old catalog unchanged |
 | `evidence/v2` graph, anchors, aggregate | Preserve old validators; new graph validates Office origin chains and partial child outcomes without fabricating native text pointers |
 | `identity.VerifyText`, selection hashing | Flat verification unchanged; Office verifier reuses source/part/XML identities and origins, no competing offset mapper |
 | `reporters/report.go`, `reporters/v2.go` | Existing serializers unchanged; 4.0 console/JSON prints typed inventory, source locations and coverage, inertly |
-| `wire`, `schemas/embed.go`, `reportimport` | Explicit 4.0 dispatch and closed schema/semantic validation; distinguish known-unimplemented 3.0 from unknown versions, retain bounded bytes, no silent conversion |
+| `wire`, `schemas/embed.go`, `reportimport` | Explicit 4.0 dispatch and closed schema/semantic validation; support-aware importer adds sibling support_reason while preserving legacy Read/status; distinguish unknown version, known-unimplemented version and feature; retain EC-002/EC-003 regressions and bounded bytes |
 | CLI version flags and all audit subviews | Accept 4.0 deliberately; finding filters never remove required evidence/coverage or break reference closure |
 | `cli/reveal.go`, `reveal` | Flat reveal unchanged; Office presentation unsupported in this increment, typed explanation, no ZIP passed to flat verifier |
 | `cli/directory_reveal.go` | Retain Office audit entry with explicit unsupported presentation outcome; continue with supported neighbors |
-| `corpus`, `cli/directory.go` | One malformed document affects one entry; 4.0 reports and exit aggregation stay coherent; stream records declare report version |
+| `corpus`, `cli/directory.go` | Derive corpus-v2 entry state from report status, never exit 4; retain partial evidence distinctly from failed entries for both 2.0 and 4.0; stream records declare report version |
 | `workspace` format discovery | Admit requested Office candidates deterministically; do not follow uncontrolled links or trust extension as identity |
 | `publication` | File safety/rollback unchanged; do not publish fictitious Office reveal products |
 | Profile evaluator | Existing content unchanged; bind assessments to retained observations, preserve gaps |
@@ -263,8 +296,24 @@ other versions. New `corpus-v2` and `corpus-document-v2` schemas, exact runtime
 selection/validation and updated option guards are mandatory for initial directory
 4.0 support. Preserve the v1 streams unchanged for 1.0/2.0. Review-tree changes
 also require a versioned envelope if presentation-only failures cannot be expressed
-by its existing contract; never mutate corpus-v1/reveal-tree-v1 meanings. A failed Office
-presentation is separate from successful audit evidence. Include the originating
+by its existing contract; never mutate corpus-v1/reveal-tree-v1 meanings.
+
+Corpus-v2 classifies entries from their report status and typed acquisition outcome,
+never from exit code 4 alone. A `partial` report yields a `partial` entry and
+increments a dedicated partial count, not failed or `execution.failed`. A failed
+report yields failed (or unsupported when the typed format failure says so);
+canceled remains canceled. Completed reports use finding severity only to choose
+requires-review versus no-reported-findings. Both report 2.0 and 4.0 must use this
+status-derived rule when emitted in corpus-v2. A mixed run with partial entries
+has partial summary and exit 4; failed counts exclude partial entries. Preserve
+usable reports and continue good neighbors. Global cancellation and stream failure
+retain their distinct existing precedence. Corpus-v1 compatibility is unchanged;
+its current exit-derived classification must not be copied into corpus-v2.
+Regression cases cover completed/partial/failed reports of both versions, including
+partial plus HIGH findings, and prove failed counts remain zero for partial-only
+runs. The new corpus wrapper is not limited to 4.0 report items.
+
+A failed Office presentation is separate from successful audit evidence. Include the originating
 report identity in a presentation outcome.
 
 ## 7. Validation requirements
@@ -299,7 +348,10 @@ negative cases must also show that valid neighboring content is still analyzed.
 2. Closed 4.0 wire contract (including the 3.0 adapter envelope), fixtures and
    cross-record checks, plus mandatory corpus-v2/corpus-document-v2 contracts.
    Review any additionally needed versioned presentation envelope.
-3. Package outcome API, metadata and embedded-object producers with unit tests.
+3. Package outcome API plus verified-package entry points in OPC/DOCX/ODT
+   inspectors (one decompression pass), metadata and embedded-object producers
+   with unit tests, including unrelated bad-CRC parts and identification-priority
+   budgeting beside large images.
 4. Office orchestration, capability/graph assembly, import/CLI/consumer integration
    and compiled end-to-end tests. Stack branches as necessary; no main merges.
 5. Cleared comparator provisioning and independent #40 corpus/comparison receipts.

@@ -113,3 +113,13 @@ Validation record: Linux amd64 / Go 1.27.1 full suite, vet and odtanalysis race
 checks passed, alongside 265 offline contract tests. A three-second two-worker fuzz
 configuration exercised 192,424 inputs without failure. These bounded native checks
 do not establish ODF conformance or independent Office-oracle acceptance.
+
+## Office report serialization boundary
+
+[OI-001](office-cli-evidence.md) supersedes this specification's finding-location
+key names only when serializing Office findings into report 4.0. Library results
+keep `character_offsets` and `byte_offsets` with their existing scope-relative
+semantics; the report assembler translates to `scope_character_offsets` and
+`scope_byte_offsets`, with required `scope_ref` and `coordinate_artifact_ref`.
+These local library findings must not be serialized directly as legacy file-byte
+locations. The 4.0 scope-table validator verifies the translated coordinates.

@@ -127,8 +127,9 @@ is a declaration of coverage, never a negative detector result.
 - **Missing coverage stays visible.** Excluded or unanalyzed content raises an issue and flips
   extraction `State` to `partial`. Silently dropping content while reporting `completed` is as much a
   defect as a false finding.
-- **Exit codes describe findings, not execution failure**: 0 none, 1 INFO/LOW, 2 MEDIUM, 3 HIGH,
-  4 acquisition/parse/output/usage failure. A failed audit still emits a schema-valid report
+- **Exit codes combine severity and operational outcome**: 0 none, 1 INFO/LOW, 2 MEDIUM, 3 HIGH,
+  4 acquisition/parse/output/usage failure or incomplete coverage. Read report status and
+  coverage to distinguish partial from failed; exit 4 alone is not a retry policy. A failed audit still emits a schema-valid report
   carrying a `parser.failure` finding.
 - **Locations are zero-based code-point indices plus original-file byte offsets** — never graphemes
   or screen columns. `Text.ByteOffsets` maps every character index to its byte start and ends with
