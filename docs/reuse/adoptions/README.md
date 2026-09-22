@@ -146,6 +146,26 @@ this is not automatically not-applicable. Actual upgrades rerun that comparison.
 Both remain `evaluating` in the registry and `acceptance: null` here. These records
 apply the checklist now without manufacturing a production decision.
 
+## Schema portability
+
+`adoption-record-v1` and `reuse-registry` anchor their string patterns with
+`(?![\s\S])` rather than `$`. PR [#53](https://github.com/toddwbucy/Aletharsis/pull/53)
+introduced this because Python's `re` matches `$` before a trailing newline, so a
+`commit`, `sha256`, `record` or evidence `path` ending in `\n` validated and then
+failed a later byte-equality check with an opaque assertion.
+
+That anchor is a lookahead assertion, which Go's `regexp` package does not support:
+it implements RE2, which has no lookahead. Both schemas are therefore validated
+only by the offline Python harness under `tests/`, and neither is embedded in
+`schemas/embed.go` alongside the Go-validated report contracts. `internal/wire`
+compiles bundled schemas with santhosh-tekuri/jsonschema v6 over Go `regexp`, and
+would reject these patterns.
+
+This is a deliberate split, not an oversight. If either contract ever needs Go
+validation — for example to support a native adoption-record reader — replace the
+lookahead anchors first and re-verify the trailing-newline rejection they exist to
+provide. Adding a lookahead to any schema that *is* embedded will fail at load.
+
 ## Reproduction
 
 ```bash
