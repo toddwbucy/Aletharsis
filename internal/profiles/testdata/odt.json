@@ -1,0 +1,35 @@
+{
+  "contract": "aletharsis.profile/1",
+  "id": "fixture.odt",
+  "version": "1.0.0",
+  "scope": {
+    "format": "odt",
+    "variant": "odf",
+    "parser": "fixture.parser",
+    "parser_version": "0.0.0"
+  },
+  "rules": [
+    {
+      "id": "fixture.expected",
+      "revision": "1.0.0",
+      "kind": "package_part",
+      "facts": {
+        "part_role": {
+          "value": "main_document",
+          "producer": "fixture.context",
+          "version": "0.0.0",
+          "configuration_sha256": "c06d8ade015f699ec652c31a3b70b7c2c7956030f4d6e1f2eeef2433edf80420"
+        },
+        "content_type": {
+          "value": "opendocument_text",
+          "producer": "fixture.context",
+          "version": "0.0.0",
+          "configuration_sha256": "c06d8ade015f699ec652c31a3b70b7c2c7956030f4d6e1f2eeef2433edf80420"
+        }
+      },
+      "assessment": "expected",
+      "queue": "omit_default",
+      "rationale": "Synthetic normalized-context fixture only; not a shipped format profile or a trust judgment."
+    }
+  ]
+}

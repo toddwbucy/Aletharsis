@@ -33,6 +33,12 @@ docs/reuse/evaluations/unicode.md -text
 docs/reuse/evaluations/unicode/** -text whitespace=-blank-at-eol,-blank-at-eof
 experiments/unicode-differential/** -text
 
+# Profile conformance definitions retain exact artifact identities.
+internal/profiles/testdata/*.json -text
+# Office package fixtures and retained part hashes are byte evidence.
+internal/packageparts/testdata/*.docx -text
+internal/packageparts/testdata/*.odt -text
+internal/packageparts/testdata/manifest.json -text
 # G6 records bind exact bytes of study narratives and reproduction commands.
 docs/reuse/evaluations/c2pa-text.md -text
 docs/reuse/evaluations/c2pa-verifier.md -text

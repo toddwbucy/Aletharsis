@@ -1,0 +1,86 @@
+[
+  {
+    "name": "minimal.docx",
+    "sha256": "c4ee7c3af608d9b3c2016cea0c974a21b9cf0d4b65901bf3b47b6f37c2e63340",
+    "parts": [
+      {
+        "name": "[Content_Types].xml",
+        "size": 374,
+        "sha256": "be93955457110f3ebc23e1adae61d6f74f304482e1a2de069aa44e7804fcd0c6"
+      },
+      {
+        "name": "_rels/.rels",
+        "size": 242,
+        "sha256": "22c01d12e912dc45bdf191c382dd5b80cdeca1a9e95af86a477798a9f7e541e9"
+      },
+      {
+        "name": "word/document.xml",
+        "size": 190,
+        "sha256": "127925f466e2c7e25136bf35aae5bee0fb616e52fd036b391fb9eb97f14da373"
+      }
+    ]
+  },
+  {
+    "name": "minimal.odt",
+    "sha256": "435837a4ccf336e336844a0f8d4042a0ed8d9e4fd38b56432db8d9ea89941c61",
+    "parts": [
+      {
+        "name": "META-INF/manifest.xml",
+        "size": 346,
+        "sha256": "e249f3456907ed95fe03a79d905b9fa32a1317cec3b457ab922c3d70c036db0a"
+      },
+      {
+        "name": "content.xml",
+        "size": 300,
+        "sha256": "25c3065c2460785acaabacfaf5b17823fcc1aa894bedbb35afa74bfabf6dfbfb"
+      },
+      {
+        "name": "mimetype",
+        "size": 39,
+        "sha256": "714dbe370b0a7063669217d91b287566fe8babbc8599b629b24476ff81b83593"
+      }
+    ]
+  },
+  {
+    "name": "hidden.docx",
+    "sha256": "2cd8a7c7ed60609c419b52e7d298ce9f4f91b713c90377f3b52e8d5a6bf65b7a",
+    "parts": [
+      {
+        "name": "[Content_Types].xml",
+        "size": 374,
+        "sha256": "be93955457110f3ebc23e1adae61d6f74f304482e1a2de069aa44e7804fcd0c6"
+      },
+      {
+        "name": "_rels/.rels",
+        "size": 242,
+        "sha256": "22c01d12e912dc45bdf191c382dd5b80cdeca1a9e95af86a477798a9f7e541e9"
+      },
+      {
+        "name": "word/document.xml",
+        "size": 430,
+        "sha256": "3c726bdf92cfd3400b71e9125e57f2237c923367ddfe267a4cc89a0cc4ce69a5"
+      }
+    ]
+  },
+  {
+    "name": "hidden.odt",
+    "sha256": "883f300dde301c4319382a68a6f86c79764fb530f6aba888363184b770de9187",
+    "parts": [
+      {
+        "name": "META-INF/manifest.xml",
+        "size": 346,
+        "sha256": "e249f3456907ed95fe03a79d905b9fa32a1317cec3b457ab922c3d70c036db0a"
+      },
+      {
+        "name": "content.xml",
+        "size": 551,
+        "sha256": "00bfb97defba3fe22f4bb96ae4790ea0994f282b0f40939e115c33200bd0c0be"
+      },
+      {
+        "name": "mimetype",
+        "size": 39,
+        "sha256": "714dbe370b0a7063669217d91b287566fe8babbc8599b629b24476ff81b83593"
+      }
+    ]
+  }
+]
