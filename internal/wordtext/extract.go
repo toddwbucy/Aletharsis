@@ -114,6 +114,7 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		return nil, ErrStructure
 	}
 	r := &Result{Parser: Version, State: "completed", Story: story, Namespace: ns, XML: mapped, Texts: []Text{}, Controls: []Control{}, Unselected: []Unselected{}, Issues: []Issue{}, Limitations: []string{"word.style_inheritance_unresolved", "word.rendering_not_performed", "word.property_revision_effects_unresolved", "word.character_data_only", "word.cross_run_assembly_not_performed"}}
+	formatting := FormattingSubtrees(d, ns)
 	children := make([][]int, len(d.Elements))
 	for i, e := range d.Elements {
 		if e.Parent >= 0 {
@@ -245,7 +246,7 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		}
 		p, _, unknown, _, inside := contextFor(i)
 		run := e.Parent
-		if run < 0 || d.Elements[run].Name.Namespace != ns || d.Elements[run].Name.Local != "r" || p < 0 || !inside || len(children[i]) != 0 || nonempty[i] {
+		if formatting[i] || run < 0 || d.Elements[run].Name.Namespace != ns || d.Elements[run].Name.Local != "r" || p < 0 || !inside || len(children[i]) != 0 || nonempty[i] {
 			r.issue("word.control_structure_unsupported", i)
 			continue
 		}
@@ -310,6 +311,25 @@ func readToggle(d *xmlparts.Document, children [][]int, nonempty map[int]bool, p
 		}
 	default:
 		result.State = "unknown"
+	}
+	return result
+}
+
+// FormattingSubtrees marks known Word property containers and all descendants.
+// Namespace identity is required; a similarly named foreign wrapper is not a
+// Word formatting declaration. This is context classification, not validation.
+func FormattingSubtrees(d *xmlparts.Document, namespace string) []bool {
+	result := make([]bool, len(d.Elements))
+	for i, e := range d.Elements {
+		if e.Parent >= 0 {
+			result[i] = result[e.Parent]
+		}
+		if e.Name.Namespace == namespace {
+			switch e.Name.Local {
+			case "rPr", "pPr", "sectPr", "tblPr", "tblPrEx", "trPr", "tcPr":
+				result[i] = true
+			}
+		}
 	}
 	return result
 }

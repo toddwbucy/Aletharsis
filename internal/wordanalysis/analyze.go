@@ -58,15 +58,7 @@ func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	}
 	// Formatting subtrees affect context, not stored-character adjacency. Retain
 	// their facts in Extraction; do not merge them into textual analyzer input.
-	properties := make([]bool, len(d.Elements))
-	for i, e := range d.Elements {
-		if e.Parent >= 0 {
-			properties[i] = properties[e.Parent]
-		}
-		if e.Name.Namespace == extracted.Namespace && e.Name.Local == "rPr" && e.Parent >= 0 && d.Elements[e.Parent].Name.Namespace == extracted.Namespace && d.Elements[e.Parent].Name.Local == "r" {
-			properties[i] = true
-		}
-	}
+	properties := wordtext.FormattingSubtrees(d, extracted.Namespace)
 	var builder strings.Builder
 	origins := []Origin{}
 	previous := -1
@@ -136,6 +128,10 @@ func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		}
 		e := d.Elements[token.Element]
 		if properties[token.Element] {
+			// Paragraph/section/table properties remain structural boundaries.
+			if e.Name.Local != "rPr" && (e.Parent < 0 || !properties[e.Parent]) {
+				boundary(ti, "structural_boundary")
+			}
 			continue
 		}
 		if e.Name.Namespace == extracted.Namespace {

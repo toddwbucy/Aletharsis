@@ -105,7 +105,8 @@ configuration exercised 87,447 inputs without failure (about four seconds includ
 shutdown). These checks are bounded native validation, not renderer equivalence or
 independent Office-oracle acceptance.
 
-Selected character data nested inside run-property subtrees remains in WT-001
+Selected character data nested inside same-namespace Word property subtrees
+(`rPr`, `pPr`, `sectPr`, `tblPr`, `tblPrEx`, `trPr`, `tcPr`) remains in WT-001
 extraction evidence but is excluded from analyzer scopes. It splits surrounding
 stored text, including when the excluded selected content is only whitespace;
 formatting content cannot manufacture adjacency or a text-pattern finding.

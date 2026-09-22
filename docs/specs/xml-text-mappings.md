@@ -99,3 +99,19 @@ The next proposed per-part consumer is [WT-001](word-text-evidence.md), which se
 WordprocessingML text and direct context while retaining these mappings unchanged.
 The proposed ODF consumer [OT-001](odt-text-evidence.md) likewise retains stored
 character maps, with structural whitespace represented separately as XML controls.
+
+### Practical size limitation
+
+The 200,000-scalar cap is independent of the 4 MiB XML byte cap. An ordinary
+approximately 310 KB story containing 300 paragraphs of 1,000 ASCII characters
+exceeds it despite satisfying XML byte, token and element limits. Word/ODT
+mapped extraction and dependent analysis return `ErrLimit` with no result in
+this case. This is an unassessed part, never a completed scan with no findings.
+Identification-only parsing remains available under its own limits.
+
+Partial mapping is deferred: it requires an explicit coverage contract for
+mapped versus omitted regions, scope boundaries at omissions, and downstream
+report/CLI handling before it can safely replace all-or-nothing failure. The
+package/story orchestration work must preserve this failure as incomplete
+coverage; this internal foundation does not yet expose structured auditing in
+the public CLI. Raising a byte limit alone does not lift the scalar cap.

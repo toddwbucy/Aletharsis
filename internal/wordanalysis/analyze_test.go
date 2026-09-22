@@ -208,3 +208,33 @@ func TestFormattingSubtreeTextDoesNotEnterAnalysis(t *testing.T) {
 		}
 	}
 }
+
+func TestPropertyContainersCannotManufactureFindings(t *testing.T) {
+	for _, ns := range []string{docxidentify.TransitionalWord, docxidentify.StrictWord} {
+		for _, property := range []string{"rPr", "pPr", "sectPr", "tblPr", "tblPrEx", "trPr", "tcPr"} {
+			t.Run(ns+"/"+property, func(t *testing.T) {
+				hidden := run(strings.Repeat("\u200b\u200c", 24))
+				body := `<w:p>` + run("before") + `<w:` + property + `><w:rPr>` + hidden + `</w:rPr></w:` + property + `>` + run("after") + `</w:p>`
+				r := analyze(t, strings.ReplaceAll(document(body), docxidentify.TransitionalWord, ns))
+				if len(r.Scopes) != 2 || patterns(r) != 0 || len(r.Extraction.Texts) != 3 {
+					t.Fatal("formatting admitted", r)
+				}
+				if r.Scopes[0].Text != "before" || r.Scopes[1].Text != "after" {
+					t.Fatal("incorrect scopes", r.Scopes)
+				}
+			})
+		}
+	}
+}
+
+func TestOrdinaryLargePartFailsExplicitlyAtMappingBudget(t *testing.T) {
+	source := []byte(document(strings.Repeat(`<w:p>`+run(strings.Repeat("a", 1000))+`</w:p>`, 300)))
+	// This is well below the byte/token/element caps: scalar mappings are the
+	// independent limiting resource, not a malformed or enormous XML part.
+	if _, err := xmlparts.Parse(context.Background(), source, evidence.Hash(source), xmlparts.DefaultLimits()); err != nil {
+		t.Fatal(err)
+	}
+	if r, err := Analyze(context.Background(), source, evidence.Hash(source)); r != nil || !errors.Is(err, xmlparts.ErrLimit) {
+		t.Fatalf("result %v, error %v", r, err)
+	}
+}

@@ -115,3 +115,10 @@ including shutdown). These checks do not establish full OOXML conformance.
 
 [WA-001](word-analysis-scopes.md) proposes the next consumer: cross-run stored-text
 scopes with native Unicode/emoji/pattern findings and explicit scalar source maps.
+
+Controls nested anywhere in same-namespace Word property subtrees (`rPr`, `pPr`,
+`sectPr`, `tblPr`, `tblPrEx`, `trPr`, `tcPr`) are not admitted to `Controls`.
+They retain their located XML elements and yield
+`word.control_structure_unsupported`; ordinary tab-stop declarations under
+`tabs` remain formatting without that issue. This ancestry check does not turn
+similarly named foreign elements into Word formatting declarations.

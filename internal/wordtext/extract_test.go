@@ -234,3 +234,23 @@ func FuzzExtract(f *testing.F) {
 		}
 	})
 }
+
+func TestFormattingControlsRemainLocatedXMLOnly(t *testing.T) {
+	for _, ns := range []string{docxidentify.TransitionalWord, docxidentify.StrictWord} {
+		for _, property := range []string{"rPr", "pPr", "sectPr", "tblPr", "tblPrEx", "trPr", "tcPr"} {
+			for _, control := range []string{"tab", "br", "cr"} {
+				t.Run(ns+"/"+property+"/"+control, func(t *testing.T) {
+					body := `<w:p><w:r><w:` + property + `><w:r><w:` + control + `/></w:r></w:` + property + `><w:t>x</w:t><w:` + control + `/></w:r></w:p>`
+					r := extract(t, strings.ReplaceAll(document(body), docxidentify.TransitionalWord, ns))
+					if r.State != "partial" || len(r.Controls) != 1 || len(r.Issues) != 1 || r.Issues[0].Code != "word.control_structure_unsupported" {
+						t.Fatal("formatting control admitted", r)
+					}
+					e := r.XML.Document.Elements[r.Issues[0].Element]
+					if e.Name.Local != control || e.Full.End <= e.Full.Start || r.Issues[0].Element == r.Controls[0].Element {
+						t.Fatal("lost control location")
+					}
+				})
+			}
+		}
+	}
+}
