@@ -23,7 +23,7 @@ var ErrStructure = errors.New("unsupported Office metadata root")
 // UnsupportedRootError distinguishes recognized but unimplemented metadata forms.
 type UnsupportedRootError struct{ Code string }
 
-func (e *UnsupportedRootError) Error() string { return e.Code }
+func (e *UnsupportedRootError) Error() string { return e.Code + ": " + ErrStructure.Error() }
 func (e *UnsupportedRootError) Unwrap() error { return ErrStructure }
 
 type Property struct {
@@ -39,77 +39,96 @@ type Property struct {
 	Attributes []int
 }
 type Issue struct {
-	Code               string
-	Element            int
-	Segment, Attribute int // -1 when this issue does not select one.
-	Span               xmlparts.Span
+	Code                  string
+	Element               int
+	Segment, Attribute    int // -1 when this issue does not select one.
+	Token                 int // XML token index, or -1 for element/attribute-only issues.
+	StandardProjectionGap bool
+	Span                  xmlparts.Span
 }
+
+// Coverage counts declared projection gaps separately from other unassessed
+// markup. Neither count is a safety/trust verdict or full schema validation.
+type Coverage struct{ StandardProjectionGaps, OtherGaps int }
+
 type Result struct {
 	Parser, State, Kind string
 	XML                 *xmlparts.MappedDocument
 	Properties          []Property
 	Issues              []Issue
 	Limitations         []string
+	Coverage            Coverage
+	RootAttributes      []int
 }
 
-func key(kind string, name xmlparts.Name) string {
-	if kind == "core" {
-		switch name.Namespace {
-		case dcNamespace:
-			if name.Local == "creator" {
-				return "creator"
-			}
-			if name.Local == "identifier" {
-				return "document_id"
-			}
-		case termsNamespace:
-			if name.Local == "created" || name.Local == "modified" {
-				return name.Local
-			}
-		case CoreNamespace:
-			if name.Local == "lastModifiedBy" {
-				return "last_modified_by"
-			}
-			if name.Local == "revision" {
-				return "revision"
-			}
-		}
-	}
-	if kind == "app" && name.Namespace == AppNamespace {
-		switch name.Local {
-		case "Application":
-			return "application"
-		case "AppVersion":
-			return "application_version"
-		case "Company":
-			return "company"
-		case "Template":
-			return "template"
-		}
-	}
-	return ""
+// Empty values name recognized but unselected properties; absent keys are unknown.
+var vocabulary = map[[3]string]string{
+	{"core", dcNamespace, "creator"}:              "creator",
+	{"core", dcNamespace, "identifier"}:           "document_id",
+	{"core", dcNamespace, "title"}:                "",
+	{"core", dcNamespace, "subject"}:              "",
+	{"core", dcNamespace, "description"}:          "",
+	{"core", dcNamespace, "language"}:             "",
+	{"core", termsNamespace, "created"}:           "created",
+	{"core", termsNamespace, "modified"}:          "modified",
+	{"core", CoreNamespace, "lastModifiedBy"}:     "last_modified_by",
+	{"core", CoreNamespace, "revision"}:           "revision",
+	{"core", CoreNamespace, "keywords"}:           "",
+	{"core", CoreNamespace, "category"}:           "",
+	{"core", CoreNamespace, "contentStatus"}:      "",
+	{"core", CoreNamespace, "lastPrinted"}:        "",
+	{"core", CoreNamespace, "version"}:            "",
+	{"app", AppNamespace, "Application"}:          "application",
+	{"app", AppNamespace, "AppVersion"}:           "application_version",
+	{"app", AppNamespace, "Company"}:              "company",
+	{"app", AppNamespace, "Template"}:             "template",
+	{"app", AppNamespace, "TotalTime"}:            "",
+	{"app", AppNamespace, "Pages"}:                "",
+	{"app", AppNamespace, "Words"}:                "",
+	{"app", AppNamespace, "Characters"}:           "",
+	{"app", AppNamespace, "DocSecurity"}:          "",
+	{"app", AppNamespace, "Lines"}:                "",
+	{"app", AppNamespace, "Paragraphs"}:           "",
+	{"app", AppNamespace, "ScaleCrop"}:            "",
+	{"app", AppNamespace, "HeadingPairs"}:         "",
+	{"app", AppNamespace, "TitlesOfParts"}:        "",
+	{"app", AppNamespace, "Manager"}:              "",
+	{"app", AppNamespace, "LinksUpToDate"}:        "",
+	{"app", AppNamespace, "CharactersWithSpaces"}: "",
+	{"app", AppNamespace, "SharedDoc"}:            "",
+	{"app", AppNamespace, "HyperlinkBase"}:        "",
+	{"app", AppNamespace, "HLinks"}:               "",
+	{"app", AppNamespace, "HyperlinksChanged"}:    "",
+	{"app", AppNamespace, "DigSig"}:               "",
+	{"app", AppNamespace, "PresentationFormat"}:   "",
+	{"app", AppNamespace, "Slides"}:               "",
+	{"app", AppNamespace, "Notes"}:                "",
+	{"app", AppNamespace, "HiddenSlides"}:         "",
+	{"app", AppNamespace, "MMClips"}:              "",
 }
 
-// This is an explicit vocabulary subset, not a trust or expectedness profile.
-func standardUnselected(kind string, name xmlparts.Name) bool {
-	if kind == "core" {
-		if name.Namespace == dcNamespace {
-			switch name.Local {
-			case "title", "subject", "description", "language":
-				return true
-			}
-		}
-		if name.Namespace == CoreNamespace {
-			switch name.Local {
-			case "keywords", "category", "contentStatus", "lastPrinted", "version":
-				return true
-			}
-		}
+// Recognize only the declared date-type QName, not the validity of its value.
+func standardDateType(d *xmlparts.Document, element int, a xmlparts.Attribute) bool {
+	name := d.Elements[element].Name
+	if name.Namespace != termsNamespace || (name.Local != "created" && name.Local != "modified") || a.Name.Namespace != "http://www.w3.org/2001/XMLSchema-instance" || a.Name.Local != "type" {
+		return false
 	}
-	if kind == "app" && name.Namespace == AppNamespace {
-		switch name.Local {
-		case "TotalTime", "Pages", "Words", "Characters", "DocSecurity", "Lines", "Paragraphs", "ScaleCrop", "HeadingPairs", "TitlesOfParts", "Manager", "LinksUpToDate", "CharactersWithSpaces", "SharedDoc", "HyperlinkBase", "HLinks", "HyperlinksChanged", "DigSig", "PresentationFormat", "Slides", "Notes", "HiddenSlides", "MMClips":
-			return true
+	prefix, local, qualified := strings.Cut(a.Value, ":")
+	if !qualified {
+		local = prefix
+		prefix = ""
+	}
+	if local != "W3CDTF" {
+		return false
+	}
+	for i := element; i >= 0; i = d.Elements[i].Parent {
+		for _, decl := range d.Elements[i].Attributes {
+			if !decl.NamespaceDeclaration {
+				continue
+			}
+			if (prefix == "" && decl.Name.Prefix == "" && decl.Name.Local == "xmlns") || (prefix != "" && decl.Name.Prefix == "xmlns" && decl.Name.Local == prefix) {
+				return decl.Value == termsNamespace
+			}
 		}
 	}
 	return false
@@ -152,10 +171,32 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		}
 		return nil, ErrStructure
 	}
-	r := &Result{Parser: Version, State: "completed", Kind: kind, XML: mapped, Properties: []Property{}, Issues: []Issue{}, Limitations: []string{"metadata.values_not_validated", "metadata.identity_not_verified", "metadata.attribute_semantics_unresolved", "metadata.selected_properties_only", "metadata.package_binding_not_verified"}}
+	r := &Result{Parser: Version, State: "completed", Kind: kind, XML: mapped, Properties: []Property{}, Issues: []Issue{}, RootAttributes: []int{}, Limitations: []string{"metadata.values_not_validated", "metadata.identity_not_verified", "metadata.attribute_semantics_unresolved", "metadata.selected_properties_only", "metadata.package_binding_not_verified", "metadata.standard_subtrees_not_validated"}}
 	issue := func(code string, element, segment, attribute int, span xmlparts.Span) {
 		r.State = "partial"
-		r.Issues = append(r.Issues, Issue{Code: code, Element: element, Segment: segment, Attribute: attribute, Span: span})
+		token := -1
+		if segment >= 0 {
+			token = mapped.Segments[segment].Token
+		}
+		standard := code == "metadata.standard_property_unassessed" || code == "metadata.standard_attribute_unassessed"
+		if standard {
+			r.Coverage.StandardProjectionGaps++
+		} else {
+			r.Coverage.OtherGaps++
+		}
+		r.Issues = append(r.Issues, Issue{Code: code, Element: element, Segment: segment, Attribute: attribute, Span: span, Token: token, StandardProjectionGap: standard})
+	}
+	for ai, a := range d.Elements[0].Attributes {
+		if !a.NamespaceDeclaration {
+			r.RootAttributes = append(r.RootAttributes, ai)
+			issue("metadata.attribute_semantics_unassessed", 0, -1, ai, d.Elements[0].Start)
+		}
+	}
+	for ti, token := range d.Tokens {
+		if token.Element >= 0 && (token.Kind == "comment" || token.Kind == "processing_instruction") {
+			issue("metadata.markup_unassessed", token.Element, -1, -1, token.Span)
+			r.Issues[len(r.Issues)-1].Token = ti
+		}
 	}
 	children := make([]bool, len(d.Elements))
 	byElement := make([][]int, len(d.Elements))
@@ -183,10 +224,10 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		name := [2]string{e.Name.Namespace, e.Name.Local}
 		ordinal := occurrences[name]
 		occurrences[name]++
-		normalized := key(kind, e.Name)
+		normalized, known := vocabulary[[3]string{kind, e.Name.Namespace, e.Name.Local}]
 		if normalized == "" {
 			code := "metadata.property_unassessed"
-			if standardUnselected(kind, e.Name) {
+			if known {
 				code = "metadata.standard_property_unassessed"
 			}
 			issue(code, i, -1, -1, e.Full)
@@ -200,7 +241,11 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		for ai, a := range e.Attributes {
 			if !a.NamespaceDeclaration {
 				attributes = append(attributes, ai)
-				issue("metadata.attribute_semantics_unassessed", i, -1, ai, e.Start)
+				code := "metadata.attribute_semantics_unassessed"
+				if standardDateType(d, i, a) {
+					code = "metadata.standard_attribute_unassessed"
+				}
+				issue(code, i, -1, ai, e.Start)
 			}
 		}
 		var value strings.Builder

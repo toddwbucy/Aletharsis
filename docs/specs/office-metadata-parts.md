@@ -35,7 +35,7 @@ and CDATA-wrapped whitespace are not silently ignored. Literal CR/CRLF remains
 XML whitespace despite XML newline normalization.
 
 Every issue includes an element, a part-byte span and segment/attribute indices
-(`-1` when not applicable). Root-text issues select their exact XM segment and
+(`-1` when not applicable). Root-text issues select their exact XML segment and
 token span; distinct root segments remain distinct observations. Property issues
 use the element's full span; attribute issues identify the attribute index and
 its enclosing start-tag span (not an invented exact attribute byte interval).
@@ -46,7 +46,7 @@ category/contentStatus and application statistics/vector properties) yields
 `metadata.standard_property_unassessed`. Unknown expanded names yield
 `metadata.property_unassessed`. Both retain partial coverage; recognizing a
 standard name does not imply its contents are trusted, expected or interpreted.
-The finite vocabulary is in `standardUnselected`; it is not a format profile.
+The finite vocabulary is in `vocabulary`; it is not a format profile.
 
 Each property keeps expanded name, element index, normalized key, decoded value,
 zero-based occurrence ordinal among the same expanded name and ordered references
@@ -56,7 +56,9 @@ claim a contiguous source byte interval. Empty leaf values remain observations
 with an empty, non-null segment list. Comments, attributes and processing
 instructions remain XML evidence, never executed or incorporated into values.
 Selected properties also retain non-declaration attribute indices and emit
-`metadata.attribute_semantics_unassessed` for each. A Value is decoded character
+`metadata.attribute_semantics_unassessed` for each, except namespace-resolved
+DCTERMS W3CDTF types on created/modified, which emit
+`metadata.standard_attribute_unassessed`. A Value is decoded character
 data only: empty character data on an `xsi:nil` property is not a claim that its
 logical value is an empty string, and `xsi:type` does not validate a date.
 
@@ -74,3 +76,19 @@ namespace spoofing, nested known elements, unknown siblings, root text, malforme
 XML/external declarations, identity mismatch, cancellation, scalar limits,
 deterministic outputs and immutable source bytes. These tests do not establish
 package-wide or CLI isolation; those belong to the orchestration increment.
+
+Coverage distinguishes `StandardProjectionGaps` (recognized unselected properties
+and declared date types) from `OtherGaps`. Both retain `partial` state. These
+counts distinguish routine projection limits from other unassessed markup; they
+are not trust or schema-validity verdicts. Standard subtrees are not validated
+(`metadata.standard_subtrees_not_validated`).
+
+Non-declaration root attributes are retained in `RootAttributes` and produce
+attribute issues. Comments and processing instructions within the root produce
+`metadata.markup_unassessed`, including those inside selected values. Each has
+an exact token index and byte span. Issue `Token` is -1 when unavailable; text
+issues retain their segment's token. Markup never enters concatenated values.
+
+Validation resumed with user authorization after the original resource stop,
+using the configurable hard 1 GiB ceiling. The original stop remains historical
+budget evidence; resumed validation does not retroactively invalidate it.

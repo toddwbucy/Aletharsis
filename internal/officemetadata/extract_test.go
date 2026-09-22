@@ -193,7 +193,7 @@ func TestAttributesRetainedWithoutClaimingTheirSemantics(t *testing.T) {
 	for i := 0; i < 2; i++ {
 		p := r.Properties[i]
 		issue := r.Issues[i]
-		if len(p.Attributes) != 1 || issue.Attribute != p.Attributes[0] || issue.Element != p.Element || issue.Segment != -1 || issue.Code != "metadata.attribute_semantics_unassessed" {
+		if len(p.Attributes) != 1 || issue.Attribute != p.Attributes[0] || issue.Element != p.Element || issue.Segment != -1 || issue.Code != []string{"metadata.attribute_semantics_unassessed", "metadata.standard_attribute_unassessed"}[i] {
 			t.Fatalf("%+v %+v", p, issue)
 		}
 		attr := r.XML.Document.Elements[p.Element].Attributes[p.Attributes[0]]
@@ -219,7 +219,7 @@ func TestUnsupportedMetadataRootsHaveTypedReasons(t *testing.T) {
 		raw := []byte(`<` + tc.root + ` xmlns="` + tc.namespace + `"/>`)
 		r, err := Extract(context.Background(), raw, evidence.Hash(raw))
 		var reason *UnsupportedRootError
-		if r != nil || !errors.As(err, &reason) || reason.Code != tc.code || !errors.Is(err, ErrStructure) {
+		if r != nil || !errors.As(err, &reason) || reason.Code != tc.code || !errors.Is(err, ErrStructure) || !strings.Contains(err.Error(), tc.code) || !strings.Contains(err.Error(), ErrStructure.Error()) {
 			t.Fatalf("%s: %v %v", tc.code, r, err)
 		}
 	}
@@ -228,5 +228,67 @@ func TestUnsupportedMetadataRootsHaveTypedReasons(t *testing.T) {
 	var reason *UnsupportedRootError
 	if !errors.Is(err, ErrStructure) || errors.As(err, &reason) {
 		t.Fatalf("%v", err)
+	}
+}
+
+func TestBaselineCoverageSeparated(t *testing.T) {
+	for _, raw := range [][]byte{
+		core(`<dc:title>Title</dc:title><dc:creator>A</dc:creator><dcterms:created xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="dcterms:W3CDTF">2026-01-01</dcterms:created>`),
+		[]byte(`<Properties xmlns="` + AppNamespace + `"><Pages>1</Pages><Words>2</Words><Application>Word</Application></Properties>`),
+	} {
+		r := extract(t, raw)
+		if r.State != "partial" || r.Coverage.StandardProjectionGaps != 2 || r.Coverage.OtherGaps != 0 {
+			t.Fatalf("%+v", r)
+		}
+		pos := bytes.LastIndex(raw, []byte("</"))
+		altered := append(append(append([]byte{}, raw[:pos]...), []byte(`<alien xmlns="urn:other"/>`)...), raw[pos:]...)
+		changed := extract(t, altered)
+		if changed.Coverage.StandardProjectionGaps != 2 || changed.Coverage.OtherGaps != 1 || !reflect.DeepEqual(r.Properties, changed.Properties) {
+			t.Fatalf("%+v", changed)
+		}
+	}
+}
+
+func TestDateTypeQNameResolution(t *testing.T) {
+	for _, tc := range []struct {
+		declarations, value string
+		standard            bool
+	}{
+		{`xmlns:t="` + termsNamespace + `"`, "t:W3CDTF", true},
+		{`xmlns:dcterms="urn:spoof"`, "dcterms:W3CDTF", false},
+		{``, "missing:W3CDTF", false},
+		{``, "dcterms:other", false},
+		{`xmlns="` + termsNamespace + `"`, "W3CDTF", true},
+		{``, "W3CDTF", false},
+	} {
+		raw := core(`<x:created xmlns:x="` + termsNamespace + `" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ` + tc.declarations + ` xsi:type="` + tc.value + `">value</x:created>`)
+		r := extract(t, raw)
+		if len(r.Issues) != 1 || r.Issues[0].StandardProjectionGap != tc.standard || r.Properties[0].Value != "value" {
+			t.Fatalf("%+v: %+v", tc, r)
+		}
+	}
+}
+
+func TestRootAttributesAndMarkupRetainLocations(t *testing.T) {
+	for _, tc := range []struct{ root, namespace, property string }{{"coreProperties", CoreNamespace, "revision"}, {"Properties", AppNamespace, "Company"}} {
+		raw := []byte(`<` + tc.root + ` xmlns="` + tc.namespace + `" flag="x"><!--root--><?root data?><` + tc.property + `>a<!--value--><?value data?>b</` + tc.property + `></` + tc.root + `>`)
+		r := extract(t, raw)
+		if r.State != "partial" || r.Coverage.OtherGaps != 5 || r.Coverage.StandardProjectionGaps != 0 || len(r.RootAttributes) != 1 || len(r.Properties) != 1 || r.Properties[0].Value != "ab" {
+			t.Fatalf("%+v", r)
+		}
+		attr := r.XML.Document.Elements[0].Attributes[r.RootAttributes[0]]
+		if attr.Name.Local != "flag" || attr.Value != "x" {
+			t.Fatal(attr)
+		}
+		for i, want := range []string{"<!--root-->", "<?root data?>", "<!--value-->", "<?value data?>"} {
+			issue := r.Issues[i+1]
+			if issue.Code != "metadata.markup_unassessed" || issue.Token < 0 || issue.Segment != -1 || issue.Attribute != -1 || string(raw[issue.Span.Start:issue.Span.End]) != want || r.XML.Document.Tokens[issue.Token].Span != issue.Span {
+				t.Fatalf("%+v", issue)
+			}
+		}
+		clean := []byte(`<` + tc.root + ` xmlns="` + tc.namespace + `"><` + tc.property + `>ab</` + tc.property + `></` + tc.root + `>`)
+		if result := extract(t, clean); result.State != "completed" || len(result.RootAttributes) != 0 {
+			t.Fatalf("%+v", result)
+		}
 	}
 }
