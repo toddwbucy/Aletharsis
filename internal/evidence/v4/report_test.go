@@ -40,6 +40,16 @@ func TestCompleteFlatReportRecordDecoding(t *testing.T) {
 			if validateSummary(changedReport, trace) == nil {
 				t.Fatal("accepted incorrect summary")
 			}
+			office := &Index{Packages: map[string]Package{}, Parts: map[string]Part{}, Scopes: map[string]Scope{}}
+			if _, err := validateArtifacts(r, office); err != nil {
+				t.Fatal(err)
+			}
+			if err := ValidateCoverage(r.Trace, r.Artifacts, office, r.Evidence.Document); err != nil {
+				t.Fatal(err)
+			}
+			if err := validateFlatCoordinates(r.File, r.Evidence.Document); err != nil {
+				t.Fatal(err)
+			}
 			if len(r.Evidence.Office.Packages) != 0 {
 				t.Fatal("flat report gained Office data")
 			}
