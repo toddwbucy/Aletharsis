@@ -2069,6 +2069,22 @@
             "sha256"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "office_scope"
+            },
+            "scope_ref": {
+              "$ref": "#/$defs/officeScopeRef"
+            }
+          },
+          "required": [
+            "kind",
+            "scope_ref"
+          ],
+          "additionalProperties": false
         }
       ]
     },
@@ -3285,6 +3301,70 @@
                 "spans"
               ],
               "additionalProperties": false
+            }
+          },
+          "required": [
+            "anchor_ref",
+            "kind",
+            "artifact_ref",
+            "execution_ref",
+            "mapping",
+            "locator"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "anchor_ref": {
+              "$ref": "#/$defs/anchorRef"
+            },
+            "kind": {
+              "const": "office_scope"
+            },
+            "artifact_ref": {
+              "$ref": "#/$defs/artifactRef"
+            },
+            "execution_ref": {
+              "$ref": "#/$defs/executionRef"
+            },
+            "mapping": {
+              "$ref": "#/$defs/mapping"
+            },
+            "locator": {
+              "$ref": "#/$defs/officeScopeLocation"
+            }
+          },
+          "required": [
+            "anchor_ref",
+            "kind",
+            "artifact_ref",
+            "execution_ref",
+            "mapping",
+            "locator"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "anchor_ref": {
+              "$ref": "#/$defs/anchorRef"
+            },
+            "kind": {
+              "const": "office_structure"
+            },
+            "artifact_ref": {
+              "$ref": "#/$defs/artifactRef"
+            },
+            "execution_ref": {
+              "$ref": "#/$defs/executionRef"
+            },
+            "mapping": {
+              "$ref": "#/$defs/mapping"
+            },
+            "locator": {
+              "$ref": "#/$defs/officeStructuralLocation"
             }
           },
           "required": [

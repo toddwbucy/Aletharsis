@@ -122,6 +122,15 @@ def build():
     evidence = schema['properties']['evidence']
     evidence['properties']['office'] = ref('officeEvidence')
     evidence['required'].append('office')
+    # Scope text remains in Office evidence, never in a fabricated flat Text.
+    d['contentRef']['oneOf'].append(obj({'kind': {'const': 'office_scope'},
+        'scope_ref': ref('officeScopeRef')}))
+    for kind, locator in (('office_scope', ref('officeScopeLocation')),
+                          ('office_structure', ref('officeStructuralLocation'))):
+        d['anchor']['oneOf'].append(obj({'anchor_ref': ref('anchorRef'),
+            'kind': {'const': kind}, 'artifact_ref': ref('artifactRef'),
+            'execution_ref': ref('executionRef'), 'mapping': ref('mapping'),
+            'locator': locator}))
     # Keep rule-specific evidence unchanged; only the coordinate alternatives grow.
     for variant in d['finding']['oneOf']:
         rule = d[variant['$ref'].split('/')[-1]]
