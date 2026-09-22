@@ -15,12 +15,15 @@ request = json.load(sys.stdin)
 text = request['text']
 logger = module.SimpleLogger(use_colors=False, stream=sys.stderr)
 results = {}
+input_unchanged = True
 for mode, word in [('inventory',False), ('word_exclusions',True)]:
     detector = module.UnicodeMarkerDetector(clean_file=False, check_typographic=True,
         check_ivs=True, exclude_word_chars=word, logger=logger)
     unchanged, markers, changed = detector._process_line(text, 1)
-    assert unchanged == text and changed is False
+    input_unchanged = input_unchanged and unchanged == text and changed is False
+    if not input_unchanged:
+        raise ValueError("read-only detector changed input")
     results[mode] = [dict(dataclasses.asdict(m), code_point=f'U+{ord(m.original_char):04X}') for m in markers]
 print(json.dumps({'position_units':'Unicode scalar indices in supplied decoded text',
     'emoji_version':module.emoji.__version__, 'pathspec_available':False,
-    'input_unchanged':True, 'results':results}, ensure_ascii=True, sort_keys=True))
+    'input_unchanged':input_unchanged, 'results':results}, ensure_ascii=True, sort_keys=True))

@@ -227,3 +227,33 @@ using Python 3.12.13 and pinned CI requirements (including the date-time format
 validator). Full-suite measurements: 4.27 seconds wall, 4.13 seconds user CPU,
 0.12 seconds system CPU and 94,072 KiB maximum RSS. `git diff --check` passed.
 No production Go detector or component-adoption status changed.
+
+## Sixth review remediation
+
+HIBERIUS probe JSON now escapes non-ASCII, including recovered carrier content.
+Both fresh bounded offline runs agree on all 30 source files, 90 stdout files and
+90 stderr files. Compared with the preceding study, 29 HIBERIUS stdout files
+change only in JSON serialization; their decoded objects are identical. All other
+raw artifacts and all 167 comparison rows remain unchanged. No detector conclusion
+or adoption status changed.
+
+Possible offset mismatches now supplement rather than overwrite an omission's
+reviewed classification. Unexplained extra observations remain unadjudicated.
+Juriku derives and explicitly enforces input integrity, including under optimized
+Python. Synthetic regressions exercise bidi/astral output escaping, mutation under
+both Python modes and a reviewed inventory gap alongside a stray observation.
+
+Provisioning still defaults to historical archive hashes and now also verifies
+complete extracted file inventories. An explicit `--allow-repacked-source` option
+accepts changed source-tar compression only if every extracted file matches the
+pinned inventory; the wheel remains byte-pinned. Synthetic tests reject changed
+contents and absent opt-in. The current study used the original hash-matching
+archives; its new provisioning receipt preserves that fact. Historical registry
+archive identities are unchanged.
+
+The manifest now covers 236 artifacts, including provisioning and fresh resource
+logs. Run 1 used 3.415 seconds service runtime, 2.598 seconds cgroup CPU and 63.1 MiB
+peak memory; run 2 used 3.452 seconds, 2.599 seconds CPU and 63.4 MiB peak memory.
+Both used the same previously rebuilt native executable and trusted runtimes.
+Validation: all 432 offline tests passed, including 97 study/harness checks;
+`git diff --check` passed. No production Go code changed.

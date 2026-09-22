@@ -171,7 +171,8 @@ def test_wrong_scalar_is_offset_difference(tmp_path, monkeypatch):
     (case/'juriku.stdout.json').write_text(json.dumps(dict(results=dict(inventory=[],word_exclusions=[]))))
     (case/'hiberius.stdout.json').write_text(json.dumps(dict(scan_status='no_verdict_emitted',observations=[])))
     row = adjudicate.summarize(tmp_path)[0]
-    assert [d['category'] for d in row['differences'] if d['tool']=='aletharsis'] == ['offset','offset']
+    assert [d['category'] for d in row['differences'] if d['tool']=='aletharsis'] == ['defect','unadjudicated']
+    assert all(d.get('possible_offset_mismatch') for d in row['differences'] if d['tool']=='aletharsis')
     assert [d['category'] for d in row['differences'] if d['tool']=='hiberius'] == ['coverage']
 
 
@@ -271,3 +272,68 @@ def test_nonempty_blank_verdict_is_not_missing_coverage(tmp_path):
     code = (PROBE/'hiberius_probe.cjs').read_text().replace("'/upstream/index.html'", json.dumps(str(html)))
     result = subprocess.run([node, '-e', code], input='{"text":"a"}', text=True, capture_output=True, timeout=5)
     assert result.returncode != 0 and 'empty written scan verdict' in result.stderr
+
+
+def test_hiberius_escapes_untrusted_output(tmp_path):
+    node = shutil.which('node')
+    if node is None: pytest.skip('Node required')
+    html = tmp_path/'index.html'
+    html.write_text("<script>document.getElementById('btnScan').addEventListener('click',()=>{document.getElementById('scanVerdict').textContent='\\u202e\\u{1f600}';document.getElementById('scanSecret').textContent='\\u202e';});</script>")
+    code = (PROBE/'hiberius_probe.cjs').read_text().replace("'/upstream/index.html'", json.dumps(str(html)))
+    r = subprocess.run([node,'-e',code],input=b'{"text":""}',capture_output=True,timeout=5)
+    assert r.returncode == 0, r.stderr
+    assert r.stdout.isascii()
+    assert json.loads(r.stdout)['secret_text'] == '\u202e'
+
+
+@pytest.mark.parametrize('optimize', [False, True])
+@pytest.mark.parametrize('returned,changed', [('original',False), ('mutated',False), ('original',True)])
+def test_juriku_readonly_check_is_observed(tmp_path, optimize, returned, changed):
+    fake = tmp_path/'target.py'
+    fake.write_text("emoji_library_available=True\npathspec_library_available=False\nclass emoji: __version__='fake'\nclass SimpleLogger:\n def __init__(self, **kwargs): pass\nclass UnicodeMarkerDetector:\n def __init__(self, **kwargs): pass\n def _process_line(self, text, line): return "+repr((returned, [], changed))+"\n")
+    code = (PROBE/'juriku_probe.py').read_text().replace('/upstream/hidden-characters-detector.py',str(fake))
+    r = subprocess.run([sys.executable,*(['-O'] if optimize else []),'-c',code],input='{"text":"original"}',text=True,capture_output=True,timeout=5)
+    if returned == 'original' and not changed:
+        assert r.returncode == 0, r.stderr
+        assert json.loads(r.stdout)['input_unchanged'] is True
+    else:
+        assert r.returncode != 0 and 'read-only detector changed input' in r.stderr
+        assert not r.stdout
+
+
+def test_reviewed_omission_survives_stray_same_codepoint(tmp_path, monkeypatch):
+    adjudicate = load('adjudicate', monkeypatch)
+    (tmp_path/'corpus.json').write_text(json.dumps([dict(id='hangul_fillers', expected_observations=[dict(scalar=1,code_point='U+115F')], interpretation='synthetic')]))
+    case = tmp_path/'hangul_fillers'; case.mkdir()
+    (case/'aletharsis.stdout.json').write_text(json.dumps(dict(status='completed', findings=[dict(id='unicode.zero_width',evidence=dict(code_point='U+115F'),location=dict(character_offsets=[9]))])))
+    (case/'juriku.stdout.json').write_text(json.dumps(dict(results=dict(inventory=[],word_exclusions=[]))))
+    (case/'hiberius.stdout.json').write_text(json.dumps(dict(scan_status='completed',observations=[])))
+    rows = [d for d in adjudicate.summarize(tmp_path)[0]['differences'] if d['tool']=='aletharsis']
+    assert [d['category'] for d in rows] == ['inventory', 'unadjudicated']
+    assert all(d['possible_offset_mismatch'] for d in rows)
+
+
+@pytest.mark.parametrize('fallback,mutation,succeeds', [(False,False,False),(True,False,True),(True,True,False)])
+def test_repacked_source_requires_opt_in_and_exact_tree(tmp_path, monkeypatch, fallback, mutation, succeeds):
+    import hashlib
+    import io
+    import tarfile
+    provision = load('provision', monkeypatch)
+    downloads = tmp_path/'downloads'; downloads.mkdir()
+    archive = downloads/'source.tar.gz'
+    with tarfile.open(archive,'w:gz') as out:
+        data = b'changed' if mutation else b'original'
+        entry = tarfile.TarInfo('root/file.txt'); entry.size = len(data)
+        out.addfile(entry, io.BytesIO(data))
+    (tmp_path/'input-trees.json').write_text(json.dumps({'juriku':{'file.txt':hashlib.sha256(b'original').hexdigest()}}))
+    monkeypatch.setattr(provision,'__file__',str(tmp_path/'provision.py'))
+    monkeypatch.setattr(provision,'PINS',{'juriku':('source.tar.gz','0'*64)})
+    monkeypatch.setattr(sys,'argv',['provision','--downloads',str(downloads),'--output',str(tmp_path/'output'),*(['--allow-repacked-source'] if fallback else [])])
+    if succeeds:
+        provision.main()
+        receipt=json.loads((tmp_path/'output/provisioning.json').read_bytes())['source.tar.gz']
+        assert receipt['tree_verified'] and receipt['observed_sha256']==hashlib.sha256(archive.read_bytes()).hexdigest()
+        assert receipt['historical_sha256'] != receipt['observed_sha256']
+    else:
+        with pytest.raises(ValueError,match='identity mismatch'): provision.main()
+        assert not (tmp_path/'output/provisioning.json').exists()

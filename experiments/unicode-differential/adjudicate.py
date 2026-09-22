@@ -83,11 +83,9 @@ def summarize(root):
             shifted = {cp for _,cp in missing} & {cp for _,cp in extra}
             for scalar,cp in sorted(missing):
                 category,detail=reason(tool,case['id'],cp,scalar,native['status'],hiberius['scan_status'])
-                if cp in shifted:
-                    category,detail='offset','Code point appears at an unexpected scalar; inspect detector/probe coordinates.'
-                differences.append({'tool':tool,'scalar':scalar,'code_point':cp,'direction':'not_reported','category':category,'reason':detail})
+                differences.append({'tool':tool,'scalar':scalar,'code_point':cp,'direction':'not_reported','category':category,'reason':detail, **({'possible_offset_mismatch': True} if cp in shifted else {})})
             for scalar,cp in sorted(actual-expected):
-                differences.append({'tool':tool,'scalar':scalar,'code_point':cp,'direction':'additional','category':'offset' if cp in shifted else 'unadjudicated','reason':'Requires independent fixture/source review; do not automatically bless an extra observation.'})
+                differences.append({'tool':tool,'scalar':scalar,'code_point':cp,'direction':'additional','category':'unadjudicated', **({'possible_offset_mismatch': True} if cp in shifted else {}), 'reason':'Requires independent fixture/source review; do not automatically bless an extra observation.'})
         output.append({'case':case['id'],'native_status':native['status'],
             'hiberius_status':hiberius['scan_status'], 'observed':observed,'differences':differences,
             'native_pattern_ids':sorted({f['id'] for f in native['findings'] if f['id'].startswith('pattern.')}),

@@ -48,4 +48,4 @@ const hidden = get('scanSecret').hidden; // null means the facade observed no as
 process.stdout.write(JSON.stringify({position_units:'Unicode scalar indices reconstructed from scanViz child order',
   observations, verdict, scan_status:verdictWritten ? 'completed' : 'no_verdict_emitted',
   secret_visible:typeof hidden === 'boolean' ? !hidden : null,
-  secret_text:get('scanSecret').textContent, input_unchanged:get('scanInput').value === request.text})+'\n');
+  secret_text:get('scanSecret').textContent, input_unchanged:get('scanInput').value === request.text}).replace(/[\u007f-\uffff]/g, c => '\\u'+c.charCodeAt(0).toString(16).padStart(4,'0'))+'\n');

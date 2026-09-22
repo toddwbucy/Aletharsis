@@ -100,7 +100,9 @@ def test_fixture_coordinates_and_raw_results(case):
                 assert f['evidence']['code_point']==f'U+{ord(text[p]):04X}'
                 assert b==len(text[:p].encode(case['serialization']))
     for tool in ['juriku','hiberius']:
-        result=json.loads((DATA/case['id']/f'{tool}.stdout.json').read_bytes())
+        raw_result=(DATA/case['id']/f'{tool}.stdout.json').read_bytes()
+        assert raw_result.isascii()
+        result=json.loads(raw_result)
         assert result['input_unchanged']
         rows=result['observations'] if tool=='hiberius' else result['results']['inventory']+result['results']['word_exclusions']
         for row in rows:

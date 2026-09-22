@@ -8,12 +8,12 @@
   "binary_sha256": "f36771b5de8651aa2aab2e0fe3eeb82421dd3e0e1b7677a7ac63ad5b51f8b642",
   "probe_sha256": {
     "corpus.py": "a7ded2ec193379ac0975ce257480f09eef233c216516ac2e33e85160de931fc7",
-    "adjudicate.py": "ab647ff154f57f3fe684a1598867f66e00da141535ef60f9bfd3c056c8a6e0f7",
+    "adjudicate.py": "99093824ff7a339a62c858cba6b2fbecc7a5f86174fc845f02f0e2ba64a0c02a",
     "run_cases.py": "4c15de7eb33aff002dcdb2e86778f9f6d00c3b97ec4a8e1e10fdfcc1ccf4e504",
-    "juriku_probe.py": "0ae04d9afd278598336e2b38eb3e648310e063d5aaee1f43df2b742e48be06ce",
-    "hiberius_probe.cjs": "13f4214063cb43ab123c32ce42e932fef0b1af7e5adb449a87b287153526372c",
+    "juriku_probe.py": "e012965dff31584a99eac24800ba5e1b6b5ebe20ea18c1e26161abf2126806d8",
+    "hiberius_probe.cjs": "1a0b64e85d668ad00212f42eb0cc63ec467c66f0e0b4b6df1bb8d05b52885afc",
     "input-trees.json": "db9728810d9d3c82b2e19503301c61b1e4e6d52c3ca22aa5ddb4601fc14eca80",
-    "provision.py": "7bea02a41f043a1526e5481201ebcbbae438fc860be76f591081671febc29e50"
+    "provision.py": "cd42dcf0c24fcfd23e9b585ac1358d1f91cb83d6debac2c164804ffbe11eee50"
   },
   "example_argv": {
     "juriku": [
@@ -61,13 +61,13 @@
       "GOMEMLIMIT",
       "384MiB",
       "--ro-bind",
-      "/tmp/aletharsis-pr54-study/run2/empty/source.bin",
+      "/tmp/aletharsis-pr54-study/run6b/empty/source.bin",
       "/input.txt",
       "--ro-bind",
       "/tmp/aletharsis-pr54-study/aletharsis",
       "/aletharsis",
       "--ro-bind",
-      "/tmp/aletharsis-pr54-study/inputs/juriku/hidden-characters-detector-c75a379a181750eab788cf2eb668109caa8b88e6",
+      "/tmp/aletharsis-pr54-study/inputs-round6/juriku/hidden-characters-detector-c75a379a181750eab788cf2eb668109caa8b88e6",
       "/upstream",
       "--dir",
       "/probe",
@@ -96,7 +96,7 @@
       "/home/todd/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu",
       "/python",
       "--ro-bind",
-      "/tmp/aletharsis-pr54-study/inputs/emoji",
+      "/tmp/aletharsis-pr54-study/inputs-round6/emoji",
       "/emoji",
       "/python/bin/python3.12",
       "/probe/juriku_probe.py"
@@ -146,13 +146,13 @@
       "GOMEMLIMIT",
       "384MiB",
       "--ro-bind",
-      "/tmp/aletharsis-pr54-study/run2/empty/source.bin",
+      "/tmp/aletharsis-pr54-study/run6b/empty/source.bin",
       "/input.txt",
       "--ro-bind",
       "/tmp/aletharsis-pr54-study/aletharsis",
       "/aletharsis",
       "--ro-bind",
-      "/tmp/aletharsis-pr54-study/inputs/hiberius/hiberius-unicode-toolkit-1d86b8d951fca3cd7efbe637267f57e391dd7570",
+      "/tmp/aletharsis-pr54-study/inputs-round6/hiberius/hiberius-unicode-toolkit-1d86b8d951fca3cd7efbe637267f57e391dd7570",
       "/upstream",
       "--dir",
       "/probe",
@@ -226,7 +226,7 @@
       "GOMEMLIMIT",
       "384MiB",
       "--ro-bind",
-      "/tmp/aletharsis-pr54-study/run2/empty/source.bin",
+      "/tmp/aletharsis-pr54-study/run6b/empty/source.bin",
       "/input.txt",
       "--ro-bind",
       "/tmp/aletharsis-pr54-study/aletharsis",
@@ -237,6 +237,6 @@
       "--json"
     ]
   },
-  "child_cpu_seconds": 0.124093,
-  "retained_bytes": 331416
+  "child_cpu_seconds": 0.12421199999999999,
+  "retained_bytes": 331533
 }

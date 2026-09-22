@@ -18,7 +18,8 @@ No script below downloads anything.
 | `emoji-2.15.0-py3-none-any.whl` | `https://files.pythonhosted.org/packages/e1/5e/4b5aaaabddfacfe36ba7768817bd1f71a7a810a43705e531f3ae4c690767/emoji-2.15.0-py3-none-any.whl` |
 
 `provision.py` contains the exact SHA-256 values, validates before extraction, and
-rejects oversized or non-regular archive content. Supply a new output directory:
+rejects oversized or non-regular archive content, then verifies every extracted
+file against `input-trees.json`. Supply a new output directory:
 
 ```bash
 python3.12 experiments/unicode-differential/provision.py \
@@ -155,3 +156,21 @@ matches. Historical build logs remain historical, not evidence of binary identit
 with the new run. The runner’s `retained_bytes` measures case/corpus/results files
 before `environment.json` is written; the final manifest separately hashes the
 complete retained artifact set, including environment and resource logs.
+
+### Repacked source archives
+
+Archive hashes identify the exact historical downloads, not a promise that GitHub
+will always serve identical compressed bytes. If a source tarball changes while
+its pinned contents remain identical, explicitly pass `--allow-repacked-source`
+to `provision.py`. Size/type/path restrictions still apply, and the entire extracted
+file inventory must match `input-trees.json` exactly before success. Missing, added
+or changed files fail. The emoji wheel still requires its exact archive hash.
+`provisioning.json` records observed and historical archive hashes and successful
+tree verification; retain it with a reproduction using this fallback. Do not
+rewrite the historical registry or study archive identity to claim byte equality.
+The runner independently verifies tree identity again before executing probes.
+
+All probe JSON escapes non-ASCII, including decoded carrier content; parsing it
+recovers the original strings. A possible coordinate mismatch is an additional
+signal on a difference, never a replacement for its omission classification.
+Juriku's input-integrity result is observed and enforced even under optimized Python.

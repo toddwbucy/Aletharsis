@@ -1,0 +1,29 @@
+Running as unit: run-p158589-i188843.service; invocation ID: 25695e41640840c4bd4a456a7ab33839
+	Command being timed: "/home/todd/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12 /tmp/aletharsis-pr54-review/experiments/unicode-differential/run_cases.py --juriku /tmp/aletharsis-pr54-study/inputs-round6/juriku/hidden-characters-detector-c75a379a181750eab788cf2eb668109caa8b88e6 --hiberius /tmp/aletharsis-pr54-study/inputs-round6/hiberius/hiberius-unicode-toolkit-1d86b8d951fca3cd7efbe637267f57e391dd7570 --emoji /tmp/aletharsis-pr54-study/inputs-round6/emoji --python /home/todd/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu --binary /tmp/aletharsis-pr54-study/aletharsis --output /tmp/aletharsis-pr54-study/run6a"
+	User time (seconds): 0.12
+	System time (seconds): 0.14
+	Percent of CPU this job got: 7%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:03.41
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 75812
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 20432
+	Voluntary context switches: 735
+	Involuntary context switches: 27
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 3.415s
+             CPU time consumed: 2.598s
+                   Memory peak: 63.1M (swap: 0B)
