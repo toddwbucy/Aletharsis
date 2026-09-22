@@ -10,7 +10,7 @@ class Element {
   set textContent(v) { this.writes++; this._text = String(v); this.children = []; }
   get textContent() { return this._text + this.children.map(c => c.textContent).join(''); }
   appendChild(c) { this.writes++; this.children.push(c); return c; }
-  addEventListener(event, callback) { this.events[event] = callback; }
+  addEventListener(event, callback) { if (Object.hasOwn(this.events, event)) throw new Error("duplicate event listener: "+event); this.events[event] = callback; }
   setAttribute() {}
 }
 const elements = new Map();
@@ -28,6 +28,7 @@ if (typeof get('btnScan').events.click !== 'function') throw new Error('missing 
 get('scanViz').writes = 0; get('scanVerdict').writes = 0;
 vm.runInContext("document.getElementById('btnScan').events.click()", context, {timeout:1000});
 if (request.text.length && (!get('scanViz').writes || !get('scanVerdict').writes)) throw new Error('scan output contract drift');
+if (get('scanInput').value !== request.text) throw new Error('read-only detector changed input');
 const input = Array.from(request.text);
 const observations = [];
 let scalar = 0;

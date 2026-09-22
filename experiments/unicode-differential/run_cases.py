@@ -125,7 +125,8 @@ def main():
         source=directory/'source.bin';source.write_bytes(bytes.fromhex(case['raw_hex']))
         before=digest(source)
         payload=json.dumps({'text':case['decoded_text']},ensure_ascii=True).encode()
-        assert len(payload)<=LIMIT and source.stat().st_size<=LIMIT
+        if len(payload)>LIMIT or source.stat().st_size>LIMIT:
+            raise ValueError("payload or source size ceiling exceeded")
         record={'case':case['id'],'source_sha256':before,'tools':{}}
         for tool,upstream,command in [
             ('juriku',args.juriku,['/python/bin/python3.12','/probe/juriku_probe.py']),

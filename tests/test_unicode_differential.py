@@ -114,6 +114,7 @@ def test_fixture_coordinates_and_raw_results(case):
 
 def test_actionable_gaps_and_limits_are_not_hidden():
     comparison={r['case']:r for r in json.loads((DATA/'comparison.json').read_bytes())}
+    validate_coverage(comparison)
     assert comparison['controls']['native_status']=='failed'
     assert comparison['empty']['hiberius_status']=='no_verdict_emitted'
     gaps = comparison['word_typography']['differences']
@@ -153,3 +154,15 @@ def test_reproduction_rejects_identity_drift(field):
     if field == 'probe_sha256': second[field]['hiberius_probe.cjs'] = '0' * 64
     else: second[field] = 'changed'
     with pytest.raises(AssertionError): validate_reproduction_identity(first, second)
+
+
+def validate_coverage(comparison):
+    assert {r['case'] for r in comparison.values() if r['native_status'] != 'completed'} == {'controls'}
+    assert {r['case'] for r in comparison.values() if r['hiberius_status'] != 'completed'} == {'empty'}
+
+
+@pytest.mark.parametrize('field,status', [('native_status','failed'),('hiberius_status','no_verdict_emitted')])
+def test_new_coverage_loss_requires_review(field, status):
+    comparison={r['case']:r for r in json.loads((DATA/'comparison.json').read_bytes())}
+    comparison['boundary_offsets'][field]=status
+    with pytest.raises(AssertionError): validate_coverage(comparison)

@@ -174,3 +174,12 @@ All probe JSON escapes non-ASCII, including decoded carrier content; parsing it
 recovers the original strings. A possible coordinate mismatch is an additional
 signal on a difference, never a replacement for its omission classification.
 Juriku's input-integrity result is observed and enforced even under optimized Python.
+
+Library preconditions and payload/source size bounds use explicit failures rather
+than optimization-sensitive assertions. Juriku reports the observed pathspec
+availability. HIBERIUS rejects a handler that changes the supplied input or a
+second listener for an already registered element event; silently replacing a
+listener is outside this facade's contract. Retained-evidence checks require the
+complete set of non-completed native cases to be exactly `controls`, and the
+complete set of non-completed HIBERIUS cases to be exactly `empty`. Any new loss
+of coverage requires review even if its rows have parser/coverage explanations.

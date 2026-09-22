@@ -9,8 +9,8 @@ spec = importlib.util.spec_from_file_location('juriku_probe_target', '/upstream/
 module = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = module
 spec.loader.exec_module(module)
-assert module.emoji_library_available
-assert not module.pathspec_library_available
+if module.emoji_library_available is not True or module.pathspec_library_available is not False:
+    raise ValueError("unexpected detector library availability")
 request = json.load(sys.stdin)
 text = request['text']
 logger = module.SimpleLogger(use_colors=False, stream=sys.stderr)
@@ -25,5 +25,5 @@ for mode, word in [('inventory',False), ('word_exclusions',True)]:
         raise ValueError("read-only detector changed input")
     results[mode] = [dict(dataclasses.asdict(m), code_point=f'U+{ord(m.original_char):04X}') for m in markers]
 print(json.dumps({'position_units':'Unicode scalar indices in supplied decoded text',
-    'emoji_version':module.emoji.__version__, 'pathspec_available':False,
+    'emoji_version':module.emoji.__version__, 'pathspec_available':module.pathspec_library_available,
     'input_unchanged':input_unchanged, 'results':results}, ensure_ascii=True, sort_keys=True))

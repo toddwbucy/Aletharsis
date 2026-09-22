@@ -337,3 +337,26 @@ def test_repacked_source_requires_opt_in_and_exact_tree(tmp_path, monkeypatch, f
     else:
         with pytest.raises(ValueError,match='identity mismatch'): provision.main()
         assert not (tmp_path/'output/provisioning.json').exists()
+
+
+@pytest.mark.parametrize('optimize', [False,True])
+@pytest.mark.parametrize('emoji,pathspec', [(False,False),(True,True),(False,True)])
+def test_juriku_library_preconditions_survive_optimization(tmp_path, optimize, emoji, pathspec):
+    fake=tmp_path/'target.py'
+    fake.write_text(f"emoji_library_available={emoji!r}\npathspec_library_available={pathspec!r}\n")
+    code=(PROBE/'juriku_probe.py').read_text().replace('/upstream/hidden-characters-detector.py',str(fake))
+    result=subprocess.run([sys.executable,*(['-O'] if optimize else []),'-c',code],input='{"text":"abc"}',text=True,capture_output=True,timeout=5)
+    assert result.returncode != 0 and 'unexpected detector library availability' in result.stderr
+    assert not result.stdout
+
+
+@pytest.mark.parametrize('mode,diagnostic', [('mutate','read-only detector changed input'),('duplicate','duplicate event listener')])
+def test_hiberius_mutation_and_duplicate_listener_fail(tmp_path, mode, diagnostic):
+    node=shutil.which('node')
+    if node is None: pytest.skip('Node required')
+    registration="document.getElementById('btnScan').addEventListener('click',()=>{document.getElementById('scanViz').appendChild(document.createTextNode('a'));document.getElementById('scanVerdict').textContent='done';"+("document.getElementById('scanInput').value='MUTATED';" if mode=='mutate' else '')+"});"
+    html=tmp_path/'index.html'; html.write_text('<script>'+registration*(2 if mode=='duplicate' else 1)+'</script>')
+    code=(PROBE/'hiberius_probe.cjs').read_text().replace("'/upstream/index.html'",json.dumps(str(html)))
+    result=subprocess.run([node,'-e',code],input='{"text":"a"}',text=True,capture_output=True,timeout=5)
+    assert result.returncode != 0 and diagnostic in result.stderr
+    assert not result.stdout

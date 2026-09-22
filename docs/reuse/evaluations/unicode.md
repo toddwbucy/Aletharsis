@@ -257,3 +257,21 @@ peak memory; run 2 used 3.452 seconds, 2.599 seconds CPU and 63.4 MiB peak memor
 Both used the same previously rebuilt native executable and trusted runtimes.
 Validation: all 432 offline tests passed, including 97 study/harness checks;
 `git diff --check` passed. No production Go code changed.
+
+## Seventh review remediation
+
+Made Juriku library availability and runner payload/source bounds explicit runtime
+checks, preserved observed pathspec availability, and made HIBERIUS fail on input
+mutation or duplicate element-event registration. Added optimized-Python library
+precondition tests, synthetic mutation/listener cases, and exact coverage-set
+checks with mutations demonstrating rejection of new coverage loss.
+
+Two fresh bounded offline runs reproduce all 30 sources, 90 stdout files and
+90 stderr files byte-for-byte against each other and the sixth-pass evidence.
+All 167 comparison rows are unchanged. Run 1 used 3.374 seconds service runtime,
+2.565 seconds cgroup CPU and 63.8 MiB peak memory; run 2 used 3.429 seconds,
+2.613 seconds CPU and 64.1 MiB peak memory. The same pinned inputs, native binary
+and runtimes were reused, with fresh probe identities. The manifest now covers
+240 artifacts, including four new run logs. All 442 offline tests passed,
+including 107 study/harness checks; diff checks passed. No production logic,
+adoption status or detector conclusions changed.
