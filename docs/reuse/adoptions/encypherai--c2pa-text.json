@@ -122,23 +122,20 @@
       ]
     }
   },
-  "evidence": [
-    {
-      "path": "docs/reuse/evaluations/c2pa-text.md",
+  "evidence": {
+    "docs/reuse/evaluations/c2pa-text.md": {
       "sha256": "8b97a5561e5a4048ee934ece4b967e305161b7d2b0395b0cd8072deac96539de",
       "purpose": "Observed results, environment and residual limitations"
     },
-    {
-      "path": "docs/reuse/evaluations/c2pa-text/manifest.json",
+    "docs/reuse/evaluations/c2pa-text/manifest.json": {
       "sha256": "db2c4a0e8eb5517a7236ba7eef1e03c7fa8c850d4c855cc9d55c558bf67dc40d",
       "purpose": "Exact retained experiment artifacts, toolchain and result identities"
     },
-    {
-      "path": "experiments/c2pa-text/README.md",
+    "experiments/c2pa-text/README.md": {
       "sha256": "62f2a8939e2d5a86b90e63b85a74ed2aa7546789634904ca4977ff2c63699535",
       "purpose": "Reproducible pinned provisioning and offline commands"
     }
-  ],
+  },
   "limitations": [
     "Eight of 39 independent HTML cases disagree with expected host syntax/context.",
     "NFC derivative coordinates differ from raw input; structured/HTML APIs omit source spans.",

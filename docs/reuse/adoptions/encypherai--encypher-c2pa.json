@@ -122,23 +122,20 @@
       ]
     }
   },
-  "evidence": [
-    {
-      "path": "docs/reuse/evaluations/c2pa-verifier.md",
+  "evidence": {
+    "docs/reuse/evaluations/c2pa-verifier.md": {
       "sha256": "58e809469d960a6ef51a4e1d9e2e3c4d8f0ff80b270f2425d35aaa1ae38f8111",
       "purpose": "Observed results, environment and residual limitations"
     },
-    {
-      "path": "docs/reuse/evaluations/c2pa-verifier/manifest.json",
+    "docs/reuse/evaluations/c2pa-verifier/manifest.json": {
       "sha256": "c4223e181ba189bcbe2782d01090335750d43b1a6697af0f26e8408b46efd28f",
       "purpose": "Exact retained experiment artifacts, toolchain and result identities"
     },
-    {
-      "path": "experiments/c2pa-verifier/README.md",
+    "experiments/c2pa-verifier/README.md": {
       "sha256": "64238d412811b0d0cb0920fe28ca19437385784f793117055d5d0b87d2ec978c",
       "purpose": "Reproducible pinned provisioning and offline commands"
     }
-  ],
+  },
   "limitations": [
     "Eleven final cases pass; independent fixture origin is not independent verifier execution.",
     "Rust/CGO and system-library packaging tested only on Linux amd64.",

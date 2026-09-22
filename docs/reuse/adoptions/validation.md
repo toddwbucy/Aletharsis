@@ -89,3 +89,23 @@ CI checks citation presence, membership and hashes; human review still evaluates
 whether a cited document supports an observation or a declared unrun gap.
 The six retained evidence identities, study bytes, check statuses and pending
 acceptance are unchanged. No dependency is approved and no runtime code changed.
+
+## Sixth review remediation validation
+
+Re-run on 2026-09-21 against the remediation tree based on `64ddbdd`, using
+Python 3.12.13 and pinned CI requirements: 492 full offline tests passed, including
+157 adoption checks; the four focused files above passed 213 tests. Full-suite
+measurements: 3.09 seconds wall, 3.05 seconds user CPU, 0.05 seconds system CPU,
+93,816 KiB maximum RSS. `git diff --check` passed.
+
+New checks reject known automated registry decision reviewers, pending approval
+recommendations after a registry rejection/retirement/deferral, schema-only
+acceptance/recommendation mismatches, ambiguous legacy evidence lists, duplicate
+raw JSON keys, gate URLs with trailing newlines, and whitespace-padded scope
+justifications. Historical accepted approvals with recorded withdrawal still pass.
+The draft evidence inventory is now an object keyed by retained path; its values
+preserve all six existing digest/purpose pairs. Citations, check statuses/details,
+recommendations and null acceptance are unchanged. The loader's duplicate-key
+rejection happens before schema validation; schema validation alone cannot recover
+keys already discarded by a permissive JSON parser. No runtime or experiment
+artifact changed and no component was approved.

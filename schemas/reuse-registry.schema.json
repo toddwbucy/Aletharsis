@@ -778,7 +778,7 @@
           "uniqueItems": true,
           "items": {
             "type": "string",
-            "pattern": "^https://[^\\s]+$"
+            "pattern": "^https://[^\\s]+(?![\\s\\S])"
           }
         },
         "reason": {

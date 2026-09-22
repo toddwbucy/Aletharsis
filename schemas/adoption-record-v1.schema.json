@@ -164,16 +164,15 @@
       ]
     },
     "evidence": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/evidencePath"
+      },
+      "additionalProperties": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "path": {
-            "type": "string",
-            "pattern": "^(docs|experiments)/([A-Za-z0-9_.-]*[A-Za-z0-9_-][A-Za-z0-9_.-]*/)*[A-Za-z0-9_.-]*[A-Za-z0-9_-][A-Za-z0-9_.-]*(?![\\s\\S])"
-          },
           "sha256": {
             "type": "string",
             "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
@@ -185,7 +184,6 @@
           }
         },
         "required": [
-          "path",
           "sha256",
           "purpose"
         ]
@@ -256,13 +254,13 @@
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "$ref": "#/properties/evidence/items/properties/path"
+            "$ref": "#/$defs/evidencePath"
           },
           "minItems": 1
         },
         "scope_justification": {
           "type": "string",
-          "pattern": "\\S",
+          "pattern": "^(?:\\s*\\S){20}",
           "minLength": 20
         }
       },
@@ -294,6 +292,10 @@
           }
         }
       ]
+    },
+    "evidencePath": {
+      "type": "string",
+      "pattern": "^(docs|experiments)/([A-Za-z0-9_.-]*[A-Za-z0-9_-][A-Za-z0-9_.-]*/)*[A-Za-z0-9_.-]*[A-Za-z0-9_-][A-Za-z0-9_.-]*(?![\\s\\S])"
     }
   },
   "allOf": [
@@ -395,6 +397,66 @@
                     "const": "passed"
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "recommendation": {
+            "const": "approve"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "acceptance": {
+            "properties": {
+              "disposition": {
+                "const": "approve"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "recommendation": {
+            "const": "revise"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "acceptance": {
+            "properties": {
+              "disposition": {
+                "const": "revise"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "recommendation": {
+            "const": "reject"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "acceptance": {
+            "properties": {
+              "disposition": {
+                "const": "reject"
               }
             }
           }

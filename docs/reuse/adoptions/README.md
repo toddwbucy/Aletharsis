@@ -20,10 +20,15 @@ Start new checks as `not_run` with explicit required evidence.
 Bind the record to the exact registry commit, source archive and license digests,
 requested scope, accountable owner, implementer, technical reviewer, evaluation
 PR and tracking issues. Add exact-byte SHA-256 references to retained commands,
-environment, results and artifact manifests. Checks cite evidence by its unique retained path, which resolves to the exact-byte
-digest in this record. Reordering the evidence inventory cannot rebind citations. A repository name, CI badge, study pass count or artifact URL alone is not
-adoption evidence. Nested manifests must be verified by their owning experiment
-checks; hashing a manifest alone does not validate the files it describes.
+environment, results and artifact manifests. The `evidence` inventory is an object
+keyed by retained path; each value contains its `sha256` and `purpose`. Checks cite
+those keys directly. This gives each path one digest and makes inventory ordering
+irrelevant. Consumers must reject duplicate JSON object keys before schema
+validation (the repository loader does so), rather than accepting a parser's
+first/last-wins interpretation. The schema rejects the former array representation.
+A repository name, CI badge, study pass count or artifact URL alone is not adoption
+evidence. Nested manifests must be verified by their owning experiment checks;
+hashing a manifest alone does not validate the files it describes.
 
 Every checklist field is required. Use `passed`, `partial`, `failed`, `not_run` or
 `not_applicable`; the detail states what ran, what it proves and what it does not.
@@ -40,16 +45,20 @@ For approval, every check except `live_adapter` must pass, including native
 platform execution, security review, disable/rollback and an initial semantic
 baseline. `live_adapter` alone may be not-applicable for an explicitly scoped
 component that ships no adapter (for example a development-only fixture oracle).
-Every scope justification must contain at least 20 characters and non-whitespace;
+Every scope justification must contain at least 20 non-whitespace characters;
 that is a placeholder guard, not proof of a sound justification.
 A pending `approve` recommendation with null acceptance is valid and grants no
 adoption authority; the registry cannot be approved in that state.
 It is only a recommendation until `acceptance` names the owner, technical reviewer,
-review record and matching disposition. `acceptance.record` must be a bare
+review record and matching disposition. The schema itself requires any acceptance
+disposition to equal the recommendation, so an accepted approval cannot bypass
+the approval checklist by retaining a `revise` recommendation.
+`acceptance.record` must be a bare
 Aletharsis PR URL, matching the registry decision contract; issue URLs and comment
 anchors can be retained in tracking/evidence but cannot replace that canonical URL.
 Known `coderabbitai` and `*[bot]` identifiers are rejected as acceptance owners
-or accepted technical reviewers. Pending records may name automated reviewers
+or accepted technical reviewers, and as registry decision reviewers for accepted
+approval, rejection or withdrawal. Pending records may name automated reviewers
 that supplied evaluation feedback. Before recording acceptance in any disposition,
 assign an independent human technical reviewer and update `technical_reviewer` in
 both the adoption record and registry in the same reviewed change. The acceptance
@@ -77,7 +86,10 @@ needs acceptance. Rejection or revision does not silently close other gate issue
 A previously accepted record remains historical when the registry becomes
 `retired`, `deferred` or `rejected`. The registry must carry a complete matching
 `retire`, `defer` or `reject` decision with a distinct later PR reference; the
-original acceptance is retained and grants no current authority. CI checks the
+original acceptance is retained and grants no current authority. A rejected,
+retired or deferred component cannot retain a pending `approve` recommendation
+with null acceptance; only a retained historical approval may accompany its
+recorded withdrawal. CI checks the
 recorded transition, not the chronology or authorization of the linked review.
 
 ## Required checklist
