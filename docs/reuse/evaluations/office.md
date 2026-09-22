@@ -121,18 +121,18 @@ codeauthor/changelog credits are not asserted as rights-holder notices. Root
 package coverage outside thirdparty is a proposed basis for owner review, not
 an invented per-file attribution. Exceptions requiring that explicit decision:
 
-| Module | Observed exception / proposed basis |
-| --- | --- |
-| `oletools/__init__.py` | No header attribution; package grant proposed |
-| `oletools/ppt_record_parser.py` | BSD disclaimer but no copyright-holder line; package grant proposed |
-| `oletools/common/__init__.py` | No header attribution; package grant proposed |
-| `oletools/common/io_encoding.py` | Header names msodde (2017–2018 Lagadec), not io_encoding; package grant proposed |
-| `oletools/common/log_helper/__init__.py` | No header attribution; package grant proposed |
-| `oletools/common/log_helper/_json_formatter.py` | No header attribution; package grant proposed |
-| `oletools/common/log_helper/_logger_adapter.py` | No header attribution; package grant proposed |
-| `oletools/common/log_helper/_root_logger_wrapper.py` | No header attribution; package grant proposed |
-| `oletools/thirdparty/__init__.py` | Empty initializer, no header; root excludes thirdparty, so no governing notice asserted |
-| `oletools/thirdparty/xglob/__init__.py` | No header attribution; separate xglob subpackage notice proposed |
+| Module | Observed exception / proposed basis | Other credits (observations only) |
+| --- | --- | --- |
+| `oletools/__init__.py` | No header attribution; package grant proposed | None in recorded header scope |
+| `oletools/ppt_record_parser.py` | BSD disclaimer but no copyright-holder line; package grant proposed | None in recorded header scope |
+| `oletools/common/__init__.py` | No header attribution; package grant proposed | None in recorded header scope |
+| `oletools/common/io_encoding.py` | Header names msodde (2017–2018 Lagadec), not io_encoding; package grant proposed | None in recorded header scope |
+| `oletools/common/log_helper/__init__.py` | No header attribution; package grant proposed | Package codeauthor: Intra2net AG and Philippe Lagadec in log_helper.py:26; not per-file attribution |
+| `oletools/common/log_helper/_json_formatter.py` | No header attribution; package grant proposed | Package codeauthor: Intra2net AG and Philippe Lagadec in log_helper.py:26; not per-file attribution |
+| `oletools/common/log_helper/_logger_adapter.py` | No header attribution; package grant proposed | Package codeauthor: Intra2net AG and Philippe Lagadec in log_helper.py:26; not per-file attribution |
+| `oletools/common/log_helper/_root_logger_wrapper.py` | No header attribution; package grant proposed | Package codeauthor: Intra2net AG and Philippe Lagadec in log_helper.py:26; not per-file attribution |
+| `oletools/thirdparty/__init__.py` | Empty initializer, no header; root excludes thirdparty, so no governing notice asserted | None in recorded header scope |
+| `oletools/thirdparty/xglob/__init__.py` | No header attribution; separate xglob subpackage notice proposed | None in recorded header scope |
 
 Per-notice records include holders observed in the notice and an SPDX field.
 The olefile copies remain `NOASSERTION` for the combined SPDX expression, with
@@ -148,3 +148,33 @@ Provisioning must also exclude write behavior present in the closure:
 A helper-name allowlist alone is insufficient: read-only input mounts and tests
 that reject write-mode calls remain required, alongside the previously excluded
 `oleobj.process_file` and CLI extraction paths. No such runtime is cleared here.
+
+## Rights and provisioning evidence (review pass 3)
+
+`ooxml.py:10` credits **Intra2net AG**, and
+`common/log_helper/log_helper.py:26` credits **Intra2net AG and Philippe Lagadec**.
+Both verbatim codeauthor observations are retained in per-module `other_credits`;
+empty lists mean no matching credit in the documented header scope, not no author.
+The headerless log_helper siblings do not acquire an inferred per-file holder.
+Whether package grants cover these contributions is an explicit owner B0 question.
+
+Proposed provisioning carries **both** root `LICENSE.md` and package
+`oletools/LICENSE.txt`, plus xglob and both olefile notices. `provisioning_notices`
+lists all five. Non-thirdparty oletools files now propose the package-local notice
+as their governing basis; the root notice is additional retained evidence. The two
+notices have different dates/bytes; no byte equivalence or clearance is asserted.
+The ppt_record_parser BSD disclaimer is recorded verbatim separately from its
+absent copyright-holder observation.
+
+`write_entry_points` records archive/member, qualified symbol and definition line,
+including `OleFileIO.__init__(write_mode=)` and `io_encoding.uopen(mode=)` as well
+as open/write helpers and process_file. Constructor calls can enable writes;
+uopen forwards arbitrary modes to builtin open. Gate-2 tests must cover these
+paths, alongside enforced read-only mounts; this is not a complete sandbox policy.
+
+Declared setup/wheel license metadata says BSD and is retained as an observation.
+It does not override the exact notice text (including MIT and inherited PIL).
+Structured registry `runtime.artifacts` binds each archive and retained notice
+by its labeled identity, digest, size and retained path. Offline tests verify
+retained holder strings and proposed governing-notice scope, but unretained notice
+hashes remain static archive observations rather than independently checked CI data.
