@@ -1,0 +1,424 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "metadata": {},
+    "structure": {},
+    "texts": [],
+    "office": {
+      "packages": [],
+      "xml": [],
+      "scopes": [],
+      "metadata": [],
+      "relationships": [],
+      "objects": []
+    }
+  },
+  "file": {
+    "extension": ".txt",
+    "filename": "bad16.txt",
+    "format": "text",
+    "identification_basis": "text extension; decoding requires validation",
+    "mime": "text/plain",
+    "parser": "text-source-v1",
+    "path": "reference/python-behavior/inputs/bad16.txt",
+    "sha256": "9a3dfc4ebac913021d75fd93382c29818f41c16331358a96d3f83d6ef337d0a9",
+    "size": 6
+  },
+  "findings": [
+    {
+      "category": "parser",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "The file was not fully analyzed. Review the error before interpreting findings.",
+      "evidence": {
+        "byte_end": 4,
+        "byte_start": 2,
+        "error_type": "UnicodeDecodeError",
+        "message": "'utf-16-le' codec can't decode bytes in position 2-3: illegal UTF-16 surrogate",
+        "reason": "illegal UTF-16 surrogate",
+        "failure_code": "text.decode_failed"
+      },
+      "id": "parser.failure",
+      "location": {},
+      "severity": "INFO",
+      "title": "Audit could not complete",
+      "finding_ref": "finding/0",
+      "execution_ref": "exec/1",
+      "mechanism": null,
+      "anchor_refs": []
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "4.0",
+  "status": "failed",
+  "summary": {
+    "exit_code": 4,
+    "findings": 1,
+    "high": 0,
+    "info": 1,
+    "low": 0,
+    "medium": 0
+  },
+  "catalog_version": "conformance-subset/1",
+  "capabilities": [
+    {
+      "id": "aletharsis.acquire",
+      "revision": "1",
+      "role": "acquisition",
+      "mechanism": null,
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.acquire",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "aletharsis.c2pa.verify",
+      "revision": "1",
+      "role": "verifier",
+      "mechanism": "cryptographic",
+      "purpose": null,
+      "implementation": null,
+      "availability": {
+        "state": "unavailable",
+        "reason_code": "capability.not_implemented"
+      },
+      "participation": "disabled",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "aletharsis.parse.text",
+      "revision": "1",
+      "role": "parser",
+      "mechanism": null,
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.parse.text",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "aletharsis.unicode.inventory",
+      "revision": "1",
+      "role": "analyzer",
+      "mechanism": "structural",
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.unicode.inventory",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "text"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "anthropic.claude_text_watermark",
+      "revision": "1",
+      "role": "analyzer",
+      "mechanism": "statistical",
+      "purpose": "watermark_detection",
+      "implementation": null,
+      "availability": {
+        "state": "unavailable",
+        "reason_code": "capability.detector_access_unavailable"
+      },
+      "participation": "disabled",
+      "supported_scope": {
+        "kinds": [
+          "text"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    }
+  ],
+  "executions": [
+    {
+      "execution_ref": "exec/0",
+      "capability_ref": "aletharsis.acquire",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/0",
+          "unit": "whole_artifact"
+        }
+      ],
+      "exclusions": [],
+      "state": "completed",
+      "reason_code": null,
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/1",
+      "capability_ref": "aletharsis.parse.text",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [],
+      "exclusions": [],
+      "state": "failed",
+      "reason_code": "text.decode_failed",
+      "diagnostic_refs": [
+        "diagnostic/0"
+      ]
+    },
+    {
+      "execution_ref": "exec/2",
+      "capability_ref": "aletharsis.unicode.inventory",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [],
+      "exclusions": [],
+      "state": "not_run",
+      "reason_code": "execution.prerequisite_failed",
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/3",
+      "capability_ref": "anthropic.claude_text_watermark",
+      "config": {
+        "schema": null,
+        "revision": null,
+        "settings": null,
+        "sha256": null,
+        "key_ref": null,
+        "unavailable_reason": "configuration.unknown"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [],
+      "exclusions": [],
+      "state": "not_run",
+      "reason_code": "execution.disabled",
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/4",
+      "capability_ref": "aletharsis.c2pa.verify",
+      "config": {
+        "schema": null,
+        "revision": null,
+        "settings": null,
+        "sha256": null,
+        "key_ref": null,
+        "unavailable_reason": "configuration.unknown"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [],
+      "exclusions": [],
+      "state": "not_run",
+      "reason_code": "execution.disabled",
+      "diagnostic_refs": []
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_ref": "artifact/0",
+      "kind": "source",
+      "representation": {
+        "serialization": "original-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "9a3dfc4ebac913021d75fd93382c29818f41c16331358a96d3f83d6ef337d0a9",
+      "byte_length": 6,
+      "content_ref": null,
+      "unavailable_reason": "not_retained",
+      "parents": [],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    }
+  ],
+  "anchors": [],
+  "results": [],
+  "diagnostics": [
+    {
+      "diagnostic_ref": "diagnostic/0",
+      "execution_ref": "exec/1",
+      "stage": "parsing",
+      "code": "text.decode_failed",
+      "message": "'utf-16-le' codec can't decode bytes in position 2-3: illegal UTF-16 surrogate",
+      "scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "details": {
+        "byte_end": 4,
+        "byte_start": 2,
+        "error_type": "UnicodeDecodeError",
+        "reason": "illegal UTF-16 surrogate"
+      }
+    }
+  ],
+  "profile_assessments": [],
+  "view": {
+    "name": "audit",
+    "finding_categories": []
+  },
+  "adapter_runs": []
+}

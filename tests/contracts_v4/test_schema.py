@@ -113,3 +113,18 @@ def test_envelope_construction_and_presentation_states():
     assert validator.is_valid({**base, 'presentation_outcome': 'failed',
                                'reason': 'execution.resource_limit'})
     assert not validator.is_valid({**base, 'presentation_outcome': 'revealed'})
+
+
+def test_complete_flat_fixtures_are_reproducible_and_wire_valid():
+    spec = importlib.util.spec_from_file_location('office_fixture_builder',
+        Path(__file__).with_name('build_fixtures.py'))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    expected = module.build()
+    paths = sorted(Path(__file__).with_name('fixtures').glob('flat-*.json'))
+    assert len(paths) == len(expected) == 8
+    validator = Draft202012Validator(_builder.build())
+    for path in paths:
+        fixture = json.loads(path.read_bytes())
+        assert fixture == expected[path.name]
+        validator.validate(fixture)
