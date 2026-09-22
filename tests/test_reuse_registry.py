@@ -244,9 +244,48 @@ def test_decisions_require_aletharsis_pull_request_url(url):
     ("docs/reuse/.notice", True), (None, True),
 ])
 def test_runtime_artifact_retained_path_is_normalized(path, valid):
+    """Retained paths forbid dot/empty segments and require strict end of input."""
     document, record = sample()
     record["runtime"]["artifacts"] = [{
         "archive": "example.tar.gz", "archive_member": "LICENSE",
         "sha256": "0" * 64, "size": 1, "retained_path": path,
     }]
     assert VALIDATOR.is_valid(document) is valid
+
+
+@pytest.mark.parametrize("key,value", [
+    ("sha256", "0" * 64 + "\n"),
+    ("archive", "a.tar.gz\n"), ("archive_member", "LICENSE\n"),
+    ("archive", " a.tar.gz"), ("archive_member", "LICENSE "),
+    ("archive", "a\nb"), ("archive_member", "x\ry"),
+])
+def test_artifact_identity_rejects_whitespace_ambiguity(key, value):
+    """Artifact identities have no surrounding whitespace or embedded line breaks."""
+    document, record = sample()
+    record["runtime"]["artifacts"] = [{"archive": "a.tar.gz", "archive_member": "LICENSE", "sha256": "0" * 64, "size": 1, "retained_path": None}]
+    VALIDATOR.validate(document)
+    record["runtime"]["artifacts"][0][key] = value
+    assert not VALIDATOR.is_valid(document)
+
+
+def test_artifact_objects_are_closed_and_complete():
+    """Every optional artifact, when present, has exactly the required identity fields."""
+    document, record = sample()
+    artifact = {"archive": "a.tar.gz", "archive_member": "dir/license name.txt", "sha256": "0" * 64, "size": 1, "retained_path": None}
+    record["runtime"]["artifacts"] = [artifact]
+    VALIDATOR.validate(document)
+    for key in (None, *artifact):
+        changed = deepcopy(document)
+        target = changed["components"][0]["runtime"]["artifacts"][0]
+        if key is None:
+            target["unknown"] = True
+        else:
+            del target[key]
+        assert not VALIDATOR.is_valid(changed)
+
+
+def test_all_schema_patterns_require_strict_end_of_input():
+    """Prevent reintroducing dollar anchors that admit a final newline in Python."""
+    patterns = [value["pattern"] for _, value in objects(SCHEMA) if "pattern" in value]
+    assert patterns
+    assert all(pattern.endswith(r"(?![\s\S])") for pattern in patterns)

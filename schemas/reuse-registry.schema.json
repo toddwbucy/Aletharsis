@@ -30,11 +30,11 @@
       "properties": {
         "id": {
           "type": "string",
-          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+          "pattern": "^[a-z0-9][a-z0-9._-]*(?![\\s\\S])"
         },
         "repository": {
           "type": "string",
-          "pattern": "^https://github.com/[^/\\s]+/[^/\\s]+$"
+          "pattern": "^https://github.com/[^/\\s]+/[^/\\s]+(?![\\s\\S])"
         },
         "component": {
           "type": "string",
@@ -84,11 +84,11 @@
           "properties": {
             "commit": {
               "type": "string",
-              "pattern": "^[a-f0-9]{40}$"
+              "pattern": "^[a-f0-9]{40}(?![\\s\\S])"
             },
             "source_tree_git_sha1": {
               "type": "string",
-              "pattern": "^[a-f0-9]{40}$"
+              "pattern": "^[a-f0-9]{40}(?![\\s\\S])"
             },
             "tag": {
               "anyOf": [
@@ -105,7 +105,7 @@
               "anyOf": [
                 {
                   "type": "string",
-                  "pattern": "^[a-f0-9]{64}$"
+                  "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
                 },
                 {
                   "type": "null"
@@ -134,15 +134,15 @@
             },
             "source_url": {
               "type": "string",
-              "pattern": "^https://[^\\s]+$"
+              "pattern": "^https://[^\\s]+(?![\\s\\S])"
             },
             "retained_path": {
               "type": "string",
-              "pattern": "^licenses/[a-z0-9._-]+\\.txt$"
+              "pattern": "^licenses/[a-z0-9._-]+\\.txt(?![\\s\\S])"
             },
             "sha256": {
               "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
+              "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
             },
             "scope": {
               "type": "string",
@@ -217,18 +217,20 @@
                 "properties": {
                   "archive": {
                     "type": "string",
-                    "minLength": 1
+                    "minLength": 1,
+                    "pattern": "^\\S(?:[^\\r\\n]*\\S)?(?![\\s\\S])"
                   },
                   "archive_member": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "minLength": 1
+                    "minLength": 1,
+                    "pattern": "^\\S(?:[^\\r\\n]*\\S)?(?![\\s\\S])"
                   },
                   "sha256": {
                     "type": "string",
-                    "pattern": "^[0-9a-f]{64}$"
+                    "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
                   },
                   "size": {
                     "type": "integer",
@@ -301,7 +303,7 @@
                 "properties": {
                   "origin": {
                     "type": "string",
-                    "pattern": "^https://[^\\s]+$"
+                    "pattern": "^https://[^\\s]+(?![\\s\\S])"
                   },
                   "license": {
                     "type": "string",
@@ -317,7 +319,7 @@
                   },
                   "sha256": {
                     "type": "string",
-                    "pattern": "^[a-f0-9]{64}$"
+                    "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
                   },
                   "generator_revision": {
                     "anyOf": [
@@ -376,7 +378,7 @@
             },
             "readme_url": {
               "type": "string",
-              "pattern": "^https://[^\\s]+$"
+              "pattern": "^https://[^\\s]+(?![\\s\\S])"
             },
             "archived": {
               "type": "boolean"
@@ -400,7 +402,7 @@
               "anyOf": [
                 {
                   "type": "string",
-                  "pattern": "^https://[^\\s]+$"
+                  "pattern": "^https://[^\\s]+(?![\\s\\S])"
                 },
                 {
                   "type": "null"
