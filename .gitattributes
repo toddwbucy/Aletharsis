@@ -28,6 +28,12 @@ tests/adapters/fixtures/*.json -text
 docs/specs/detector-adapter-v1.md -text
 schemas/adapter-exchange-v1.schema.json -text
 tests/adapters/*.py -text
+# Profile conformance definitions retain exact artifact identities.
+internal/profiles/testdata/*.json -text
+# Office package fixtures and retained part hashes are byte evidence.
+internal/packageparts/testdata/*.docx -text
+internal/packageparts/testdata/*.odt -text
+internal/packageparts/testdata/manifest.json -text
 # G6 records bind exact bytes of study narratives and reproduction commands.
 docs/reuse/evaluations/c2pa-text.md -text
 docs/reuse/evaluations/c2pa-verifier.md -text
