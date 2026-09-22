@@ -140,7 +140,7 @@ func TestRootWhitespaceLexicalFormAndIssueLocations(t *testing.T) {
 			t.Fatalf("%q: %+v", body, r)
 		}
 		issue := r.Issues[0]
-		if issue.Segment < 0 || issue.Attribute != -1 || string(raw[issue.Span.Start:issue.Span.End]) != body {
+		if issue.Segment < 0 || issue.Token < 0 || issue.Token != r.XML.Segments[issue.Segment].Token || issue.Attribute != -1 || string(raw[issue.Span.Start:issue.Span.End]) != body {
 			t.Fatalf("%q: %+v", body, issue)
 		}
 	}

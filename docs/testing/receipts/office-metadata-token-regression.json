@@ -1,0 +1,29 @@
+{
+  "command": [
+    "go",
+    "test",
+    "-race",
+    "-count=1",
+    "-p",
+    "1",
+    "./internal/officemetadata"
+  ],
+  "environment": {
+    "GOMAXPROCS": "2",
+    "GOTOOLCHAIN": "local",
+    "GOCACHE": "/tmp/aletharsis-go-cache"
+  },
+  "go_binary": "/tmp/go/bin/go",
+  "runner_script": "/tmp/aletharsis-runner-followup/scripts/run_bounded.py",
+  "runner_script_sha256": "93aa918a4d0f3bbddaf98d924428a7f344c1d3feb30963ea54e0b45e674ad62d",
+  "test_source_sha256": "e528e2c3d4e394a7e4763fe525e8259b88704b21869acb03ad9dfdb8938b9135",
+  "unit": "aletharsis-validation-9fb5db01114d4b7ab13eb14df4c1c735.service",
+  "status": "completed",
+  "enforcement_verified": true,
+  "cleanup_confirmed": true,
+  "memory_mib": 1024,
+  "timeout_seconds": 60,
+  "reported_peak": "165.6M (swap: 0B)",
+  "result": "internal/officemetadata passed in 1.119s",
+  "scope": "Targeted package regression only; not a full-suite resource-compliance result."
+}

@@ -67,11 +67,13 @@ preserved verbatim after XML decoding even when invalid as dates/numbers. These
 are observed metadata, not verified author identities or provenance assertions.
 Successful results include machine-readable limitations: values are not validated,
 identity is not verified, attribute semantics are unresolved, only selected
-properties are projected, and package binding is not verified. Completed state means no declared unassessed markup of either class was found
+properties are projected, and package binding is not verified. Completed state means no
+declared unassessed markup of either class was found
 in the part. It never means verified provenance or full Office semantics.
 `Coverage.OtherGaps == 0` means no gaps beyond the recognized standard projection
 gaps were observed; it does not certify full extraction or schema validity.
-StandardProjectionGaps is normally nonzero on real producer metadata. The producer performs no finding classification or profile suppression.
+StandardProjectionGaps is normally nonzero on real producer metadata. The producer
+performs no finding classification or profile suppression.
 
 Validation covers duplicates, entities, CDATA/non-BMP mapping, empty values,
 namespace spoofing, nested known elements, unknown siblings, root text, malformed
@@ -89,7 +91,8 @@ Non-declaration root attributes are retained in `RootAttributes` and produce
 attribute issues. Comments and processing instructions anywhere in the part produce
 `metadata.markup_unassessed`, including those inside selected values. Each has
 an exact token index and byte span; prolog/epilog markup has Element -1.
-XML declarations are interpreted by the parser and do not produce markup issues. Issue `Token` is -1 when unavailable; text
+XML declarations are interpreted by the parser and do not produce markup issues. Issue
+`Token` is -1 when unavailable; text
 issues retain their segment's token. Markup never enters concatenated values.
 
 Validation resumed with user authorization after the original resource stop,
@@ -120,3 +123,10 @@ was killed by the enforced 1 GiB ceiling (`memory_limit`, cleanup confirmed).
 It is incomplete validation, not a passing full race gate. Further validation
 execution stopped at that ceiling; no higher-limit retry was performed. The new
 metadata regressions were not reached by that whole-suite attempt.
+
+[CI evidence for f1ad14c](../testing/receipts/office-metadata-ci-race.json)
+records a successful full race CI job and retains metadata-package events,
+including the contentType and vocabulary tests. This is separate from local
+resource compliance: the local 1 GiB run failed, and its 60-second deadline is
+also an unestablished constraint. A future authorized attempt must reassess both
+budgets and retain JSON progress; no limit increase or full-suite retry is implied.
