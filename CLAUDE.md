@@ -129,8 +129,8 @@ is a declaration of coverage, never a negative detector result.
   defect as a false finding.
 - **Exit codes combine severity and operational outcome**: 0 none, 1 INFO/LOW, 2 MEDIUM, 3 HIGH,
   4 acquisition/parse/output/usage failure. In report 2.0 (and proposed 4.0),
-  any non-completed status yields 4; report 1.0 carries no coverage state and
-  from report status, its audit exits 4 only on failed status. Read report status and
+  any non-completed status yields 4; report 1.0 carries no coverage state;
+  judged from report status alone, its audit exits 4 only on failed status. Read report status and
   coverage to distinguish partial from failed; exit 4 alone is not a retry policy. A failed audit still emits a schema-valid report
   carrying a `parser.failure` finding.
 - **Locations are zero-based code-point indices plus original-file byte offsets** — never graphemes
