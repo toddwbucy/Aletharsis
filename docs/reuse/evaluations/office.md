@@ -1,0 +1,90 @@
+# G3 Office comparator: static clearance assessment
+
+Status: **pending clearance**, no comparator executed. Tracking #40 / #21.
+This assessment does not authorize full oletools installation or adoption.
+
+## Exact acquisition and scope
+
+The pinned upstream revision is `ec10260989dbc48b9109e3d05d22beee19cf2333`.
+The archive came from
+`https://codeload.github.com/decalage2/oletools/tar.gz/ec10260989dbc48b9109e3d05d22beee19cf2333`.
+Its SHA-256 is `8a5e4874f6393ed540c33a1a03367123a5054fd334de3cfca79cab1af1e3e045`
+(3,144,228 bytes). The pinned source reports 0.60.3; do not identify it as the
+repository's older 0.60.2 release merely because that release appeared in G0.
+
+The [static inventory](office/static-inventory.json) records candidate module,
+license and archive identities. Archive reads and Python AST parsing examined
+source as data; no upstream imports, installation or invocation occurred.
+
+Root package licensing is BSD-2-Clause with an MIT officeparser notice. The root
+explicitly excludes the thirdparty directory. A full installation also declares
+`pyparsing`, `olefile`, `easygui`, `colorclass`, conditional `msoffcrypto-tool`, and
+`pcodedmp`. The latter's package metadata declares GPL; the vendored `xxxswf`
+license contains GPL-3.0 terms. This assessment does not clear that full closure.
+Out-of-process execution does not by itself settle redistribution rights.
+
+## Candidate restricted runtime
+
+Use only `ooxml` and read-only `oleobj` helpers, with their statically observed
+module closure, plus olefile 0.47. Retain xglob's BSD-2-Clause license separately.
+Olefile includes BSD-2-Clause and inherited PIL license text; both its historical
+package notice and distribution notice are retained verbatim for review. No
+SPDX label here substitutes for examination of those notices.
+
+The olefile wheel is pinned by SHA-256
+`543c7da2a7adadf21214938bb79c83ea12b473a4b6ee4ad4bf854e7715e13d1f`.
+Source: `https://files.pythonhosted.org/packages/17/d3/b64c356a907242d719fc668b71befd73324e47ab46c8ebbbede252c154b2/olefile-0.47-py2.py3-none-any.whl`.
+The selected Python 3 modules have only standard-library imports; Python 2
+compatibility modules are not candidates for the proposed Python 3.12 runtime.
+Optional `lxml` must be absent so the upstream standard-library XML fallback is
+selected. The recorded AST imports include conditional imports; they are not a
+proof that reflection or runtime loading cannot add dependencies.
+
+Before execution, provisioning must enforce a file allowlist with exact hashes,
+retain notices, pin the interpreter/stdlib/runtime closure, disable ambient site
+packages and bytecode writes, and verify runtime imports under isolation. No
+`pip install oletools`, installation hooks, optional extras or audit-time downloads.
+This repository retains notices and inventory, not upstream executable source.
+
+## Comparison fidelity and side effects
+
+| #40 target | Proposed independent surface | Limitation to retain |
+| --- | --- | --- |
+| Package parts | Upstream OOXML ZIP traversal | A shared standard-library ZIP implementation is not a second ZIP implementation; disclose this dependence |
+| Core/app metadata | Upstream XML traversal plus an independently authored projection of namespace-qualified properties | `olemeta` is OLE metadata tooling, not a DOCX property oracle; the projection itself needs fixtures and review |
+| Relationships | Upstream XML traversal of relationship declarations | `find_external_relationships` selects external types; it alone is not a complete relationship inventory |
+| Embedded objects | `oleobj.find_ole` and package target inventory | OLE recognizability is narrower than all embedded packages; record non-OLE and unrecognized targets as unsupported checks |
+
+Do not shrink the comparison to what `find_ole` recognizes. Independent fixture
+expectations must cover all four targets and expose missing comparator coverage.
+Never derive expected values from Aletharsis or upstream output.
+
+Do not call `oleobj.process_file` or its CLI: its documented behavior writes
+extracted objects, including beside the input by default. No decryption/password
+helpers, real credentials, customUI execution or external-target fetching.
+Only synthetic fixtures; read-only input mounts; cleared environment; no network;
+bwrap/prlimit supervision modeled on the Unicode study. Read-only helper names
+are not security boundaries: enforce process CPU/time/memory/output restrictions
+and retain stderr/cleanup failures. Review returned generators/streams for closure.
+
+## Remaining B0 gates
+
+1. Review exact selected module headers and retained license notices, including
+   the interpreter/stdlib/platform dependencies. Any unapproved component stops use.
+2. Implement and test provisioning, module allowlisting and import isolation.
+3. Validate the proposed comparison projection against independent expected cases,
+   including malformed packages and incomplete upstream enumeration.
+4. Obtain the appropriate clearance disposition before comparison execution.
+
+Registry archive identity and root-license identification are now factual rather
+than unknown. `clearance: pending`, `runtime.assessment: unverified`, proposed
+adoption and empty production scope remain accurate. No #40/#21 gate is closed.
+
+## Resources and evidence limits
+
+Preflight used static archive inspection only. No comparator CPU or comparison
+artifacts exist. Earlier preflight CPU was not instrumented and is not claimed as
+zero; subsequent execution needs measured resource receipts before starting.
+The study's original 12-hour engineering, 2-hour CPU, 2-GiB disk, 1-GiB/process,
+60-second/case and 32-MiB input/output ceilings remain in force. Do not extend
+those budgets silently to accommodate tooling or failed attempts.

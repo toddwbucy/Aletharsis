@@ -51,3 +51,6 @@ tests/contracts_v3/blobs/** -text whitespace=-blank-at-eol,-blank-at-eof
 tests/contracts_v3/*-vectors.json -text
 tests/contracts_v3/invalid-cases.json -text
 tests/contracts_v3/catalog.json -text
+
+# Exact upstream notices retained by the Office clearance assessment.
+docs/reuse/evaluations/office/*-license.txt -text whitespace=-blank-at-eol,-blank-at-eof
