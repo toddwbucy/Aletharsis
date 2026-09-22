@@ -104,3 +104,19 @@ parent/child issues are intentional and must not be summed as byte coverage.
 Resumed validation evidence is retained in
 [office-metadata-resumed.json](../testing/receipts/office-metadata-resumed.json)
 and its referenced logs. The historical preflight receipt remains unchanged.
+
+Any issue code under `metadata.standard_` denotes a standard projection gap.
+Limitation strings are a separate namespace of observations and never enter the
+issue classifier (including metadata.standard_subtrees_not_validated).
+The core vocabulary includes cp:contentType, distinct from the package MIME type.
+
+The original resumed runs used runner PR #77, branch
+`test/configurable-memory-limit`, commit `054f65b`, script `scripts/run_bounded.py`.
+That PR has since merged; the new full-race receipt pins the merged runner
+revision and records its actual enforcement/outcome. Historical logs stay intact.
+
+The [full race-suite attempt](../testing/receipts/office-metadata-full-race.json)
+was killed by the enforced 1 GiB ceiling (`memory_limit`, cleanup confirmed).
+It is incomplete validation, not a passing full race gate. Further validation
+execution stopped at that ceiling; no higher-limit retry was performed. The new
+metadata regressions were not reached by that whole-suite attempt.

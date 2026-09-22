@@ -75,6 +75,7 @@ var vocabulary = map[[3]string]string{
 	{"core", CoreNamespace, "revision"}:           "revision",
 	{"core", CoreNamespace, "keywords"}:           "",
 	{"core", CoreNamespace, "category"}:           "",
+	{"core", CoreNamespace, "contentType"}:        "",
 	{"core", CoreNamespace, "contentStatus"}:      "",
 	{"core", CoreNamespace, "lastPrinted"}:        "",
 	{"core", CoreNamespace, "version"}:            "",
@@ -174,9 +175,6 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	r := &Result{Parser: Version, State: "completed", Kind: kind, XML: mapped, Properties: []Property{}, Issues: []Issue{}, RootAttributes: []int{}, Limitations: []string{"metadata.values_not_validated", "metadata.identity_not_verified", "metadata.attribute_semantics_unresolved", "metadata.selected_properties_only", "metadata.package_binding_not_verified", "metadata.standard_subtrees_not_validated"}}
 	issue := func(code string, element, segment, attribute, token int, span xmlparts.Span) {
 		r.State = "partial"
-		if segment >= 0 {
-			token = mapped.Segments[segment].Token
-		}
 		standard := strings.HasPrefix(code, "metadata.standard_")
 		if standard {
 			r.Coverage.StandardProjectionGaps++

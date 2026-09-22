@@ -105,5 +105,11 @@
   "limitations": [
     "Logs retain systemd-reported peak and CPU values; not whole-study cumulative accounting.",
     "Earlier 166.5/449.6 MiB runs were reported in conversation but not retained on the branch; these are fresh replacement validation runs, not reconstructed receipts."
-  ]
+  ],
+  "runner_dependency": {
+    "pr": 77,
+    "branch": "test/configurable-memory-limit",
+    "commit": "054f65b",
+    "script": "scripts/run_bounded.py"
+  }
 }

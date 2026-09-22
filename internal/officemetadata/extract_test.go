@@ -374,14 +374,16 @@ func TestProducerShapedMetadata(t *testing.T) {
 }
 
 func TestCompleteStandardVocabulary(t *testing.T) {
-	// Independent specification inventory: deleting any production entry must fail.
+	// Schema inventory: assert both omissions and unexpected additions.
+	seen := map[[3]string]bool{}
 	for _, tc := range []struct{ kind, ns, names string }{
 		{"core", dcNamespace, "creator identifier title subject description language"},
 		{"core", termsNamespace, "created modified"},
-		{"core", CoreNamespace, "lastModifiedBy revision keywords category contentStatus lastPrinted version"},
+		{"core", CoreNamespace, "lastModifiedBy revision keywords category contentStatus contentType lastPrinted version"},
 		{"app", AppNamespace, "Application AppVersion Company Template TotalTime Pages Words Characters DocSecurity Lines Paragraphs ScaleCrop HeadingPairs TitlesOfParts Manager LinksUpToDate CharactersWithSpaces SharedDoc HyperlinkBase HLinks HyperlinksChanged DigSig PresentationFormat Slides Notes HiddenSlides MMClips"},
 	} {
 		for _, name := range strings.Fields(tc.names) {
+			seen[[3]string{tc.kind, tc.ns, name}] = true
 			body := `<p:` + name + ` xmlns:p="` + tc.ns + `"/>`
 			raw := core(body)
 			if tc.kind == "app" {
@@ -392,5 +394,21 @@ func TestCompleteStandardVocabulary(t *testing.T) {
 				t.Fatalf("%s: %+v", name, r)
 			}
 		}
+	}
+	if len(seen) != 43 || len(vocabulary) != len(seen) {
+		t.Fatalf("vocabulary size: %d, expected %d", len(vocabulary), len(seen))
+	}
+	for key := range vocabulary {
+		if !seen[key] {
+			t.Fatalf("unexpected vocabulary key: %v", key)
+		}
+	}
+
+}
+
+func TestContentTypeIsStandardUnselected(t *testing.T) {
+	r := extract(t, core(`<cp:contentType>Whitepaper</cp:contentType><dc:creator>A</dc:creator>`))
+	if r.Coverage.StandardProjectionGaps != 1 || r.Coverage.OtherGaps != 0 || r.Issues[0].Code != "metadata.standard_property_unassessed" || r.Properties[0].Value != "A" {
+		t.Fatalf("%+v", r)
 	}
 }
