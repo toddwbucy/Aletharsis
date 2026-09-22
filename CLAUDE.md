@@ -149,6 +149,46 @@ is a declaration of coverage, never a negative detector result.
   AI-generated, and absence of findings is never absence of a watermark. Keep this wording in code,
   docs and commit messages.
 
+## Review and merge workflow
+
+Implementation and review both run in model seats; the repository owner holds merge
+authority and accepts every gate disposition. Review seats post under the owner's
+GitHub token with the seat named in the comment body, so GitHub attribution alone does
+not distinguish reviewer from author — read the body label. CodeRabbit is not
+configured on this repository; gate issues that name `coderabbitai` as independent
+reviewer predate that decision and should be read against the escape clause in their
+own Ownership section.
+
+**Write findings as invariants with a scope, not as locations.** A finding shaped
+`file.go:120 — this construct does X` is a bug report about one site, and will
+reasonably be fixed at that site. The same defect class then survives in its siblings.
+This pattern cost several extra review rounds across PRs #52-#55: `/upstream` was
+unmounted while `/python` and `/emoji` stayed; `w:r/w:rPr` was masked while
+`w:pPr/w:rPr` was not; `decision.record` was anchor-hardened while `decision.gates`
+was left in the same commit; a `$`-to-lookahead conversion reached 3 of 15 patterns.
+
+So, when reporting:
+
+- Lead with the invariant the code must hold, then cite instances as evidence for it.
+- State that the class is the scope. Severity conveys urgency; it conveys nothing
+  about breadth.
+- Name sibling sites already known to share the shape, rather than leaving them to be
+  found next round.
+- Say what a regression test should assert. A test that constructs only the broken
+  shape passes without establishing the invariant, and several did.
+- Put recurring-pattern observations in the review itself. Analysis that stays in a
+  chat transcript never reaches whoever is writing the fix.
+
+Give design rationale when the fix is architectural. The Word text-admission grammar
+(`wordtext.analysisContexts`) came from a review that explained why an exclusion list
+cannot hold, and the resulting implementation was better than the one sketched —
+including the blocked-ancestor short-circuit that a naive allowlist omits.
+
+**Verify by probing, not by reading.** Build the branch, exercise the claim, and check
+the negative direction too: confirm a fix does not create a blind spot where it removed
+a false positive. Reading alone would have missed both the silently-excluded formatting
+text and the fact that the grammar rewrite kept every legitimate construct analyzed.
+
 ## Where the design lives
 
 - `ROADMAP.md` — tracks P0–P7, reuse gates G0–G6, frontend phases F0–F5, and what is deliberately
