@@ -1,0 +1,9 @@
+ok  	github.com/toddwbucy/Aletharsis/internal/officemetadata	1.120s
+ok  	github.com/toddwbucy/Aletharsis/internal/xmlparts	1.013s
+Running as unit: aletharsis-validation-b30a0d9c265b48349cc309ed9dca0fd7.service; invocation ID: 18d63a15e5114d7cb444bb47a183967d
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 2.606s
+             CPU time consumed: 662ms
+                   Memory peak: 167.6M (swap: 0B)
+ALETHARSIS_VALIDATION_RESULT={"cleanup_confirmed": true, "command_exit_code": 0, "command_signal": null, "enforcement_verified": true, "launcher_returncode": 0, "memory_mib": 1024, "service_result": "success", "status": "completed", "timeout_seconds": 60, "unit": "aletharsis-validation-b30a0d9c265b48349cc309ed9dca0fd7.service"}

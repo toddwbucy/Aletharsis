@@ -172,13 +172,12 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		return nil, ErrStructure
 	}
 	r := &Result{Parser: Version, State: "completed", Kind: kind, XML: mapped, Properties: []Property{}, Issues: []Issue{}, RootAttributes: []int{}, Limitations: []string{"metadata.values_not_validated", "metadata.identity_not_verified", "metadata.attribute_semantics_unresolved", "metadata.selected_properties_only", "metadata.package_binding_not_verified", "metadata.standard_subtrees_not_validated"}}
-	issue := func(code string, element, segment, attribute int, span xmlparts.Span) {
+	issue := func(code string, element, segment, attribute, token int, span xmlparts.Span) {
 		r.State = "partial"
-		token := -1
 		if segment >= 0 {
 			token = mapped.Segments[segment].Token
 		}
-		standard := code == "metadata.standard_property_unassessed" || code == "metadata.standard_attribute_unassessed"
+		standard := strings.HasPrefix(code, "metadata.standard_")
 		if standard {
 			r.Coverage.StandardProjectionGaps++
 		} else {
@@ -189,13 +188,12 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	for ai, a := range d.Elements[0].Attributes {
 		if !a.NamespaceDeclaration {
 			r.RootAttributes = append(r.RootAttributes, ai)
-			issue("metadata.attribute_semantics_unassessed", 0, -1, ai, d.Elements[0].Start)
+			issue("metadata.attribute_semantics_unassessed", 0, -1, ai, -1, d.Elements[0].Start)
 		}
 	}
 	for ti, token := range d.Tokens {
-		if token.Element >= 0 && (token.Kind == "comment" || token.Kind == "processing_instruction") {
-			issue("metadata.markup_unassessed", token.Element, -1, -1, token.Span)
-			r.Issues[len(r.Issues)-1].Token = ti
+		if token.Kind == "comment" || token.Kind == "processing_instruction" {
+			issue("metadata.markup_unassessed", token.Element, -1, -1, ti, token.Span)
 		}
 	}
 	children := make([]bool, len(d.Elements))
@@ -210,7 +208,7 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 			byElement[segment.Element] = append(byElement[segment.Element], i)
 		}
 		if segment.Element == 0 && (segment.CDATA || len(bytes.Trim(source[segment.ContentSpan.Start:segment.ContentSpan.End], " \t\r\n")) != 0) {
-			issue("metadata.root_text_unassessed", 0, i, -1, segment.TokenSpan)
+			issue("metadata.root_text_unassessed", 0, i, -1, segment.Token, segment.TokenSpan)
 		}
 	}
 	occurrences := map[[2]string]int{}
@@ -230,11 +228,11 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 			if known {
 				code = "metadata.standard_property_unassessed"
 			}
-			issue(code, i, -1, -1, e.Full)
+			issue(code, i, -1, -1, -1, e.Full)
 			continue
 		}
 		if children[i] {
-			issue("metadata.structured_value_unassessed", i, -1, -1, e.Full)
+			issue("metadata.structured_value_unassessed", i, -1, -1, -1, e.Full)
 			continue
 		}
 		attributes := []int{}
@@ -245,7 +243,7 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 				if standardDateType(d, i, a) {
 					code = "metadata.standard_attribute_unassessed"
 				}
-				issue(code, i, -1, ai, e.Start)
+				issue(code, i, -1, ai, -1, e.Start)
 			}
 		}
 		var value strings.Builder

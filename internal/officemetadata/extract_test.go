@@ -292,3 +292,105 @@ func TestRootAttributesAndMarkupRetainLocations(t *testing.T) {
 		}
 	}
 }
+
+func TestPrologEpilogMarkup(t *testing.T) {
+	for _, bom := range []string{"", "\ufeff"} {
+		raw := append([]byte(bom+`<?xml version="1.0" encoding="UTF-8"?><!--before-->`), core(`<dc:creator>A</dc:creator>`)...)
+		raw = append(raw, []byte(`<?after payload?>`)...)
+		r := extract(t, raw)
+		if r.State != "partial" || r.Coverage.OtherGaps != 2 {
+			t.Fatalf("%+v", r)
+		}
+		for i, want := range []string{"<!--before-->", "<?after payload?>"} {
+			issue := r.Issues[i]
+			if issue.Element != -1 || issue.Token < 0 || issue.Code != "metadata.markup_unassessed" || string(raw[issue.Span.Start:issue.Span.End]) != want {
+				t.Fatal(issue)
+			}
+		}
+		clean := append([]byte(bom+`<?xml version="1.0" encoding="UTF-8"?>`), core(`<dc:creator>A</dc:creator>`)...)
+		if got := extract(t, clean); got.State != "completed" || len(got.Issues) != 0 {
+			t.Fatalf("%+v", got)
+		}
+	}
+}
+
+func TestNestedMarkupCountsObservationsNotDisjointRegions(t *testing.T) {
+	for _, tc := range []struct {
+		body            string
+		standard, other int
+	}{
+		{`<cp:keywords>k<!--c-->w</cp:keywords>`, 1, 1},
+		{`<cp:unknown><?pi x?></cp:unknown>`, 0, 2},
+		{`<dc:creator><!--c--><x/></dc:creator>`, 0, 2},
+	} {
+		r := extract(t, core(tc.body))
+		if r.Coverage.StandardProjectionGaps != tc.standard || r.Coverage.OtherGaps != tc.other || len(r.Issues) != 2 {
+			t.Fatalf("%+v", r)
+		}
+		if r.Issues[1].Code != "metadata.markup_unassessed" || r.Issues[1].Span.Start < r.Issues[0].Span.Start || r.Issues[1].Span.End > r.Issues[0].Span.End {
+			t.Fatal(r.Issues)
+		}
+	}
+}
+
+// Synthetic producer-shaped fixtures; no claim these bytes were captured from Office.
+func TestProducerShapedMetadata(t *testing.T) {
+	date := `<dcterms:created xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="dcterms:W3CDTF">2026-01-01T00:00:00Z</dcterms:created><dcterms:modified xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="dcterms:W3CDTF">2026-01-02T00:00:00Z</dcterms:modified>`
+	coreValues := `<dc:creator>A</dc:creator><cp:lastModifiedBy>B</cp:lastModifiedBy><cp:revision>1</cp:revision>` + date
+	coreGaps := `<dc:title>T</dc:title><dc:subject>S</dc:subject><dc:description>D</dc:description><cp:keywords>K</cp:keywords>`
+	app := func(names []string, values string) []byte {
+		body := ""
+		for _, name := range names {
+			body += "<" + name + ">0</" + name + ">"
+		}
+		body += `<HeadingPairs><vt:vector size="0" baseType="variant"/></HeadingPairs><TitlesOfParts><vt:vector size="0" baseType="lpstr"/></TitlesOfParts>`
+		return []byte(`<Properties xmlns="` + AppNamespace + `" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">` + values + body + `</Properties>`)
+	}
+	for _, tc := range []struct {
+		name string
+		raw  []byte
+		gaps int
+		keys []string
+	}{
+		{"word-core", core(coreValues + coreGaps), 6, []string{"creator", "last_modified_by", "revision", "created", "modified"}},
+		{"libreoffice-core", core(coreValues + `<dc:title>T</dc:title><dc:description>D</dc:description><dc:language>en</dc:language><cp:lastPrinted>2026</cp:lastPrinted>`), 6, []string{"creator", "last_modified_by", "revision", "created", "modified"}},
+		{"word-app", app([]string{"TotalTime", "Pages", "Words", "Characters", "DocSecurity", "Lines", "Paragraphs", "ScaleCrop", "LinksUpToDate", "CharactersWithSpaces", "SharedDoc", "HyperlinksChanged"}, `<Application>Word</Application><AppVersion>16</AppVersion><Company>C</Company><Template>T</Template>`), 14, []string{"application", "application_version", "company", "template"}},
+		{"libreoffice-app", app([]string{"TotalTime", "Pages", "Words", "Characters"}, `<Application>LibreOffice</Application><AppVersion>7.6</AppVersion><Template>T</Template>`), 6, []string{"application", "application_version", "template"}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			for _, prefix := range []string{`<?xml version="1.0" encoding="UTF-8"?>`, "\ufeff" + `<?xml version="1.0" encoding="UTF-8"?>`} {
+				raw := append([]byte(prefix), tc.raw...)
+				r := extract(t, raw)
+				keys := []string{}
+				for _, p := range r.Properties {
+					keys = append(keys, p.Key)
+				}
+				if r.State != "partial" || r.Coverage.StandardProjectionGaps != tc.gaps || r.Coverage.OtherGaps != 0 || len(r.RootAttributes) != 0 || !reflect.DeepEqual(keys, tc.keys) {
+					t.Fatalf("%+v", r)
+				}
+			}
+		})
+	}
+}
+
+func TestCompleteStandardVocabulary(t *testing.T) {
+	// Independent specification inventory: deleting any production entry must fail.
+	for _, tc := range []struct{ kind, ns, names string }{
+		{"core", dcNamespace, "creator identifier title subject description language"},
+		{"core", termsNamespace, "created modified"},
+		{"core", CoreNamespace, "lastModifiedBy revision keywords category contentStatus lastPrinted version"},
+		{"app", AppNamespace, "Application AppVersion Company Template TotalTime Pages Words Characters DocSecurity Lines Paragraphs ScaleCrop HeadingPairs TitlesOfParts Manager LinksUpToDate CharactersWithSpaces SharedDoc HyperlinkBase HLinks HyperlinksChanged DigSig PresentationFormat Slides Notes HiddenSlides MMClips"},
+	} {
+		for _, name := range strings.Fields(tc.names) {
+			body := `<p:` + name + ` xmlns:p="` + tc.ns + `"/>`
+			raw := core(body)
+			if tc.kind == "app" {
+				raw = []byte(`<Properties xmlns="` + AppNamespace + `">` + body + `</Properties>`)
+			}
+			r := extract(t, raw)
+			if r.Coverage.OtherGaps != 0 || len(r.Properties)+r.Coverage.StandardProjectionGaps != 1 {
+				t.Fatalf("%s: %+v", name, r)
+			}
+		}
+	}
+}

@@ -1,6 +1,6 @@
 # OM-001 — Core/application metadata part evidence
 
-Status: implementation proposal stacked on OI-001. This is a part producer, not
+Status: implementation proposal stacked on OC-001. This is a part producer, not
 CLI support, package identification or completion of #40/B2. Embedded inventory,
 package binding and report assembly remain separate increments.
 
@@ -67,9 +67,11 @@ preserved verbatim after XML decoding even when invalid as dates/numbers. These
 are observed metadata, not verified author identities or provenance assertions.
 Successful results include machine-readable limitations: values are not validated,
 identity is not verified, attribute semantics are unresolved, only selected
-properties are projected, and package binding is not verified. Completed state
-applies to this declared projection, never to verified provenance or full Office
-semantics. The producer performs no finding classification or profile suppression.
+properties are projected, and package binding is not verified. Completed state means no declared unassessed markup of either class was found
+in the part. It never means verified provenance or full Office semantics.
+`Coverage.OtherGaps == 0` means no gaps beyond the recognized standard projection
+gaps were observed; it does not certify full extraction or schema validity.
+StandardProjectionGaps is normally nonzero on real producer metadata. The producer performs no finding classification or profile suppression.
 
 Validation covers duplicates, entities, CDATA/non-BMP mapping, empty values,
 namespace spoofing, nested known elements, unknown siblings, root text, malformed
@@ -84,11 +86,21 @@ are not trust or schema-validity verdicts. Standard subtrees are not validated
 (`metadata.standard_subtrees_not_validated`).
 
 Non-declaration root attributes are retained in `RootAttributes` and produce
-attribute issues. Comments and processing instructions within the root produce
+attribute issues. Comments and processing instructions anywhere in the part produce
 `metadata.markup_unassessed`, including those inside selected values. Each has
-an exact token index and byte span. Issue `Token` is -1 when unavailable; text
+an exact token index and byte span; prolog/epilog markup has Element -1.
+XML declarations are interpreted by the parser and do not produce markup issues. Issue `Token` is -1 when unavailable; text
 issues retain their segment's token. Markup never enters concatenated values.
 
 Validation resumed with user authorization after the original resource stop,
 using the configurable hard 1 GiB ceiling. The original stop remains historical
 budget evidence; resumed validation does not retroactively invalidate it.
+
+Markup inside an already-unassessed subtree still produces a separate other-gap
+issue: a standard property name does not make an enclosed PI/comment standard.
+Counts describe observations, not disjoint unassessed byte regions; overlapping
+parent/child issues are intentional and must not be summed as byte coverage.
+
+Resumed validation evidence is retained in
+[office-metadata-resumed.json](../testing/receipts/office-metadata-resumed.json)
+and its referenced logs. The historical preflight receipt remains unchanged.
