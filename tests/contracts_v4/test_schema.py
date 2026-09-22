@@ -128,3 +128,30 @@ def test_complete_flat_fixtures_are_reproducible_and_wire_valid():
         fixture = json.loads(path.read_bytes())
         assert fixture == expected[path.name]
         validator.validate(fixture)
+
+
+def test_office_fixture_matches_retained_archive():
+    import hashlib
+    import io
+    import zipfile
+    spec = importlib.util.spec_from_file_location('office_complete_builder',
+        Path(__file__).with_name('build_office_fixture.py'))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    report, source = module.build()
+    directory = Path(__file__).with_name('fixtures')
+    assert source == (directory / 'office-minimal.docx').read_bytes()
+    assert report == json.loads((directory / 'office-minimal.json').read_bytes())
+    Draft202012Validator(_builder.build()).validate(report)
+    assert hashlib.sha256(source).hexdigest() == report['file']['sha256']
+    with zipfile.ZipFile(io.BytesIO(source)) as archive:
+        for part in report['evidence']['office']['packages'][0]['parts']:
+            raw = archive.read(part['name'])
+            assert len(raw) == part['byte_length']
+            assert hashlib.sha256(raw).hexdigest() == part['sha256']
+            span = part['compressed_span']
+            assert hashlib.sha256(source[span['start']:span['end']]).hexdigest() == part['compressed_sha256']
+        xml = archive.read('word/document.xml')
+        scope = report['evidence']['office']['scopes'][0]
+        assert ''.join(xml[o['source']['start']:o['source']['end']].decode()
+                       for o in scope['origins']) == scope['text']
