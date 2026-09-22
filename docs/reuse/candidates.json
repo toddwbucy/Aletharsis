@@ -367,7 +367,7 @@
         "source_url": "https://github.com/decalage2/oletools/blob/ec10260989dbc48b9109e3d05d22beee19cf2333/LICENSE.md",
         "retained_path": "licenses/decalage2--oletools.txt",
         "sha256": "558732356f0c4fce779f9805dc946e9329b3e1753da13dc9f8c652f7ccebeb11",
-        "scope": "Root notice retained as registry identity evidence; package-local oletools/LICENSE.txt is the proposed governing basis for non-thirdparty modules. Both notices are provisioned; pinned heading/year differences are recorded in the static inventory. Thirdparty excluded; clearance remains pending.",
+        "scope": "Root notice retained as registry identity evidence; package-local oletools/LICENSE.txt is the proposed governing basis for non-thirdparty modules. Both notices are provisioned; pinned heading, preamble wrapping and year-range differences are recorded in the static inventory. Thirdparty excluded; clearance remains pending.",
         "clearance": "pending"
       },
       "redistribution": {

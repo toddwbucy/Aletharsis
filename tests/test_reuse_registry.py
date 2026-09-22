@@ -232,3 +232,21 @@ def test_decisions_require_aletharsis_pull_request_url(url):
     document, record = approved_example()
     record["decision"]["record"] = url
     assert not VALIDATOR.is_valid(document)
+
+
+@pytest.mark.parametrize("path,valid", [
+    ("docs/reuse/../x", False), ("docs/reuse/./x", False),
+    ("docs/reuse/x.txt\n", False), ("docs/reuse/x/../y", False),
+    ("docs/reuse/x/./y", False), ("docs/reuse/..", False),
+    ("docs/reuse/.", False), ("docs/reuse//x", False),
+    ("docs/reuse/x/", False), ("/docs/reuse/x", False),
+    ("docs/reuse/licenses/example.txt", True),
+    ("docs/reuse/.notice", True), (None, True),
+])
+def test_runtime_artifact_retained_path_is_normalized(path, valid):
+    document, record = sample()
+    record["runtime"]["artifacts"] = [{
+        "archive": "example.tar.gz", "archive_member": "LICENSE",
+        "sha256": "0" * 64, "size": 1, "retained_path": path,
+    }]
+    assert VALIDATOR.is_valid(document) is valid
