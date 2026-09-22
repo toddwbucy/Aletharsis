@@ -11,6 +11,7 @@ class Element {
   get textContent() { return this._text + this.children.map(c => c.textContent).join(''); }
   appendChild(c) { this.writes++; this.children.push(c); return c; }
   addEventListener(event, callback) { if (Object.hasOwn(this.events, event)) throw new Error("duplicate event listener: "+event); this.events[event] = callback; }
+  set innerHTML(value) { throw new Error('unsupported innerHTML assignment'); }
   setAttribute() {}
 }
 const elements = new Map();
@@ -25,7 +26,10 @@ vm.runInContext(scripts[0][1], context, {timeout:1000});
 const request = JSON.parse(fs.readFileSync(0,'utf8'));
 get('scanInput').value = request.text;
 if (typeof get('btnScan').events.click !== 'function') throw new Error('missing scan handler');
-get('scanViz').writes = 0; get('scanVerdict').writes = 0;
+for (const id of ['scanViz', 'scanVerdict']) {
+  const element = get(id);
+  element.children = []; element._text = ''; element.writes = 0;
+}
 vm.runInContext("document.getElementById('btnScan').events.click()", context, {timeout:1000});
 if (request.text.length && (!get('scanViz').writes || !get('scanVerdict').writes)) throw new Error('scan output contract drift');
 if (get('scanInput').value !== request.text) throw new Error('read-only detector changed input');

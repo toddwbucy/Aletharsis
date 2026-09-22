@@ -275,3 +275,20 @@ and runtimes were reused, with fresh probe identities. The manifest now covers
 240 artifacts, including four new run logs. All 442 offline tests passed,
 including 107 study/harness checks; diff checks passed. No production logic,
 adoption status or detector conclusions changed.
+
+## Eighth review remediation
+
+Pinned this narrative's checkout bytes with `-text`, added explicit native
+occurrence-location diagnostics shared by adjudication and coordinate checks,
+and reset HIBERIUS initial visualization/verdict state. Unsupported innerHTML
+writes now fail explicitly. Current Unicode code-point finding variants require
+offsetLocation; null normalization locations remain valid and are not occurrences.
+The new error path prevents future malformed input from being silently skipped.
+
+Both fresh bounded offline runs reproduced all 30 sources, 90 stdout files and
+90 stderr files byte-for-byte against each other and the prior evidence. All 167
+comparison rows remain unchanged. Run 1 used 3.474 seconds service runtime,
+2.643 seconds cgroup CPU and 63.8 MiB peak memory; run 2 used 3.504 seconds,
+2.642 seconds CPU and 63.2 MiB peak memory. The manifest covers 244 artifacts.
+All 612 offline tests passed, including 116 study/harness checks; Git attribute
+and diff checks passed. No production detector or adoption status changed.

@@ -59,6 +59,23 @@ def reason(tool, case, cp, scalar, native_status, hiberius_status='completed'):
     return 'unadjudicated', 'Unexplained comparator omission; requires source/fixture review.'
 
 
+def native_unicode_occurrences(findings):
+    """Require coordinates for code-point observations; never hide unmapped data."""
+    for finding in findings:
+        if not finding['id'].startswith('unicode.'):
+            continue
+        evidence = finding.get('evidence')
+        if not isinstance(evidence, dict):
+            raise ValueError('native Unicode evidence must be an object: '+finding['id'])
+        if 'code_point' not in evidence:
+            continue  # e.g. normalization is not an occurrence inventory.
+        location = finding.get('location')
+        positions = location.get('character_offsets') if isinstance(location, dict) else None
+        if not isinstance(positions, list) or not positions or any(type(p) is not int or p < 0 for p in positions):
+            raise ValueError('native Unicode occurrence requires character_offsets: '+finding['id'])
+        yield finding, positions
+
+
 def summarize(root):
     cases=json.loads((root/'corpus.json').read_bytes())
     output=[]
@@ -68,9 +85,8 @@ def summarize(root):
         juriku=json.loads((directory/'juriku.stdout.json').read_bytes())
         hiberius=json.loads((directory/'hiberius.stdout.json').read_bytes())
         observed={'aletharsis':[], 'juriku_inventory':[], 'juriku_word':[], 'hiberius':[]}
-        for f in native['findings']:
-            if f['id'].startswith('unicode.') and 'code_point' in f['evidence']:
-                observed['aletharsis'] += [{'scalar':p,'code_point':f['evidence']['code_point']} for p in f['location']['character_offsets']]
+        for f, positions in native_unicode_occurrences(native['findings']):
+            observed['aletharsis'] += [{'scalar':p,'code_point':f['evidence']['code_point']} for p in positions]
         for target,mode in [('juriku_inventory','inventory'),('juriku_word','word_exclusions')]:
             observed[target]=[{'scalar':m['char_idx'],'code_point':m['code_point']} for m in juriku['results'][mode]]
         observed['hiberius']=[{'scalar':m['scalar'],'code_point':m['code_point']} for m in hiberius['observations']]

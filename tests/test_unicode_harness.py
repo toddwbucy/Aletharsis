@@ -360,3 +360,35 @@ def test_hiberius_mutation_and_duplicate_listener_fail(tmp_path, mode, diagnosti
     result=subprocess.run([node,'-e',code],input='{"text":"a"}',text=True,capture_output=True,timeout=5)
     assert result.returncode != 0 and diagnostic in result.stderr
     assert not result.stdout
+
+
+@pytest.mark.parametrize('location', [None, {}, {'character_offsets':None}, {'character_offsets':[]}, {'character_offsets':[True]}, {'character_offsets':[-1]}])
+def test_native_unlocated_occurrence_fails_explicitly(monkeypatch, location):
+    module=load('adjudicate',monkeypatch)
+    finding={'id':'unicode.zero_width','evidence':{'code_point':'U+200B'},'location':location}
+    with pytest.raises(ValueError, match='requires character_offsets'):
+        list(module.native_unicode_occurrences([finding]))
+
+
+def test_native_normalization_null_location_is_not_an_occurrence(monkeypatch):
+    module=load('adjudicate',monkeypatch)
+    assert list(module.native_unicode_occurrences([{'id':'unicode.normalization','evidence':{},'location':None}]))==[]
+    with pytest.raises(ValueError,match='evidence must be an object'):
+        list(module.native_unicode_occurrences([{'id':'unicode.zero_width','evidence':None}]))
+
+
+@pytest.mark.parametrize('unsupported_clear', [False,True])
+def test_hiberius_initial_output_reset_and_unsupported_clear(tmp_path, unsupported_clear):
+    node=shutil.which('node')
+    if node is None: pytest.skip('Node required')
+    initialization="document.getElementById('scanViz').appendChild(document.createTextNode('stale'));document.getElementById('scanVerdict').textContent='stale';"
+    handler="document.getElementById('btnScan').addEventListener('click',()=>{"+("document.getElementById('scanViz').innerHTML='';" if unsupported_clear else '')+"});"
+    html=tmp_path/'index.html'; html.write_text('<script>'+initialization+handler+'</script>')
+    code=(PROBE/'hiberius_probe.cjs').read_text().replace("'/upstream/index.html'",json.dumps(str(html)))
+    result=subprocess.run([node,'-e',code],input='{"text":""}',text=True,capture_output=True,timeout=5)
+    if unsupported_clear:
+        assert result.returncode != 0 and 'unsupported innerHTML assignment' in result.stderr
+    else:
+        assert result.returncode==0, result.stderr
+        out=json.loads(result.stdout)
+        assert out['verdict']=='' and out['observations']==[] and out['scan_status']=='no_verdict_emitted'

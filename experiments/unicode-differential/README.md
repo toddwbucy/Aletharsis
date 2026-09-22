@@ -183,3 +183,11 @@ listener is outside this facade's contract. Retained-evidence checks require the
 complete set of non-completed native cases to be exactly `controls`, and the
 complete set of non-completed HIBERIUS cases to be exactly `empty`. Any new loss
 of coverage requires review even if its rows have parser/coverage explanations.
+
+The study narrative also disables Git text normalization. Native code-point
+observations require nonempty nonnegative scalar offsets; missing/null locations
+fail with an explicit diagnostic rather than being skipped. Normalization-only
+findings are not occurrence inventories. Before Scan, visualization/verdict text,
+children and write counters are reset so initialization output is not attributed
+to the input. Unsupported innerHTML assignments fail explicitly rather than
+silently leaving stale facade children.

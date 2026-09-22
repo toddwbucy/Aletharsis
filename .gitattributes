@@ -29,6 +29,7 @@ docs/specs/detector-adapter-v1.md -text
 schemas/adapter-exchange-v1.schema.json -text
 tests/adapters/*.py -text
 # Unicode comparison fixtures, raw results and probe identities are exact bytes.
+docs/reuse/evaluations/unicode.md -text
 docs/reuse/evaluations/unicode/** -text whitespace=-blank-at-eol,-blank-at-eof
 experiments/unicode-differential/** -text
 

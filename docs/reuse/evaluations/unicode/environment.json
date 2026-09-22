@@ -8,10 +8,10 @@
   "binary_sha256": "f36771b5de8651aa2aab2e0fe3eeb82421dd3e0e1b7677a7ac63ad5b51f8b642",
   "probe_sha256": {
     "corpus.py": "a7ded2ec193379ac0975ce257480f09eef233c216516ac2e33e85160de931fc7",
-    "adjudicate.py": "99093824ff7a339a62c858cba6b2fbecc7a5f86174fc845f02f0e2ba64a0c02a",
+    "adjudicate.py": "fea26de41de9a9b8a7f7bb546629249b7fa9e6d93cfba394f0a9a23e0d357514",
     "run_cases.py": "759b81aa82860fdd0b22fba195aed95898088104ff1c3ad90d0cdf8ff8cd3851",
     "juriku_probe.py": "2974cdb0f0e34917cde63c6fbea7c8f18b3a13f7263e057ecb91d4f2496f4913",
-    "hiberius_probe.cjs": "c3fbe4bf24129e75d137e21d9f60b1dbf7701bf5a5e308949f8491a52e5e643c",
+    "hiberius_probe.cjs": "b8a4ee7ea0335ef8780de46f8dbe25c28e7170a324d4d60a0052cc06237a154b",
     "input-trees.json": "db9728810d9d3c82b2e19503301c61b1e4e6d52c3ca22aa5ddb4601fc14eca80",
     "provision.py": "cd42dcf0c24fcfd23e9b585ac1358d1f91cb83d6debac2c164804ffbe11eee50"
   },
@@ -61,7 +61,7 @@
       "GOMEMLIMIT",
       "384MiB",
       "--ro-bind",
-      "/tmp/aletharsis-pr54-study/run7a/empty/source.bin",
+      "/tmp/aletharsis-pr54-study/run8a/empty/source.bin",
       "/input.txt",
       "--ro-bind",
       "/tmp/aletharsis-pr54-study/aletharsis",
@@ -146,7 +146,7 @@
       "GOMEMLIMIT",
       "384MiB",
       "--ro-bind",
-      "/tmp/aletharsis-pr54-study/run7a/empty/source.bin",
+      "/tmp/aletharsis-pr54-study/run8a/empty/source.bin",
       "/input.txt",
       "--ro-bind",
       "/tmp/aletharsis-pr54-study/aletharsis",
@@ -226,7 +226,7 @@
       "GOMEMLIMIT",
       "384MiB",
       "--ro-bind",
-      "/tmp/aletharsis-pr54-study/run7a/empty/source.bin",
+      "/tmp/aletharsis-pr54-study/run8a/empty/source.bin",
       "/input.txt",
       "--ro-bind",
       "/tmp/aletharsis-pr54-study/aletharsis",
@@ -237,6 +237,6 @@
       "--json"
     ]
   },
-  "child_cpu_seconds": 0.122778,
-  "retained_bytes": 331537
+  "child_cpu_seconds": 0.126788,
+  "retained_bytes": 331539
 }

@@ -92,13 +92,13 @@ def test_fixture_coordinates_and_raw_results(case):
         assert REPLAY[i]['tools'][tool]['source_unchanged'] and not REPLAY[i]['tools'][tool]['timed_out']
     native=json.loads((DATA/case['id']/'aletharsis.stdout.json').read_bytes())
     assert native['file']['sha256']==case['source_sha256']
-    for f in native['findings']:
-        if f['id'].startswith('unicode.') and 'code_point' in f['evidence']:
-            positions=f['location']['character_offsets']; offsets=f['location']['byte_offsets']
-            assert len(positions)==len(offsets)
-            for p,b in zip(positions,offsets):
-                assert f['evidence']['code_point']==f'U+{ord(text[p]):04X}'
-                assert b==len(text[:p].encode(case['serialization']))
+    for f, positions in load('adjudicate').native_unicode_occurrences(native['findings']):
+        offsets=f['location'].get('byte_offsets')
+        assert isinstance(offsets, list), 'native occurrence requires byte_offsets'
+        assert len(positions)==len(offsets)
+        for p,b in zip(positions,offsets):
+            assert f['evidence']['code_point']==f'U+{ord(text[p]):04X}'
+            assert b==len(text[:p].encode(case['serialization']))
     for tool in ['juriku','hiberius']:
         raw_result=(DATA/case['id']/f'{tool}.stdout.json').read_bytes()
         assert raw_result.isascii()
