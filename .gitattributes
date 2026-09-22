@@ -54,3 +54,5 @@ tests/contracts_v3/catalog.json -text
 
 # Exact upstream notices retained by the Office clearance assessment.
 docs/reuse/evaluations/office/*-license.txt -text whitespace=-blank-at-eol,-blank-at-eof
+docs/reuse/evaluations/office.md -text
+docs/reuse/evaluations/office/static-inventory.json -text

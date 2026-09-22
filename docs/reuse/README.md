@@ -57,7 +57,7 @@ checked for truncation. No upstream source was executed during G0.
 Run the existing test-only Python environment:
 
 ```bash
-python -m pytest -q tests/test_reuse_registry.py
+python -m pytest -q tests/test_reuse_registry.py tests/test_office_clearance.py
 ```
 
 The normal backend CI schema/reference step includes these tests. They check the
@@ -95,6 +95,15 @@ The [G3 Unicode study](evaluations/unicode.md) compares thirty independent cases
 against two pinned read-only probes, preserves policy/inventory/coverage/parser
 differences and identifies a native Hangul-filler inventory gap for #14. Neither
 comparator is adopted as a production dependency.
+
+## Office comparator clearance evidence
+
+The [Office static assessment](evaluations/office.md) and
+[module/license inventory](evaluations/office/static-inventory.json) record the
+candidate oletools/olefile closure for #40. Root and separately retained notices
+are verified offline by `tests/test_office_clearance.py`. Archive/module hashes
+remain static acquisition evidence, not CI-recomputed upstream checks. No upstream
+detector has executed, and runtime/licensing clearance remains pending.
 
 ## Per-component adoption
 

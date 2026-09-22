@@ -34,8 +34,10 @@ SPDX label here substitutes for examination of those notices.
 The olefile wheel is pinned by SHA-256
 `543c7da2a7adadf21214938bb79c83ea12b473a4b6ee4ad4bf854e7715e13d1f`.
 Source: `https://files.pythonhosted.org/packages/17/d3/b64c356a907242d719fc668b71befd73324e47ab46c8ebbbede252c154b2/olefile-0.47-py2.py3-none-any.whl`.
-The selected Python 3 modules have only standard-library imports; Python 2
-compatibility modules are not candidates for the proposed Python 3.12 runtime.
+The selected olefile Python 3 modules import only the standard library. The overall
+oletools candidate closure additionally imports pinned olefile, vendored xglob and
+optional lxml. Python 2 compatibility modules are not candidates for the proposed
+Python 3.12 runtime.
 Optional `lxml` must be absent so the upstream standard-library XML fallback is
 selected. The recorded AST imports include conditional imports; they are not a
 proof that reflection or runtime loading cannot add dependencies.
@@ -88,3 +90,13 @@ zero; subsequent execution needs measured resource receipts before starting.
 The study's original 12-hour engineering, 2-hour CPU, 2-GiB disk, 1-GiB/process,
 60-second/case and 32-MiB input/output ceilings remain in force. Do not extend
 those budgets silently to accommodate tooling or failed attempts.
+
+## Retained-evidence validation
+
+Each license entry in the static inventory has a repository-relative `retained_path`.
+`tests/test_office_clearance.py` verifies those exact bytes and sizes offline,
+requires the complete four-notice set, and checks registry/archive/root-license
+linkage. Git disables text conversion for the narrative, inventory and notices.
+These checks detect retained-notice drift; they do not recompute upstream module
+or archive hashes without their separately provisioned source artifacts. Static
+import statements are AST renderings, not verbatim source lines or runtime traces.

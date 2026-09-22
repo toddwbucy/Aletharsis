@@ -200,24 +200,28 @@
     {
       "archive_member": "LICENSE.md",
       "component": "oletools",
+      "retained_path": "docs/reuse/licenses/decalage2--oletools.txt",
       "sha256": "558732356f0c4fce779f9805dc946e9329b3e1753da13dc9f8c652f7ccebeb11",
       "size": 2733
     },
     {
       "archive_member": "oletools/thirdparty/xglob/LICENSE.txt",
       "component": "oletools",
+      "retained_path": "docs/reuse/evaluations/office/xglob-license.txt",
       "sha256": "e49b9488a651edd1bd00d5e3bec0ba279bd095fd04f84171b529f3da2eeefab7",
       "size": 1376
     },
     {
       "archive_member": "olefile/LICENSE.txt",
       "component": "olefile",
+      "retained_path": "docs/reuse/evaluations/office/olefile-package-license.txt",
       "sha256": "0c349bed31cd2af10983a8d95e7455e2d15744b98585b55941ca35bd70f5bcd7",
       "size": 2915
     },
     {
       "archive_member": "olefile-0.47.dist-info/LICENSE.txt",
       "component": "olefile",
+      "retained_path": "docs/reuse/evaluations/office/olefile-distribution-license.txt",
       "sha256": "cf1498d5b834b3758a89d06d224a1502c54a28b3a852f46130b761deaa4890d1",
       "size": 2846
     }
