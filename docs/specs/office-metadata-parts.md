@@ -15,7 +15,12 @@ Recognized roots are the exact transitional `cp:coreProperties` and extended
 `Properties` expanded names. A caller must independently establish the package
 relationship and content type. A namespace/root or filename alone is insufficient.
 Strict extended-properties namespaces, custom properties and ODF metadata are
-unsupported by this producer; they must retain explicit coverage outcomes.
+unsupported by this producer. Recognized strict-app, custom-property and ODF roots
+return `UnsupportedRootError` with `metadata.strict_app_unsupported`,
+`metadata.custom_properties_unsupported` or `metadata.odf_unsupported`. These
+errors still wrap `ErrStructure`, but coordinators can distinguish them with
+`errors.As`; unrelated roots return plain `ErrStructure`. No failed extraction
+returns a partial result.
 
 Selected core values are DC creator/identifier, DCTERMS created/modified and core
 lastModifiedBy/revision. Selected app values are Application, AppVersion, Company
@@ -24,7 +29,24 @@ A nested recognized element cannot reset ancestry or authorize extraction.
 Unknown direct properties and structured values remain in the retained XML and
 emit located issues with partial coverage; good neighboring values survive.
 Only literal XML whitespace at the root is ignored. Other root text produces a
-coverage issue, including non-breaking and zero-width characters.
+coverage issue, including non-breaking and zero-width characters. Ignorability
+is checked against literal source bytes and excludes CDATA, so `&#x20;`, `&#xD;`
+and CDATA-wrapped whitespace are not silently ignored. Literal CR/CRLF remains
+XML whitespace despite XML newline normalization.
+
+Every issue includes an element, a part-byte span and segment/attribute indices
+(`-1` when not applicable). Root-text issues select their exact XM segment and
+token span; distinct root segments remain distinct observations. Property issues
+use the element's full span; attribute issues identify the attribute index and
+its enclosing start-tag span (not an invented exact attribute byte interval).
+Issues are stably ordered by source-span start, with insertion order for ties.
+
+Known but unselected vocabulary (including title/subject/description, keywords,
+category/contentStatus and application statistics/vector properties) yields
+`metadata.standard_property_unassessed`. Unknown expanded names yield
+`metadata.property_unassessed`. Both retain partial coverage; recognizing a
+standard name does not imply its contents are trusted, expected or interpreted.
+The finite vocabulary is in `standardUnselected`; it is not a format profile.
 
 Each property keeps expanded name, element index, normalized key, decoded value,
 zero-based occurrence ordinal among the same expanded name and ordered references
@@ -33,11 +55,19 @@ retain their original lexical scalar maps. Concatenated property values do not
 claim a contiguous source byte interval. Empty leaf values remain observations
 with an empty, non-null segment list. Comments, attributes and processing
 instructions remain XML evidence, never executed or incorporated into values.
+Selected properties also retain non-declaration attribute indices and emit
+`metadata.attribute_semantics_unassessed` for each. A Value is decoded character
+data only: empty character data on an `xsi:nil` property is not a claim that its
+logical value is an empty string, and `xsi:type` does not validate a date.
 
 Duplicate values are not collapsed or last-writer-wins. Date/revision strings are
 preserved verbatim after XML decoding even when invalid as dates/numbers. These
 are observed metadata, not verified author identities or provenance assertions.
-The producer performs no finding classification or profile suppression.
+Successful results include machine-readable limitations: values are not validated,
+identity is not verified, attribute semantics are unresolved, only selected
+properties are projected, and package binding is not verified. Completed state
+applies to this declared projection, never to verified provenance or full Office
+semantics. The producer performs no finding classification or profile suppression.
 
 Validation covers duplicates, entities, CDATA/non-BMP mapping, empty values,
 namespace spoofing, nested known elements, unknown siblings, root text, malformed
