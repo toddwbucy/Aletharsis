@@ -57,6 +57,7 @@ def test_applied_limits_and_missing_controller(tmp_path):
 @pytest.mark.parametrize("result,code,status,ack,want", [
     ("success","1","0",True,"completed"),
     ("timeout","1","0",True,"supervisor_failed"),
+    ("timeout","1","3",True,"supervisor_failed"),
     ("oom-kill","1","0",True,"supervisor_failed"),
     ("exit-code","1","1",True,"command_failed"),
     ("exit-code","1","0",True,"supervisor_failed"),
