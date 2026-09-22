@@ -32,8 +32,10 @@ removal, and new matches never inherit a previous frozen-set approval.
 | Bounded fuzzing, resource characterization and platform verification | [Fuzzing](docs/testing/fuzzing.md), [performance](docs/testing/performance.md), [platforms](docs/testing/platforms.md) |
 | Parent product architecture and revised frontend draft | [Parent PRD](docs/product/aletharsis-PRD.md), [frontend PRD](docs/product/frontend-PRD.md) |
 
-Issue #7 remains open until its full validation scope is complete. The delivered
-checks listed here do not mark that tracker complete.
+[Issue #7](https://github.com/toddwbucy/Aletharsis/issues/7) was closed on 2026-09-21.
+Its closure records the validation scope completed at that point; it does not
+retroactively validate work merged afterwards. New capabilities need their own
+scoped validation and a follow-up issue rather than inheriting that closure.
 
 Completed tests establish the current scope, not universal safety or unimplemented
 end-to-end workflows. Acquisition is functional on supported Linux systems;
@@ -130,15 +132,19 @@ the program; optional deferrals require an explicit product-owner decision.
 
 ## Product delivery tracks
 
-All tracks below are **planned**, except for the foundation already listed. P6
+**P1 and P2 are partially delivered**; every other track below is planned. P6
 includes optional research; it is not a commitment to ship a detector. Track
 numbers P0–P7 follow the parent PRD and do not rename the historical backend M0–M4
 milestones or frontend F0–F5 phases.
 
+Partial delivery means implementation landed and was reviewed, not that the track
+is complete or its acceptance evidence is finished. Each row below states what
+remains.
+
 | Track | Intended outcome | Dependency and completion gate |
 | --- | --- | --- |
-| **P1 — Corpus and reveal CLI** | Bounded directory scans, JSONL, aggregate outcomes, revealed representations and diffs | P0 contracts; deterministic discovery, exclusions/cancellation accounting, source-to-reveal mappings, safe new-file output and measured resource limits. [Issue #15](https://github.com/toddwbucy/Aletharsis/issues/15) tracks reveal/diff work. |
-| **P2 — Format profiles and office containers** | DOCX first, then a separately scoped ODT increment; contextual expected-artifact profiles; [PA-001 standalone evaluator](docs/specs/expected-artifact-profiles-v1.md) proposed | P0 identity/profile contracts; bounded parsing, exact package/object evidence, no external resource fetching, explicit extraction gaps and profile non-suppression tests. [Issue #14](https://github.com/toddwbucy/Aletharsis/issues/14) tracks profiles. |
+| **P1 — Corpus and reveal CLI** — *partially delivered* | Bounded directory scans, JSONL, aggregate outcomes, revealed representations and diffs | Text sources delivered in [#52](https://github.com/toddwbucy/Aletharsis/pull/52): `internal/workspace` discovery, `internal/corpus` streaming with per-source failure isolation, `internal/reveal` occurrence maps and diffs, `internal/publication` bundles with rollback, `audit DIRECTORY [--recursive] [--jsonl]` and `--reveal-out`, and the `corpus-v1`, `corpus-document-v1` and `reveal-tree-v1` contracts. **Remaining:** reveal and diff for office formats, which depends on P2 integration. [Issue #15](https://github.com/toddwbucy/Aletharsis/issues/15) tracks reveal/diff work. |
+| **P2 — Format profiles and office containers** — *partially delivered* | DOCX first, then a separately scoped ODT increment; contextual expected-artifact profiles; [PA-001 standalone evaluator](docs/specs/expected-artifact-profiles-v1.md) | Evidence layer delivered in [#55](https://github.com/toddwbucy/Aletharsis/pull/55): `packageparts`, `xmlparts`, `opcrels`, `docxidentify`, `odtidentify`, `wordtext`, `odttext`, `wordanalysis`, `odtanalysis`, `profiles` and the `profile-v1` contract. **Remaining and blocking:** these packages have no consumer — `internal/audit` still rejects every non-`text` format, so no Office evidence reaches a report or the CLI. Structured document metadata (`docProps`) and embedded-object inventory have no producer. Profile *content* for real formats is unwritten. [Issue #14](https://github.com/toddwbucy/Aletharsis/issues/14) tracks profiles. |
 | **P3 — PDF** | Born-digital structural/metadata evidence, with explicit OCR-derived limitations | P0 evidence contracts; bounded extraction, page/object locations, conservative visibility claims and declared unsupported checks. OCR is not implied. |
 | **P4 — Review and rule backend** | Versioned rules, matching, review decisions and frozen result sets | P0 contracts; deterministic membership, source/query/rule identities, stale-source rejection, portable decisions and no inherited removal authority. Coordinate with frontend F0/F1. |
 | **P5 — Provenance adapters** | C2PA inspection/validation; statistical watermark adapters when real access exists | P0 contracts; separate credential discovery, binding, signature and trust states; actual statistical result semantics, analyzed scope and explicit authorization for network analysis. |

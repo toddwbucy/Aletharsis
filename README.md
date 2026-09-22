@@ -273,7 +273,7 @@ artifacts to silence failures.
 - [Frozen reference manifest](reference/python-behavior/manifest.json)
 
 Implementation and contract changes proceed through reviewable PRs with relevant
-validation. The next design task is [Issue #17](https://github.com/toddwbucy/Aletharsis/issues/17).
+validation. Current work and open gates are tracked in [ROADMAP.md](ROADMAP.md) and the issue tracker.
 
 ## License
 
