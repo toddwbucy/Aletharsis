@@ -48,7 +48,7 @@ The JSON separates `status`, `service_result`, `enforcement_verified`,
 `command_signal`, alongside unit name and requested limits. Status values include
 completed, command_failed, command_signaled, command_start_failed, memory_limit,
 timeout, enforcement_unavailable, supervisor_failed, supervisor_memory_limit,
-supervisor_timeout and
+supervisor_timeout, launcher_timeout and
 interrupted. A command exiting 125 is command_failed with command_exit_code 125,
 not evidence of unavailable enforcement. An unconfirmed cleanup remains explicit
 and always makes the wrapper fail, regardless of its primary status.
@@ -79,8 +79,17 @@ A limit reached before the guard verifies enforcement is reported as
 (for example, a failed post-stop helper). A second interrupt during cleanup
 preserves the outcome line with `cleanup_confirmed: false`; inspect/stop the
 reported unit before continuing validation. ExecStopPost paths are transported
-literally over D-Bus, including percent characters.
+over D-Bus with systemd C-escape handling for backslashes (including literal
+backslash-t/backslash-x paths); percent and dollar characters remain literal.
 
 Second-pass validation: 33 offline regressions passed. A live `/bin/true` run
 with `%` and `$` in TMPDIR reported `completed`, verified enforcement and
 confirmed cleanup (8.3 MiB peak). This verifies the receipt-path regression.
+
+Runtime timeout/memory-limit statuses require a signalled main process. A main
+process that exits successfully followed by a shutdown/descendant limit is
+`supervisor_failed`, retaining its exit code and service result. `launcher_timeout`
+means the supervising systemd-run call exceeded its deadline; `supervisor_timeout`
+means a service timeout before guard verification. On interruption, unpopulated
+verification/service fields mean the receipts were unread, not negative evidence.
+The post-stop receipt helper must remain the last ExecStopPost action.

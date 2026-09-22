@@ -56,6 +56,8 @@ def test_applied_limits_and_missing_controller(tmp_path):
 
 @pytest.mark.parametrize("result,code,status,ack,want", [
     ("success","1","0",True,"completed"),
+    ("timeout","1","0",True,"supervisor_failed"),
+    ("oom-kill","1","0",True,"supervisor_failed"),
     ("exit-code","1","1",True,"command_failed"),
     ("exit-code","1","0",True,"supervisor_failed"),
     ("oom-kill","2","9",False,"supervisor_memory_limit"),
@@ -83,7 +85,7 @@ def test_timeout_argument_and_cleanup(capsys):
         assert runner.main(["--timeout-seconds","7","--","/bin/true"])==1
     assert run.call_args.kwargs["timeout"]==27
     cleanup.assert_called_once()
-    assert '"status": "supervisor_timeout"' in capsys.readouterr().err
+    assert '"status": "launcher_timeout"' in capsys.readouterr().err
 
 
 @pytest.mark.parametrize("state", [{"LoadState":"not-found"},{"LoadState":"loaded","ActiveState":"inactive"},{"LoadState":"loaded","ActiveState":"failed"}])
@@ -150,3 +152,10 @@ def test_missing_swap_accounting_refuses_execution(tmp_path):
     (group / "memory.max").write_text("33554432")
     with pytest.raises(OSError):
         runner.verify_memory(33554432, tmp_path / "membership", tmp_path)
+
+
+def test_systemd_c_escaping_of_receipt_path(tmp_path):
+    receipt = tmp_path / r"bs\tdir\xdir" / "guard.json"
+    argv = runner.command_line(["/bin/true"], 1024, 60, "test.service", tmp_path, receipt)
+    stop = next(a for a in argv if a.startswith("--property=ExecStopPost=:"))
+    assert str(receipt.with_name("service.json")).replace("\\", "\\\\") in stop

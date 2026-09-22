@@ -63,7 +63,7 @@ def command_line(command, memory_mib, timeout_seconds, unit, cwd, receipt):
             "--property=TimeoutStopSec=5"]
     # ExecStopPost receives systemd's outcome even if the unit is subsequently GC'd.
     stop = [sys.executable, str(Path(__file__).resolve()), "--service-result", str(receipt.with_name("service.json"))]
-    argv += ["--property=ExecStopPost=:" + shlex.join(stop)]
+    argv += ["--property=ExecStopPost=:" + shlex.join(stop).replace("\\", "\\\\")]
     absent = []
     for name in ENVIRONMENT:
         if name in os.environ:
@@ -108,16 +108,12 @@ def cleanup(unit):
 
 def outcome(state, acknowledgment):
     result = state.get("Result")
-    if result == "oom-kill":
-        return "memory_limit" if acknowledgment.get("verified") else "supervisor_memory_limit"
-    if result == "timeout":
-        return "timeout" if acknowledgment.get("verified") else "supervisor_timeout"
     if not acknowledgment.get("verified"):
-        return "enforcement_unavailable"
+        return {"oom-kill": "supervisor_memory_limit", "timeout": "supervisor_timeout"}.get(result, "enforcement_unavailable")
     if acknowledgment.get("exec_error"):
         return "command_start_failed"
-    if result == "signal" or result == "core-dump":
-        return "command_signaled"
+    if state.get("ExecMainCode") in ("2", "3"):
+        return {"oom-kill": "memory_limit", "timeout": "timeout"}.get(result, "command_signaled")
     if result == "success" and state.get("ExecMainCode") == "1" and state.get("ExecMainStatus") == "0":
         return "completed"
     if result == "exit-code" and state.get("ExecMainCode") == "1" and state.get("ExecMainStatus") not in (None, "", "0"):
@@ -153,7 +149,7 @@ def main(argv=None):
                 acknowledgment = json.loads(receipt.read_text())
             report["status"] = outcome(state, acknowledgment)
         except subprocess.TimeoutExpired:
-            report["status"] = "supervisor_timeout"
+            report["status"] = "launcher_timeout"
         except KeyboardInterrupt:
             report["status"] = "interrupted"
         except (OSError, RuntimeError, ValueError):
