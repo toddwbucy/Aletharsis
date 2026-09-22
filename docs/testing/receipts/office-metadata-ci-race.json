@@ -1,0 +1,17 @@
+{
+  "run_url": "https://github.com/toddwbucy/Aletharsis/actions/runs/35771146072",
+  "head_sha": "f1ad14ca594e95e9a0116d5b40c204e6831614d8",
+  "conclusion": "success",
+  "artifact_id": 10714725664,
+  "artifact_name": "backend-go-1.27.1-ubuntu-24.04-1",
+  "upstream_member": "go-race.jsonl",
+  "upstream_member_sha256": "b923cb1106599165bbdbb6772c3563285c9e7bb332b07b00d7b5ca002ba25675",
+  "retained_excerpt": "office-metadata-ci-race-excerpt.jsonl",
+  "excerpt_sha256": "89a5f3f985268cd6acf06dc4c671a2297b90ded66279464de13de36e3be6e4f6",
+  "selection": "All JSONL events whose Package equals github.com/toddwbucy/Aletharsis/internal/officemetadata, preserving original line bytes/order.",
+  "limitations": [
+    "CI success is not evidence of compliance with the local 1 GiB ceiling.",
+    "Artifact retention is 14 days; only metadata-package events are retained here.",
+    "This evidence applies to f1ad14c, not later changes."
+  ]
+}

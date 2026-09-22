@@ -1,0 +1,52 @@
+{
+  "command": [
+    "python3",
+    "/tmp/aletharsis-runner-followup/scripts/run_bounded.py",
+    "--",
+    "/usr/bin/env",
+    "GOCACHE=/tmp/aletharsis-go-cache",
+    "GOTOOLCHAIN=local",
+    "GOMAXPROCS=2",
+    "/tmp/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-p",
+    "1",
+    "./..."
+  ],
+  "runner_dependency": {
+    "pr": 77,
+    "branch": "docs/bounded-runner-limitations",
+    "commit": "8488d24",
+    "merged_in": "8488d24",
+    "script": "scripts/run_bounded.py",
+    "script_sha256": "93aa918a4d0f3bbddaf98d924428a7f344c1d3feb30963ea54e0b45e674ad62d",
+    "runtime_checkout_note": "Checkout began at 8488d24 with documentation edits; docs-only 64e4646 committed during run. Runner script bytes unchanged."
+  },
+  "source_sha256": {
+    "internal/officemetadata/extract_test.go": "ce0fcfaba561b9ddde973bda8fbc8f09b68fcdfb57d89c1e3792135b1cc04028",
+    "internal/officemetadata/extract.go": "f61c4089f290bd36e3835f47f9f764ad4d5f0212e704631eba4d5369ea02b01e"
+  },
+  "log": "office-metadata-full-race.log",
+  "log_sha256": "502dfa6a08594aa41d584d2838c2cd0a66daa3aed0289307ce8c88e3c36cf33b",
+  "supervisor": {
+    "cleanup_confirmed": true,
+    "command_exit_code": null,
+    "command_signal": 9,
+    "enforcement_verified": true,
+    "launcher_returncode": 1,
+    "memory_mib": 1024,
+    "service_result": "oom-kill",
+    "status": "memory_limit",
+    "timeout_seconds": 60,
+    "unit": "aletharsis-validation-3dd6fed1ef4d4be696beea004f16ea65.service"
+  },
+  "limitations": [
+    "The last completed package is internal/cli. Without -json/-v, the active package or particular descendant at OOM is not identified.",
+    "source_sha256 identifies submitted source bytes, not proof that the metadata package was compiled or tested; the bounded run did not reach it.",
+    "The 60-second whole-service deadline is an independent constraint. Completion within it is unestablished; raising memory alone would not establish a passing configuration. No higher-limit retry is authorized or performed.",
+    "A separate bounded pytest unit (aletharsis-validation-6feabcb2b76f4f539fade72c052d0bb7) overlapped this run. Its cgroup memory was separate, but shared-host contention limits wall-time comparisons.",
+    "Any future authorized attempt should retain go test -json progress and reassess both memory and deadline constraints."
+  ]
+}
