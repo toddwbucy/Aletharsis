@@ -28,6 +28,11 @@ tests/adapters/fixtures/*.json -text
 docs/specs/detector-adapter-v1.md -text
 schemas/adapter-exchange-v1.schema.json -text
 tests/adapters/*.py -text
+# G6 records bind exact bytes of study narratives and reproduction commands.
+docs/reuse/evaluations/c2pa-text.md -text
+docs/reuse/evaluations/c2pa-verifier.md -text
+experiments/c2pa-text/README.md -text
+experiments/c2pa-verifier/README.md -text
 # Full v3 conformance reports, blobs and independent vectors retain exact bytes.
 tests/contracts_v3/fixtures/** -text
 tests/contracts_v3/invalid/** -text
