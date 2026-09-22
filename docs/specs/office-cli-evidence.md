@@ -48,7 +48,7 @@ The proposed dispatcher returns `unsupported_version` for 3.0 with
 `support_reason: unknown_version`. These are new requirements, not current Go
 behavior. Supported 4.0 exposes a decoded view only after full supported semantic
 validation. New consumers use `ReadSupported` for all admitted versions; legacy
-fixtures/tests continue exercising `Read`. Successful 4.0 imports also have null
+fixtures/tests continue exercising `Read`. Successful 4.0 imports return `status: validated` and null
 `support_reason`. Report failure codes are unchanged.
 All unsupported cases retain bounded original bytes/digest and unknown coverage;
 no decoded report is exposed as validated. Strict JSON and input limits precede
@@ -73,7 +73,7 @@ Each coordinate names its byte artifact. Three representations are distinct:
 3. Analysis scope: exact UTF-8 text/hash, scope identity, role and assembly version.
    Office `scope_character_offsets` and `scope_byte_offsets` refer to this artifact.
    Every text-scope location requires `scope_ref`; the referenced scope identifies
-   its assembled-text coordinate artifact. Structural locations have no scope. Every scalar
+   its exact text/hash as the coordinate artifact. Structural locations have no scope. Every scalar
    retains the existing WA-001/OA-001 origin, including XP/XM segment identity,
    lexical part span and transformation. Generated ODT controls stay derived.
 
@@ -129,7 +129,8 @@ Truncation must be declared and may not produce dangling graph references.
 Findings retain the four classifications and detector-specific evidence contracts.
 The Office text finding location is a closed, separately discriminated variant. Its
 `scope_ref` resolves to exactly one Office scope record, which supplies the
-assembled-text artifact reference; locations do not duplicate that reference. The occurrence arrays
+exact text/hash as the coordinate artifact; no separate artifact reference is
+required in either record. The occurrence arrays
 are named `scope_character_offsets` and `scope_byte_offsets`, never legacy
 `character_offsets`/`byte_offsets`. Legacy location keys are forbidden in this
 variant. Scope-wide findings retain the same scope reference without fabricated
@@ -145,10 +146,10 @@ Existing WA/OA analyzers may continue using temporary `evidence.Text` inputs wit
 UTF-8 boundary maps internally. The 4.0 assembler translates their locations to
 the Office variant before serialization. It checks count agreement, scalar bounds,
 UTF-8 byte starts, scope hash and scalar-origin linkage. A dedicated 4.0 coordinate
-validator resolves the Office scope table and artifact references, not
+validator resolves the Office scope table and its text/hash identities, not
 `document.Texts`. It does not call v2 `findingCoordinates` for Office findings.
 Flat-file findings keep the legacy validator and meanings unchanged. Tests reject
-mixed coordinate variants, scope records with invalid artifact references, duplicate scope IDs,
+mixed coordinate variants, scope records with invalid text hashes, duplicate scope IDs,
 dangling references and byte offsets that point into the container instead.
 Context, profile assessments, detection and human judgment remain separate.
 A finding is not needed for every ordinary inventory entry.
@@ -203,16 +204,20 @@ the existing inspector rules, without guessing `word/document.xml`, following
 external targets, or recursively prioritizing arbitrary relationships. If both
 candidate paths exist, process ODF content first, then the OPC target; a shared
 part is charged only once. Inconsistent/ambiguous declarations retain a gap, not
-an arbitrary target. A third priority phase admits all validated OPC relationship
-parts in ordinal name order, then uniquely resolved core/app metadata targets in
-ordinal name order, then embedded-object candidates (recognized internal relationship
-targets and conventional embedding-directory candidates) in ordinal name order.
-Resolve these from verified declarations only; do not follow external targets.
-Inventory all candidates even if their bytes cannot be admitted. Shared parts are
-charged once. Only then allocate ordinary parts in ordinal name order. Thus unrelated
-Pictures/customXml payloads cannot consume the budget ahead of the four declared
-comparison targets. Finite limits can still exclude targets; report those gaps
-rather than promising complete comparison coverage.
+an arbitrary target. The next bounded priority set is the uniquely resolved main
+part's own canonical relationship part, then the core/app targets resolved from
+verified root declarations, then embedded targets resolved from those main-part
+relationships and conventional embedding-directory candidates, each group in
+ordinal name order. Names are candidates, not XML-validated relationships until
+their bytes have been admitted and parsed. Ambiguous declarations retain gaps.
+After this target-dependent set, process all other canonical relationship-part
+candidates in ordinal name order; non-canonical relationship-like names receive
+ordinary-part priority and retain the existing OPC diagnostic. Then admit ordinary
+parts in ordinal name order. Never recursively promote arbitrary relationship
+chains. Shared parts are charged once. Thus unrelated customXml relationship
+parts cannot consume budget ahead of the selected comparison targets. The target
+set remains subject to package-count, per-part and aggregate limits: enumeration
+and content gaps remain explicit, never a promise of complete target coverage.
 
 Missing critical names consume no reservation. Check per-part limits before the
 aggregate budget: an over-per-part-limit member gets that reason, no reservation,
@@ -362,12 +367,14 @@ including partial entries; these counts overlap operational counts intentionally
 Partial plus HIGH must increment partial and HIGH, never failed. Console summaries
 show both coverage-state and severity counts.
 
-Treat partial as report-bearing across the entire observer/presentation chain:
+For corpus-v2/reveal-tree-v2 only, treat partial as report-bearing across the
+entire observer/presentation chain:
 retain report/canonical digest and any verified acquired snapshot; do not clear it
 solely because state is partial. A partial 2.0 report with one independently verified
 flat text is eligible for reveal; Office remains explicitly unsupported. Audit v2
-snapshot retention must allow this verified partial-text case instead of its current
-completed-only guard. No partial snapshot is assumed valid without `VerifyText`.
+snapshot retention must allow this verified partial-text case through an explicit
+v2-consumer option instead of its current completed-only guard. Corpus-v1 runs
+retain current behavior and discard partial snapshots, including with report 2.0. No partial snapshot is assumed valid without `VerifyText`.
 `corpus.Observer.Visit`, its source-limit handling, directory-reveal's state guard,
 the directory console state list and the reveal-tree state enum are all consumers.
 Add a versioned reveal-tree envelope for new states rather than changing v1.
@@ -413,7 +420,7 @@ negative cases must also show that valid neighboring content is still analyzed.
 1. This B1–B5 design PR; no implementation or comparator clearance implied.
 2. Closed 4.0 wire contract (including the 3.0 adapter envelope), fixtures and
    cross-record checks, plus mandatory corpus-v2/corpus-document-v2 contracts.
-   Review any additionally needed versioned presentation envelope.
+   Deliver the mandatory reveal-tree-v2 envelope and selection matrix.
 3. Package outcome API plus verified-package entry points in OPC/DOCX/ODT
    inspectors (one decompression pass), metadata and embedded-object producers
    with unit tests, including unrelated bad-CRC parts and identification-priority
@@ -445,3 +452,6 @@ Merge policy: this proposal and implementation increments remain reviewable;
 "no merge authorization" records the current owner instruction, not an inherent
 ban on accepting this specification. A later explicit owner instruction may
 merge the documentation alone without clearing implementation or comparator gates.
+
+Budget regression: large customXml/_rels/*.rels members must not displace the
+main-part relationships, core/app targets or embedding targets from priority.

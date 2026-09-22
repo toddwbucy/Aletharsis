@@ -1,4 +1,4 @@
-# Office report contract: decision record
+# ADR-0003 — Office report contract
 
 Status: owner authorized proceeding with best judgment and reviewable PRs; no main merges.
 Tracking: #40; prerequisite B1–B5 specification increment.

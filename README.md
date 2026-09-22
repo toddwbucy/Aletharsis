@@ -44,8 +44,8 @@ go build -trimpath -o bin/aletharsis ./cmd/aletharsis
 ```
 
 Audit exits 0–3 summarize finding severity; exit 4 indicates an operational failure.
-Report 2.0 incomplete coverage also exits 4, while 1.0 partial extraction alone may
-exit 0–3. Inspect report status and coverage as well as the exit code. `--help`
+Report 1.0 has no coverage state and its audit exits 4 only on failed status.
+Report 2.0 exits 4 on any non-completed status. Inspect report status and coverage as well as the exit code. `--help`
 documents the current commands and flags.
 
 ## Documentation
