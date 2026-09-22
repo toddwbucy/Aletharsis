@@ -178,3 +178,17 @@ Structured registry `runtime.artifacts` binds each archive and retained notice
 by its labeled identity, digest, size and retained path. Offline tests verify
 retained holder strings and proposed governing-notice scope, but unretained notice
 hashes remain static archive observations rather than independently checked CI data.
+
+Review pass 4 records explicit Author labels and __author__ assignments as well
+as codeauthor credits. Observation scopes are inventory-level defaults. The
+hand-curated write-entry list now includes both private mini-stream writers and
+oleobj.main; AST parsing locates definitions, it does not discover a complete
+write call graph. Changelog credit to Christian Herdtweck in xglob.py:56 remains
+outside the declared header-credit scope and is not inferred to be a rights grant.
+
+The retained oletools notice difference is recorded machine-readably and verified
+against both retained files: heading, preamble wrapping and year-range differences are preserved,
+not erased by an assertion of legal equivalence. The registry root notice is
+identity evidence; the package-local notice remains the proposed governing basis.
+Registry license.retained_path is relative to docs/reuse; runtime.artifacts paths
+are repository-relative, as are static inventory paths.

@@ -80,7 +80,7 @@ def test_every_candidate_has_observed_or_explicitly_missing_header():
     for item in members:
         header = item["header_notice"]
         assert header["status"] in {"observed", "absent", "mismatched"}
-        assert header["scope"] and header["qualification"]
+        assert INVENTORY["header_notice_scope"] and header["qualification"]
         if header["status"] == "absent":
             assert not header["holders"] and not header["observed_lines"]
         else:
@@ -92,7 +92,7 @@ def test_every_candidate_has_observed_or_explicitly_missing_header():
                     "oletools/thirdparty/xglob/LICENSE.txt" if name.startswith("oletools/thirdparty/xglob/") else
                     None if name == "oletools/thirdparty/__init__.py" else "oletools/LICENSE.txt")
         assert header["proposed_governing_notice"] == expected
-        assert isinstance(item["other_credits"], list) and item["other_credits_scope"]
+        assert isinstance(item["other_credits"], list) and INVENTORY["other_credits_scope"]
         for credit in item["other_credits"]:
             assert credit["line"] > 0 and credit["text"]
 
@@ -118,7 +118,30 @@ def test_write_entry_point_inventory():
         ("oletools/record_base.py", "OleRecordFile.open", 143),
         ("oletools/common/io_encoding.py", "uopen", 149),
         ("oletools/oleobj.py", "process_file", 836),
+        ("oletools/oleobj.py", "main", 962),
+        ("olefile/olefile.py", "OleFileIO._write_mini_sect", 1745),
+        ("olefile/olefile.py", "OleFileIO._write_mini_stream", 1972),
     }
     assert {(p["archive_member"], p["symbol"], p["line"]) for p in points} == expected
     modules = {(m["archive"], m["archive_member"]) for m in INVENTORY["candidate_modules"]}
     assert all((p["archive"], p["archive_member"]) in modules for p in points)
+
+
+def test_declared_metadata_and_credit_scope():
+    metadata = INVENTORY["declared_license_metadata"]
+    assert {(m["archive"], m["archive_member"], m["line"]) for m in metadata} == {
+        ("oletools.tar.gz", "setup.py", 64), ("oletools.tar.gz", "setup.py", 74),
+        ("olefile-0.47-py2.py3-none-any.whl", "olefile-0.47.dist-info/METADATA", 8),
+        ("olefile-0.47-py2.py3-none-any.whl", "olefile-0.47.dist-info/METADATA", 16)}
+    assert all("BSD" in m["text"] for m in metadata)
+    assert "Hand-curated" in INVENTORY["write_entry_points_scope"]
+    modules = {m["archive_member"]: m for m in INVENTORY["candidate_modules"]}
+    for name, line in (("oletools/oleobj.py", 8), ("oletools/thirdparty/xglob/xglob.py", 15), ("olefile/olefile.py", 91)):
+        assert any(c["line"] == line and "Philippe Lagadec" in c["text"] for c in modules[name]["other_credits"])
+
+
+def test_notice_difference_matches_retained_bytes():
+    import difflib
+    root = (ROOT / "docs/reuse/licenses/decalage2--oletools.txt").read_text().splitlines()
+    package = (ROOT / "docs/reuse/evaluations/office/oletools-package-license.txt").read_text().splitlines()
+    assert INVENTORY["oletools_notice_difference"] == list(difflib.unified_diff(root, package, fromfile="LICENSE.md", tofile="oletools/LICENSE.txt", lineterm=""))

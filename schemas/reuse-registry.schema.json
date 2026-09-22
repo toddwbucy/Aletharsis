@@ -239,7 +239,9 @@
                       "string",
                       "null"
                     ],
-                    "minLength": 1
+                    "minLength": 1,
+                    "description": "Repository-relative retained evidence path; null for unretained archive bytes.",
+                    "pattern": "^docs/reuse/(?!.*(?:^|/)\\.{1,2}(?:/|$))[A-Za-z0-9_./-]+$"
                   }
                 },
                 "required": [

@@ -22,11 +22,9 @@
         "observed_lines": [],
         "proposed_governing_notice": "oletools/LICENSE.txt",
         "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "absent"
       },
       "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "size": 0,
       "static_import_statements": []
@@ -47,7 +45,6 @@
         ],
         "proposed_governing_notice": "oletools/LICENSE.txt",
         "qualification": "Observed header attribution; not a clearance decision.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "observed"
       },
       "other_credits": [
@@ -56,7 +53,6 @@
           "text": ".. codeauthor:: Intra2net AG <info@intra2net>"
         }
       ],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "69df0360da68f6d5d257aa2612c4006a9d13c76241a9e4dbbef42445d2b7b8d6",
       "size": 28156,
       "static_import_statements": [
@@ -87,11 +83,14 @@
         ],
         "proposed_governing_notice": "oletools/LICENSE.txt",
         "qualification": "Observed header attribution; not a clearance decision.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "observed"
       },
-      "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
+      "other_credits": [
+        {
+          "line": 8,
+          "text": "Author: Philippe Lagadec - http://www.decalage.info"
+        }
+      ],
       "sha256": "c7091b24b689bd2cdd4c211683b009950c94dff01bf69ea86bfef37b110c28b6",
       "size": 41074,
       "static_import_statements": [
@@ -210,11 +209,9 @@
         "observed_lines": [],
         "proposed_governing_notice": "oletools/LICENSE.txt",
         "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "absent"
       },
       "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "a17a633212b83e7e91c6577cfefbba458398d0ae5eda233d9e7a4fa841aa663e",
       "size": 29559,
       "static_import_statements": [
@@ -243,11 +240,9 @@
         ],
         "proposed_governing_notice": "oletools/LICENSE.txt",
         "qualification": "Observed header attribution; not a clearance decision.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "observed"
       },
       "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "53f7b9e9aefe46eff510eca103ee5770f11bcb8e5403d79f9776785aac663558",
       "size": 14862,
       "static_import_statements": [
@@ -268,11 +263,9 @@
         "observed_lines": [],
         "proposed_governing_notice": "oletools/LICENSE.txt",
         "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "absent"
       },
       "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "size": 0,
       "static_import_statements": []
@@ -293,11 +286,9 @@
         ],
         "proposed_governing_notice": "oletools/LICENSE.txt",
         "qualification": "Header names msodde, not io_encoding; package-level grant proposed, pending clearance.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "mismatched"
       },
       "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "aad2a23e527ce39f97f718a7b53eb9ae1f67cd1c5e1d5e5a61e1c42a574efc28",
       "size": 8117,
       "static_import_statements": [
@@ -319,11 +310,9 @@
         "observed_lines": [],
         "proposed_governing_notice": "oletools/LICENSE.txt",
         "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "absent"
       },
       "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "d2203c8a187a4bb1cbaa63cb1fc7b062a4292cbe6da9fa3a62d5ad3c4ea4d5c2",
       "size": 104,
       "static_import_statements": [
@@ -346,7 +335,6 @@
         ],
         "proposed_governing_notice": "oletools/LICENSE.txt",
         "qualification": "Observed header attribution; not a clearance decision.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "observed"
       },
       "other_credits": [
@@ -355,7 +343,6 @@
           "text": ".. codeauthor:: Intra2net AG <info@intra2net>, Philippe Lagadec"
         }
       ],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "befcad56f1ac166ddaa7faeb37e5e31a6d998c0ce76284edc23bb0690e10ce76",
       "size": 10114,
       "static_import_statements": [
@@ -377,11 +364,9 @@
         "observed_lines": [],
         "proposed_governing_notice": "oletools/LICENSE.txt",
         "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "absent"
       },
       "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "bccb52bfbce831be3741eac7042dea916d396263e2cb739e2b939b7db0a3bd0d",
       "size": 2505,
       "static_import_statements": [
@@ -398,11 +383,9 @@
         "observed_lines": [],
         "proposed_governing_notice": "oletools/LICENSE.txt",
         "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "absent"
       },
       "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "20a7486bde7150345a7868bc8b050212880399e89fd97a0103b17be94fbf957e",
       "size": 2672,
       "static_import_statements": [
@@ -419,11 +402,9 @@
         "observed_lines": [],
         "proposed_governing_notice": "oletools/LICENSE.txt",
         "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "absent"
       },
       "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "07ace597b52e430822a0ba325d496e0dd4289f9c55ff239f4fb8378ded69be10",
       "size": 530,
       "static_import_statements": [
@@ -439,11 +420,9 @@
         "observed_lines": [],
         "proposed_governing_notice": null,
         "qualification": "Empty thirdparty package initializer; root excludes thirdparty and no local notice is asserted. Retain this scope exception for owner disposition.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "absent"
       },
       "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "size": 0,
       "static_import_statements": []
@@ -457,11 +436,9 @@
         "observed_lines": [],
         "proposed_governing_notice": "oletools/thirdparty/xglob/LICENSE.txt",
         "qualification": "No copyright-holder statement in header; proposed package/subpackage coverage requires owner review.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "absent"
       },
       "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "b3ff17460fe6a347136ceeb3bc5d80aca55a7ac671d7fcb8787d953b8c0818a8",
       "size": 20,
       "static_import_statements": [
@@ -484,11 +461,14 @@
         ],
         "proposed_governing_notice": "oletools/thirdparty/xglob/LICENSE.txt",
         "qualification": "Observed header attribution; not a clearance decision.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "observed"
       },
-      "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
+      "other_credits": [
+        {
+          "line": 15,
+          "text": "Author: Philippe Lagadec - http://www.decalage.info"
+        }
+      ],
       "sha256": "db811c3fe91343ad4f6de765795661f07a1537d1102da71547a1627b3c249951",
       "size": 9244,
       "static_import_statements": [
@@ -521,11 +501,9 @@
         ],
         "proposed_governing_notice": "olefile/LICENSE.txt",
         "qualification": "Observed header attribution; not a clearance decision.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "observed"
       },
       "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
       "sha256": "719e959251c94a8332354270e733ff8638781bf1ec6a9f921902a0b055692456",
       "size": 967,
       "static_import_statements": [
@@ -571,11 +549,14 @@
         ],
         "proposed_governing_notice": "olefile/LICENSE.txt",
         "qualification": "Observed header attribution; not a clearance decision.",
-        "scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
         "status": "observed"
       },
-      "other_credits": [],
-      "other_credits_scope": "First 100 physical lines: codeauthor directives and explicit Author/Authors labels; observed credits, not rights-holder inference.",
+      "other_credits": [
+        {
+          "line": 91,
+          "text": "__author__  = \"Philippe Lagadec\""
+        }
+      ],
       "sha256": "dcce514efdcbd04fa689bc920531a1985df0837c92b57fe3af0c45c46f1bbd87",
       "size": 125455,
       "static_import_statements": [
@@ -613,6 +594,7 @@
       "text": "Classifier: License :: OSI Approved :: BSD License"
     }
   ],
+  "header_notice_scope": "First 100 physical source lines, copyright statements only; codeauthor and changelog credits are not inferred rights holders.",
   "licenses": [
     {
       "archive": "oletools.tar.gz",
@@ -794,6 +776,24 @@
       "size": 3191
     }
   ],
+  "oletools_notice_difference": [
+    "--- LICENSE.md",
+    "+++ oletools/LICENSE.txt",
+    "@@ -1,7 +1,9 @@",
+    "-This license applies to the python-oletools package, apart from the thirdparty folder which contains third-party files ",
+    "-published with their own license.",
+    "+LICENSE for the python-oletools package:",
+    " ",
+    "-The python-oletools package is copyright (c) 2012-2025 Philippe Lagadec (http://www.decalage.info)",
+    "+This license applies to the python-oletools package, apart from the thirdparty",
+    "+folder which contains third-party files published with their own license.",
+    "+",
+    "+The python-oletools package is copyright (c) 2012-2024 Philippe Lagadec (http://www.decalage.info)",
+    " ",
+    " All rights reserved.",
+    " "
+  ],
+  "other_credits_scope": "First 100 physical lines: codeauthor directives, Author/Authors labels (with or without comment prefix), and __author__ assignments. Changelog credits excluded; observations are not rights-holder inference.",
   "provisioning_notices": [
     {
       "archive": "oletools.tar.gz",
@@ -864,7 +864,25 @@
       "archive_member": "oletools/oleobj.py",
       "line": 836,
       "symbol": "process_file"
+    },
+    {
+      "archive": "olefile-0.47-py2.py3-none-any.whl",
+      "archive_member": "olefile/olefile.py",
+      "line": 1745,
+      "symbol": "OleFileIO._write_mini_sect"
+    },
+    {
+      "archive": "olefile-0.47-py2.py3-none-any.whl",
+      "archive_member": "olefile/olefile.py",
+      "line": 1972,
+      "symbol": "OleFileIO._write_mini_stream"
+    },
+    {
+      "archive": "oletools.tar.gz",
+      "archive_member": "oletools/oleobj.py",
+      "line": 962,
+      "symbol": "main"
     }
   ],
-  "write_entry_points_scope": "Known write-capable entry points for provisioning regression tests; not a complete security boundary or runtime clearance."
+  "write_entry_points_scope": "Hand-curated known write-capable methods and extraction entry points; definition lines located with AST parsing of pinned bytes. Includes private mini-stream writers and oleobj CLI. Not an exhaustive call graph or security boundary."
 }
