@@ -88,7 +88,12 @@ func TestToggleAdmission(t *testing.T) {
 }
 func TestStoriesAndControls(t *testing.T) {
 	for _, root := range []string{"hdr", "ftr", "comments", "footnotes", "endnotes"} {
-		r := extract(t, story(docxidentify.TransitionalWord, root, `<w:p><w:pPr><w:tabs><w:tab w:pos="100"/></w:tabs></w:pPr><w:r><w:t>A</w:t><w:tab/><w:br w:type="page"/><w:cr/><w:t>B</w:t></w:r></w:p>`))
+		body := `<w:p><w:pPr><w:tabs><w:tab w:pos="100"/></w:tabs></w:pPr><w:r><w:t>A</w:t><w:tab/><w:br w:type="page"/><w:cr/><w:t>B</w:t></w:r></w:p>`
+		item := map[string]string{"comments": "comment", "footnotes": "footnote", "endnotes": "endnote"}[root]
+		if item != "" {
+			body = "<w:" + item + ">" + body + "</w:" + item + ">"
+		}
+		r := extract(t, story(docxidentify.TransitionalWord, root, body))
 		if r.State != "completed" || len(r.Controls) != 3 || len(r.Texts) != 2 {
 			t.Fatalf("%s: %+v", root, r)
 		}
@@ -251,6 +256,19 @@ func TestFormattingControlsRemainLocatedXMLOnly(t *testing.T) {
 					}
 				})
 			}
+		}
+	}
+}
+
+func TestControlsRequireAdmittedAncestorPath(t *testing.T) {
+	for _, wrapper := range []string{"hyperlink", "futureContainer", "docPartPr", "rubyPr", "p"} {
+		r := extract(t, document(`<w:p><w:`+wrapper+`><w:r><w:tab/></w:r></w:`+wrapper+`></w:p>`))
+		if wrapper == "hyperlink" {
+			if len(r.Controls) != 1 || r.State != "completed" {
+				t.Fatal("supported control excluded")
+			}
+		} else if len(r.Controls) != 0 || r.State != "partial" || len(r.Issues) != 1 || r.Issues[0].Code != "word.control_structure_unsupported" {
+			t.Fatal("unsupported control admitted", wrapper, r)
 		}
 	}
 }

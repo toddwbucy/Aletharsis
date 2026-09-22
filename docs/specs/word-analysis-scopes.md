@@ -23,7 +23,7 @@ data splits scopes. XML indentation is not added to selected text.
 CDATA boundaries and character-reference syntax do not split the selected character
 sequence. Empty text can retain an empty scope. No synthetic separator or rendered
 character is introduced. Scope boundaries record the terminating token and reason
-when there was an active selected scope, except the explicit formatting-text
+when there was an active selected scope, except the explicit excluded-text
 coverage records described below; this is not an inventory of every structural
 element. Complete structural evidence remains in the retained WT-001 result.
 
@@ -106,15 +106,21 @@ configuration exercised 87,447 inputs without failure (about four seconds includ
 shutdown). These checks are bounded native validation, not renderer equivalence or
 independent Office-oracle acceptance.
 
-Selected character data nested inside same-namespace Word property subtrees
-(`rPr`, `pPr`, `sectPr`, `tblPr`, `tblPrEx`, `trPr`, `tcPr`, `sdtPr`, `tblGrid`) remains in WT-001
-extraction evidence but is excluded from analyzer scopes. It splits surrounding
-stored text, including when the excluded selected content is only whitespace;
-formatting content cannot manufacture adjacency or a text-pattern finding.
+## Context admission and exclusions
 
-Selected text in these non-body property/grid subtrees remains located extraction
-evidence and emits `word.formatting_text_not_analyzed`, making extraction partial.
-WA-001 records a `formatting_text_not_analyzed` boundary for each excluded selected
-segment even with no active scope, including whitespace-only segments. These
-records declare an analysis coverage gap, not a negative detector result, and do
-not claim to enumerate every possible non-body Word container.
+WT-001's [stored-text context grammar](word-text-evidence.md#stored-text-context-admission)
+is authoritative. WA-001 consumes each text's `AnalysisContext.BlockedElement`
+rather than reconstructing a separate property exclusion list. Every selected
+segment with an unsupported ancestor remains extraction evidence but contributes
+no analyzer input. It flushes any active scope and always records a
+`text_context_not_analyzed` boundary at its token, even with no active scope or
+with whitespace-only text. Extraction declares partial coverage with the located
+`word.text_context_not_analyzed` issue and first unsupported ancestor edge.
+
+Ordinary direct run properties remain transparent only for adjacency between
+otherwise admitted text segments. Unknown containers, foreign wrappers and
+misplaced recognized containers cannot authorize analysis or reset blocked
+ancestry. Deleted text and field instructions on admitted paths continue to be
+analyzed in their distinct roles. These exclusions declare coverage gaps, never
+negative detector results. Full OOXML validity and rendered visibility remain
+outside this grammar's claims.

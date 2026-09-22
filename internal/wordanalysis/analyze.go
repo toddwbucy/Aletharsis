@@ -56,9 +56,15 @@ func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	for i, t := range extracted.Texts {
 		byToken[extracted.XML.Segments[t.Segment].Token] = i
 	}
-	// Formatting subtrees affect context, not stored-character adjacency. Retain
-	// their facts in Extraction; do not merge them into textual analyzer input.
-	properties := wordtext.FormattingSubtrees(d, extracted.Namespace)
+	// Only direct run properties are transparent to adjacency. This mask is
+	// never used for admission: extraction owns the complete ancestry decision.
+	properties := make([]bool, len(d.Elements))
+	for i, e := range d.Elements {
+		if e.Parent >= 0 {
+			p := d.Elements[e.Parent]
+			properties[i] = properties[e.Parent] || (e.Name.Namespace == extracted.Namespace && e.Name.Local == "rPr" && p.Name.Namespace == extracted.Namespace && p.Name.Local == "r")
+		}
+	}
 	var builder strings.Builder
 	origins := []Origin{}
 	previous := -1
@@ -88,8 +94,8 @@ func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		}
 		if textIndex, ok := byToken[ti]; ok {
 			t := extracted.Texts[textIndex]
-			if properties[t.Element] {
-				r.Boundaries = append(r.Boundaries, Boundary{ti, "formatting_text_not_analyzed"})
+			if t.AnalysisContext.BlockedElement >= 0 {
+				r.Boundaries = append(r.Boundaries, Boundary{ti, "text_context_not_analyzed"})
 				flush()
 				continue
 			}

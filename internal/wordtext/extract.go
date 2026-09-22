@@ -22,6 +22,7 @@ type Toggle struct {
 	Elements []int
 }
 type Text struct {
+	AnalysisContext                  AnalysisContext
 	Segment, Element, Run, Paragraph int
 	Role                             string
 	DirectVanish, DirectWebHidden    Toggle
@@ -114,7 +115,7 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		return nil, ErrStructure
 	}
 	r := &Result{Parser: Version, State: "completed", Story: story, Namespace: ns, XML: mapped, Texts: []Text{}, Controls: []Control{}, Unselected: []Unselected{}, Issues: []Issue{}, Limitations: []string{"word.style_inheritance_unresolved", "word.rendering_not_performed", "word.property_revision_effects_unresolved", "word.character_data_only", "word.cross_run_assembly_not_performed"}}
-	formatting := FormattingSubtrees(d, ns)
+	contexts := analysisContexts(d, ns, scope)
 	children := make([][]int, len(d.Elements))
 	for i, e := range d.Elements {
 		if e.Parent >= 0 {
@@ -206,7 +207,7 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		}
 		info.vanish.Elements = slices.Clone(info.vanish.Elements)
 		info.web.Elements = slices.Clone(info.web.Elements)
-		item := Text{Segment: i, Element: s.Element, Run: run, Paragraph: paragraph, Role: kind, DirectVanish: info.vanish, DirectWebHidden: info.web, Revisions: revisions, UnresolvedAncestors: unknown, TextBox: textbox}
+		item := Text{AnalysisContext: contexts[s.Element], Segment: i, Element: s.Element, Run: run, Paragraph: paragraph, Role: kind, DirectVanish: info.vanish, DirectWebHidden: info.web, Revisions: revisions, UnresolvedAncestors: unknown, TextBox: textbox}
 		for _, a := range e.Attributes {
 			if a.Name.Namespace == "http://www.w3.org/XML/1998/namespace" && a.Name.Local == "space" {
 				item.SpaceDeclared = true
@@ -219,8 +220,8 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		if len(unknown) > 0 {
 			r.issue("word.wrapper_context_unresolved", s.Element)
 		}
-		if formatting[s.Element] {
-			r.issue("word.formatting_text_not_analyzed", s.Element)
+		if item.AnalysisContext.BlockedElement >= 0 {
+			r.issue("word.text_context_not_analyzed", s.Element)
 		}
 		r.Texts = append(r.Texts, item)
 	}
@@ -249,7 +250,7 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		}
 		p, _, unknown, _, inside := contextFor(i)
 		run := e.Parent
-		if formatting[i] || run < 0 || d.Elements[run].Name.Namespace != ns || d.Elements[run].Name.Local != "r" || p < 0 || !inside || len(children[i]) != 0 || nonempty[i] {
+		if contexts[i].BlockedElement >= 0 || run < 0 || d.Elements[run].Name.Namespace != ns || d.Elements[run].Name.Local != "r" || p < 0 || !inside || len(children[i]) != 0 || nonempty[i] {
 			r.issue("word.control_structure_unsupported", i)
 			continue
 		}
@@ -314,25 +315,6 @@ func readToggle(d *xmlparts.Document, children [][]int, nonempty map[int]bool, p
 		}
 	default:
 		result.State = "unknown"
-	}
-	return result
-}
-
-// FormattingSubtrees marks known Word property containers and all descendants.
-// Namespace identity is required; a similarly named foreign wrapper is not a
-// Word formatting declaration. This is context classification, not validation.
-func FormattingSubtrees(d *xmlparts.Document, namespace string) []bool {
-	result := make([]bool, len(d.Elements))
-	for i, e := range d.Elements {
-		if e.Parent >= 0 {
-			result[i] = result[e.Parent]
-		}
-		if e.Name.Namespace == namespace {
-			switch e.Name.Local {
-			case "rPr", "pPr", "sectPr", "tblPr", "tblPrEx", "trPr", "tcPr", "sdtPr", "tblGrid":
-				result[i] = true
-			}
-		}
 	}
 	return result
 }

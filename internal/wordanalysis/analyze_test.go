@@ -169,6 +169,9 @@ func FuzzAnalyze(f *testing.F) {
 				t.Fatal("map cardinality")
 			}
 			for i, m := range s.Origins {
+				if r.Extraction.Texts[m.Text].AnalysisContext.BlockedElement >= 0 {
+					t.Fatal("blocked text in analyzer origins")
+				}
 				if m.Source.Start < 0 || m.Source.End > int64(len(source)) || s.Text[m.UTF8.Start:m.UTF8.End] != string(rs[i]) {
 					t.Fatal("mapping bounds")
 				}
@@ -203,7 +206,7 @@ func TestFormattingSubtreeTextDoesNotEnterAnalysis(t *testing.T) {
 				}
 			}
 		}
-		if len(r.Boundaries) == 0 || r.Boundaries[0].Reason != "formatting_text_not_analyzed" {
+		if len(r.Boundaries) == 0 || r.Boundaries[0].Reason != "text_context_not_analyzed" {
 			t.Fatal("missing formatting-data boundary")
 		}
 	}
@@ -250,7 +253,7 @@ func TestFormattingOnlyStoryDeclaresEveryExcludedSegment(t *testing.T) {
 				}
 				for i, b := range r.Boundaries {
 					text := r.Extraction.Texts[i]
-					if b.Reason != "formatting_text_not_analyzed" || b.Token != r.Extraction.XML.Segments[text.Segment].Token || r.Extraction.Issues[i].Code != "word.formatting_text_not_analyzed" || r.Extraction.Issues[i].Element != text.Element {
+					if b.Reason != "text_context_not_analyzed" || b.Token != r.Extraction.XML.Segments[text.Segment].Token || r.Extraction.Issues[i].Code != "word.text_context_not_analyzed" || r.Extraction.Issues[i].Element != text.Element {
 						t.Fatal("lost exclusion anchor", r)
 					}
 				}

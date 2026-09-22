@@ -116,16 +116,53 @@ including shutdown). These checks do not establish full OOXML conformance.
 [WA-001](word-analysis-scopes.md) proposes the next consumer: cross-run stored-text
 scopes with native Unicode/emoji/pattern findings and explicit scalar source maps.
 
-Controls nested anywhere in same-namespace Word property subtrees (`rPr`, `pPr`,
-`sectPr`, `tblPr`, `tblPrEx`, `trPr`, `tcPr`, `sdtPr`, `tblGrid`) are not admitted to `Controls`.
-They retain their located XML elements and yield
-`word.control_structure_unsupported`; ordinary tab-stop declarations under
-`tabs` remain formatting without that issue. This ancestry check does not turn
-similarly named foreign elements into Word formatting declarations.
+## Stored-text context admission
 
-Selected text in these non-body property/grid subtrees remains located extraction
-evidence and emits `word.formatting_text_not_analyzed`, making extraction partial.
-WA-001 records a `formatting_text_not_analyzed` boundary for each excluded selected
-segment even with no active scope, including whitespace-only segments. These
-records declare an analysis coverage gap, not a negative detector result, and do
-not claim to enumerate every possible non-body Word container.
+Extraction and analysis share one admission decision, recorded on each selected
+`Text.AnalysisContext`. `Mode` is the admitted grammar state (`leaf` for selected
+text); `BlockedElement` is -1 for an admitted path, otherwise the XML element
+index at the first unsupported parent-child edge from the selected story root.
+A blocked ancestor remains blocked at every depth: a familiar descendant never
+resets admission. This replaces the earlier formatting-container exclusion list
+and its `word.formatting_text_not_analyzed` diagnostic in this unmerged contract.
+
+The bounded grammar admits these namespace-exact edges:
+
+| Parent context | Admitted children / next context |
+| --- | --- |
+| Selected main body, header/footer, or individual comment/footnote/endnote | block content |
+| comments / footnotes / endnotes root | corresponding singular item → block |
+| block | p → inline; tbl → table |
+| table | tr → row |
+| row | tc → block |
+| block or inline | ins, del, moveFrom, moveTo, customXml → same context; sdt → content-control context carrying block/inline kind |
+| content-control context | sdtContent → original block/inline kind |
+| inline | r → run; hyperlink, smartTag, fldSimple, bdo, dir → inline |
+| run | t, delText, instrText, delInstrText, tab, br, cr → leaf; ruby → ruby context |
+| ruby | rubyBase, rt → inline |
+
+All other edges, foreign namespaces, property subtrees and future containers are
+unsupported for this analysis grammar. This is a deliberately bounded capability,
+not full OOXML schema validation or a determination of rendered body content.
+The table specifies analysis admission, not allowed XML element occurrence overall:
+ordinary properties can coexist with admitted runs without creating a gap when
+they carry no selected character data or control candidate.
+
+Selected text on unsupported paths retains its role, context, segment and exact
+scalar maps, but emits `word.text_context_not_analyzed` at the text element and
+makes extraction partial. Its `BlockedElement` explains which ancestry edge
+prevented analysis. WA-001 retains a `text_context_not_analyzed` token boundary
+for every excluded selected segment, including whitespace-only segments and when
+no analysis scope is active. Controls require the same admitted path; excluded
+candidates remain located XML with `word.control_structure_unsupported`. Ordinary
+tab-stop declarations under `tabs` remain formatting, not run controls.
+
+Deleted text and field instructions are analyzed on admitted paths; they are never
+executed. Drawing/VML/DrawingML text-box paths and markup-compatibility alternatives
+are currently unsupported: selected text and text-box/foreign ancestry remain
+available for review, with explicit incomplete coverage. Recognizing txbxContent
+alone does not authorize analysis through an unknown drawing ancestor.
+
+Admission does not imply cross-wrapper adjacency. WA-001 continues to split at
+structural wrappers and context changes. Only direct r/rPr formatting subtrees
+are transparent to adjacency; that handling grants no text-admission authority.
