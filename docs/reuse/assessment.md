@@ -21,7 +21,7 @@ The queries pin source inspection even if the default branch subsequently moves.
 | hidden-characters-detector | Pinned README declares deprecation and links juriku/untrace; CI present, no SECURITY.md found, latest-release 404 | Reference only. Verify successor separately; no assumption that Python behavior is current or correct (#39) |
 | HIBERIUS | Security policy and CI/CodeQL paths; standalone browser tool claim; latest-release 404 | Claimed offline isolation and legitimate-use semantics need executed comparison; exclude sanitize/generate operations (#39) |
 | invisible-character-detector | Browser deploy workflow; MIT root license read; no SECURITY.md found, latest-release 404 | Build closure, Unicode version and reveal semantics not established; compare independent cases (#39) |
-| oletools | v0.60.2 GitHub release; SECURITY.md and test workflow | Root license excludes thirdparty components and includes additional terms; `NOASSERTION` deliberately avoids a blanket SPDX claim. Check per-component/vector rights, scope and sensitive logs (#40) |
+| oletools | v0.60.2 GitHub release; SECURITY.md and test workflow | Root now identified as BSD-2-Clause AND MIT, excluding thirdparty/dependencies; [Office static assessment](evaluations/office.md) retains a candidate module inventory and separate notices. Runtime closure, vector rights and clearance remain pending (#40) |
 | PDFScalpel | Python build metadata; no SECURITY.md found, latest-release 404 | No reproduced build; broad forensic/repair/generation claims do not prove supported inspection. Bound runtime and exclude mutations (#41) |
 | MarkLLM | Python requirements; no SECURITY.md found, latest-release 404 | Per-algorithm environment, tokenizer/model rights, keys and downloads unresolved; optional protocol first (#42) |
 | LLMmap | Python requirements; no SECURITY.md found, latest-release 404 | README describes remote-code-enabled model loading; inspect/isolate before execution. Active probing does not validate passive attribution (#44) |
@@ -30,7 +30,9 @@ The queries pin source inspection even if the default branch subsequently moves.
 
 The SPDX field identifies root text only. StegZero uses `NOASSERTION` because the
 observed AGPL v3 text/README alone is not a resolved project-wide only/or-later
-expression. oletools likewise needs a per-component inventory. MIT/Apache labels
+expression. The [oletools candidate inventory](evaluations/office/static-inventory.json)
+now records selected modules and notices; it does not clear the full distribution
+or establish runtime closure. MIT/Apache labels
 do not clear model weights, datasets, vectors or transitives. Retained license
 copies are evidence, not a legal opinion or redistribution approval.
 

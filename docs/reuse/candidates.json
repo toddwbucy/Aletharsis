@@ -359,27 +359,78 @@
         "commit": "ec10260989dbc48b9109e3d05d22beee19cf2333",
         "source_tree_git_sha1": "27181a0be0b8dce59a58d208f0e8f027ac11a4a9",
         "tag": null,
-        "artifact_sha256": null
+        "artifact_sha256": "8a5e4874f6393ed540c33a1a03367123a5054fd334de3cfca79cab1af1e3e045"
       },
       "license": {
-        "spdx": "NOASSERTION",
+        "spdx": "BSD-2-Clause AND MIT",
         "upstream_path": "LICENSE.md",
         "source_url": "https://github.com/decalage2/oletools/blob/ec10260989dbc48b9109e3d05d22beee19cf2333/LICENSE.md",
         "retained_path": "licenses/decalage2--oletools.txt",
         "sha256": "558732356f0c4fce779f9805dc946e9329b3e1753da13dc9f8c652f7ccebeb11",
-        "scope": "Top-level license only; component, dependency, fixture, dataset and model rights require evaluation.",
+        "scope": "Root notice retained as registry identity evidence; package-local oletools/LICENSE.txt is the proposed governing basis for non-thirdparty modules. Both notices are provisioned; pinned heading, preamble wrapping and year-range differences are recorded in the static inventory. Thirdparty excluded; clearance remains pending.",
         "clearance": "pending"
       },
       "redistribution": {
         "upstream_code": false,
         "fixtures": false,
-        "notes": "Only the license text is retained at G0. No executable source, vectors, model weights or datasets imported."
+        "notes": "Retained evidence comprises the root and package-local oletools notices, xglob notice, both olefile notices, and a static module inventory with file digests, AST-rendered import statements, header observations and a full notice-member inventory. No executable upstream modules, vectors, model weights or datasets are redistributed. Runtime clearance remains pending."
       },
       "runtime": {
         "assessment": "unverified",
-        "dependencies": "Python requirements; thirdparty licensing and transitive closure unresolved.",
+        "dependencies": "Proposed restricted ooxml/oleobj closure: olefile 0.47 and vendored xglob; exact archives and notices are labeled in runtime.artifacts and office/static-inventory.json. Optional lxml must be absent. No runtime clearance.",
         "network_policy": "No execution or network runtime adopted. Any provisioning must be explicit; auditing must not fetch implicitly.",
-        "side_effects": "README mentions logged passwords and decryption output; use synthetic credentials and bounded read-only operations only."
+        "side_effects": "README mentions logged passwords and decryption output; use synthetic credentials and bounded read-only operations only.",
+        "artifacts": [
+          {
+            "archive": "oletools.tar.gz",
+            "archive_member": null,
+            "sha256": "8a5e4874f6393ed540c33a1a03367123a5054fd334de3cfca79cab1af1e3e045",
+            "size": 3144228,
+            "retained_path": null
+          },
+          {
+            "archive": "olefile-0.47-py2.py3-none-any.whl",
+            "archive_member": null,
+            "sha256": "543c7da2a7adadf21214938bb79c83ea12b473a4b6ee4ad4bf854e7715e13d1f",
+            "size": 114565,
+            "retained_path": null
+          },
+          {
+            "archive": "oletools.tar.gz",
+            "archive_member": "LICENSE.md",
+            "sha256": "558732356f0c4fce779f9805dc946e9329b3e1753da13dc9f8c652f7ccebeb11",
+            "size": 2733,
+            "retained_path": "docs/reuse/licenses/decalage2--oletools.txt"
+          },
+          {
+            "archive": "oletools.tar.gz",
+            "archive_member": "oletools/thirdparty/xglob/LICENSE.txt",
+            "sha256": "e49b9488a651edd1bd00d5e3bec0ba279bd095fd04f84171b529f3da2eeefab7",
+            "size": 1376,
+            "retained_path": "docs/reuse/evaluations/office/xglob-license.txt"
+          },
+          {
+            "archive": "olefile-0.47-py2.py3-none-any.whl",
+            "archive_member": "olefile/LICENSE.txt",
+            "sha256": "0c349bed31cd2af10983a8d95e7455e2d15744b98585b55941ca35bd70f5bcd7",
+            "size": 2915,
+            "retained_path": "docs/reuse/evaluations/office/olefile-package-license.txt"
+          },
+          {
+            "archive": "olefile-0.47-py2.py3-none-any.whl",
+            "archive_member": "olefile-0.47.dist-info/LICENSE.txt",
+            "sha256": "cf1498d5b834b3758a89d06d224a1502c54a28b3a852f46130b761deaa4890d1",
+            "size": 2846,
+            "retained_path": "docs/reuse/evaluations/office/olefile-distribution-license.txt"
+          },
+          {
+            "archive": "oletools.tar.gz",
+            "archive_member": "oletools/LICENSE.txt",
+            "sha256": "c66e503e1dee453afe1c07b23d64a43c16f54497f1d7b55b9ec3e2d332ab7243",
+            "size": 2774,
+            "retained_path": "docs/reuse/evaluations/office/oletools-package-license.txt"
+          }
+        ]
       },
       "supported_scope": {
         "production": [],
