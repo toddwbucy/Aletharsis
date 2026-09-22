@@ -4809,6 +4809,9 @@
           "type": "string",
           "minLength": 1
         },
+        "artifact_ref": {
+          "$ref": "#/$defs/artifactRef"
+        },
         "method": {
           "enum": [
             0,
@@ -4863,6 +4866,7 @@
         "part_ref",
         "package_ref",
         "name",
+        "artifact_ref",
         "method",
         "compressed_span",
         "compressed_sha256",
@@ -5672,6 +5676,9 @@
           "minimum": 0,
           "maximum": 9007199254740991
         },
+        "source_artifact_ref": {
+          "$ref": "#/$defs/artifactRef"
+        },
         "parser_version": {
           "type": "string",
           "minLength": 1
@@ -5783,6 +5790,7 @@
         "package_ref",
         "source_sha256",
         "source_byte_length",
+        "source_artifact_ref",
         "parser_version",
         "format",
         "state",

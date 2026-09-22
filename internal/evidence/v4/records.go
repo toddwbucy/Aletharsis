@@ -28,6 +28,7 @@ type Part struct {
 	PartRef          string  `json:"part_ref"`
 	PackageRef       string  `json:"package_ref"`
 	Name             string  `json:"name"`
+	ArtifactRef      string  `json:"artifact_ref"`
 	Method           int64   `json:"method"`
 	CompressedSpan   Span    `json:"compressed_span"`
 	CompressedSHA256 string  `json:"compressed_sha256"`
@@ -146,16 +147,17 @@ type Object struct {
 }
 
 type Package struct {
-	PackageRef       string    `json:"package_ref"`
-	SourceSHA256     string    `json:"source_sha256"`
-	SourceByteLength int64     `json:"source_byte_length"`
-	ParserVersion    string    `json:"parser_version"`
-	Format           string    `json:"format"`
-	State            string    `json:"state"`
-	Issues           []Issue   `json:"issues"`
-	Parts            []Part    `json:"parts"`
-	Outcomes         []Outcome `json:"outcomes"`
-	Limits           struct {
+	PackageRef        string    `json:"package_ref"`
+	SourceSHA256      string    `json:"source_sha256"`
+	SourceByteLength  int64     `json:"source_byte_length"`
+	SourceArtifactRef string    `json:"source_artifact_ref"`
+	ParserVersion     string    `json:"parser_version"`
+	Format            string    `json:"format"`
+	State             string    `json:"state"`
+	Issues            []Issue   `json:"issues"`
+	Parts             []Part    `json:"parts"`
+	Outcomes          []Outcome `json:"outcomes"`
+	Limits            struct {
 		SourceBytes           int64 `json:"source_bytes"`
 		PartCount             int64 `json:"part_count"`
 		PartBytes             int64 `json:"part_bytes"`

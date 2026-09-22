@@ -47,7 +47,7 @@ def build():
         'state': state, 'codes': array(ref('code')), 'diagnostic_refs': array(ref('diagnosticRef')),
         'assessed': array(ref('officeSpan')), 'excluded': array(ref('officeSpan'))})
     d['officePart'] = obj({'part_ref': ref('officePartRef'), 'package_ref': ref('officePackageRef'),
-        'name': name, 'method': {'enum': [0, 8]}, 'compressed_span': ref('officeSpan'),
+        'name': name, 'artifact_ref': ref('artifactRef'), 'method': {'enum': [0, 8]}, 'compressed_span': ref('officeSpan'),
         'compressed_sha256': ref('digest'), 'sha256': nullable(ref('digest')),
         'byte_length': nullable(integer), 'state': state, 'issues': array(ref('officeIssue'))})
     d['officeToken'] = obj({'index': integer, 'kind': name, 'span': ref('officeSpan'),
@@ -108,7 +108,7 @@ def build():
         'relationship_refs': array(ref('officeRelationshipRef')), 'declared_type': nullable(text),
         'observed_signature': nullable(text), 'inspection': ref('officeOutcome')})
     d['officePackage'] = obj({'package_ref': ref('officePackageRef'),
-        'source_sha256': ref('digest'), 'source_byte_length': integer,
+        'source_sha256': ref('digest'), 'source_byte_length': integer, 'source_artifact_ref': ref('artifactRef'),
         'parser_version': name, 'format': {'enum': ['docx', 'odt', 'unknown']},
         'state': state, 'issues': array(ref('officeIssue')), 'parts': array(ref('officePart')),
         'outcomes': array(ref('officeOutcome')), 'limits': obj({k: integer for k in (
