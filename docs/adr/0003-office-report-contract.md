@@ -1,8 +1,10 @@
-# ADR-0003 — Office report contract
+# ADR-0003: Office report contract
 
-Status: owner authorized proceeding with best judgment and reviewable PRs; no main merges.
-Tracking: #40; prerequisite B1–B5 specification increment.
-Inspected baseline: `5b1ca93168c8f2a51751a05cac995d8657960fc8`.
+| Attribute | Value |
+| --- | --- |
+| Status | Proposed; owner authorized reviewable work, not merges |
+| Tracking | #40, B1–B5 specification increment |
+| Inspected baseline | `5b1ca93168c8f2a51751a05cac995d8657960fc8` |
 
 ## Resolved direction
 

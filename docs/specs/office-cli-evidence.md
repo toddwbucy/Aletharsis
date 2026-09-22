@@ -121,10 +121,21 @@ emission.
 Fixed objects reject unknown keys. Nullable identities distinguish unavailable
 bytes from empty bytes. No failed decompression receives a digest computed from
 partial output. Inventories include zero-count success distinctly from an unrun
-operation. Bytes are not gratuitously duplicated in reports: identities and exact
+operation. Every admitted text scope carries its complete exact text and SHA-256 on the
+wire. Importers hash that retained text and validate offsets without filesystem
+access; this proves internal consistency, not correspondence to the original ZIP.
+Never truncate a scope string. If it exceeds the scope/string/report allowance,
+omit that scope and dependent findings/origins, retain a located resource-limit
+outcome, and mark coverage incomplete. No hash-only or truncated scope variant
+is permitted in this increment. Global inability to emit a bounded failure report
+uses the existing report-limit failure path. Add over-limit scope tests verifying
+that no dependent coordinates survive, and hash-mismatch import rejection.
+
+For non-text inventories, bytes are not gratuitously duplicated in reports: identities and exact
 locators allow verification from the source snapshot; missing retained content
 is explicit. Report limits cap scopes, origins, diagnostic lists and string data.
-Truncation must be declared and may not produce dangling graph references.
+Inventory/list truncation must be declared and may not produce dangling graph
+references; text-scope strings are governed by the all-or-omitted rule above.
 
 Findings retain the four classifications and detector-specific evidence contracts.
 The Office text finding location is a closed, separately discriminated variant. Its
@@ -204,9 +215,10 @@ the existing inspector rules, without guessing `word/document.xml`, following
 external targets, or recursively prioritizing arbitrary relationships. If both
 candidate paths exist, process ODF content first, then the OPC target; a shared
 part is charged only once. Inconsistent/ambiguous declarations retain a gap, not
-an arbitrary target. The next bounded priority set is the uniquely resolved main
-part's own canonical relationship part, then the core/app targets resolved from
-verified root declarations, then embedded targets resolved from those main-part
+an arbitrary target. Three sequential dependent phases follow: first the uniquely resolved main
+part's own canonical relationship part; wait for admission, decompression and
+relationship parsing to finish. Second, admit the core/app targets resolved from
+verified root declarations and wait for that phase to finish. Third, admit embedded targets resolved from those main-part
 relationships and conventional embedding-directory candidates, each group in
 ordinal name order. Names are candidates, not XML-validated relationships until
 their bytes have been admitted and parsed. Ambiguous declarations retain gaps.
@@ -216,7 +228,10 @@ ordinary-part priority and retain the existing OPC diagnostic. Then admit ordina
 parts in ordinal name order. Never recursively promote arbitrary relationship
 chains. Shared parts are charged once. Thus unrelated customXml relationship
 parts cannot consume budget ahead of the selected comparison targets. The target
-set remains subject to package-count, per-part and aggregate limits: enumeration
+set includes an attacker-count-controlled embedding group; large admitted
+embeddings can exhaust the budget before later relationship candidates. Those
+receive explicit aggregate-limit gaps, not a fatal package failure. The set
+remains subject to package-count, per-part and aggregate limits: enumeration
 and content gaps remain explicit, never a promise of complete target coverage.
 
 Missing critical names consume no reservation. Check per-part limits before the
@@ -321,8 +336,8 @@ is in scope even when its filename is not listed here.
 | `reporters/report.go`, `reporters/v2.go` | Existing serializers unchanged; 4.0 console/JSON prints typed inventory, source locations and coverage, inertly |
 | `wire`, `schemas/embed.go`, `reportimport` | Explicit 4.0 dispatch and closed schema/semantic validation; support-aware importer adds sibling support_reason while preserving legacy Read/status; distinguish unknown version, known-unimplemented version and feature; retain EC-002/EC-003 regressions and bounded bytes |
 | CLI version flags and all audit subviews | Accept 4.0 deliberately; finding filters never remove required evidence/coverage or break reference closure |
-| `cli/reveal.go`, `reveal` | Flat reveal unchanged; Office presentation unsupported; partial flat text may be presented only after VerifyText, no ZIP passed to flat verifier |
-| `cli/directory_reveal.go` | Retain report/digest and verified snapshots for partial entries; present supported flat text, declare Office unsupported; source limits degrade one entry; version reveal-tree enum |
+| `cli/reveal.go`, `reveal` | Single-file flat reveal retains its completed-only guard, including report 2.0; Office presentation unsupported; no ZIP passed to flat verifier |
+| `cli/directory_reveal.go` | Under reveal-tree-v2 retain report/digest and verified snapshots for partial entries; present supported flat text, declare Office unsupported; source limits degrade one entry; version reveal-tree enum |
 | `corpus`, `cli/directory.go` | Derive corpus-v2 entry state from report status, never exit 4; retain partial evidence distinctly from failed entries for both 2.0 and 4.0; stream records declare report version |
 | `workspace` format discovery | Admit requested Office candidates deterministically; do not follow uncontrolled links or trust extension as identity |
 | `publication` | File safety/rollback unchanged; do not publish fictitious Office reveal products |
@@ -446,12 +461,12 @@ Required budget regressions include large ordinary Pictures/customXml payloads
 beside metadata, relationship and embedding targets, and an oversized decoy
 `[Content_Types].xml` beside a valid ODT manifest/content pair. Assert target
 coverage under the stated remaining budget, stable selection across ZIP/worker
-order, explicit per-part versus aggregate reasons, and no budget refunds.
+order, explicit per-part versus aggregate reasons, and no budget refunds. Large
+customXml/_rels members must not displace main relationships/core/app/embedding
+targets. The mirror case (large embeddings ahead of customXml relationships)
+must retain deterministic aggregate-limit gaps and continue without fatal failure.
 
 Merge policy: this proposal and implementation increments remain reviewable;
 "no merge authorization" records the current owner instruction, not an inherent
 ban on accepting this specification. A later explicit owner instruction may
 merge the documentation alone without clearing implementation or comparator gates.
-
-Budget regression: large customXml/_rels/*.rels members must not displace the
-main-part relationships, core/app targets or embedding targets from priority.
