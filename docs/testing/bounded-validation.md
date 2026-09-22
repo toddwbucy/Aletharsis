@@ -82,7 +82,7 @@ reported unit before continuing validation. ExecStopPost paths are transported
 over D-Bus with systemd C-escape handling for backslashes (including literal
 backslash-t/backslash-x paths); percent and dollar characters remain literal.
 
-Second-pass validation: 33 offline regressions passed. A live `/bin/true` run
+Second-pass validation: 36 offline regressions passed. A live `/bin/true` run
 with `%` and `$` in TMPDIR reported `completed`, verified enforcement and
 confirmed cleanup (8.3 MiB peak). This verifies the receipt-path regression.
 
@@ -90,6 +90,18 @@ Runtime timeout/memory-limit statuses require a signalled main process. A main
 process that exits successfully followed by a shutdown/descendant limit is
 `supervisor_failed`, retaining its exit code and service result. `launcher_timeout`
 means the supervising systemd-run call exceeded its deadline; `supervisor_timeout`
-means a service timeout before guard verification. On interruption, unpopulated
-verification/service fields mean the receipts were unread, not negative evidence.
+means a service timeout before guard verification. On interruption or launcher_timeout, enforcement_verified may be false and
+service_result null because receipts were unread, not because enforcement failed.
 The post-stop receipt helper must remain the last ExecStopPost action.
+
+A command that catches SIGTERM at the runtime deadline and exits normally is
+also classified `supervisor_failed`: main-process exit status cannot distinguish
+that case from a descendant shutdown timeout. Consumers must treat a verified
+`service_result: timeout` as a service budget event even when status is
+supervisor_failed and command_exit_code is zero; it must not count as successful
+validation. Do not use the status alone to attribute which process timed out.
+
+The Python ExecStopPost helper shares the limited cgroup. Near-limit tmpfs pages
+left by the command can prevent the helper from starting or completing, losing
+the receipt. The inspection fallback may also race unit collection; missing
+outcome evidence remains failure/unknown, never proof of a completed run.
