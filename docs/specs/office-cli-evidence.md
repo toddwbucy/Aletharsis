@@ -128,9 +128,12 @@ Never truncate a scope string or scalar-origin list. If its text or complete
 origin list exceeds its declared per-scope cap,
 omit that scope and dependent findings/origins, retain a located resource-limit
 outcome, and mark coverage incomplete. No hash-only or truncated scope variant
-is permitted in this increment. The total report byte limit is not a scope-omission
-trigger: exceeding it fails report emission through the existing
-`execution.report_limit` path. Do not choose additional scopes to drop to fit it. Add over-limit scope tests verifying
+is permitted in this increment. Total report limits (bytes, nodes and depth) are not scope-omission
+triggers: exceeding any of them produces `execution.report_limit`. Corpus uses
+its existing report-limit path. Single-file 4.0 must emit a minimal schema-valid
+failure report with that reason where the output budget permits, distinct from
+acquisition `execution.resource_limit`; this requires a new 4.0 failure path.
+Do not choose additional scopes to drop to fit a total limit. Add over-limit scope tests verifying
 that no dependent coordinates survive, and hash-mismatch import rejection.
 
 For non-text inventories, bytes are not gratuitously duplicated in reports: identities and exact
@@ -240,13 +243,13 @@ parts in ordinal name order. Never recursively promote arbitrary relationship
 chains. Shared parts are charged once. Thus unrelated customXml relationship
 parts cannot consume budget ahead of the selected comparison targets. The target
 set prioritizes main-related WT-001 text over embedding inventory by design:
-text coverage serves the core detection use case. Both groups are attacker-count-
-controlled; many or large text parts can consume the budget before embeddings,
+text coverage serves the core detection use case. Both groups have attacker-controlled counts;
+many or large text parts can consume the budget before embeddings,
 which then receive aggregate-limit gaps and incomplete inventory coverage, not a
 fatal failure. WT-001 parts not related from the main part (including glossary
 headers or targets reachable only from another part's relationships) retain
-ordinary priority. The embedding group is also attacker-count-controlled; large admitted
-embeddings can exhaust the budget before later relationship candidates. Those
+ordinary priority. Large admitted embeddings can exhaust the budget before later
+relationship candidates. Those
 receive explicit aggregate-limit gaps, not a fatal package failure. The set
 remains subject to package-count, per-part and aggregate limits: enumeration
 and content gaps remain explicit, never a promise of complete target coverage.
@@ -318,8 +321,10 @@ flat source text. Other native text analyzers must not acquire Office coverage
 merely because strings exist. Disabled statistical/C2PA declarations stay disabled.
 Capabilities declare fixed per-source/part limits, never remaining corpus budgets.
 They also declare `max_scope_text_utf8_bytes` and `max_scope_scalar_origins`;
-report serialization declares its fixed total byte limit. Record these values in
-the report capability/limit records so scope omission is reproducible. An origin
+report serialization declares its fixed byte budgets (InputBytes and OutputBytes),
+node count and depth limits. Record all limits in the report capability/limit
+records: per-scope limits explain scope omission; total limits explain report
+serialization failure. An origin
 limit omits the whole scope and dependent findings just like a text-size limit;
 no retained scope may carry an incomplete origin chain.
 
@@ -357,7 +362,7 @@ is in scope even when its filename is not listed here.
 | `identity.VerifyText`, selection hashing | Flat verification unchanged; Office verifier reuses source/part/XML identities and origins, no competing offset mapper |
 | `reporters/report.go`, `reporters/v2.go` | Existing serializers unchanged; 4.0 console/JSON prints typed inventory, source locations and coverage, inertly |
 | `wire`, `schemas/embed.go`, `reportimport` | Explicit 4.0 dispatch and closed schema/semantic validation; support-aware importer adds sibling support_reason while preserving legacy Read/status; distinguish unknown version, known-unimplemented version and feature; retain EC-002/EC-003 regressions and bounded bytes |
-| CLI version flags and all audit subviews | Dispatch every single-file audit site by exact version with no fallback to 1.0/2.0; reject unlisted versions before acquisition. Accept 4.0 deliberately for audit/subviews, except single-file reveal as specified below; finding filters never remove required evidence/coverage or break reference closure |
+| `cli/cli.go`, `cli/v2.go` version flags and audit subviews | Dispatch every single-file audit site by exact version with no fallback to 1.0/2.0; reject unlisted versions before acquisition. The `unicode`, `metadata` and `structure` subviews share the single-file dispatch site. In the new 4.0 path, stop folding Encode's `ErrLimit` into `execution.resource_limit` as `cli/v2.go` does today; preserve frozen 2.0 behavior. Accept 4.0 deliberately for audit/subviews, except single-file reveal as specified below; finding filters never remove required evidence/coverage or break reference closure |
 | `cli/reveal.go`, `reveal` | Single-file reveal rejects schema 4.0 as usage (exit 4) in this increment before audit dispatch; flat reveal retains its completed-only guard for 1.0/2.0; Office presentation unsupported; no ZIP passed to flat verifier |
 | `cli/directory_reveal.go` | Under reveal-tree-v2 retain report/digest and verified snapshots for partial entries; present supported flat text, declare Office unsupported; source limits degrade one entry; version reveal-tree enum |
 | `corpus`, `cli/directory.go` | Dispatch corpus workers by exact supported version with no else-to-RunV2 fallback; reject unlisted versions before discovery/work. Derive corpus-v2 entry state from report status, never exit 4; retain partial evidence distinctly from failed entries for both 2.0 and 4.0; stream records declare report version |
@@ -443,10 +448,10 @@ Before claiming B1–B5 delivered, tests must establish:
   `1.0|2.0` on the FILE reveal form while ordinary audit gains 4.0. Directory
   schema-4.0 reveal follows its separate envelope/presentation rules.
 - Unlisted versions at single-file and corpus dispatch fail as usage/options,
-  never execute a legacy audit by default. A total report limit that bites yields
-  the same report-limit outcome across permuted ZIP member order; no opportunistic
-  scope dropping changes the result or any emitted bounded diagnostics.
-
+  never execute a legacy audit by default.
+- Single-file 4.0 and corpus report serialization failures carry the same
+  `execution.report_limit` reason, distinct from acquisition resource limits;
+  single-file emits a minimal valid failure report where the output budget permits.
 - Compiled CLI identifies DOCX/ODT despite misleading extensions; 4.0 output
   validates; old-version requests produce valid unsupported outcomes.
 - Parts, metadata, relationships and embedded-object identities reach reports.
@@ -496,6 +501,11 @@ with partial receipts and a revise/reject recommendation. Independent expected
 identities, six reachable adjudication categories and object-specific exemptions
 remain mandatory. Only the owner disposes of #40/#21 gates.
 
+Exercise each total report limit (byte budgets, nodes and depth) independently,
+with per-scope limits satisfied. Require the same report-limit outcome across
+permuted ZIP member order; no opportunistic scope dropping changes the result
+or any emitted bounded diagnostics.
+
 Required budget regressions include large ordinary Pictures/customXml payloads
 beside metadata, relationship and embedding targets, and an oversized decoy
 `[Content_Types].xml` beside a valid ODT manifest/content pair. Assert target
@@ -513,8 +523,11 @@ text findings survive, the embedding has an aggregate-limit gap and inventory
 coverage is incomplete, without fatal failure and independent of ZIP order.
 Priority tests must reach decompression: use deflate-compressible members below
 the source acquisition cap or lower configurable aggregate limits, not stored
-oversized archives rejected before priority selection. Assert the expected
-footnote finding and embedding gap so acquisition failure cannot satisfy the test.
+oversized archives rejected before priority selection. At default limits, use
+at least three members individually below 32 MiB whose combined expanded sizes
+exceed 64 MiB; an individually oversized part only exercises the per-part limit.
+Assert the expected footnote finding and embedding aggregate-limit gap so neither
+acquisition failure nor per-part rejection can satisfy the test.
 
 Merge policy: this proposal and implementation increments remain reviewable;
 "no merge authorization" records the current owner instruction, not an inherent

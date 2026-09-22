@@ -117,9 +117,8 @@ bin/aletharsis audit tests/fixtures/isolated_zwsp.txt \
 
 ## Proposed Office consumer boundary
 
-This specification retains its existing versioned behavior. Proposed
+This specification retains its existing versioned behavior.
 [OC-001 §6](office-cli-evidence.md#6-consumer-inventory-b5) defines the separate
-4.0 audit, corpus-v2 and reveal-tree-v2 contracts and selection rules. Single-file
-reveal remains limited to 1.0/2.0; directory Office presentation is explicitly
-unsupported while its audit evidence remains reportable. No legacy envelope is
-silently extended by that proposal.
+Office consumer contract; no legacy envelope is silently extended.
+Single-file reveal rejects schema 4.0 as usage (exit 4) before acquisition;
+only 1.0/2.0 retain the existing completed-only reveal path.

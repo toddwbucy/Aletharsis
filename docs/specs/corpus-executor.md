@@ -126,9 +126,8 @@ source modification.
 
 ## Proposed Office consumer boundary
 
-This specification retains its existing versioned behavior. Proposed
+This specification retains its existing versioned behavior.
 [OC-001 §6](office-cli-evidence.md#6-consumer-inventory-b5) defines the separate
-4.0 audit, corpus-v2 and reveal-tree-v2 contracts and selection rules. Single-file
-reveal remains limited to 1.0/2.0; directory Office presentation is explicitly
-unsupported while its audit evidence remains reportable. No legacy envelope is
-silently extended by that proposal.
+Office consumer contract; no legacy envelope is silently extended.
+Corpus-v2 derives entry state from report status, retains partial evidence and
+dispatches workers by exact report version without a legacy fallback.

@@ -5,7 +5,8 @@ aletharsis audit ./documents --recursive --reveal-out ../review-new --jsonl
 aletharsis audit ./documents --recursive --reveal-out ../review-v2 --schema-version 2.0 --json
 ```
 
-`--reveal-out` is explicit and works with both existing report schemas. Recursion
+`--reveal-out` is explicit and works with both existing report schemas
+(1.0/2.0; 4.0 is defined separately by OC-001 §6). Recursion
 remains opt-in. It cannot be combined with `--output`; the tree contains native
 reports and the exact corpus JSONL already. The destination must be new and
 outside the source tree, with resolvable directory ancestors. Existing destinations,
@@ -147,9 +148,10 @@ checkpoint/partial-publication contract with reserved completion-record capacity
 
 ## Proposed Office consumer boundary
 
-This specification retains its existing versioned behavior. Proposed
+This specification retains its existing versioned behavior.
 [OC-001 §6](office-cli-evidence.md#6-consumer-inventory-b5) defines the separate
-4.0 audit, corpus-v2 and reveal-tree-v2 contracts and selection rules. Single-file
-reveal remains limited to 1.0/2.0; directory Office presentation is explicitly
-unsupported while its audit evidence remains reportable. No legacy envelope is
-silently extended by that proposal.
+Office consumer contract; no legacy envelope is silently extended.
+Directory reveal selects reveal-tree-v2 exactly with corpus-v2 (mandatory for
+4.0, optional for 2.0), retaining detection state separately from presentation
+(`revealed`, `failed`, `unsupported`, `not_attempted`). Eligible Office
+presentation is unsupported while its audit evidence remains reportable.
