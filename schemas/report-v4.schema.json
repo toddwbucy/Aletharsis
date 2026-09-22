@@ -5408,6 +5408,9 @@
         "part_ref": {
           "$ref": "#/$defs/officePartRef"
         },
+        "xml_ref": {
+          "$ref": "#/$defs/officeXmlRef"
+        },
         "element": {
           "type": "integer",
           "minimum": 0,
@@ -5431,6 +5434,7 @@
         "lexical_value",
         "normalized_key",
         "part_ref",
+        "xml_ref",
         "element",
         "value_origins",
         "duplicate_ordinal"
@@ -5462,8 +5466,14 @@
           "type": "string"
         },
         "resolution_state": {
-          "type": "string",
-          "minLength": 1
+          "enum": [
+            "resolved",
+            "external",
+            "unresolved",
+            "invalid",
+            "unsupported",
+            "missing"
+          ]
         },
         "resolution_code": {
           "anyOf": [

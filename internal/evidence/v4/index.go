@@ -26,8 +26,8 @@ func canonicalRef(s, kind string) bool {
 }
 
 // IndexEvidence validates package identities, XML maps and scopes before
-// returning reference tables. This is one stage of report validation; callers
-// must additionally check metadata, relationships, objects and execution links.
+// returning reference tables. It also checks inventory linkage; report-level
+// validation must additionally bind issues and outcomes to execution records.
 func IndexEvidence(e Evidence, sourceHash string, sourceSize int64) (*Index, error) {
 	x := &Index{Packages: map[string]Package{}, Parts: map[string]Part{}, XML: map[string]XML{}, Scopes: map[string]Scope{}}
 	for _, p := range e.Packages {
@@ -84,6 +84,9 @@ func IndexEvidence(e Evidence, sourceHash string, sourceSize int64) (*Index, err
 		}
 		identities[scope.IdentitySHA256] = true
 		x.Scopes[scope.ScopeRef] = scope
+	}
+	if err := x.ValidateInventories(e); err != nil {
+		return nil, err
 	}
 	return x, nil
 }

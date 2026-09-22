@@ -115,6 +115,7 @@ type Metadata struct {
 	LexicalValue     string   `json:"lexical_value"`
 	NormalizedKey    *string  `json:"normalized_key"`
 	PartRef          string   `json:"part_ref"`
+	XMLRef           string   `json:"xml_ref"`
 	Element          int64    `json:"element"`
 	ValueOrigins     []Origin `json:"value_origins"`
 	DuplicateOrdinal int64    `json:"duplicate_ordinal"`
