@@ -19,6 +19,12 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 		if (ex.State == v2.NotRun || ex.State == v2.Failed || ex.State == v2.Canceled) && len(o.Assessed) > 0 {
 			return ErrLinkage
 		}
+		if (o.State == "not_run" || o.State == "failed" || o.State == "canceled") && len(o.Assessed) > 0 {
+			return ErrLinkage
+		}
+		if o.State == "completed" && len(o.Excluded) > 0 {
+			return ErrLinkage
+		}
 		var part *Part
 		if o.PartRef != nil {
 			p, ok := x.Parts[*o.PartRef]
@@ -34,6 +40,28 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 				}
 			}
 		}
+		// A byte cannot be both assessed and explicitly excluded. Sorting a
+		// copy keeps validation independent of producer ordering and mutation.
+		regions := append(slices.Clone(o.Assessed), o.Excluded...)
+		slices.SortFunc(regions, func(a, b Span) int {
+			if a.Start < b.Start {
+				return -1
+			}
+			if a.Start > b.Start {
+				return 1
+			}
+			return 0
+		})
+		var end int64
+		for _, r := range regions {
+			if r.Start == r.End {
+				continue
+			}
+			if r.Start < end {
+				return ErrLinkage
+			}
+			end = r.End
+		}
 		seen := map[string]bool{}
 		for _, ref := range o.DiagnosticRefs {
 			d, ok := t.Diagnostics[ref]
@@ -45,9 +73,59 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 		return nil
 	}
 	for _, p := range e.Packages {
+		decompressed := map[string]bool{}
+		seen := map[[2]string]bool{}
 		for _, o := range p.Outcomes {
 			if err := check(o); err != nil {
 				return err
+			}
+			if o.PartRef == nil {
+				continue
+			}
+			part := x.Parts[*o.PartRef]
+			key := [2]string{o.ExecutionRef, *o.PartRef}
+			if part.PackageRef != p.PackageRef || seen[key] {
+				return ErrLinkage
+			}
+			seen[key] = true
+			if o.Operation == "aletharsis.parse.office_package" {
+				if decompressed[*o.PartRef] || o.State != part.State {
+					return ErrLinkage
+				}
+				if o.State == "completed" {
+					if part.ByteLength == nil {
+						return ErrLinkage
+					}
+					regions := slices.Clone(o.Assessed)
+					slices.SortFunc(regions, func(a, b Span) int {
+						if a.Start < b.Start {
+							return -1
+						}
+						if a.Start > b.Start {
+							return 1
+						}
+						return 0
+					})
+					var end int64
+					for _, region := range regions {
+						if region.Start == region.End {
+							continue
+						}
+						if region.Start != end {
+							return ErrLinkage
+						}
+						end = region.End
+					}
+					if end != *part.ByteLength {
+						return ErrLinkage
+					}
+				}
+				decompressed[*o.PartRef] = true
+			}
+		}
+		for _, part := range p.Parts {
+			if !decompressed[part.PartRef] || (p.State == "completed" && part.State != "completed") {
+				return ErrLinkage
 			}
 		}
 	}

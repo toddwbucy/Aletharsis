@@ -2,6 +2,8 @@ package v4
 
 import (
 	v2 "github.com/toddwbucy/Aletharsis/internal/evidence/v2"
+	"github.com/toddwbucy/Aletharsis/internal/identity"
+	"os"
 	"testing"
 )
 
@@ -41,5 +43,54 @@ func TestOfficeInventoryRemainsUsableOnCancellation(t *testing.T) {
 	office := Evidence{Packages: []Package{{Parts: []Part{{PartRef: "office-part/0"}}}}}
 	if aggregateNativeStatus(trace, &x, office) != v2.Partial {
 		t.Fatal("lost usable inventory on cancellation")
+	}
+}
+
+func TestPackageCoverageCannotOmitOrContradictPartOutcomes(t *testing.T) {
+	raw, err := os.ReadFile("../../../tests/contracts_v4/fixtures/office-minimal.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	limits := identity.Limits{InputBytes: 16 << 20, OutputBytes: 16 << 20, Nodes: 4194304, Depth: 64}
+	mutations := map[string]func(*Report){
+		"completed without assessed bytes":          func(r *Report) { r.Evidence.Office.Packages[0].Outcomes[0].Assessed = []Span{} },
+		"completed with leading gap":                func(r *Report) { r.Evidence.Office.Packages[0].Outcomes[0].Assessed[0].Start = 1 },
+		"completed with trailing gap":               func(r *Report) { r.Evidence.Office.Packages[0].Outcomes[0].Assessed[0].End-- },
+		"all outcomes omitted":                      func(r *Report) { r.Evidence.Office.Packages[0].Outcomes = []Outcome{} },
+		"one part omitted":                          func(r *Report) { p := &r.Evidence.Office.Packages[0]; p.Outcomes = p.Outcomes[1:] },
+		"duplicate part outcome":                    func(r *Report) { p := &r.Evidence.Office.Packages[0]; p.Outcomes = append(p.Outcomes, p.Outcomes[0]) },
+		"another operation conceals parse omission": func(r *Report) { r.Evidence.Office.Packages[0].Outcomes[0].Operation = "aletharsis.office.metadata" },
+		"excluded completed bytes":                  func(r *Report) { r.Evidence.Office.Packages[0].Outcomes[0].Excluded = []Span{{0, 1}} },
+		"overlapping assessed bytes": func(r *Report) {
+			p := &r.Evidence.Office.Packages[0]
+			p.Outcomes[0].Assessed = append(p.Outcomes[0].Assessed, Span{0, 1})
+		},
+		"failed child assessed": func(r *Report) {
+			r.Evidence.Office.Packages[0].Outcomes[0].State = "failed"
+			r.Trace.Executions[1].State = v2.Partial
+		},
+	}
+	// Coverage may be split and unordered; only its exact union matters.
+	complete, err := DecodeReport(raw, limits)
+	if err != nil {
+		t.Fatal(err)
+	}
+	outcome := &complete.Evidence.Office.Packages[0].Outcomes[0]
+	end := outcome.Assessed[0].End
+	outcome.Assessed = []Span{{1, end}, {0, 1}}
+	if _, err := complete.Encode(limits); err != nil {
+		t.Fatal("rejected complete partition", err)
+	}
+	for name, mutate := range mutations {
+		t.Run(name, func(t *testing.T) {
+			r, err := DecodeReport(raw, limits)
+			if err != nil {
+				t.Fatal(err)
+			}
+			mutate(&r)
+			if _, err := r.Encode(limits); err == nil {
+				t.Fatal("accepted incomplete or contradictory part coverage")
+			}
+		})
 	}
 }
