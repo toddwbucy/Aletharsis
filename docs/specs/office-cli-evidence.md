@@ -137,16 +137,21 @@ frozen 1.0/2.0 behavior:
   that retained inventory. For Word/ODT text, the wire's XML subset does not
   reconstruct the extractor's complete text inventory. The importer checks
   nonnegativity but does not attest that ordinal. Authoritative retained origin
-  checks use `xml_ref`, segment/scalar identity, source span, UTF-8 span and the
-  declared transformation. Source-backed replay of the named extractor is
+  checks use `xml_ref` plus, for stored origins, segment/scalar identity, source
+  span, UTF-8 span and declared transformation; generated controls additionally
+  bind control/element/repetition identity and derivation. The ordinal exception
+  does not apply to these generated-control fields. Source-backed replay of the named extractor is
   required to independently attest its local text ordinals. Consumers must not
   use an unverified ordinal for highlighting or transformation authority.
 - A completed or partial metadata projection retains its XML map so property completeness
   and exact omission locations can be checked. Every direct property is either
   retained or covered by a property-located omission diagnostic bound to that
   outcome's own execution and excluded region; another outcome's diagnostic or
-  exclusion cannot supply omission authority.
-  Unsupported metadata roots do not become successful empty projections.
+  exclusion cannot supply omission authority. Only a partial outcome may authorize
+  a property omission; the property span must be nonempty and covered by that
+  outcome's own exclusion. At most one omission diagnostic may authorize omission
+  of a direct property across all executions.
+  Unsupported metadata roots do not become completed empty projections.
 - Completed or partial executions of the same operation may contribute assessed
   regions to a part through their completed or partial outcomes. Validate retained evidence against their union, while
   preserving every execution's own states, diagnostics and exclusions. Failed,
@@ -157,7 +162,10 @@ frozen 1.0/2.0 behavior:
   same operation and part, including across executions. Failed, canceled and unrun
   parents cannot authorize omissions through otherwise successful child outcomes.
 - XML maps require an attesting XML-parsing operation: identification, text,
-  metadata or relationships. Embedded-object signature inspection and profiles
+  metadata or relationships. Its assessed coverage must contain a nonempty region
+  of the part; an empty or zero-width region cannot attest an XML map. Maps may
+  retain lexical structure for analytically excluded regions without claiming
+  those regions were analyzed. Embedded-object signature inspection and profiles
   consume existing evidence; they do not parse XML and cannot independently
   attest an XML map.
 
@@ -225,7 +233,6 @@ independently of final file format, with explicit per-part coverage. Conflicting
 DOCX/ODT signatures do not suppress independently confirmed text, metadata or
 embedded-object inspection; the package remains format `unknown` with the
 conflict diagnostic.
-
 
 After acquisition, perform only a bounded signature check before package validation.
 For the 4.0 Office path, do not call the legacy `parsers.Identify` ZIP-member sniff:
@@ -329,9 +336,10 @@ Retain every duplicate/conflicting occurrence in document order. Project recogni
 keys (creator, last modifier, application/version, company, timestamps, revision,
 template and identifiers) without interpreting timestamps as verified facts.
 Applicability is distinct from an empty inventory: a confirmed DOCX with no
-optional metadata can report an assessed absence. Coverage must identify the
-selection evidence actually inspected, rather than claim whole-source payload
-analysis merely because there are no applicable metadata parts. The selection
+optional metadata can report an assessed absence. Once the coverage-contract
+decision below is accepted, coverage shall identify the selection evidence
+actually inspected, rather than claim whole-source payload analysis merely
+because there are no applicable metadata parts. The selection
 pass may inspect package declarations and relationships even when the selected
 metadata inventory is empty.
 
@@ -341,6 +349,14 @@ completed analyzed scope cannot be introduced silently. Before accepting the
 assessed-absence implementation, specify a bounded scope for inspected selection
 evidence or explicitly amend the execution contract. Until that decision is
 accepted, the current whole-artifact summary is not clearance of this requirement.
+The bounded-selection option also needs an explicit representation: current
+metadata part outcomes require core/app projection roots, so declarations and
+relationship parts cannot be added as metadata projection outcomes. One option
+is an execution-level byte scope over inspected declarations' compressed spans,
+separate from projection outcomes; implementing it requires changing the coverage
+builder, not relaxing property-completeness checks by implication. Alternatively,
+a new selection-evidence contract must explicitly distinguish selection from
+projection. Neither option is approved by recording it here.
 
 Missing optional metadata is an assessed absence; malformed metadata is a partial
 operation. Unknown elements remain inventory evidence with explicit extraction
