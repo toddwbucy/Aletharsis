@@ -42,7 +42,10 @@ type PartResult struct {
 }
 type Result struct {
 	Parser, State string
-	Package       *packageparts.Package
+	// Package is non-nil only for strict Inspect. Staged InspectVerified uses
+	// Outcomes, which is the common view on both paths; never dereference Package
+	// without checking it. A deferred payload is not a verified Package part.
+	Package *packageparts.Package
 	// Borrowed admission view: Parts[i].Bytes aliases reader payloads (staged)
 	// or Package.Parts[i].Bytes (strict). Callers must not mutate the bytes.
 	Outcomes      *packageparts.OutcomeView
@@ -162,7 +165,10 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	if err != nil {
 		return nil, err
 	}
-	view := packageparts.CompletedView(pkg)
+	view, err := packageparts.CompletedView(pkg)
+	if err != nil {
+		return nil, err
+	}
 	return inspectPackage(ctx, pkg, &view)
 }
 

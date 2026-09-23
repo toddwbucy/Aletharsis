@@ -46,8 +46,11 @@ type Issue struct {
 type Result struct {
 	// Borrowed admission view: Parts[i].Bytes aliases reader payloads (staged)
 	// or Package.Parts[i].Bytes (strict). Callers must not mutate the bytes.
-	Outcomes                                      *packageparts.OutcomeView
-	Parser, State, Format, ManifestVersion        string
+	Outcomes                               *packageparts.OutcomeView
+	Parser, State, Format, ManifestVersion string
+	// Package is non-nil only for strict Inspect. Staged InspectVerified uses
+	// Outcomes, which is the common view on both paths; never dereference Package
+	// without checking it. A deferred payload is not a verified Package part.
 	Package                                       *packageparts.Package
 	ManifestSHA256, MimetypeSHA256, ContentSHA256 string
 	ManifestXML, ContentXML                       *xmlparts.Document
@@ -107,7 +110,10 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	if err != nil {
 		return nil, err
 	}
-	view := packageparts.CompletedView(pkg)
+	view, err := packageparts.CompletedView(pkg)
+	if err != nil {
+		return nil, err
+	}
 	return inspectView(ctx, pkg, &view)
 }
 

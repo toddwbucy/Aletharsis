@@ -8679,7 +8679,7 @@
     },
     "input_sha256": "aae4295fd54ce9fa7fb1be7a5b864edeabd528774c9036b2bdfbae52885b7f31",
     "mutant_sha256": "261c1c14e0f4352a5ca98074fe37bb6a50ec5471b43696a456608b0c1482e4b6",
-    "reason": "Identification supplies minimum nonempty XML producer linkage, not full XML replay attestation; retained analytical evidence has separate producing coverage."
+    "reason": "This degenerate identification span contributes no retained analytical evidence; another operation still supplies nonempty linkage for the XML map and coverage for retained analysis."
   },
   {
     "fixture": "metadata-inventory.json",
@@ -8695,7 +8695,7 @@
     },
     "input_sha256": "aae4295fd54ce9fa7fb1be7a5b864edeabd528774c9036b2bdfbae52885b7f31",
     "mutant_sha256": "7f6412ca75422e6712e63589b249fb92998c364ae5fb19fe8bf1e8dca4b720e3",
-    "reason": "Identification supplies minimum nonempty XML producer linkage, not full XML replay attestation; retained analytical evidence has separate producing coverage."
+    "reason": "This degenerate identification span contributes no retained analytical evidence; another operation still supplies nonempty linkage for the XML map and coverage for retained analysis."
   },
   {
     "fixture": "metadata-inventory.json",
@@ -9250,7 +9250,7 @@
     },
     "input_sha256": "aae4295fd54ce9fa7fb1be7a5b864edeabd528774c9036b2bdfbae52885b7f31",
     "mutant_sha256": "281efb720db96ae46c3d5cef2aa324958f34d2a57bb40003cbff58853edd1982",
-    "reason": "Identification supplies minimum nonempty XML producer linkage, not full XML replay attestation; retained analytical evidence has separate producing coverage."
+    "reason": "This degenerate identification span contributes no retained analytical evidence; another operation still supplies nonempty linkage for the XML map and coverage for retained analysis."
   },
   {
     "fixture": "metadata-inventory.json",
@@ -9266,7 +9266,7 @@
     },
     "input_sha256": "aae4295fd54ce9fa7fb1be7a5b864edeabd528774c9036b2bdfbae52885b7f31",
     "mutant_sha256": "18a10e306aa5d407edaa10a899138f811bb7e2f29f01e09790bd789e5114ef2c",
-    "reason": "Identification supplies minimum nonempty XML producer linkage, not full XML replay attestation; retained analytical evidence has separate producing coverage."
+    "reason": "This degenerate identification span contributes no retained analytical evidence; another operation still supplies nonempty linkage for the XML map and coverage for retained analysis."
   },
   {
     "fixture": "metadata-inventory.json",
@@ -9821,7 +9821,7 @@
     },
     "input_sha256": "aae4295fd54ce9fa7fb1be7a5b864edeabd528774c9036b2bdfbae52885b7f31",
     "mutant_sha256": "db68109e804e33e4b43bb5b027bcf4e76738802966ce1f137009d28efa2d778a",
-    "reason": "Identification supplies minimum nonempty XML producer linkage, not full XML replay attestation; retained analytical evidence has separate producing coverage."
+    "reason": "This degenerate identification span contributes no retained analytical evidence; another operation still supplies nonempty linkage for the XML map and coverage for retained analysis."
   },
   {
     "fixture": "metadata-inventory.json",
@@ -9837,7 +9837,7 @@
     },
     "input_sha256": "aae4295fd54ce9fa7fb1be7a5b864edeabd528774c9036b2bdfbae52885b7f31",
     "mutant_sha256": "bf41d7029d52c275284a6c3db34ee0dd8d06c26a64a920d2edeb897127f5ba7d",
-    "reason": "Identification supplies minimum nonempty XML producer linkage, not full XML replay attestation; retained analytical evidence has separate producing coverage."
+    "reason": "This degenerate identification span contributes no retained analytical evidence; another operation still supplies nonempty linkage for the XML map and coverage for retained analysis."
   },
   {
     "fixture": "metadata-inventory.json",

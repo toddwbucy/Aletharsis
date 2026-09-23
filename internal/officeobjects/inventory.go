@@ -38,6 +38,9 @@ type Declaration struct {
 	State, Code  string
 	Anchor       opcrels.Anchor
 }
+
+// State covers candidate enumeration and each candidate's bounded signature
+// inspection. A retained but unadmitted candidate therefore makes it partial.
 type Result struct {
 	Parser, State, SourceSHA256 string
 	Objects                     []Object
@@ -169,9 +172,7 @@ func Inspect(ctx context.Context, doc *docxidentify.Result) (*Result, error) {
 			if part.Part.SHA256 != "" || part.Part.Bytes != nil {
 				return nil, packageparts.ErrIdentity
 			}
-			if part.Code != "office.part_not_admitted" {
-				result.State = "partial"
-			}
+			result.State = "partial"
 		}
 		result.Objects = append(result.Objects, *o)
 	}

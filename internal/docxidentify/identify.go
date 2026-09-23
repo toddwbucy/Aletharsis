@@ -86,6 +86,8 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 
 // InspectVerified reuses the coordinator's single OPC inventory. It never reads
 // or decompresses the container. The caller must not mutate OPC during inspection.
+// Its prerequisite is an OPC result, not a reader: re-inspecting the reader here
+// would duplicate the coordinator's shared relationship inventory.
 func InspectVerified(ctx context.Context, opc *opcrels.Result) (*Result, error) {
 	if ctx == nil || opc == nil || opc.Outcomes == nil || opc.Outcomes.SourceSHA256 == "" {
 		return nil, packageparts.ErrIdentity

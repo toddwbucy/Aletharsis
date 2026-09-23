@@ -83,7 +83,9 @@ jobs:
         if: ${{ !cancelled() && hashFiles('artifacts/coverage.out') != '' }}
         run: go tool cover -func=artifacts/coverage.out | tee artifacts/coverage.txt
       - name: Go race tests
-        run: timeout 300s go test -count=1 -race -timeout=2m -json ./... | tee artifacts/go-race.jsonl
+        run: timeout 300s go test -count=1 -short -race -timeout=2m -json ./... | tee artifacts/go-race.jsonl
+      - name: Attestation fault experiments
+        run: timeout 180s python scripts/check_attestation_faults.py | tee artifacts/attestation-faults.json
       - name: Build executable
         run: timeout 180s go build -trimpath -o bin/aletharsis ./cmd/aletharsis
       - name: Compiled Go CLI and live report contract

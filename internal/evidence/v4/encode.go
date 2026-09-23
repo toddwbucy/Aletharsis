@@ -51,9 +51,8 @@ func checkValue(v reflect.Value, depth int, nodes *int, stringBytes *int, limits
 		return fmt.Errorf("%w: producer report structure", identity.ErrLimit)
 	}
 	if v.IsValid() && v.Type() == reflect.TypeOf(json.RawMessage{}) && !v.IsNil() {
-		if _, err := identity.Canonicalize(v.Bytes(), limits); err != nil {
-			return err
-		}
+		_, err := identity.Canonicalize(v.Bytes(), limits)
+		return err
 	}
 	switch v.Kind() {
 	case reflect.String:

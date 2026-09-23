@@ -242,3 +242,9 @@ func TestSnapshotIsTakenBeforeIdentityAndContainerValidation(t *testing.T) {
 		t.Fatal("caller mutation affected verified snapshot", p)
 	}
 }
+
+func TestCompletedViewRejectsNil(t *testing.T) {
+	if _, err := CompletedView(nil); err != ErrIdentity {
+		t.Fatalf("nil strict package: %v", err)
+	}
+}

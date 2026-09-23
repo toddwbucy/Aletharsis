@@ -56,7 +56,7 @@ func OpenOutcomes(ctx context.Context, source []byte, expectedSHA256 string, lim
 	// Own the bytes before hashing or parsing. The retained ZIP reader, all
 	// validated offsets, and the advertised digest refer to this same snapshot.
 	snapshot := bytes.Clone(source)
-	z, err := inspectContainer(ctx, snapshot, expectedSHA256, limits, false)
+	z, err := inspectContainer(ctx, snapshot, expectedSHA256, limits)
 	if err != nil {
 		return nil, err
 	}
@@ -154,12 +154,15 @@ func (r *OutcomeReader) ReadOnlyView() OutcomeView { return r.view(false) }
 
 // CompletedView exposes a successfully verified strict package through the same
 // explicit admission-state seam used by staged readers; it does not copy bytes.
-func CompletedView(pkg *Package) OutcomeView {
+func CompletedView(pkg *Package) (OutcomeView, error) {
+	if pkg == nil {
+		return OutcomeView{}, ErrIdentity
+	}
 	v := OutcomeView{SourceSHA256: pkg.SourceSHA256, Parser: pkg.Parser, State: "completed"}
 	for _, p := range pkg.Parts {
 		v.Parts = append(v.Parts, Outcome{Part: p, State: "completed", DeclaredBytes: uint64(len(p.Bytes))})
 	}
-	return v
+	return v, nil
 }
 
 func (r *OutcomeReader) view(owned bool) OutcomeView {

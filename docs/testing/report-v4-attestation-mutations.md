@@ -13,7 +13,7 @@ A fixture exceeding 12,000 generated candidates fails explicitly; it is not sile
 sampled. Identical fixture/operator/pointer/input/mutant combinations are deduplicated.
 
 The JSON/schema walker generates empty strings and arrays, individual array-record
-deletions, schema-derived nulls (local references and anyOf/oneOf/allOf), span collapse,
+deletions, schema-derived nulls (local references, anyOf/oneOf/allOf and if/then/else; type/enum/const null branches), span collapse,
 first/last-byte assessed regions, unsuccessful-state escalation, parent replacement,
 and count/summary drift. The Office walker additionally derives a one-byte region
 outside retained metadata, relationship and text-origin evidence, where one exists.
@@ -126,3 +126,25 @@ To collect newly unclassified survivors, set ALETHARSIS_MUTATION_DISCOVERY to a 
 scratch output path using env inside the bounded command. It creates that file with
 exclusive creation and mode 0600. Discovery still fails if any unclassified survivors
 exist; it does not turn them into approved exceptions. Never point it at the ledger.
+
+## Review follow-up: scope and CI boundaries
+
+The broad walker does not by itself falsify all four historical authority
+guards. Its current operators cannot transfer exclusions between records or
+copy a sibling element's span. The focused authority suite selects its defect
+classes explicitly, then generates property pairs within each class. It must
+not be described as four defect classes independently discovered by the walker.
+Reference substitution, span widening, record insertion, richer state changes
+and additional coordinated mutations remain corpus-expansion work; the current
+passing gate makes no claim to cover those operators.
+
+The full walker runs in the ordinary CI coverage step. The race step uses
+`-short` to omit only that expensive test; the focused authority, structural,
+generator and importer tests still run under race instrumentation. The separate
+CI fault-experiment step now includes an independent XML single-root fault as
+well as the four metadata authority faults. A probe timeout is an explicit failed
+experiment, never evidence that a guard detected its fault.
+
+The independent XML case uses two sequential, internally coherent element/token
+trees, so removing the root-cardinality check cannot be masked by a different
+token-parent consistency check.

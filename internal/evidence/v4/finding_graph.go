@@ -78,7 +78,10 @@ func validateOfficeFindings(r Report, trace *TraceIndex, office *Index) error {
 		if err := ValidateFindingCoordinates(f.Finding, office.Scopes); err != nil {
 			return err
 		}
-		scope := f.Location["scope_ref"].(string)
+		scope, ok := f.Location["scope_ref"].(string)
+		if !ok {
+			return ErrLinkage
+		}
 		if len(f.AnchorRefs) == 0 {
 			return ErrLinkage
 		}

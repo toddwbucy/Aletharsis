@@ -246,3 +246,24 @@ def test_native_inventory_fixture_is_wire_valid():
     assert len(office['metadata']) == 5
     assert len(office['relationships']) >= 3
     assert len(office['objects']) == 1
+
+
+def test_go_records_are_reproducible():
+    import shutil
+    import subprocess
+    gofmt = shutil.which('gofmt')
+    assert gofmt is not None, 'gofmt is required to verify generated Go records'
+    spec = importlib.util.spec_from_file_location(
+        'office_go_records', Path(__file__).with_name('build_go_records.py'))
+    builder = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(builder)
+    result = subprocess.run([gofmt], input=builder.build(), capture_output=True,
+                            check=True, timeout=30)
+    assert result.stdout == (ROOT / 'internal/evidence/v4/records.go').read_bytes()
+
+
+@pytest.mark.parametrize('unsupported_format', ['xlsx', 'pptx'])
+def test_office_package_formats_do_not_claim_unimplemented_support(unsupported_format):
+    fixture = json.loads((Path(__file__).with_name('fixtures') / 'office-minimal.json').read_bytes())
+    fixture['evidence']['office']['packages'][0]['format'] = unsupported_format
+    assert not Draft202012Validator(_builder.build()).is_valid(fixture)

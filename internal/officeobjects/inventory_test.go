@@ -127,8 +127,8 @@ func TestUnadmittedObjectRetainsCandidateWithoutDigest(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if r.State != "completed" || len(r.Objects) != 1 {
-		t.Fatal("lost unadmitted candidate")
+	if r.State != "partial" || len(r.Objects) != 1 {
+		t.Fatal("lost unadmitted candidate or concealed inspection gap")
 	}
 	o := r.Objects[0]
 	if o.State != "not_run" || o.Code != "office.part_not_admitted" || o.ByteLength != nil || o.Anchor.PartSHA256 != "" || len(o.Assessed) != 0 || o.Signature != "" {
@@ -187,5 +187,40 @@ func TestUnavailableObjectFailureStillDegradesInventory(t *testing.T) {
 		if err != nil || r.State != "partial" || len(r.Objects) != 1 || r.Objects[0].Code != code {
 			t.Fatal(code, r, err)
 		}
+	}
+}
+
+func TestDeferredRelationshipsAndPayloadsRemainVisible(t *testing.T) {
+	for _, skip := range []string{"", "word/embeddings/a.bin", "custom/_rels/extra.xml.rels"} {
+		t.Run(skip, func(t *testing.T) {
+			extras := map[string]string{
+				"word/embeddings/a.bin":       "PK\x03\x04payload",
+				"custom/extra.xml":            "<r/>",
+				"custom/_rels/extra.xml.rels": `<Relationships xmlns="` + opcrels.Namespace + `"/>`,
+			}
+			doc := fixture(t, extras, rel("a", "package", "embeddings/a.bin", "Internal"), skip)
+			result, err := Inspect(context.Background(), doc)
+			if err != nil {
+				t.Fatal(err)
+			}
+			want := "completed"
+			if skip != "" {
+				want = "partial"
+			}
+			if result.State != want {
+				t.Fatalf("inspection state %s want %s", result.State, want)
+			}
+			if len(result.Objects) != 1 {
+				t.Fatal("candidate disappeared")
+			}
+			object := result.Objects[0]
+			if skip == "word/embeddings/a.bin" {
+				if object.State != "not_run" || len(object.Assessed) != 0 || object.Signature != "" {
+					t.Fatal("invented payload coverage")
+				}
+			} else if object.State != "completed" || object.Signature != "zip_local_header_magic" {
+				t.Fatal("lost admitted payload evidence")
+			}
+		})
 	}
 }

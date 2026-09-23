@@ -130,6 +130,7 @@ func ValidateCoverage(t NativeTrace, artifacts []Artifact, office *Index, flat e
 		if err != nil {
 			return err
 		}
+		requested = mergeCoverage(requested)
 		accounted := []identity.Region{}
 		for _, s := range e.AnalyzedScope {
 			regions, err := x.intervals(s, true)
@@ -164,7 +165,7 @@ func ValidateCoverage(t NativeTrace, artifacts []Artifact, office *Index, flat e
 				return ErrLinkage
 			}
 		}
-		if e.State == v2.Partial && !unknown && !slices.Equal(mergeCoverage(accounted), mergeCoverage(requested)) {
+		if e.State == v2.Partial && !unknown && !slices.Equal(mergeCoverage(accounted), requested) {
 			return ErrLinkage
 		}
 	}

@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -100,6 +102,11 @@ func mutationSchemas(root any, nodes []any) []map[string]any {
 			}
 			walk(mutationGet(root, ref[1:]), depth+1)
 		}
+		for _, key := range []string{"if", "then", "else"} {
+			if branch, ok := n[key]; ok {
+				walk(branch, depth+1)
+			}
+		}
 		for _, key := range []string{"oneOf", "anyOf", "allOf"} {
 			if branches, ok := n[key].([]any); ok {
 				for _, branch := range branches {
@@ -129,6 +136,14 @@ func generateMutations(value, schema any) []mutation {
 				for _, typ := range types {
 					nullable = nullable || typ == "null"
 				}
+			}
+			if values, ok := n["enum"].([]any); ok {
+				for _, value := range values {
+					nullable = nullable || value == nil
+				}
+			}
+			if value, ok := n["const"]; ok && value == nil {
+				nullable = true
 			}
 			if nullable {
 				add("null", p, v, nil)
@@ -214,6 +229,9 @@ func generateMutations(value, schema any) []mutation {
 }
 
 func TestAdversarialReportMutations(t *testing.T) {
+	if testing.Short() {
+		t.Skip("full mutation gate runs separately without race instrumentation")
+	}
 	paths, err := filepath.Glob("../../../tests/contracts_v4/fixtures/*.json")
 	if err != nil || len(paths) < 13 {
 		t.Fatal("complete report corpus required", err)
@@ -228,8 +246,11 @@ func TestAdversarialReportMutations(t *testing.T) {
 	ledger := "testdata/mutation-exceptions.json"
 	data, err := os.ReadFile(ledger)
 	discovery := os.Getenv("ALETHARSIS_MUTATION_DISCOVERY")
-	if err != nil && discovery == "" {
+	if err != nil && (discovery == "" || !errors.Is(err, fs.ErrNotExist)) {
 		t.Fatal(err)
+	}
+	if errors.Is(err, fs.ErrNotExist) {
+		t.Log("WARNING: discovery starts with no exception ledger")
 	}
 	if err == nil {
 		if err = json.Unmarshal(data, &exceptions); err != nil {
@@ -257,11 +278,10 @@ func TestAdversarialReportMutations(t *testing.T) {
 		allowed[key(e)] = e
 	}
 	used := map[string]bool{}
-	ran := map[string]bool{}
+	finished := map[string]bool{}
 	var survivors []mutationException
 	for _, path := range paths {
 		t.Run(filepath.Base(path), func(t *testing.T) {
-			ran[filepath.Base(path)] = true
 			raw, err := os.ReadFile(path)
 			if err != nil {
 				t.Fatal(err)
@@ -320,11 +340,12 @@ func TestAdversarialReportMutations(t *testing.T) {
 					}
 				}
 			}
+			finished[filepath.Base(path)] = true
 			t.Logf("mutation stages: %s", mutationJSON(stats))
 		})
 	}
 	for k, e := range allowed {
-		if ran[e.Fixture] && !used[k] {
+		if finished[e.Fixture] && !used[k] {
 			t.Errorf("stale exception: %s", mutationJSON(e))
 		}
 	}
