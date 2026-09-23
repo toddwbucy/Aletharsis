@@ -320,3 +320,10 @@ func (r *Result) readPart(part *PartResult, index map[string][]int) {
 		r.Relationships = append(r.Relationships, rel)
 	}
 }
+
+// RelationshipOwner derives the source name from a canonical OPC relationship
+// part name. It never trusts a caller-supplied source owner.
+func RelationshipOwner(name string) (string, bool) { return owner(name) }
+
+// FoldName applies OPC ASCII case equivalence without Unicode case folding.
+func FoldName(name string) string { return fold(name) }

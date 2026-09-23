@@ -72,7 +72,7 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 		}
 		return nil
 	}
-	produced := map[[2]string]bool{}
+	produced := map[[2]string][]Outcome{}
 	for _, p := range e.Packages {
 		decompressed := map[string]bool{}
 		seen := map[[2]string]bool{}
@@ -92,7 +92,8 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 			parent := t.Executions[o.ExecutionRef]
 			if (o.State == "completed" || o.State == "partial") &&
 				(parent.State == v2.Completed || parent.State == v2.Partial) {
-				produced[[2]string{o.Operation, *o.PartRef}] = true
+				key := [2]string{o.Operation, *o.PartRef}
+				produced[key] = append(produced[key], o)
 			}
 			if o.Operation == "aletharsis.parse.office_package" {
 				if decompressed[*o.PartRef] || o.State != part.State {
@@ -135,20 +136,55 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 			}
 		}
 	}
-	// Retained extraction records require an actual successful per-part
-	// operation; package decompression alone cannot authorize their presence.
+	// One successful producing outcome must cover every retained byte of a
+	// record. Presence alone cannot authorize evidence outside assessed regions.
+	covers := func(operation, part string, spans []Span) bool {
+		for _, outcome := range produced[[2]string{operation, part}] {
+			if spansCovered(spans, outcome.Assessed) {
+				return true
+			}
+		}
+		return false
+	}
+	origins := func(values []Origin) []Span {
+		spans := make([]Span, 0, len(values))
+		for _, value := range values {
+			spans = append(spans, value.Source)
+		}
+		return spans
+	}
 	for _, scope := range e.Scopes {
-		if !produced[[2]string{"aletharsis.office.text", scope.PartRef}] {
+		if !covers("aletharsis.office.text", scope.PartRef, origins(scope.Origins)) {
 			return ErrLinkage
 		}
 	}
 	for _, item := range e.Metadata {
-		if !produced[[2]string{"aletharsis.office.metadata", item.PartRef}] {
+		doc := x.XML[item.XMLRef]
+		if item.Element < 0 || item.Element >= int64(len(doc.Elements)) {
+			return ErrLinkage
+		}
+		spans := origins(item.ValueOrigins)
+		if !covers("aletharsis.office.metadata", item.PartRef, spans) {
 			return ErrLinkage
 		}
 	}
 	for _, item := range e.Relationships {
-		if !produced[[2]string{"aletharsis.office.relationships", item.Location.PartRef}] {
+		if item.Location.Span == nil || !covers("aletharsis.office.relationships", item.Location.PartRef, []Span{*item.Location.Span}) {
+			return ErrLinkage
+		}
+	}
+	// XML mapping may retain lexical structure for excluded analytical regions.
+	// Bind the map to a parsing operation without claiming those regions were
+	// assessed for text, metadata, or relationship interpretation.
+	for _, doc := range e.XML {
+		matched := false
+		for _, operation := range []string{"aletharsis.office.identify", "aletharsis.office.text", "aletharsis.office.metadata", "aletharsis.office.relationships"} {
+			if covers(operation, doc.PartRef, nil) {
+				matched = true
+				break
+			}
+		}
+		if !matched {
 			return ErrLinkage
 		}
 	}
@@ -199,5 +235,38 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 			}
 		}
 	}
-	return nil
+	return x.validateMetadataProjection(e, t)
+}
+
+// spansCovered accepts adjacent assessed regions but never bridges a gap.
+func spansCovered(wanted, assessed []Span) bool {
+	regions := slices.Clone(assessed)
+	slices.SortFunc(regions, func(a, b Span) int {
+		if a.Start < b.Start {
+			return -1
+		}
+		if a.Start > b.Start {
+			return 1
+		}
+		return 0
+	})
+	for _, span := range wanted {
+		cursor := span.Start
+		for _, region := range regions {
+			if region.End < cursor {
+				continue
+			}
+			if region.Start > cursor {
+				break
+			}
+			cursor = max(cursor, region.End)
+			if cursor >= span.End {
+				break
+			}
+		}
+		if cursor < span.End {
+			return false
+		}
+	}
+	return true
 }

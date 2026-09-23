@@ -108,15 +108,15 @@ def build():
         'object_ref': nullable(ref('officeObjectRef'))})
     d['officeScopeLocation'] = obj({'kind': {'const': 'office_scope'}, 'scope_ref': ref('officeScopeRef')})
     d['officeOffsetLocation'] = obj({'kind': {'const': 'office_offsets'},
-        'scope_ref': ref('officeScopeRef'), 'scope_character_offsets': array(integer),
-        'scope_byte_offsets': array(integer)})
+        'scope_ref': ref('officeScopeRef'), 'scope_character_offsets': {**array(integer), 'minItems': 1, 'uniqueItems': True},
+        'scope_byte_offsets': {**array(integer), 'minItems': 1, 'uniqueItems': True}})
     d['officeMetadata'] = obj({'namespace': text, 'local_name': name, 'lexical_value': text,
         'normalized_key': nullable(name), 'part_ref': ref('officePartRef'), 'xml_ref': ref('officeXmlRef'),
         'element': integer, 'value_origins': array(ref('officeOrigin')), 'duplicate_ordinal': integer})
     d['officeRelationship'] = obj({'relationship_ref': ref('officeRelationshipRef'),
         'id': text, 'type': text, 'target': text, 'mode': text,
         'location': ref('officeStructuralLocation'), 'source_owner': text,
-        'resolution_state': {'enum': ['resolved', 'external', 'unresolved', 'invalid', 'unsupported', 'missing']}, 'resolution_code': nullable(ref('code')),
+        'resolution_state': {'enum': ['resolved', 'external', 'unresolved', 'invalid', 'unsupported', 'missing', 'ambiguous']}, 'resolution_code': nullable(ref('code')),
         'target_part_ref': nullable(ref('officePartRef'))})
     d['officeObject'] = obj({'object_ref': ref('officeObjectRef'), 'part_ref': ref('officePartRef'),
         'sha256': nullable(ref('digest')), 'inclusion_evidence': array(name),

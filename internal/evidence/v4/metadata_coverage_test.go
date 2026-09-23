@@ -1,0 +1,53 @@
+package v4
+
+import (
+	v2 "github.com/toddwbucy/Aletharsis/internal/evidence/v2"
+	"github.com/toddwbucy/Aletharsis/internal/identity"
+	"github.com/toddwbucy/Aletharsis/internal/officemetadata"
+	"testing"
+)
+
+func TestMetadataProjectionRequiresLocatedOmission(t *testing.T) {
+	part := Part{PartRef: "office-part/0", ArtifactRef: "artifact/1"}
+	doc := XML{PartRef: part.PartRef, Elements: []Element{
+		{Index: 0, Namespace: officemetadata.CoreNamespace, LocalName: "coreProperties", Span: Span{0, 100}},
+		{Index: 1, Parent: wide(0), LocalName: "creator", Span: Span{10, 30}},
+		{Index: 2, Parent: wide(0), LocalName: "creator", Span: Span{40, 60}},
+	}}
+	outcome := Outcome{Operation: "aletharsis.office.metadata", ExecutionRef: "exec/0", PartRef: &part.PartRef, State: "partial", Excluded: []Span{{10, 30}}}
+	e := Evidence{XML: []XML{doc}, Metadata: []Metadata{{PartRef: part.PartRef, Element: 2}}, Packages: []Package{{Outcomes: []Outcome{outcome}}}}
+	x := Index{Parts: map[string]Part{part.PartRef: part}}
+	trace := TraceIndex{Diagnostics: map[string]v2.Diagnostic{}}
+	if x.validateMetadataProjection(e, &trace) == nil {
+		t.Fatal("silently omitted sibling")
+	}
+	diagnostic := v2.Diagnostic{Ref: "diagnostic/0", ExecutionRef: str("exec/0"), Code: "metadata.structured_value_unassessed", Scope: &v2.Scope{ArtifactRef: part.ArtifactRef, Unit: "byte", Regions: []identity.Region{{Start: 10, End: 30}}}}
+	trace.Diagnostics[diagnostic.Ref] = diagnostic
+	e.Packages[0].Outcomes[0].DiagnosticRefs = []string{diagnostic.Ref}
+	if err := x.validateMetadataProjection(e, &trace); err != nil {
+		t.Fatal(err)
+	}
+	for _, mode := range []string{"wrong_part", "wrong_span", "wrong_execution", "retained_and_omitted", "not_excluded"} {
+		t.Run(mode, func(t *testing.T) {
+			d := diagnostic
+			scope := *d.Scope
+			d.Scope = &scope
+			switch mode {
+			case "wrong_part":
+				d.Scope.ArtifactRef = "artifact/99"
+			case "wrong_span":
+				d.Scope.Regions = []identity.Region{{Start: 11, End: 30}}
+			case "wrong_execution":
+				d.ExecutionRef = str("exec/99")
+			case "retained_and_omitted":
+				d.Scope.Regions = []identity.Region{{Start: 40, End: 60}}
+			case "not_excluded":
+				e.Packages[0].Outcomes[0].Excluded = nil
+			}
+			trace.Diagnostics[d.Ref] = d
+			if x.validateMetadataProjection(e, &trace) == nil {
+				t.Fatal("accepted unbound omission")
+			}
+		})
+	}
+}

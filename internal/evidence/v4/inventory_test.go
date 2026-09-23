@@ -5,14 +5,14 @@ import "testing"
 func str(s string) *string { return &s }
 func inventoryCase() (*Index, Evidence) {
 	size := int64(100)
-	p := Part{PartRef: "office-part/0", PackageRef: "office-package/0", SHA256: str("part"), ByteLength: &size}
-	target := Part{PartRef: "office-part/1", PackageRef: p.PackageRef, SHA256: str("object"), ByteLength: &size}
+	p := Part{PartRef: "office-part/0", Name: "word/_rels/document.xml.rels", PackageRef: "office-package/0", SHA256: str("part"), ByteLength: &size}
+	target := Part{PartRef: "office-part/1", Name: "word/embeddings/object.bin", PackageRef: p.PackageRef, SHA256: str("object"), ByteLength: &size}
 	doc := XML{XMLRef: "office-xml/0", PartRef: p.PartRef, Elements: []Element{{Index: 0, Namespace: "ns", LocalName: "creator", Span: Span{0, 20}}},
 		Tokens:   []Token{{Index: 0, Element: wide(0), Span: Span{0, 20}}},
 		Segments: []Segment{{Element: number(0), Scalars: []Scalar{{Index: 0, CodePoint: 65, Source: Span{9, 10}, UTF8: Span{0, 1}, Transformation: "literal"}}}}}
-	x := &Index{Parts: map[string]Part{p.PartRef: p, target.PartRef: target}, XML: map[string]XML{doc.XMLRef: doc}}
+	x := &Index{Parts: map[string]Part{p.PartRef: p, target.PartRef: target, "office-part/2": {PartRef: "office-part/2", PackageRef: p.PackageRef, Name: "word/document.xml", SHA256: str("owner"), ByteLength: &size}}, XML: map[string]XML{doc.XMLRef: doc}}
 	loc := StructuralLocation{Kind: "office_structure", PartRef: p.PartRef, PartSHA256: *p.SHA256, XMLRef: &doc.XMLRef, Element: wide(0), Span: &Span{0, 20}}
-	rel := Relationship{RelationshipRef: "office-relationship/0", Location: loc, ResolutionState: "resolved", TargetPartRef: &target.PartRef}
+	rel := Relationship{RelationshipRef: "office-relationship/0", SourceOwner: "word/document.xml", Target: "embeddings/object.bin", Mode: "Internal", Location: loc, ResolutionState: "resolved", TargetPartRef: &target.PartRef}
 	object := Object{ObjectRef: "office-object/0", PartRef: target.PartRef, SHA256: target.SHA256, InclusionEvidence: []string{"relationship"}, RelationshipRefs: []string{rel.RelationshipRef}, Inspection: Outcome{PartRef: &target.PartRef}}
 	meta := Metadata{XMLRef: doc.XMLRef, PartRef: p.PartRef, Namespace: "ns", LocalName: "creator", Element: 0, LexicalValue: "A", ValueOrigins: []Origin{{Kind: "stored", XMLRef: doc.XMLRef, TextIndex: number(0), Segment: number(0), Scalar: number(0), Source: Span{9, 10}, UTF8: Span{0, 1}, Transformation: "literal"}}}
 	return x, Evidence{Relationships: []Relationship{rel}, Objects: []Object{object}, Metadata: []Metadata{meta}}
@@ -78,9 +78,9 @@ func unavailableObjectCase() (*Index, Evidence) {
 	e.Relationships[0].Mode = "Internal"
 	e.Relationships[0].SourceOwner = "word/document.xml"
 	e.Relationships[0].Target = "embeddings/object.bin"
-	e.Relationships[0].ResolutionState = "unresolved"
-	e.Relationships[0].ResolutionCode = str("opc.target_unavailable")
-	e.Relationships[0].TargetPartRef = nil
+	e.Relationships[0].ResolutionState = "resolved"
+	e.Relationships[0].ResolutionCode = nil
+	e.Relationships[0].TargetPartRef = str("office-part/1")
 	return x, e
 }
 func TestUnverifiedObjectCandidateKeepsOnlyUniqueDeclarationLink(t *testing.T) {
@@ -95,7 +95,7 @@ func TestUnverifiedObjectCandidateKeepsOnlyUniqueDeclarationLink(t *testing.T) {
 		"unsupported URI": func(x *Index, e *Evidence) { e.Relationships[0].Target = "embeddings/%6fbject.bin" },
 		"case ambiguity": func(x *Index, e *Evidence) {
 			p := x.Parts["office-part/1"]
-			p.PartRef = "office-part/2"
+			p.PartRef = "office-part/3"
 			p.Name = "WORD/EMBEDDINGS/OBJECT.BIN"
 			x.Parts[p.PartRef] = p
 		},
@@ -104,7 +104,15 @@ func TestUnverifiedObjectCandidateKeepsOnlyUniqueDeclarationLink(t *testing.T) {
 			p.PackageRef = "office-package/1"
 			x.Parts[p.PartRef] = p
 		},
-		"invented verified reference": func(x *Index, e *Evidence) { e.Relationships[0].TargetPartRef = str("office-part/1") },
+		"invented owner root": func(x *Index, e *Evidence) {
+			e.Relationships[0].SourceOwner = ""
+			e.Relationships[0].Target = "word/embeddings/object.bin"
+		},
+		"invented owner directory": func(x *Index, e *Evidence) {
+			e.Relationships[0].SourceOwner = "x/y.xml"
+			e.Relationships[0].Target = "../word/embeddings/object.bin"
+		},
+		"missing reference": func(x *Index, e *Evidence) { e.Relationships[0].TargetPartRef = nil },
 	} {
 		t.Run(name, func(t *testing.T) {
 			x, e := unavailableObjectCase()

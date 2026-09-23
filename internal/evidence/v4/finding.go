@@ -62,7 +62,7 @@ func ValidateFindingCoordinates(f evidence.Finding, scopes map[string]Scope) err
 			return err
 		}
 		bytes, err := offsets(f.Location["scope_byte_offsets"])
-		if err != nil || len(scalars) != len(bytes) {
+		if err != nil || len(scalars) == 0 || len(scalars) != len(bytes) {
 			return ErrCoordinates
 		}
 		if count, ok := f.Evidence["count"]; ok {
@@ -76,7 +76,7 @@ func ValidateFindingCoordinates(f evidence.Finding, scopes map[string]Scope) err
 			starts = append(starts, int64(offset))
 		}
 		for i, index := range scalars {
-			if index < 0 || index >= int64(len(starts)) || bytes[i] != starts[index] {
+			if index < 0 || index >= int64(len(starts)) || bytes[i] != starts[index] || (i > 0 && index <= scalars[i-1]) {
 				return ErrCoordinates
 			}
 		}

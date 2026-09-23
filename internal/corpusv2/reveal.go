@@ -64,7 +64,6 @@ func DecodeRevealTree(raw, corpusRaw []byte, envelopeLimits, reportLimits identi
 			} `json:"evidence"`
 			File struct {
 				SHA256 *string `json:"sha256"`
-				Format string  `json:"format"`
 			} `json:"file"`
 		}
 		if len(entry.Report) > 0 {

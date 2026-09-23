@@ -23,6 +23,11 @@ type Header struct {
 	Limits       json.RawMessage `json:"limits"`
 }
 type Entry struct {
+	// Import support is a runtime view, never producer-supplied wire data.
+	// Unsupported-feature entries retain opaque report bytes; they are not
+	// promoted to validated native evidence or interpreted as negative results.
+	ImportStatus           string          `json:"-"`
+	SupportReason          *string         `json:"-"`
 	Type                   string          `json:"type"`
 	RelativePath           string          `json:"relative_path"`
 	State                  string          `json:"state"`
@@ -59,10 +64,15 @@ func Decode(raw []byte, envelopeLimits, reportLimits identity.Limits) (Document,
 	if err := json.Unmarshal(canonical, &d); err != nil {
 		return Document{}, err
 	}
+	return validateDocument(d, reportLimits)
+}
+
+func validateDocument(d Document, reportLimits identity.Limits) (Document, error) {
 	counts := map[string]int{"no_reported_findings": 0, "requires_review": 0, "unsupported": 0, "failed": 0, "skipped": 0, "canceled": 0, "partial": 0}
 	severities := map[string]int{"INFO": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 0}
 	paths := map[string]bool{}
-	for _, entry := range d.Entries {
+	for i := range d.Entries {
+		entry := &d.Entries[i]
 		if paths[entry.RelativePath] {
 			return Document{}, ErrLinkage
 		}
@@ -78,7 +88,8 @@ func Decode(raw []byte, envelopeLimits, reportLimits identity.Limits) (Document,
 		if err != nil {
 			return Document{}, err
 		}
-		if imported.Status != "validated" {
+		entry.ImportStatus, entry.SupportReason = imported.Status, imported.SupportReason
+		if imported.Status != "validated" && imported.Status != "unsupported_feature" {
 			return Document{}, ErrLinkage
 		}
 		reportCanonical, err := identity.Canonicalize(entry.Report, reportLimits)

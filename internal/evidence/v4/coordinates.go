@@ -93,7 +93,7 @@ func ValidateStoredOrigins(text, digest string, origins []Origin, segments map[s
 			return ErrCoordinates
 		}
 		ss, ok := segments[o.XMLRef]
-		if !ok || *o.Segment < 0 || *o.Segment >= len(ss) {
+		if !ok || *o.TextIndex >= len(ss) || *o.Segment < 0 || *o.Segment >= len(ss) {
 			return ErrCoordinates
 		}
 		scalars := ss[*o.Segment].Scalars

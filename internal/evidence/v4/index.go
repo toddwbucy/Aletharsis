@@ -57,9 +57,10 @@ func IndexEvidence(e Evidence, sourceHash string, sourceSize int64) (*Index, err
 			x.Parts[part.PartRef] = part
 		}
 	}
+	xmlParts := map[string]bool{}
 	for _, doc := range e.XML {
 		part, ok := x.Parts[doc.PartRef]
-		if !ok || !canonicalRef(doc.XMLRef, "xml") {
+		if !ok || !canonicalRef(doc.XMLRef, "xml") || xmlParts[doc.PartRef] {
 			return nil, ErrLinkage
 		}
 		if _, exists := x.XML[doc.XMLRef]; exists {
@@ -68,6 +69,7 @@ func IndexEvidence(e Evidence, sourceHash string, sourceSize int64) (*Index, err
 		if err := ValidateXML(doc, part); err != nil {
 			return nil, err
 		}
+		xmlParts[doc.PartRef] = true
 		x.XML[doc.XMLRef] = doc
 	}
 	identities := map[string]bool{}

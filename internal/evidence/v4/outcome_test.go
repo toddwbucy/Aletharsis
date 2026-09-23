@@ -105,11 +105,12 @@ func TestEveryRetainedExtractionRequiresSuccessfulPartOperation(t *testing.T) {
 				case "aletharsis.office.text":
 					e.Scopes = []Scope{{PartRef: part}}
 				case "aletharsis.office.metadata":
-					e.Metadata = []Metadata{{PartRef: part}}
+					e.Metadata = []Metadata{{PartRef: part, XMLRef: "xml"}}
+					e.XML = []XML{{PartRef: part, Elements: []Element{{Namespace: "http://schemas.openxmlformats.org/package/2006/metadata/core-properties", LocalName: "coreProperties"}}}}
 				case "aletharsis.office.relationships":
-					e.Relationships = []Relationship{{Location: StructuralLocation{PartRef: part}}}
+					e.Relationships = []Relationship{{Location: StructuralLocation{PartRef: part, Span: &Span{}}}}
 				}
-				x := Index{Parts: map[string]Part{part: {PartRef: part}}}
+				x := Index{Parts: map[string]Part{part: {PartRef: part}}, XML: map[string]XML{"xml": {Elements: []Element{{}}}}}
 				trace := TraceIndex{Executions: map[string]v2.Execution{"exec/0": {Ref: "exec/0", CapabilityRef: operation, State: state}}}
 				good := state == v2.Completed || state == v2.Partial
 				if err := x.ValidateOutcomes(e, &trace); (err == nil) != good {
@@ -121,5 +122,48 @@ func TestEveryRetainedExtractionRequiresSuccessfulPartOperation(t *testing.T) {
 				}
 			})
 		}
+	}
+}
+
+func TestRetainedScopeCannotEscapeAssessedCoverage(t *testing.T) {
+	raw, err := os.ReadFile("../../../tests/contracts_v4/fixtures/office-minimal.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, mode := range []string{"empty", "gap", "xml_without_producer"} {
+		t.Run(mode, func(t *testing.T) {
+			r, err := decodeReportRecords(raw, identity.Limits{InputBytes: 16 << 20, OutputBytes: 16 << 20, Nodes: 4194304, Depth: 64})
+			if err != nil {
+				t.Fatal(err)
+			}
+			p := &r.Evidence.Office.Packages[0]
+			for i := range p.Outcomes {
+				if p.Outcomes[i].Operation == "aletharsis.office.text" {
+					p.Outcomes[i].Assessed = nil
+					if mode == "gap" {
+						s := r.Evidence.Office.Scopes[0].Origins[0].Source
+						p.Outcomes[i].Assessed = []Span{{0, s.Start}, {s.End, *p.Parts[len(p.Parts)-1].ByteLength}}
+					}
+					if mode == "xml_without_producer" {
+						p.Outcomes = append(p.Outcomes[:i], p.Outcomes[i+1:]...)
+					}
+					break
+				}
+			}
+			x, err := IndexEvidence(r.Evidence.Office, *r.File.SHA256, int64(*r.File.Size))
+			if err != nil {
+				t.Fatal(err)
+			}
+			trace, err := IndexTrace(r.Trace)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if mode == "xml_without_producer" {
+				r.Evidence.Office.Scopes = nil
+			}
+			if x.ValidateOutcomes(r.Evidence.Office, trace) == nil {
+				t.Fatal("unassessed evidence accepted")
+			}
+		})
 	}
 }

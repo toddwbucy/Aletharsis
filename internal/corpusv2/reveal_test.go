@@ -157,3 +157,16 @@ func TestOfficePresentationUsesPackageEvidence(t *testing.T) {
 		})
 	}
 }
+
+func TestStreamInputBudgetMeasuresSubmittedBytes(t *testing.T) {
+	raw, _ := revealCase(t, "4.0", false)
+	bound := limits()
+	bound.InputBytes = len(raw)
+	if _, err := DecodeStream(raw, bound, limits()); err != nil {
+		t.Fatal("exact input budget", err)
+	}
+	bound.InputBytes--
+	if _, err := DecodeStream(raw, bound, limits()); err == nil {
+		t.Fatal("accepted oversized input")
+	}
+}

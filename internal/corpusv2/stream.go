@@ -61,5 +61,17 @@ func DecodeStream(raw []byte, envelopeLimits, reportLimits identity.Limits) (Doc
 	if err != nil {
 		return Document{}, err
 	}
-	return Decode(wrapped, envelopeLimits, reportLimits)
+	// The input budget applies to the submitted JSONL, not synthetic framing.
+	// Retain aggregate node/depth/output bounds, without repeating wire validation.
+	framedLimits := envelopeLimits
+	framedLimits.InputBytes = len(wrapped)
+	canonical, err := identity.Canonicalize(wrapped, framedLimits)
+	if err != nil {
+		return Document{}, err
+	}
+	var document Document
+	if err := json.Unmarshal(canonical, &document); err != nil {
+		return Document{}, err
+	}
+	return validateDocument(document, reportLimits)
 }

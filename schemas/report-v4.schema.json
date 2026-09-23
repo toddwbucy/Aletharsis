@@ -5636,7 +5636,9 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 9007199254740991
-          }
+          },
+          "minItems": 1,
+          "uniqueItems": true
         },
         "scope_byte_offsets": {
           "type": "array",
@@ -5644,7 +5646,9 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 9007199254740991
-          }
+          },
+          "minItems": 1,
+          "uniqueItems": true
         }
       },
       "required": [
@@ -5746,7 +5750,8 @@
             "unresolved",
             "invalid",
             "unsupported",
-            "missing"
+            "missing",
+            "ambiguous"
           ]
         },
         "resolution_code": {

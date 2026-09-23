@@ -18,8 +18,7 @@ def build():
     d['header']['properties']['report_schema']['enum'] = ['2.0', '4.0']
     entry = d['entry']
     entry['properties']['state']['enum'].append('partial')
-    entry['properties']['report']['oneOf'] = [
-        {'$ref': 'report-v2.schema.json'}, {'$ref': 'report-v4.schema.json'}]
+    entry['properties']['report'] = {'type': 'object'}
     entry['properties']['report_schema'] = {'enum': ['2.0', '4.0']}
     entry['properties']['highest_finding_severity'] = {'enum': [None, 'INFO', 'LOW', 'MEDIUM', 'HIGH']}
     entry['dependentRequired']['report'] += ['report_schema', 'highest_finding_severity']
@@ -29,13 +28,27 @@ def build():
     for version in ('2.0', '4.0'):
         entry['allOf'].append({'if': {'required': ['report_schema'],
             'properties': {'report_schema': {'const': version}}},
-            'then': {'properties': {'report': {'properties': {'schema_version': {'const': version}}}}}})
+            'then': {'properties': {'report': {'$ref': 'report-v' + version[0] + '.schema.json'}}}})
     # Report-bearing observer failures may retain a completed/partial report.
     for state, report_states in {'partial': ['partial'],
             'no_reported_findings': ['completed'], 'requires_review': ['completed'],
             'unsupported': ['failed'], 'canceled': ['canceled']}.items():
         entry['allOf'].append({'if': {'required': ['report'], 'properties': {'state': {'const': state}}},
             'then': {'properties': {'report': {'properties': {'status': {'enum': report_states}}}}}})
+    entry['allOf'].append({
+        'if': {'required': ['report'], 'properties': {'state': {'const': 'failed'},
+               'reason': {'not': {'const': 'execution.resource_limit'}}}},
+        'then': {'properties': {'report': {'properties': {'status': {'const': 'failed'}}}}}})
+    for state, severity in [('no_reported_findings', {'type': 'null'}),
+                            ('requires_review', {'enum': ['INFO', 'LOW', 'MEDIUM', 'HIGH']})]:
+        entry['allOf'].append({'if': {'properties': {'state': {'const': state}}},
+            'then': {'properties': {'highest_finding_severity': severity}}})
+    entry['allOf'].append({'if': {'required': ['report'], 'properties': {'state': {'const': 'unsupported'}}},
+        'then': {'properties': {'reason': {'const': 'format.unsupported'}, 'report': {'properties': {
+            'diagnostics': {'contains': {'properties': {'code': {'const': 'format.unsupported'}}}},
+            'executions': {'contains': {'properties': {'state': {'const': 'failed'}}}},
+            'capabilities': {'contains': {'properties': {'role': {'const': 'parser'}}}}
+        }}}}})
     counts = d['summary']['properties']['counts']
     counts['properties']['partial'] = {'type': 'integer', 'minimum': 0}
     counts['required'].append('partial')

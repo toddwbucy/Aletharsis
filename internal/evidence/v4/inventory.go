@@ -3,37 +3,7 @@ package v4
 import (
 	"github.com/toddwbucy/Aletharsis/internal/identity"
 	"github.com/toddwbucy/Aletharsis/internal/opcrels"
-	"strings"
 )
-
-// An unverified target has no target_part_ref, but the original declaration may
-// still identify a unique candidate by name. Preserve that backlink without
-// upgrading unavailable bytes to a verified relationship target.
-func (x *Index) unavailableObjectTarget(r Relationship, o Object) bool {
-	if r.Mode != "Internal" || r.ResolutionState != "unresolved" || r.ResolutionCode == nil || *r.ResolutionCode != "opc.target_unavailable" || r.TargetPartRef != nil || o.SHA256 != nil {
-		return false
-	}
-	target, code := opcrels.ResolveInternalTarget(r.SourceOwner, r.Target)
-	if code != "" {
-		return false
-	}
-	fold := func(s string) string {
-		return strings.Map(func(c rune) rune {
-			if c >= 'A' && c <= 'Z' {
-				return c + 32
-			}
-			return c
-		}, s)
-	}
-	owner := x.Parts[r.Location.PartRef]
-	matches := []string{}
-	for ref, part := range x.Parts {
-		if part.PackageRef == owner.PackageRef && fold(part.Name) == fold(target) {
-			matches = append(matches, ref)
-		}
-	}
-	return len(matches) == 1 && matches[0] == o.PartRef
-}
 
 // ValidateStructuralLocation checks a part-qualified XML or opaque-object
 // anchor. Coordinates always index decompressed part bytes, never ZIP bytes.
@@ -95,6 +65,13 @@ func (x *Index) ValidateInventories(e Evidence) error {
 		}
 		objects[o.ObjectRef] = o
 	}
+	// Index names once per package. Resolution links are checked against the
+	// declaring part's owner and this inventory, including unverified targets.
+	names := map[[2]string][]string{}
+	for ref, part := range x.Parts {
+		key := [2]string{part.PackageRef, opcrels.FoldName(part.Name)}
+		names[key] = append(names[key], ref)
+	}
 	rels := map[string]Relationship{}
 	for _, r := range e.Relationships {
 		if !canonicalRef(r.RelationshipRef, "relationship") {
@@ -109,13 +86,19 @@ func (x *Index) ValidateInventories(e Evidence) error {
 		if r.Location.ObjectRef != nil {
 			return ErrLinkage
 		}
+		declaring := x.Parts[r.Location.PartRef]
+		owner, valid := opcrels.RelationshipOwner(declaring.Name)
+		if !valid || opcrels.FoldName(owner) != opcrels.FoldName(r.SourceOwner) {
+			return ErrLinkage
+		}
 		if r.ResolutionState == "resolved" {
-			if r.TargetPartRef == nil {
+			if owner != "" && len(names[[2]string{declaring.PackageRef, opcrels.FoldName(owner)}]) != 1 {
 				return ErrLinkage
 			}
-			target, ok := x.Parts[*r.TargetPartRef]
-			owner := x.Parts[r.Location.PartRef]
-			if !ok || target.SHA256 == nil || target.PackageRef != owner.PackageRef {
+			target, code := opcrels.ResolveInternalTarget(owner, r.Target)
+			matches := names[[2]string{declaring.PackageRef, opcrels.FoldName(target)}]
+			if r.Mode != "Internal" || r.ResolutionCode != nil || code != "" || len(matches) != 1 ||
+				r.TargetPartRef == nil || *r.TargetPartRef != matches[0] {
 				return ErrLinkage
 			}
 		} else if r.TargetPartRef != nil {
@@ -130,11 +113,7 @@ func (x *Index) ValidateInventories(e Evidence) error {
 			if !ok || seen[ref] {
 				return ErrLinkage
 			}
-			if r.TargetPartRef == nil {
-				if !x.unavailableObjectTarget(r, o) {
-					return ErrLinkage
-				}
-			} else if *r.TargetPartRef != o.PartRef {
+			if r.ResolutionState != "resolved" || r.TargetPartRef == nil || *r.TargetPartRef != o.PartRef {
 				return ErrLinkage
 			}
 			seen[ref] = true
@@ -172,7 +151,7 @@ func (x *Index) ValidateInventories(e Evidence) error {
 		key := struct {
 			xml     string
 			element int64
-		}{m.XMLRef, m.Element}
+		}{m.PartRef, m.Element}
 		if seenMetadata[key] {
 			return ErrLinkage
 		}
