@@ -140,7 +140,30 @@ func (x *Index) ValidateInventories(e Evidence) error {
 			seen[ref] = true
 		}
 	}
-	occurrences := map[[3]string]int64{}
+	// Duplicate ordinals describe original siblings, including structured values
+	// excluded from the scalar metadata projection. Derive them from retained XML
+	// rather than renumbering only the successfully extracted metadata values.
+	ordinals := map[string][]int64{}
+	for ref, doc := range x.XML {
+		counts := map[struct {
+			parent           int64
+			namespace, local string
+		}]int64{}
+		values := make([]int64, len(doc.Elements))
+		for i, e := range doc.Elements {
+			parent := int64(-1)
+			if e.Parent != nil {
+				parent = *e.Parent
+			}
+			key := struct {
+				parent           int64
+				namespace, local string
+			}{parent, e.Namespace, e.LocalName}
+			values[i] = counts[key]
+			counts[key]++
+		}
+		ordinals[ref] = values
+	}
 	for _, m := range e.Metadata {
 		doc, ok := x.XML[m.XMLRef]
 		if !ok || doc.PartRef != m.PartRef || m.Element < 0 || m.Element >= int64(len(doc.Elements)) {
@@ -150,11 +173,9 @@ func (x *Index) ValidateInventories(e Evidence) error {
 		if element.Namespace != m.Namespace || element.LocalName != m.LocalName {
 			return ErrLinkage
 		}
-		key := [3]string{m.PartRef, m.Namespace, m.LocalName}
-		if m.DuplicateOrdinal != occurrences[key] {
+		if m.DuplicateOrdinal != ordinals[m.XMLRef][m.Element] {
 			return ErrLinkage
 		}
-		occurrences[key]++
 		if err := ValidateStoredOrigins(m.LexicalValue, identity.ExactBytes([]byte(m.LexicalValue)),
 			m.ValueOrigins, map[string][]Segment{m.XMLRef: doc.Segments}); err != nil {
 			return err
