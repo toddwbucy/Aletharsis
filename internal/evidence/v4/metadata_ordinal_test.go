@@ -16,6 +16,11 @@ func TestMetadataOrdinalIncludesUnprojectedSiblings(t *testing.T) {
 	if err := index.ValidateInventories(e); err != nil {
 		t.Fatal("valid original ordinal rejected", err)
 	}
+	duplicate := e
+	duplicate.Metadata = append(append([]Metadata{}, e.Metadata...), e.Metadata[0])
+	if err := index.ValidateInventories(duplicate); err == nil {
+		t.Fatal("same XML property retained twice")
+	}
 	e.Metadata[0].DuplicateOrdinal = 0
 	if err := index.ValidateInventories(e); err == nil {
 		t.Fatal("renumbered retained projection accepted")

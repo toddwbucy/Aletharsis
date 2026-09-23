@@ -164,7 +164,19 @@ func (x *Index) ValidateInventories(e Evidence) error {
 		}
 		ordinals[ref] = values
 	}
+	seenMetadata := map[struct {
+		xml     string
+		element int64
+	}]bool{}
 	for _, m := range e.Metadata {
+		key := struct {
+			xml     string
+			element int64
+		}{m.XMLRef, m.Element}
+		if seenMetadata[key] {
+			return ErrLinkage
+		}
+		seenMetadata[key] = true
 		doc, ok := x.XML[m.XMLRef]
 		if !ok || doc.PartRef != m.PartRef || m.Element < 0 || m.Element >= int64(len(doc.Elements)) {
 			return ErrLinkage
