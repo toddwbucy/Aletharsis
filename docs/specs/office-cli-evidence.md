@@ -133,8 +133,9 @@ frozen 1.0/2.0 behavior:
   properties or a second source of admission authority.
 - A stored origin's `text_index` is a producer-local ordinal, not an XML segment
   ordinal or a coordinate. For metadata it indexes projected properties in
-  document order, including empty properties; the importer checks it against
-  that retained inventory. For Word/ODT text, the wire's XML subset does not
+  document order, including empty properties; the importer checks each stored
+  origin against that retained inventory. Empty properties occupy ordinal slots
+  but have no value origins on which to check a text_index field. For Word/ODT text, the wire's XML subset does not
   reconstruct the extractor's complete text inventory. The importer checks
   nonnegativity but does not attest that ordinal. Authoritative retained origin
   checks use `xml_ref` plus, for stored origins, segment/scalar identity, source
@@ -144,7 +145,10 @@ frozen 1.0/2.0 behavior:
   required to independently attest its local text ordinals. Consumers must not
   use an unverified ordinal for highlighting or transformation authority.
 - A completed or partial metadata projection retains its XML map so property completeness
-  and exact omission locations can be checked. Every direct property is either
+  and exact omission locations can be checked. Element zero is the sole parentless
+  root; every later element has a preceding parent. A direct property is an
+  element whose parent is that root (index zero), and its span must be nonempty
+  whether retained or omitted. Every direct property is either
   retained or covered by a property-located omission diagnostic bound to that
   outcome's own execution and excluded region; another outcome's diagnostic or
   exclusion cannot supply omission authority. Only a partial outcome may authorize
@@ -159,10 +163,12 @@ frozen 1.0/2.0 behavior:
 - Completed or partial executions of the same operation may contribute assessed
   regions to a part through their completed or partial outcomes. Only these
   contributing outcomes supply assessed/excluded regions for the combined
-  projection; failed, canceled and unrun outcomes remain historical failure/gap
-  evidence and do not contribute to that union. Validate retained evidence against
-  the contributing union, while preserving every execution's own states, diagnostics and exclusions. Failed,
-  canceled and unrun executions contribute no assessed coverage. A diagnostic
+  projection. Failed, canceled and unrun outcomes retain their states, codes
+  and diagnostics but must have empty assessed and excluded arrays. They cannot
+  carry inert exclusions that contradict another outcome's assessed regions.
+  Validate retained evidence against the contributing union, while preserving
+  every execution's own failure history. Failed, canceled and unrun executions
+  contribute no assessed coverage. A diagnostic
   used to explain an omission must still bind to its actual producing execution.
   An omitted property must lie outside the union of assessed regions for that
   operation and part. No contributing assessed region may overlap any contributing
@@ -171,7 +177,9 @@ frozen 1.0/2.0 behavior:
   superseded by a later completed contribution in the same report. Re-audits
   that supersede earlier coverage produce separate reports; no ordering or
   supersedes relationship is inferred from execution ordinals. Failed, canceled
-  and unrun parents cannot authorize omissions through otherwise successful child outcomes.
+  and unrun parents cannot carry completed or partial child outcomes, even with
+  empty assessed regions. A completed parent permits only completed children;
+  a partial parent may retain completed, partial or unsuccessful children.
 - XML maps require an attesting XML-parsing operation: identification, text,
   metadata or relationships. Its assessed coverage must contain a nonempty region
   of the part; an empty or zero-width region cannot attest an XML map. Maps may
@@ -186,9 +194,39 @@ frozen 1.0/2.0 behavior:
   Embedded-object signature inspection and profiles consume existing evidence; they do not parse XML and cannot independently
   attest an XML map.
 
-XML structural locations and generated-control source spans must be nonempty;
-zero-width anchors cannot authorize relationship or text coverage. This does not
-prohibit empty text values, empty text scopes, or empty opaque payloads.
+- XML structural locations and generated-control source spans must be nonempty;
+  zero-width anchors cannot authorize relationship or text coverage. This does not
+  prohibit empty text values, empty text scopes, or empty opaque payloads.
+- Retained XML tokens and elements must describe the same single rooted tree:
+  each element has one start and one matching end token, in parser order, with
+  matching extent endpoints and immediate-parent nesting. Start tokens and element
+  extents are nonempty. A zero-width end token is permitted immediately after
+  its own self-closing start token, at that token's end. Non-tag tokens bind to
+  their containing element, or to no element outside the root. Token deletion,
+  detached tag tokens and reparenting to a more distant ancestor cannot preserve
+  a complete XML map.
+- A relationship location covers its full declaring element. A direct OPC
+  Relationship element in retained relationship XML that lies within assessed
+  relationship coverage must have a retained relationship record. Distinct
+  records cannot claim the same declaring element. These checks establish
+  consistency between retained XML, inventory and coverage; they do not
+  authenticate XML attributes against unavailable source bytes. Retained OPC
+  relationships bind a direct Relationship element beneath the Relationships
+  root in the OPC relationships namespace. Resolved relationships require
+  nonempty Id and Type values.
+- An observed embedded-object prefix signature requires completed or partial
+  inspection coverage over its supporting prefix: five bytes for PDF, four for
+  a ZIP local header, and eight for OLE compound or PNG magic. Other nonempty
+  descriptive signatures require at least one assessed prefix byte; their
+  semantics are not verified by this minimum check. An embedded-relationship
+  inclusion reason requires a retained relationship reference.
+- Completed embedded-object enumeration must retain candidates already explicit
+  in the report: word/embeddings/ package parts and resolved OPC oleObject/package
+  relationship targets. It must not duplicate candidates for one part. This
+  does not prove discovery of candidates absent from retained source structure.
+- An empty compressed extent must have SHA-256(empty), stored method zero, and
+  no nonzero uncompressed byte length. A DEFLATE stream cannot occupy zero bytes;
+  valid empty stored payloads remain permitted.
 
 Fixed objects reject unknown keys. Nullable identities distinguish unavailable
 bytes from empty bytes. No failed decompression receives a digest computed from
@@ -379,7 +417,10 @@ metadata part outcomes require core/app projection roots, so declarations and
 relationship parts cannot be added as metadata projection outcomes. One option
 is an execution-level byte scope over inspected declarations' compressed spans,
 separate from projection outcomes; implementing it requires changing the coverage
-builder, not relaxing property-completeness checks by implication. Alternatively,
+builder and dispatcher. Both requested and analyzed scopes must describe the
+same bounded selection for a completed execution; narrowing only analyzed scope
+while leaving a whole-artifact request is invalid. This does not relax
+property-completeness checks by implication. Alternatively,
 a new selection-evidence contract must explicitly distinguish selection from
 projection. Neither option is approved by recording it here.
 
