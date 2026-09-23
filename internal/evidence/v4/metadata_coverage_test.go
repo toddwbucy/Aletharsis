@@ -14,7 +14,7 @@ func TestMetadataProjectionRequiresLocatedOmission(t *testing.T) {
 		{Index: 1, Parent: wide(0), LocalName: "creator", Span: Span{10, 30}},
 		{Index: 2, Parent: wide(0), LocalName: "creator", Span: Span{40, 60}},
 	}}
-	outcome := Outcome{Operation: "aletharsis.office.metadata", ExecutionRef: "exec/0", PartRef: &part.PartRef, State: "partial", Excluded: []Span{{10, 30}}}
+	outcome := Outcome{Operation: "aletharsis.office.metadata", ExecutionRef: "exec/0", PartRef: &part.PartRef, State: "partial", Assessed: []Span{{40, 60}}, Excluded: []Span{{10, 30}}}
 	e := Evidence{XML: []XML{doc}, Metadata: []Metadata{{PartRef: part.PartRef, Element: 2}}, Packages: []Package{{Outcomes: []Outcome{outcome}}}}
 	x := Index{Parts: map[string]Part{part.PartRef: part}}
 	trace := TraceIndex{Executions: map[string]v2.Execution{"exec/0": {CapabilityRef: "aletharsis.office.metadata", State: v2.Partial}, "exec/1": {CapabilityRef: "aletharsis.office.metadata", State: v2.Partial}}, Diagnostics: map[string]v2.Diagnostic{}}

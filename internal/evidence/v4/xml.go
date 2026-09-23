@@ -65,7 +65,7 @@ func ValidateXML(x XML, part Part) error {
 	elements := map[int]bool{}
 	for i, c := range x.Controls {
 		if c.Index != i || c.Element < 0 || c.Element >= len(x.Elements) || c.Count < 0 ||
-			!c.Source.Within(size) || elements[c.Element] {
+			!c.Source.Within(size) || c.Source.Start >= c.Source.End || elements[c.Element] {
 			return ErrCoordinates
 		}
 		elements[c.Element] = true
