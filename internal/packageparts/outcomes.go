@@ -193,9 +193,10 @@ func (r *OutcomeReader) InspectionView(ctx context.Context) (OutcomeView, error)
 func (r *OutcomeReader) SourceSHA256() string { return r.hash }
 func (r *OutcomeReader) Names() []string      { return slices.Clone(r.names) }
 
-// readReservedPayload distinguishes a normal EOF from a decoder's truncated
-// stream error. io.ReadFull would turn both into ErrUnexpectedEOF when the
-// one-byte overflow probe is not filled, losing that distinction.
+// readReservedPayload caps allocation growth at the reserved payload size
+// (plus a one-byte overflow witness), instead of append-doubling past the budget.
+// A bounded empty-read guard detects broken readers. Decoder errors, including
+// truncated-stream errors, remain distinct from normal EOF.
 func readReservedPayload(reader io.Reader, reserved int) ([]byte, error) {
 	data := make([]byte, min(1024, reserved))
 	used, empty := 0, 0

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"path/filepath"
 	"reflect"
-	"runtime"
 	"strings"
 	"testing"
 
@@ -17,9 +16,6 @@ import (
 )
 
 func TestBuildOfficeReportsWithoutWireFixtureTemplates(t *testing.T) {
-	if runtime.GOOS != "linux" {
-		t.Skip("native no-atime acquisition is Linux-only")
-	}
 	for _, name := range []string{"office-minimal.docx", "office-odt-minimal.odt", "office-partial-crc.docx", "inventory", "omitted", "high findings", "report limit"} {
 		t.Run(name, func(t *testing.T) {
 			fixture := name
@@ -60,7 +56,7 @@ func TestBuildOfficeReportsWithoutWireFixtureTemplates(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			result, err := BuildReport(context.Background(), raw, file, p, a, "test")
+			result, err := buildFixtureReport(context.Background(), raw, file, p, a, "test")
 			if name == "report limit" {
 				if result != nil || !errors.Is(err, identity.ErrLimit) {
 					t.Fatal("over-limit report returned output", err)
@@ -70,7 +66,7 @@ func TestBuildOfficeReportsWithoutWireFixtureTemplates(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			again, err := BuildReport(context.Background(), raw, file, p, a, "test")
+			again, err := buildFixtureReport(context.Background(), raw, file, p, a, "test")
 			if err != nil || string(result.JSON) != string(again.JSON) {
 				t.Fatal("report not deterministic", err)
 			}
@@ -121,9 +117,6 @@ func TestBuildOfficeReportsWithoutWireFixtureTemplates(t *testing.T) {
 }
 
 func TestBuildReportRetainsUnidentifiedAndConflictingContainers(t *testing.T) {
-	if runtime.GOOS != "linux" {
-		t.Skip("native no-atime acquisition is Linux-only")
-	}
 	for _, name := range []string{"unidentified", "invalid main", "conflict", "conflict reordered"} {
 		t.Run(name, func(t *testing.T) {
 			var raw []byte
@@ -149,7 +142,7 @@ func TestBuildReportRetainsUnidentifiedAndConflictingContainers(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			output, err := BuildReport(context.Background(), raw, file, p, a, "test")
+			output, err := buildFixtureReport(context.Background(), raw, file, p, a, "test")
 			if err != nil {
 				t.Fatal(err)
 			}

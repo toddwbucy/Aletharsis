@@ -57,6 +57,9 @@ func AnalyzePrepared(ctx context.Context, p *Prepared) (*Analysis, error) {
 		case capability.OfficeTextID:
 			texts = append(texts, target)
 		case capability.OfficeMetadataID:
+			if p.Identity == IdentityODT {
+				continue
+			}
 			metadata = append(metadata, target)
 		default:
 			return nil, v4.ErrLinkage
@@ -74,7 +77,7 @@ func AnalyzePrepared(ctx context.Context, p *Prepared) (*Analysis, error) {
 		op      string
 		targets []AnalysisTarget
 	}{{capability.OfficeMetadataID, metadata}, {capability.OfficeTextID, texts}} {
-		sort.Slice(group.targets, func(i, j int) bool {
+		sort.SliceStable(group.targets, func(i, j int) bool {
 			a, b := group.targets[i], group.targets[j]
 			if a.Name != b.Name {
 				return a.Name < b.Name
@@ -120,6 +123,7 @@ func AnalyzePrepared(ctx context.Context, p *Prepared) (*Analysis, error) {
 				record.Code = o.Code
 				record.Error = errors.New("Office target bytes are unavailable")
 			case o.Part.SHA256 == "":
+				record.Code = string(failure.ExecutionFailed)
 				record.Error = packageparts.ErrIdentity
 			case group.op == capability.OfficeMetadataID:
 				record.Metadata, record.Error = officemetadata.Extract(ctx, o.Part.Bytes, o.Part.SHA256)

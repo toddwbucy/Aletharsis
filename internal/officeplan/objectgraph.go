@@ -74,14 +74,14 @@ func BuildObjectGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *A
 		}
 		state, reason := v2.NotRun, failure.PrerequisiteFailed
 		switch {
-		case p.Identity == IdentityODT:
-			reason = failure.UnsupportedInput
 		case errors.Is(a.ObjectsError, context.Canceled):
 			state, reason = v2.Canceled, failure.Canceled
 		case errors.Is(a.ObjectsError, context.DeadlineExceeded):
 			state, reason = v2.Failed, failure.Timeout
 		case a.ObjectsError != nil:
 			state, reason = v2.Failed, failure.ExecutionFailed
+		case p.Identity == IdentityODT:
+			reason = failure.UnsupportedInput
 		case p.hasDOCXDeclarations():
 			return nil, v4.ErrLinkage
 		}

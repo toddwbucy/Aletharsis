@@ -2,6 +2,7 @@ package officeplan
 
 import (
 	"context"
+	"slices"
 
 	"github.com/toddwbucy/Aletharsis/internal/evidence"
 	v4 "github.com/toddwbucy/Aletharsis/internal/evidence/v4"
@@ -106,6 +107,20 @@ func collectScopes(ctx context.Context, base *PackageRecords, a *Analysis, xml *
 					return nil, err
 				}
 			}
+		}
+	}
+	// Boundaries are part-qualified lexical context, not offsets in a scope's
+	// text. Retain each part's list once on its first surviving scope; copying
+	// every boundary onto every paragraph would grow quadratically.
+	attached := map[string]bool{}
+	for i := range r.Scopes {
+		scope := &r.Scopes[i]
+		if !attached[scope.PartRef] {
+			scope.Boundaries = slices.Clone(r.Boundaries[scope.PartRef])
+			if scope.Boundaries == nil {
+				scope.Boundaries = []v4.Boundary{}
+			}
+			attached[scope.PartRef] = true
 		}
 	}
 	if len(analyses) != 0 {

@@ -81,7 +81,7 @@ func collectInventories(ctx context.Context, p *Prepared, a *Analysis, base *Pac
 		r.Metadata = append(r.Metadata, records...)
 	}
 	skipped := map[int]bool{}
-	if p.DOCX != nil && p.DOCX.OPC != nil {
+	if p.Identity != IdentityODT && p.DOCX != nil && p.DOCX.OPC != nil {
 		for i, native := range p.DOCX.OPC.Relationships {
 			if err := ctx.Err(); err != nil {
 				return nil, err

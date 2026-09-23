@@ -56,12 +56,10 @@ func (p *PreparedTypes) MainCandidate() string {
 		return ""
 	}
 	opc := p.result.OPC
-	r := p.copy(opc)
-	r.assign(opc.Outcomes.Parts)
 	rootOK := acceptableRootRelationships(opc)
 	rootType := false
-	for _, a := range r.Assignments {
-		if opcrels.FoldName(a.Part) == "_rels/.rels" && a.State == "assigned" && a.ContentType == "application/vnd.openxmlformats-package.relationships+xml" {
+	for part, contentType := range p.assigned {
+		if opcrels.FoldName(part) == "_rels/.rels" && contentType == "application/vnd.openxmlformats-package.relationships+xml" {
 			rootType = true
 		}
 	}
@@ -81,10 +79,8 @@ func (p *PreparedTypes) MainCandidate() string {
 	if rel.TargetMode != "Internal" || rel.State != "resolved" {
 		return ""
 	}
-	for _, a := range r.Assignments {
-		if a.Part == rel.ResolvedPart && a.State == "assigned" && a.ContentType == MainContentType {
-			return a.Part
-		}
+	if p.assigned[rel.ResolvedPart] == MainContentType {
+		return rel.ResolvedPart
 	}
 	return ""
 }

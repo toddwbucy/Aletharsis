@@ -20,8 +20,9 @@ type ReportOutput struct {
 
 // BuildReport assembles a fresh native audit from an acquired snapshot and the
 // producers that inspected it. Conflicting/unidentified containers retain their
-// evidence with explicit unrun dependent operations. Acquisition failures and
-// preparation interrupted before identification still need separate framing.
+// evidence with explicit unrun dependent operations. Unavailable acquisition
+// emits pre-acquisition framing without attesting the supplied bytes. Acquisition
+// I/O failures and preparation interrupted before identification need separate framing.
 // The caller must have acquired the bytes using the declared native acquisition
 // capability; this function neither reads a file nor upgrades imported evidence.
 func BuildReport(ctx context.Context, source []byte, file evidence.File, p *Prepared, a *Analysis, version string) (*ReportOutput, error) {
@@ -32,6 +33,10 @@ func BuildReport(ctx context.Context, source []byte, file evidence.File, p *Prep
 	if err != nil {
 		return nil, fmt.Errorf("catalog: %w", err)
 	}
+	return buildReportWithCatalog(ctx, source, file, p, a, version, catalog)
+}
+
+func buildReportWithCatalog(ctx context.Context, source []byte, file evidence.File, p *Prepared, a *Analysis, version string, catalog []v2.Capability) (*ReportOutput, error) {
 	descriptors := map[string]v2.Capability{}
 	configs := map[string]v2.Config{}
 	data, err := capability.NativeDataRevision()
@@ -48,38 +53,45 @@ func BuildReport(ctx context.Context, source []byte, file evidence.File, p *Prep
 	}
 	acquisition := descriptors[capability.AcquireID]
 	if acquisition.Availability.State != "available" || acquisition.Participation == v2.Disabled {
-		return nil, v4.ErrLinkage
+		return unavailableAcquisitionReport(file, p.Limits, version, acquisition)
 	}
-	assembly, err := Assemble(ctx, source, p, a, 1, 3)
+	nextExecution := 0
+	reserve := func(count int) int { first := nextExecution; nextExecution += count; return first }
+	acquireOrdinal, parseOrdinal := reserve(1), reserve(1)
+	identityOrdinal, objectOrdinal := reserve(1), reserve(1)
+	profileOrdinal := reserve(1)
+	partOrdinal := reserve(len(partOperations))
+	assembly, err := Assemble(ctx, source, p, a, parseOrdinal, objectOrdinal)
 	if err != nil {
 		return nil, fmt.Errorf("assembly: %w", err)
 	}
 	partEvidence := assembly.Evidence
 	partEvidence.Objects = nil
 	base := &PackageRecords{Evidence: partEvidence, Artifacts: assembly.Artifacts}
-	parse, parseDiagnostics, err := PackageCoverage(base, configs[capability.ParseOfficeID], 1, 0)
+	parse, parseDiagnostics, err := PackageCoverage(base, configs[capability.ParseOfficeID], parseOrdinal, 0)
 	if err != nil {
 		return nil, fmt.Errorf("parse, parseDiagnostics: %w", err)
 	}
-	identification, err := BuildIdentityGraph(ctx, p, assembly, descriptors[capability.OfficeIdentifyID], configs[capability.OfficeIdentifyID], 2, len(parseDiagnostics))
+	identification, err := BuildIdentityGraph(ctx, p, assembly, descriptors[capability.OfficeIdentifyID], configs[capability.OfficeIdentifyID], identityOrdinal, len(parseDiagnostics))
 	if err != nil {
 		return nil, fmt.Errorf("identification: %w", err)
 	}
 	nextDiagnostic := len(parseDiagnostics) + len(identification.Trace.Diagnostics)
-	objects, err := BuildObjectGraph(ctx, p, a, assembly, descriptors[capability.OfficeObjectsID], configs[capability.OfficeObjectsID], 3, nextDiagnostic)
+	objects, err := BuildObjectGraph(ctx, p, a, assembly, descriptors[capability.OfficeObjectsID], configs[capability.OfficeObjectsID], objectOrdinal, nextDiagnostic)
 	if err != nil {
 		return nil, fmt.Errorf("objects: %w", err)
 	}
 	nextDiagnostic += len(objects.Trace.Diagnostics)
-	parts, err := BuildPartGraph(ctx, p, a, assembly, catalog, configs, 5, nextDiagnostic)
+	parts, err := BuildPartGraph(ctx, p, a, assembly, catalog, configs, partOrdinal, nextDiagnostic)
 	if err != nil {
 		return nil, fmt.Errorf("parts: %w", err)
 	}
 	nextDiagnostic += len(parts.Trace.Diagnostics)
-	scopes, err := BuildScopeGraph(ctx, assembly, catalog, configs, TraceOffsets{Execution: 8}, p.Limits.Report)
+	scopes, err := BuildScopeGraph(ctx, assembly, catalog, configs, TraceOffsets{Execution: nextExecution}, p.Limits.Report)
 	if err != nil {
 		return nil, fmt.Errorf("scopes: %w", err)
 	}
+	reserve(len(scopes.Trace.Executions))
 	pkg := assembly.Evidence.Packages[0]
 	parser := pkg.ParserVersion
 	file.Format = pkg.Format
@@ -95,7 +107,7 @@ func BuildReport(ctx context.Context, source []byte, file evidence.File, p *Prep
 		file.Basis = "verified ZIP container; Office format identity is " + string(p.Identity)
 	}
 	requested := v2.Scope{ArtifactRef: pkg.SourceArtifactRef, Unit: "whole_artifact"}
-	acquire := v2.Execution{Ref: "exec/0", CapabilityRef: capability.AcquireID, Config: configs[capability.AcquireID], RequestedScope: requested, AnalyzedScope: []v2.Scope{requested}, Exclusions: []v2.Exclusion{}, State: v2.Completed, DiagnosticRefs: []string{}}
+	acquire := v2.Execution{Ref: fmt.Sprintf("exec/%d", acquireOrdinal), CapabilityRef: capability.AcquireID, Config: configs[capability.AcquireID], RequestedScope: requested, AnalyzedScope: []v2.Scope{requested}, Exclusions: []v2.Exclusion{}, State: v2.Completed, DiagnosticRefs: []string{}}
 	report := v4.Report{Version: version, Schema: "4.0", File: file, Evidence: v4.Document{Document: evidence.EmptyDocument(), Office: assembly.Evidence}, Findings: scopes.Findings, Limitations: []string{}, CatalogVersion: capability.OfficeCatalogVersion, ProfileAssessments: []struct{}{}, View: v2.View{Name: "audit", FindingCategories: []string{}}, Artifacts: assembly.Artifacts, AdapterRuns: []json.RawMessage{}, Trace: v4.NativeTrace{Capabilities: catalog, Executions: []v2.Execution{acquire, parse}, Diagnostics: parseDiagnostics, Results: []v2.Result{}, Anchors: []v4.Anchor{}}}
 	for _, fragment := range []v4.NativeTrace{identification.Trace, objects.Trace, parts.Trace, scopes.Trace} {
 		report.Trace.Executions = append(report.Trace.Executions, fragment.Executions...)
@@ -127,18 +139,17 @@ func BuildReport(ctx context.Context, source []byte, file evidence.File, p *Prep
 	for _, e := range report.Trace.Executions {
 		planned[e.CapabilityRef] = true
 	}
-	nextExecution := 8 + len(scopes.Trace.Executions)
+
 	for _, c := range catalog {
 		if planned[c.ID] {
 			continue
 		}
 		reason := failure.UnsupportedInput
-		ordinal := nextExecution
-		nextExecution++
+		ordinal := profileOrdinal
 		if c.ID == capability.OfficeProfilesID {
-			ordinal = 4
-			nextExecution--
 			reason = "profile.no_applicable_profile"
+		} else {
+			ordinal = reserve(1)
 		}
 		if c.Participation == v2.Disabled {
 			reason = failure.Disabled

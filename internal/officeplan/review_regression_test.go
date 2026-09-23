@@ -46,7 +46,7 @@ func TestPartGapsDoNotPreventOfficeReport(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			output, err := BuildReport(context.Background(), raw, evidence.File{Path: fixture, Filename: fixture, SHA256: &digest, Size: &size}, p, a, "test")
+			output, err := buildFixtureReport(context.Background(), raw, evidence.File{Path: fixture, Filename: fixture, SHA256: &digest, Size: &size}, p, a, "test")
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -65,8 +65,12 @@ func TestPartGapsDoNotPreventOfficeReport(t *testing.T) {
 						found++
 					}
 				case "decoy metadata":
-					// Verified metadata declarations remain usable even in an ODT package.
-					if len(report.Evidence.Office.Metadata) == 2 {
+					// OPC declarations remain lexical identification evidence;
+					// DOCX-only projection must not claim an ODT source was scanned.
+					if len(report.Evidence.Office.Metadata) != 0 || len(report.Evidence.Office.Relationships) != 0 {
+						t.Fatal("DOCX-only inventory claimed ODT coverage")
+					}
+					if len(report.Evidence.Office.XML) > 0 {
 						found++
 					}
 				default:
@@ -197,7 +201,7 @@ func TestHybridPreservesDOCXObjectInventory(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		output, err := BuildReport(context.Background(), raw, evidence.File{Path: "hybrid.docx", Filename: "hybrid.docx", SHA256: &digest, Size: &size}, p, a, "test")
+		output, err := buildFixtureReport(context.Background(), raw, evidence.File{Path: "hybrid.docx", Filename: "hybrid.docx", SHA256: &digest, Size: &size}, p, a, "test")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -247,7 +251,7 @@ func TestUnavailableMainPreservesVerifiedSiblingEvidence(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			output, err := BuildReport(context.Background(), raw, evidence.File{Path: "siblings.docx", Filename: "siblings.docx", SHA256: &digest, Size: &size}, p, a, "test")
+			output, err := buildFixtureReport(context.Background(), raw, evidence.File{Path: "siblings.docx", Filename: "siblings.docx", SHA256: &digest, Size: &size}, p, a, "test")
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -308,7 +312,7 @@ func TestDefaultMainLimitPreservesInventoryAndExecutionReason(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	output, err := BuildReport(context.Background(), raw, evidence.File{Path: "limited.docx", Filename: "limited.docx", SHA256: &digest, Size: &size}, p, a, "test")
+	output, err := buildFixtureReport(context.Background(), raw, evidence.File{Path: "limited.docx", Filename: "limited.docx", SHA256: &digest, Size: &size}, p, a, "test")
 	if err != nil {
 		t.Fatal(err)
 	}

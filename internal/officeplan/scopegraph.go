@@ -27,6 +27,9 @@ type ScopeGraph struct {
 // It runs no detector and invents no negative result for an omitted scope. The
 // host separately records omissions, unrun operations, and the other Office
 // capabilities. No scopes means no analyzer execution in this graph fragment.
+// Executions remain per artifact: the current wire contract has one requested
+// artifact and requires analyzed scopes within it. Coalescing paragraph artifacts
+// needs a versioned multi-artifact execution contract, not only fewer records.
 func BuildScopeGraph(ctx context.Context, assembly *Assembly, catalog []v2.Capability, configs map[string]v2.Config, offset TraceOffsets, limits identity.Limits) (*ScopeGraph, error) {
 	if ctx == nil || assembly == nil || len(assembly.Evidence.Packages) != 1 || offset.Execution < 0 || offset.Result < 0 || offset.Anchor < 0 || offset.Finding < 0 {
 		return nil, v4.ErrLinkage

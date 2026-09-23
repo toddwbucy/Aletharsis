@@ -12,6 +12,8 @@ import (
 	"github.com/toddwbucy/Aletharsis/internal/failure"
 )
 
+var partOperations = []string{capability.OfficeRelationshipsID, capability.OfficeMetadataID, capability.OfficeTextID}
+
 // PartGraph binds part producers to parent executions. It is a graph fragment,
 // not a complete report: acquisition, identification, objects, profiles and
 // scope analyzers have separate records. Outcomes must be appended to the package.
@@ -45,7 +47,7 @@ func BuildPartGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *Ass
 	if p.DOCX == nil || p.DOCX.OPC == nil {
 		return nil, v4.ErrLinkage
 	}
-	operations := []string{capability.OfficeRelationshipsID, capability.OfficeMetadataID, capability.OfficeTextID}
+	operations := partOperations
 	ordinals := map[string]int{}
 	descriptors := map[string]v2.Capability{}
 	for i, op := range operations {
@@ -84,14 +86,14 @@ func BuildPartGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *Ass
 		byOperation[o.Operation].Outcomes = append(byOperation[o.Operation].Outcomes, o)
 	}
 	for _, d := range content.Diagnostics {
-		for _, op := range operations {
+		for _, op := range []string{capability.OfficeMetadataID, capability.OfficeTextID} {
 			if d.ExecutionRef != nil && *d.ExecutionRef == fmt.Sprintf("exec/%d", ordinals[op]) {
 				byOperation[op].Diagnostics = append(byOperation[op].Diagnostics, d)
 			}
 		}
 	}
 	nextDiagnostic := firstDiagnostic + len(content.Diagnostics)
-	if p.DOCX != nil && p.DOCX.OPC != nil && len(p.DOCX.OPC.Parts) > 0 {
+	if p.Identity != IdentityODT && len(p.DOCX.OPC.Parts) > 0 {
 		relationships, err := CollectRelationshipCoverage(ctx, base, p.DOCX.OPC, ordinals[capability.OfficeRelationshipsID], nextDiagnostic)
 		if err != nil {
 			return nil, err
@@ -100,6 +102,9 @@ func BuildPartGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *Ass
 		nextDiagnostic += len(relationships.Diagnostics)
 	}
 	addGap := func(op, part, code string) error {
+		if p.Identity == IdentityODT && op != capability.OfficeTextID {
+			return nil
+		}
 		ref := fmt.Sprintf("exec/%d", ordinals[op])
 		d := v2.Diagnostic{Ref: fmt.Sprintf("diagnostic/%d", nextDiagnostic), ExecutionRef: &ref, Stage: failure.Parsing, Code: failure.Code(code), Message: "Office operation retains incomplete selection or evidence mapping.", Details: v2.ErrorDetails{ErrorType: "OfficeOperationGap"}}
 		if part != "" {
@@ -181,11 +186,6 @@ func BuildPartGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *Ass
 		var execution v2.Execution
 		if p.Identity == IdentityUnidentified && len(coverage.Outcomes) == 0 && len(coverage.Diagnostics) == 0 {
 			reason := failure.Code("office.identity_unconfirmed")
-			for _, outcome := range coverage.Outcomes {
-				if outcome.State != "not_run" || len(outcome.Assessed) != 0 {
-					return nil, v4.ErrLinkage
-				}
-			}
 			if err := addGap(op, "", string(reason)); err != nil {
 				return nil, err
 			}
@@ -194,7 +194,10 @@ func BuildPartGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *Ass
 				refs = append(refs, d.Ref)
 			}
 			execution = v2.Execution{Ref: fmt.Sprintf("exec/%d", ordinals[op]), CapabilityRef: op, Config: configs[op], RequestedScope: v2.Scope{ArtifactRef: pkg.SourceArtifactRef, Unit: "whole_artifact"}, AnalyzedScope: []v2.Scope{}, Exclusions: []v2.Exclusion{}, State: v2.NotRun, ReasonCode: &reason, DiagnosticRefs: refs}
-		} else if p.Identity == IdentityODT && op != capability.OfficeTextID && len(coverage.Outcomes) == 0 && len(coverage.Diagnostics) == 0 {
+		} else if p.Identity == IdentityODT && op != capability.OfficeTextID {
+			if len(coverage.Outcomes) != 0 || len(coverage.Diagnostics) != 0 {
+				return nil, v4.ErrLinkage
+			}
 			reason := failure.UnsupportedInput
 			execution = v2.Execution{Ref: fmt.Sprintf("exec/%d", ordinals[op]), CapabilityRef: op, Config: configs[op], RequestedScope: v2.Scope{ArtifactRef: pkg.SourceArtifactRef, Unit: "whole_artifact"}, AnalyzedScope: []v2.Scope{}, Exclusions: []v2.Exclusion{}, State: v2.NotRun, ReasonCode: &reason, DiagnosticRefs: []string{}}
 		} else {
@@ -206,6 +209,40 @@ func BuildPartGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *Ass
 		result.Trace.Executions = append(result.Trace.Executions, execution)
 		result.Trace.Diagnostics = append(result.Trace.Diagnostics, coverage.Diagnostics...)
 		result.Outcomes = append(result.Outcomes, coverage.Outcomes...)
+	}
+	// No surviving text scope exists to carry these part-qualified boundaries.
+	// Retain them as located observations, without turning ordinary structural
+	// boundaries into failed/partial analysis or inventing an empty text scope.
+	hasScope := map[string]bool{}
+	for _, scope := range assembly.Evidence.Scopes {
+		hasScope[scope.PartRef] = true
+	}
+	for _, part := range pkg.Parts {
+		if hasScope[part.PartRef] {
+			continue
+		}
+		for _, boundary := range assembly.Boundaries[part.PartRef] {
+			var doc *v4.XML
+			for i := range assembly.Evidence.XML {
+				if assembly.Evidence.XML[i].XMLRef == boundary.XMLRef {
+					doc = &assembly.Evidence.XML[i]
+					break
+				}
+			}
+			if doc == nil || doc.PartRef != part.PartRef || boundary.Token < 0 || boundary.Token >= int64(len(doc.Tokens)) {
+				return nil, v4.ErrLinkage
+			}
+			span := doc.Tokens[boundary.Token].Span
+			ref := fmt.Sprintf("exec/%d", ordinals[capability.OfficeTextID])
+			d := v2.Diagnostic{Ref: fmt.Sprintf("diagnostic/%d", nextDiagnostic), ExecutionRef: &ref, Stage: failure.Parsing, Code: failure.Code("office.boundary." + boundary.Reason), Message: "Located extraction boundary retained without a surviving text scope.", Details: v2.ErrorDetails{ErrorType: "OfficeBoundary"}, Scope: &v2.Scope{ArtifactRef: part.ArtifactRef, Unit: "byte", Regions: identityRegions([]v4.Span{span})}}
+			nextDiagnostic++
+			result.Trace.Diagnostics = append(result.Trace.Diagnostics, d)
+			for i := range result.Trace.Executions {
+				if result.Trace.Executions[i].Ref == ref {
+					result.Trace.Executions[i].DiagnosticRefs = append(result.Trace.Executions[i].DiagnosticRefs, d.Ref)
+				}
+			}
+		}
 	}
 	if _, err := v4.IndexTrace(result.Trace); err != nil {
 		return nil, err

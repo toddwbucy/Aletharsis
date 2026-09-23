@@ -31,6 +31,10 @@ type Phase struct {
 	Parts []string
 }
 type Gap struct{ Name, Code string }
+
+// Result exposes planning observations for deterministic admission tests and
+// debugging. Phases/Gaps are not report coverage: consumers must use Outcomes
+// and the namespace-checked producer diagnostics when constructing a report.
 type Result struct {
 	Phases   []Phase
 	Gaps     []Gap

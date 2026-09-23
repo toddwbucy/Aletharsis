@@ -1,7 +1,9 @@
 package officeplan
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"github.com/toddwbucy/Aletharsis/internal/evidence"
 	"os"
 	"path/filepath"
@@ -25,7 +27,7 @@ func inventoryFixture(t *testing.T) []byte {
 	if err != nil {
 		t.Fatal(err)
 	}
-	report, err := BuildReport(context.Background(), raw, evidence.File{Path: "metadata-inventory.docx", Filename: "metadata-inventory.docx", Extension: ".docx", SHA256: &digest, Size: &size}, p, a, "fixture")
+	report, err := buildFixtureReport(context.Background(), raw, evidence.File{Path: "metadata-inventory.docx", Filename: "metadata-inventory.docx", Extension: ".docx", SHA256: &digest, Size: &size}, p, a, "fixture")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -40,7 +42,28 @@ func TestFullInventoryFixtureReproducesNativeReport(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if string(report) != string(want) {
-		t.Fatal("native report changed for the captured source archive")
+	// The captured report predates retention of part-qualified boundaries.
+	// Keep its bytes frozen and permit only this deliberate additive difference.
+	var current, captured map[string]any
+	if err := json.Unmarshal(report, &current); err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(want, &captured); err != nil {
+		t.Fatal(err)
+	}
+	scopes := current["evidence"].(map[string]any)["office"].(map[string]any)["scopes"].([]any)
+	for _, scope := range scopes {
+		scope.(map[string]any)["boundaries"] = []any{}
+	}
+	gotJSON, err := json.Marshal(current)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantJSON, err := json.Marshal(captured)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(gotJSON, wantJSON) {
+		t.Fatal("native report changed beyond newly retained boundary locations")
 	}
 }
