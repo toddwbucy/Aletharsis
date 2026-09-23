@@ -23,7 +23,14 @@ def digest(b):
     return hashlib.sha256(b).hexdigest()
 
 
-def build(format='docx', bad_part=False):
+def scope_identity(fields):
+    """Six exact UTF-8 fields, each prefixed with its uint64 big-endian length."""
+    return digest(b'aletharsis.office-scope/2\0' + b''.join(
+        len(value.encode('utf-8')).to_bytes(8, 'big') + value.encode('utf-8')
+        for value in fields))
+
+
+def build(format='docx', bad_part=False, unicode_names=False):
     if format not in ('docx', 'odt'):
         raise ValueError('unsupported fixture format')
     r = json.loads((OUT / 'flat-structural-observation.json').read_bytes())
@@ -44,6 +51,13 @@ def build(format='docx', bad_part=False):
             'META-INF/manifest.xml': b'<manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0" manifest:version="1.3"><manifest:file-entry manifest:full-path="/" manifest:media-type="application/vnd.oasis.opendocument.text"/><manifest:file-entry manifest:full-path="content.xml" manifest:media-type="text/xml"/></manifest:manifest>',
             'content.xml': body,
         }
+    if unicode_names:
+        assert format == 'docx' and not bad_part
+        special = 'word/a&b résumé\u2028.xml'
+        members = {special if name == 'word/document.xml' else name:
+                   value.replace(b'word/document.xml', special.replace('&', '&amp;').encode('utf-8'))
+                   if name != 'word/document.xml' else value
+                   for name, value in members.items()}
     if bad_part:
         # Keep text last so both fixture forms share the same text builder.
         text_name, text_bytes = next(reversed(members.items()))
@@ -126,26 +140,42 @@ def build(format='docx', bad_part=False):
         'assembler_version': ('word' if format == 'docx' else 'odt') + '-analysis/1', 'role': 'body',
         'text': text, 'sha256': digest(text.encode()), 'origins': origins,
         'hashes': r['evidence']['texts'][0]['hashes'], 'boundaries': [], 'issues': []}
+    if unicode_names:
+        scope['local_id'] = 'id&é\u2028'
     identity = [source_hash, part['name'], part['sha256'], scope['extractor_version'], scope['assembler_version'], scope['local_id']]
-    scope['identity_sha256'] = digest(b'aletharsis.office-scope/1\0' + json.dumps(identity, separators=(',', ':')).encode())
+    scope['identity_sha256'] = scope_identity(identity)
     text_ref = f'artifact/{len(artifacts)}'
     text_art = deepcopy(r['artifacts'][1]); text_art.update(artifact_ref=text_ref, parents=[part['artifact_ref']],
         content_ref={'kind': 'office_scope', 'scope_ref': scope['scope_ref']}, transform=None,
         mapping={'quality': 'unavailable', 'reason_code': 'mapping.not_applicable'})
     artifacts.append(text_art); r['artifacts'] = artifacts
     filename = 'office-minimal.docx' if format == 'docx' else 'office-odt-minimal.odt'
+    if unicode_names:
+        filename = 'office-unicode-identity.docx'
     if bad_part:
         filename = 'office-partial-crc.' + format
     r['file'].update(path=filename, filename=filename, extension='.' + format,
         mime=('application/vnd.openxmlformats-officedocument.wordprocessingml.document' if format == 'docx'
               else 'application/vnd.oasis.opendocument.text'), format=format,
-        parser='office-fixture/1', size=len(source), sha256=source_hash)
+        parser='zip-parts/1', size=len(source), sha256=source_hash)
     for c in r['capabilities']:
         if c['id'] == 'aletharsis.parse.text': c['id'] = 'aletharsis.parse.office_package'
     for e in r['executions']:
         if e['capability_ref'] == 'aletharsis.parse.text': e['capability_ref'] = 'aletharsis.parse.office_package'
         for s in [e['requested_scope'], *e['analyzed_scope']]:
             if s['artifact_ref'] == 'artifact/1': s['artifact_ref'] = text_ref
+    capability = deepcopy(next(c for c in r['capabilities'] if c['id'] == 'aletharsis.parse.office_package'))
+    capability['id'] = 'aletharsis.office.text'
+    r['capabilities'].append(capability)
+    execution = deepcopy(r['executions'][1])
+    execution.update(execution_ref=f"exec/{len(r['executions'])}", capability_ref=capability['id'])
+    execution['requested_scope'] = {'artifact_ref': part['artifact_ref'], 'unit': 'byte',
+                                    'regions': [{'start': 0, 'end': part['byte_length']}]}
+    execution['analyzed_scope'] = [deepcopy(execution['requested_scope'])]
+    r['executions'].append(execution)
+    package['outcomes'].append({'operation': capability['id'], 'execution_ref': execution['execution_ref'],
+        'part_ref': part['part_ref'], 'state': 'completed', 'codes': [], 'diagnostic_refs': [],
+        'assessed': [{'start': 0, 'end': part['byte_length']}], 'excluded': []})
     r['results'][0]['payload']['scope']['artifact_ref'] = text_ref
     r['anchors'][0].update(kind='office_scope', artifact_ref=text_ref, mapping=text_art['mapping'],
         locator={'kind': 'office_scope', 'scope_ref': scope['scope_ref']})
@@ -180,9 +210,16 @@ def build(format='docx', bad_part=False):
     return r, source
 
 
+def identity_vectors():
+    return [{'fields': ['h', 'word/' + value + '.xml', 'p', 'ext', 'asm', value],
+             'digest': scope_identity(['h', 'word/' + value + '.xml', 'p', 'ext', 'asm', value])}
+            for value in ('ascii', '&', 'é', '\u2028', '&é\u2028', '\x00"\\', '😀')]
+
+
 if __name__ == '__main__':
-    for format, bad_part in [('docx', False), ('odt', False), ('docx', True)]:
-        report, source = build(format, bad_part)
+    Path(__file__).with_name('scope-identities.json').write_text(json.dumps(identity_vectors(), indent=2) + '\n')
+    for format, bad_part, unicode_names in [('docx', False, False), ('odt', False, False), ('docx', True, False), ('docx', False, True)]:
+        report, source = build(format, bad_part, unicode_names)
         name = Path(report['file']['filename'])
         (OUT / name.with_suffix('.json')).write_text(json.dumps(report, indent=2) + '\n')
         (OUT / name).write_bytes(source)

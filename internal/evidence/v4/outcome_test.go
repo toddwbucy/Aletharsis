@@ -94,3 +94,32 @@ func TestPackageCoverageCannotOmitOrContradictPartOutcomes(t *testing.T) {
 		})
 	}
 }
+
+func TestEveryRetainedExtractionRequiresSuccessfulPartOperation(t *testing.T) {
+	for _, operation := range []string{"aletharsis.office.text", "aletharsis.office.metadata", "aletharsis.office.relationships"} {
+		for _, state := range []v2.State{v2.Completed, v2.Partial, v2.Failed, v2.Canceled, v2.NotRun} {
+			t.Run(operation+"/"+string(state), func(t *testing.T) {
+				part := "office-part/0"
+				e := Evidence{Packages: []Package{{Outcomes: []Outcome{{Operation: operation, ExecutionRef: "exec/0", PartRef: &part, State: string(state)}}}}}
+				switch operation {
+				case "aletharsis.office.text":
+					e.Scopes = []Scope{{PartRef: part}}
+				case "aletharsis.office.metadata":
+					e.Metadata = []Metadata{{PartRef: part}}
+				case "aletharsis.office.relationships":
+					e.Relationships = []Relationship{{Location: StructuralLocation{PartRef: part}}}
+				}
+				x := Index{Parts: map[string]Part{part: {PartRef: part}}}
+				trace := TraceIndex{Executions: map[string]v2.Execution{"exec/0": {Ref: "exec/0", CapabilityRef: operation, State: state}}}
+				good := state == v2.Completed || state == v2.Partial
+				if err := x.ValidateOutcomes(e, &trace); (err == nil) != good {
+					t.Fatalf("state %s: %v", state, err)
+				}
+				e.Packages[0].Outcomes = nil
+				if x.ValidateOutcomes(e, &trace) == nil {
+					t.Fatal("accepted retained evidence without producing outcome")
+				}
+			})
+		}
+	}
+}

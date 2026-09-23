@@ -1,0 +1,79 @@
+[
+  {
+    "fields": [
+      "h",
+      "word/ascii.xml",
+      "p",
+      "ext",
+      "asm",
+      "ascii"
+    ],
+    "digest": "063ae9e586a86bd4655cd741bc589b2a1d579f7221ad377e5dc3499f3b2c25c0"
+  },
+  {
+    "fields": [
+      "h",
+      "word/&.xml",
+      "p",
+      "ext",
+      "asm",
+      "&"
+    ],
+    "digest": "86f3caf836a6936a472a2805e2c1aed173a5119b2722cdaa080a47e419e732c9"
+  },
+  {
+    "fields": [
+      "h",
+      "word/\u00e9.xml",
+      "p",
+      "ext",
+      "asm",
+      "\u00e9"
+    ],
+    "digest": "58df33d4612319d116eb88d2e834b0355982ae4e64ae3a99e3678f5ffced1743"
+  },
+  {
+    "fields": [
+      "h",
+      "word/\u2028.xml",
+      "p",
+      "ext",
+      "asm",
+      "\u2028"
+    ],
+    "digest": "ecc3229a4f312775dd5a74d17d0ed34601dc0e77cea645f211f496eb27c63a64"
+  },
+  {
+    "fields": [
+      "h",
+      "word/&\u00e9\u2028.xml",
+      "p",
+      "ext",
+      "asm",
+      "&\u00e9\u2028"
+    ],
+    "digest": "d1a88dc62ad386bdf9247a72d6522652a0ba1b09c8f107dcc557574924fa749f"
+  },
+  {
+    "fields": [
+      "h",
+      "word/\u0000\"\\.xml",
+      "p",
+      "ext",
+      "asm",
+      "\u0000\"\\"
+    ],
+    "digest": "39d6d2d38cc8e8bca997eb93623f56aa832aa1b3cc03adb6b536b8df717a720b"
+  },
+  {
+    "fields": [
+      "h",
+      "word/\ud83d\ude00.xml",
+      "p",
+      "ext",
+      "asm",
+      "\ud83d\ude00"
+    ],
+    "digest": "fa5974850e0f744ce786a36a9f008cc6b751abc7fc8b047b594dbccb54b09ac3"
+  }
+]

@@ -1,7 +1,9 @@
 package v4
 
 import (
+	"encoding/json"
 	"github.com/toddwbucy/Aletharsis/internal/identity"
+	"os"
 	"testing"
 )
 
@@ -52,6 +54,29 @@ func TestScopeRejectsCrossPartAndDamagedOrigins(t *testing.T) {
 		mutate(&bad)
 		if ValidateScope(bad, part, "source", docs) == nil {
 			t.Fatal("accepted damaged scope")
+		}
+	}
+}
+
+func TestScopeIdentityPythonVectors(t *testing.T) {
+	raw, err := os.ReadFile("../../../tests/contracts_v4/scope-identities.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var vectors []struct {
+		Fields []string `json:"fields"`
+		Digest string   `json:"digest"`
+	}
+	if err := json.Unmarshal(raw, &vectors); err != nil {
+		t.Fatal(err)
+	}
+	if len(vectors) != 7 {
+		t.Fatal("missing identity vectors")
+	}
+	for _, v := range vectors {
+		f := v.Fields
+		if got := ScopeIdentity(f[0], f[1], f[2], f[3], f[4], f[5]); got != v.Digest {
+			t.Fatalf("%q: %s != %s", f, got, v.Digest)
 		}
 	}
 }

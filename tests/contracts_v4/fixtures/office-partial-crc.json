@@ -152,6 +152,21 @@
                 }
               ],
               "excluded": []
+            },
+            {
+              "operation": "aletharsis.office.text",
+              "execution_ref": "exec/5",
+              "part_ref": "office-part/3",
+              "state": "completed",
+              "codes": [],
+              "diagnostic_refs": [],
+              "assessed": [
+                {
+                  "start": 0,
+                  "end": 168
+                }
+              ],
+              "excluded": []
             }
           ],
           "limits": {
@@ -950,7 +965,7 @@
           },
           "boundaries": [],
           "issues": [],
-          "identity_sha256": "3c5f59c93f484827fc935da015a654367a91f3d5389aeab41dfdcfaa26a69d89"
+          "identity_sha256": "27086fadf63235a403206ebffc53d285a25e82e8c7bd0d1be678ef6bd1bd5ec1"
         }
       ],
       "metadata": [],
@@ -964,7 +979,7 @@
     "format": "docx",
     "identification_basis": "valid Unicode text; extension is a MIME hint",
     "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    "parser": "office-fixture/1",
+    "parser": "zip-parts/1",
     "path": "office-partial-crc.docx",
     "sha256": "a4b0bb14d2bc508b650d8705ee71a8416b4d5229042ee8bec31f772ebf5610ec",
     "size": 1179
@@ -1187,6 +1202,40 @@
         "output_bytes": null,
         "execution_ms": null
       }
+    },
+    {
+      "id": "aletharsis.office.text",
+      "revision": "1",
+      "role": "parser",
+      "mechanism": null,
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.parse.text",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
     }
   ],
   "executions": [
@@ -1365,6 +1414,54 @@
       "exclusions": [],
       "state": "not_run",
       "reason_code": "execution.disabled",
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/5",
+      "capability_ref": "aletharsis.office.text",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/4",
+        "unit": "byte",
+        "regions": [
+          {
+            "start": 0,
+            "end": 168
+          }
+        ]
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/4",
+          "unit": "byte",
+          "regions": [
+            {
+              "start": 0,
+              "end": 168
+            }
+          ]
+        }
+      ],
+      "exclusions": [],
+      "state": "completed",
+      "reason_code": null,
       "diagnostic_refs": []
     }
   ],

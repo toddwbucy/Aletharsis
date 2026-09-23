@@ -27,6 +27,18 @@ def nullable(value):
     return {'anyOf': [value, {'type': 'null'}]}
 
 
+def harden_patterns(value):
+    """Match RE2's absolute end semantics without lookaround in any pattern."""
+    if isinstance(value, dict):
+        for child in list(value.values()):
+            harden_patterns(child)
+        if value.get('pattern', '').endswith('$'):
+            value.setdefault('allOf', []).append({'not': {'pattern': '\n'}})
+    elif isinstance(value, list):
+        for child in value:
+            harden_patterns(child)
+
+
 def build():
     schema = json.loads((ROOT / 'schemas/report-v3.schema.json').read_bytes())
     schema['$id'] = 'https://aletharsis.invalid/schemas/report-v4.schema.json'
@@ -145,6 +157,7 @@ def build():
             office_location = ('officeOffsetLocation' if original == ref('offsetLocation')
                                else 'officeScopeLocation')
             rule['properties']['location'] = {'oneOf': [original, ref(office_location)]}
+    harden_patterns(schema)
     return schema
 
 

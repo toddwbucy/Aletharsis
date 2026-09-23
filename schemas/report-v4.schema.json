@@ -40,7 +40,14 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
+              "pattern": "^[a-f0-9]{64}$",
+              "allOf": [
+                {
+                  "not": {
+                    "pattern": "\n"
+                  }
+                }
+              ]
             },
             {
               "type": "null"
@@ -323,19 +330,47 @@
       "properties": {
         "raw_text_sha256": {
           "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
+          "pattern": "^[a-f0-9]{64}$",
+          "allOf": [
+            {
+              "not": {
+                "pattern": "\n"
+              }
+            }
+          ]
         },
         "nfc_text_sha256": {
           "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
+          "pattern": "^[a-f0-9]{64}$",
+          "allOf": [
+            {
+              "not": {
+                "pattern": "\n"
+              }
+            }
+          ]
         },
         "nfkc_text_sha256": {
           "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
+          "pattern": "^[a-f0-9]{64}$",
+          "allOf": [
+            {
+              "not": {
+                "pattern": "\n"
+              }
+            }
+          ]
         },
         "formatting_removed_sha256": {
           "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
+          "pattern": "^[a-f0-9]{64}$",
+          "allOf": [
+            {
+              "not": {
+                "pattern": "\n"
+              }
+            }
+          ]
         }
       },
       "required": [
@@ -615,7 +650,14 @@
       "properties": {
         "code_point": {
           "type": "string",
-          "pattern": "^U\\+(?:[0-9A-F]{4,5}|10[0-9A-F]{4})$"
+          "pattern": "^U\\+(?:[0-9A-F]{4,5}|10[0-9A-F]{4})$",
+          "allOf": [
+            {
+              "not": {
+                "pattern": "\n"
+              }
+            }
+          ]
         },
         "name": {
           "type": "string"
@@ -656,7 +698,14 @@
       "properties": {
         "code_point": {
           "type": "string",
-          "pattern": "^U\\+(?:[0-9A-F]{4,5}|10[0-9A-F]{4})$"
+          "pattern": "^U\\+(?:[0-9A-F]{4,5}|10[0-9A-F]{4})$",
+          "allOf": [
+            {
+              "not": {
+                "pattern": "\n"
+              }
+            }
+          ]
         },
         "name": {
           "type": "string"
@@ -1767,35 +1816,91 @@
     },
     "digest": {
       "type": "string",
-      "pattern": "^[a-f0-9]{64}$"
+      "pattern": "^[a-f0-9]{64}$",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "code": {
       "type": "string",
-      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "executionRef": {
       "type": "string",
-      "pattern": "^exec/(0|[1-9][0-9]*)$"
+      "pattern": "^exec/(0|[1-9][0-9]*)$",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "artifactRef": {
       "type": "string",
-      "pattern": "^artifact/(0|[1-9][0-9]*)$"
+      "pattern": "^artifact/(0|[1-9][0-9]*)$",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "anchorRef": {
       "type": "string",
-      "pattern": "^anchor/(0|[1-9][0-9]*)$"
+      "pattern": "^anchor/(0|[1-9][0-9]*)$",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "resultRef": {
       "type": "string",
-      "pattern": "^result/(0|[1-9][0-9]*)$"
+      "pattern": "^result/(0|[1-9][0-9]*)$",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "findingRef": {
       "type": "string",
-      "pattern": "^finding/(0|[1-9][0-9]*)$"
+      "pattern": "^finding/(0|[1-9][0-9]*)$",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "diagnosticRef": {
       "type": "string",
-      "pattern": "^diagnostic/(0|[1-9][0-9]*)$"
+      "pattern": "^diagnostic/(0|[1-9][0-9]*)$",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "mechanism": {
       "enum": [
@@ -1969,7 +2074,14 @@
               "anyOf": [
                 {
                   "type": "string",
-                  "pattern": "^/evidence/texts/[0-9]+/byte_offsets$"
+                  "pattern": "^/evidence/texts/[0-9]+/byte_offsets$",
+                  "allOf": [
+                    {
+                      "not": {
+                        "pattern": "\n"
+                      }
+                    }
+                  ]
                 },
                 {
                   "type": "null"
@@ -2045,7 +2157,14 @@
             },
             "pointer": {
               "type": "string",
-              "pattern": "^/evidence/texts/[0-9]+/text$"
+              "pattern": "^/evidence/texts/[0-9]+/text$",
+              "allOf": [
+                {
+                  "not": {
+                    "pattern": "\n"
+                  }
+                }
+              ]
             }
           },
           "required": [
@@ -2970,7 +3089,14 @@
                 },
                 "segment_pointer": {
                   "type": "string",
-                  "pattern": "^/evidence/texts/[0-9]+$"
+                  "pattern": "^/evidence/texts/[0-9]+$",
+                  "allOf": [
+                    {
+                      "not": {
+                        "pattern": "\n"
+                      }
+                    }
+                  ]
                 },
                 "spans": {
                   "type": "array",
@@ -4661,42 +4787,84 @@
       "pattern": "^office-package/(0|[1-9][0-9]*)$",
       "not": {
         "pattern": "[^a-z0-9/-]"
-      }
+      },
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "officePartRef": {
       "type": "string",
       "pattern": "^office-part/(0|[1-9][0-9]*)$",
       "not": {
         "pattern": "[^a-z0-9/-]"
-      }
+      },
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "officeScopeRef": {
       "type": "string",
       "pattern": "^office-scope/(0|[1-9][0-9]*)$",
       "not": {
         "pattern": "[^a-z0-9/-]"
-      }
+      },
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "officeObjectRef": {
       "type": "string",
       "pattern": "^office-object/(0|[1-9][0-9]*)$",
       "not": {
         "pattern": "[^a-z0-9/-]"
-      }
+      },
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "officeXmlRef": {
       "type": "string",
       "pattern": "^office-xml/(0|[1-9][0-9]*)$",
       "not": {
         "pattern": "[^a-z0-9/-]"
-      }
+      },
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "officeRelationshipRef": {
       "type": "string",
       "pattern": "^office-relationship/(0|[1-9][0-9]*)$",
       "not": {
         "pattern": "[^a-z0-9/-]"
-      }
+      },
+      "allOf": [
+        {
+          "not": {
+            "pattern": "\n"
+          }
+        }
+      ]
     },
     "officeIssue": {
       "type": "object",

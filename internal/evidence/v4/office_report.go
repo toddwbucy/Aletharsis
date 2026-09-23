@@ -11,6 +11,11 @@ func validateOfficeReport(r Report) error {
 	if r.File.SHA256 == nil || r.File.Size == nil || len(r.Evidence.Texts) != 0 || len(r.Evidence.Office.Packages) == 0 {
 		return ErrLinkage
 	}
+	for _, pkg := range r.Evidence.Office.Packages {
+		if r.File.Format != pkg.Format || r.File.Parser == nil || *r.File.Parser != pkg.ParserVersion {
+			return ErrLinkage
+		}
+	}
 	office, err := IndexEvidence(r.Evidence.Office, *r.File.SHA256, int64(*r.File.Size))
 	if err != nil {
 		return err

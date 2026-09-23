@@ -46,6 +46,8 @@ def test_every_office_object_is_closed_and_required():
 def test_adapter_envelope_is_retained_without_redefinition():
     old = json.loads((ROOT / 'schemas/report-v3.schema.json').read_bytes())
     new = _builder.build()
+    # v4 tightens end-anchored patterns uniformly; the inherited vocabulary is unchanged.
+    _builder.harden_patterns(old)
     assert new['properties']['adapter_runs'] == old['properties']['adapter_runs']
     assert 'adapter_runs' in new['required']
     for name, definition in old['$defs'].items():
@@ -150,8 +152,8 @@ def test_complete_flat_fixtures_are_reproducible_and_wire_valid():
         validator.validate(fixture)
 
 
-@pytest.mark.parametrize('format,bad_part', [('docx', False), ('odt', False), ('docx', True)])
-def test_office_fixture_matches_retained_archive(format, bad_part):
+@pytest.mark.parametrize('format,bad_part,unicode_names', [('docx', False, False), ('odt', False, False), ('docx', True, False), ('docx', False, True)])
+def test_office_fixture_matches_retained_archive(format, bad_part, unicode_names):
     import hashlib
     import io
     import zipfile
@@ -159,7 +161,7 @@ def test_office_fixture_matches_retained_archive(format, bad_part):
         Path(__file__).with_name('build_office_fixture.py'))
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    report, source = module.build(format, bad_part)
+    report, source = module.build(format, bad_part, unicode_names)
     directory = Path(__file__).with_name('fixtures')
     name = Path(report['file']['filename'])
     assert source == (directory / name).read_bytes()
@@ -179,7 +181,7 @@ def test_office_fixture_matches_retained_archive(format, bad_part):
                 raw = archive.read(part['name'])
                 assert len(raw) == part['byte_length']
                 assert hashlib.sha256(raw).hexdigest() == part['sha256']
-        xml = archive.read('word/document.xml' if format == 'docx' else 'content.xml')
+        xml = archive.read(report['evidence']['office']['packages'][0]['parts'][-1]['name'])
         scope = report['evidence']['office']['scopes'][0]
         assert ''.join(xml[o['source']['start']:o['source']['end']].decode()
                        for o in scope['origins']) == scope['text']
@@ -193,3 +195,39 @@ def test_office_fixture_matches_retained_archive(format, bad_part):
         assert len(failed) == 1
         assert failed[0]['assessed'] == []
         assert failed[0]['diagnostic_refs'] == ['diagnostic/0']
+
+
+def test_scope_identity_vectors_are_reproducible():
+    spec = importlib.util.spec_from_file_location('office_identity_builder',
+        Path(__file__).with_name('build_office_fixture.py'))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert module.identity_vectors() == json.loads(
+        Path(__file__).with_name('scope-identities.json').read_bytes())
+
+
+def test_every_end_anchored_pattern_rejects_trailing_newline():
+    # Walk the complete schema, including inherited definitions and inline nodes.
+    # Fail if a future vocabulary introduces a pattern without a valid probe.
+    import re
+    probes = ['a' * 64, 'U+200B', 'office.test',
+              *[kind + '/0' for kind in ('exec', 'artifact', 'anchor', 'result',
+                 'finding', 'diagnostic', 'office-package', 'office-part',
+                 'office-scope', 'office-object', 'office-xml', 'office-relationship')],
+              '/evidence/texts/0/byte_offsets', '/evidence/texts/0/text', '/evidence/texts/0']
+    count = 0
+    for node in walk(_builder.build()):
+        if not isinstance(node, dict) or 'pattern' not in node:
+            continue
+        pattern = node['pattern']
+        if not pattern.endswith('$'):
+            assert pattern in ('^/', '[^a-z0-9/-]', '\n'), pattern
+            continue
+        valid = next((p for p in probes if re.fullmatch(pattern, p)), None)
+        assert valid is not None, pattern
+        # Isolate the pattern and its guard from unrelated object constraints.
+        validator = Draft202012Validator({k: node[k] for k in ('pattern', 'allOf', 'not') if k in node})
+        assert validator.is_valid(valid), pattern
+        assert not validator.is_valid(valid + '\n'), pattern
+        count += 1
+    assert count > 0

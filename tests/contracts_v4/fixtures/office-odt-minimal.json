@@ -110,6 +110,21 @@
                 }
               ],
               "excluded": []
+            },
+            {
+              "operation": "aletharsis.office.text",
+              "execution_ref": "exec/5",
+              "part_ref": "office-part/2",
+              "state": "completed",
+              "codes": [],
+              "diagnostic_refs": [],
+              "assessed": [
+                {
+                  "start": 0,
+                  "end": 312
+                }
+              ],
+              "excluded": []
             }
           ],
           "limits": {
@@ -908,7 +923,7 @@
           },
           "boundaries": [],
           "issues": [],
-          "identity_sha256": "97dec923a23f64ce3041204c38a94ecddfe9528e45bedf7be4d606ddc7d55d30"
+          "identity_sha256": "da821a35f40e6c33cdba2948725c08c1fb657a0ed8005477ca3e9fdcd801c235"
         }
       ],
       "metadata": [],
@@ -922,7 +937,7 @@
     "format": "odt",
     "identification_basis": "valid Unicode text; extension is a MIME hint",
     "mime": "application/vnd.oasis.opendocument.text",
-    "parser": "office-fixture/1",
+    "parser": "zip-parts/1",
     "path": "office-odt-minimal.odt",
     "sha256": "6a924ca0fb4fabc3d2ee23d6fde9f25ced1f8525c2d680703c9ad174ff7a54a5",
     "size": 1004
@@ -1145,6 +1160,40 @@
         "output_bytes": null,
         "execution_ms": null
       }
+    },
+    {
+      "id": "aletharsis.office.text",
+      "revision": "1",
+      "role": "parser",
+      "mechanism": null,
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.parse.text",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
     }
   ],
   "executions": [
@@ -1296,6 +1345,54 @@
       "exclusions": [],
       "state": "not_run",
       "reason_code": "execution.disabled",
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/5",
+      "capability_ref": "aletharsis.office.text",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/3",
+        "unit": "byte",
+        "regions": [
+          {
+            "start": 0,
+            "end": 312
+          }
+        ]
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/3",
+          "unit": "byte",
+          "regions": [
+            {
+              "start": 0,
+              "end": 312
+            }
+          ]
+        }
+      ],
+      "exclusions": [],
+      "state": "completed",
+      "reason_code": null,
       "diagnostic_refs": []
     }
   ],

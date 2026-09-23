@@ -9,8 +9,8 @@
         {
           "package_ref": "office-package/0",
           "source_artifact_ref": "artifact/0",
-          "source_sha256": "fcae44d01ea3dcc0f777d2c0499cfe4f7e4e8ce381ea936bd678252056420991",
-          "source_byte_length": 1072,
+          "source_sha256": "eae24a5649ed3364081109c5d41ac4f6af2b2ab8d3b609d3ea03f077b9d22ee4",
+          "source_byte_length": 1108,
           "parser_version": "zip-parts/1",
           "format": "docx",
           "state": "completed",
@@ -24,11 +24,11 @@
               "method": 0,
               "compressed_span": {
                 "start": 49,
-                "end": 367
+                "end": 378
               },
-              "compressed_sha256": "ca9aa2a016b6a42b00f5369c4fe48d598f0326a3fc8a8b0adad1852d7acdb17f",
-              "sha256": "ca9aa2a016b6a42b00f5369c4fe48d598f0326a3fc8a8b0adad1852d7acdb17f",
-              "byte_length": 318,
+              "compressed_sha256": "67f6bc3e952171d38623bdd9059353d9293c4d793c9637be60d38da0e72cde95",
+              "sha256": "67f6bc3e952171d38623bdd9059353d9293c4d793c9637be60d38da0e72cde95",
+              "byte_length": 329,
               "state": "completed",
               "issues": []
             },
@@ -39,24 +39,24 @@
               "artifact_ref": "artifact/2",
               "method": 0,
               "compressed_span": {
-                "start": 408,
-                "end": 650
+                "start": 419,
+                "end": 672
               },
-              "compressed_sha256": "22c01d12e912dc45bdf191c382dd5b80cdeca1a9e95af86a477798a9f7e541e9",
-              "sha256": "22c01d12e912dc45bdf191c382dd5b80cdeca1a9e95af86a477798a9f7e541e9",
-              "byte_length": 242,
+              "compressed_sha256": "3010049336ef2f641ca97ddeec28aaf5061321431fd17d2af89814ceb0acb8a3",
+              "sha256": "3010049336ef2f641ca97ddeec28aaf5061321431fd17d2af89814ceb0acb8a3",
+              "byte_length": 253,
               "state": "completed",
               "issues": []
             },
             {
               "part_ref": "office-part/2",
               "package_ref": "office-package/0",
-              "name": "word/document.xml",
+              "name": "word/a&b r\u00e9sum\u00e9\u2028.xml",
               "artifact_ref": "artifact/3",
               "method": 0,
               "compressed_span": {
-                "start": 697,
-                "end": 865
+                "start": 726,
+                "end": 894
               },
               "compressed_sha256": "f1d8eab00a52c3cfc0fe8b14d134459ed60fa648f9a9602b1bbbddfe626ab9f8",
               "sha256": "f1d8eab00a52c3cfc0fe8b14d134459ed60fa648f9a9602b1bbbddfe626ab9f8",
@@ -76,7 +76,7 @@
               "assessed": [
                 {
                   "start": 0,
-                  "end": 318
+                  "end": 329
                 }
               ],
               "excluded": []
@@ -91,7 +91,7 @@
               "assessed": [
                 {
                   "start": 0,
-                  "end": 242
+                  "end": 253
                 }
               ],
               "excluded": []
@@ -587,7 +587,7 @@
         {
           "scope_ref": "office-scope/0",
           "part_ref": "office-part/2",
-          "local_id": "word-scope/0",
+          "local_id": "id&\u00e9\u2028",
           "extractor_version": "word-text/1",
           "assembler_version": "word-analysis/1",
           "role": "body",
@@ -923,7 +923,7 @@
           },
           "boundaries": [],
           "issues": [],
-          "identity_sha256": "77dc6d1c3296336e71417b6b0065f6c8d297f464aff84b7ab7222195e4653a94"
+          "identity_sha256": "e75ca97ebed61cb7f2862ae0200fa3fdc0737a3fef41c1469c5c3786559623bf"
         }
       ],
       "metadata": [],
@@ -933,14 +933,14 @@
   },
   "file": {
     "extension": ".docx",
-    "filename": "office-minimal.docx",
+    "filename": "office-unicode-identity.docx",
     "format": "docx",
     "identification_basis": "valid Unicode text; extension is a MIME hint",
     "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "parser": "zip-parts/1",
-    "path": "office-minimal.docx",
-    "sha256": "fcae44d01ea3dcc0f777d2c0499cfe4f7e4e8ce381ea936bd678252056420991",
-    "size": 1072
+    "path": "office-unicode-identity.docx",
+    "sha256": "eae24a5649ed3364081109c5d41ac4f6af2b2ab8d3b609d3ea03f077b9d22ee4",
+    "size": 1108
   },
   "findings": [
     {
@@ -1406,8 +1406,8 @@
         "normalization": "none",
         "line_endings": "preserved"
       },
-      "sha256": "fcae44d01ea3dcc0f777d2c0499cfe4f7e4e8ce381ea936bd678252056420991",
-      "byte_length": 1072,
+      "sha256": "eae24a5649ed3364081109c5d41ac4f6af2b2ab8d3b609d3ea03f077b9d22ee4",
+      "byte_length": 1108,
       "content_ref": null,
       "unavailable_reason": "not_retained",
       "parents": [],
@@ -1426,8 +1426,8 @@
         "normalization": "none",
         "line_endings": "preserved"
       },
-      "sha256": "ca9aa2a016b6a42b00f5369c4fe48d598f0326a3fc8a8b0adad1852d7acdb17f",
-      "byte_length": 318,
+      "sha256": "67f6bc3e952171d38623bdd9059353d9293c4d793c9637be60d38da0e72cde95",
+      "byte_length": 329,
       "content_ref": null,
       "unavailable_reason": "not_retained",
       "parents": [
@@ -1448,8 +1448,8 @@
         "normalization": "none",
         "line_endings": "preserved"
       },
-      "sha256": "22c01d12e912dc45bdf191c382dd5b80cdeca1a9e95af86a477798a9f7e541e9",
-      "byte_length": 242,
+      "sha256": "3010049336ef2f641ca97ddeec28aaf5061321431fd17d2af89814ceb0acb8a3",
+      "byte_length": 253,
       "content_ref": null,
       "unavailable_reason": "not_retained",
       "parents": [

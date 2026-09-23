@@ -5,6 +5,7 @@ package corpusv2
 import (
 	"encoding/json"
 	"errors"
+	v2 "github.com/toddwbucy/Aletharsis/internal/evidence/v2"
 	"reflect"
 
 	"github.com/toddwbucy/Aletharsis/internal/identity"
@@ -88,9 +89,15 @@ func Decode(raw []byte, envelopeLimits, reportLimits identity.Limits) (Document,
 			return Document{}, ErrLinkage
 		}
 		var report struct {
-			Status  string         `json:"status"`
-			Schema  string         `json:"schema_version"`
-			Summary map[string]int `json:"summary"`
+			Status      string         `json:"status"`
+			Schema      string         `json:"schema_version"`
+			Summary     map[string]int `json:"summary"`
+			Diagnostics []struct {
+				Code         string  `json:"code"`
+				ExecutionRef *string `json:"execution_ref"`
+			} `json:"diagnostics"`
+			Executions   []v2.Execution  `json:"executions"`
+			Capabilities []v2.Capability `json:"capabilities"`
 		}
 		if err := json.Unmarshal(entry.Report, &report); err != nil {
 			return Document{}, err
@@ -120,7 +127,23 @@ func Decode(raw []byte, envelopeLimits, reportLimits identity.Limits) (Document,
 		}
 		// A source-limit failure in the observer retains the detection report.
 		observerFailure := entry.State == "failed" && entry.Reason == "execution.resource_limit"
-		unsupported := entry.State == "unsupported" && report.Status == "failed" && entry.Reason == "format.unsupported"
+		formatUnsupported := false
+		for _, diagnostic := range report.Diagnostics {
+			if diagnostic.Code != "format.unsupported" || diagnostic.ExecutionRef == nil {
+				continue
+			}
+			for _, execution := range report.Executions {
+				if execution.Ref != *diagnostic.ExecutionRef || execution.State != v2.Failed {
+					continue
+				}
+				for _, capability := range report.Capabilities {
+					if capability.ID == execution.CapabilityRef && capability.Role == v2.Parser {
+						formatUnsupported = true
+					}
+				}
+			}
+		}
+		unsupported := entry.State == "unsupported" && report.Status == "failed" && entry.Reason == "format.unsupported" && formatUnsupported
 		if entry.State != expected && !observerFailure && !unsupported {
 			return Document{}, ErrLinkage
 		}

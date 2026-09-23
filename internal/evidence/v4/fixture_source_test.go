@@ -18,7 +18,7 @@ import (
 // coordinates against real format extraction, rather than just self-consistency.
 func TestOfficeFixturesAgreeWithNativeExtraction(t *testing.T) {
 	paths, err := filepath.Glob("../../../tests/contracts_v4/fixtures/office-*.json")
-	if err != nil || len(paths) != 3 {
+	if err != nil || len(paths) != 4 {
 		t.Fatal("DOCX and ODT fixtures required", err)
 	}
 	for _, path := range paths {
@@ -39,7 +39,7 @@ func TestOfficeFixturesAgreeWithNativeExtraction(t *testing.T) {
 			scope := r.Evidence.Office.Scopes[0]
 			var body []byte
 			for _, f := range z.File {
-				if f.Name != "content.xml" && f.Name != "word/document.xml" {
+				if f.Name != r.Evidence.Office.Packages[0].Parts[len(r.Evidence.Office.Packages[0].Parts)-1].Name {
 					continue
 				}
 				reader, err := f.Open()

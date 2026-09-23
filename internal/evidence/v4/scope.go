@@ -1,18 +1,22 @@
 package v4
 
 import (
-	"encoding/json"
+	"encoding/binary"
 	"unicode/utf8"
 
 	"github.com/toddwbucy/Aletharsis/internal/identity"
 )
 
-// ScopeIdentity uses a versioned, length-unambiguous JSON tuple. The namespace
-// prefix separates this digest from content hashes. Exact original part names
-// participate even when two parts have identical bytes.
+// ScopeIdentity hashes the domain prefix followed by six UTF-8 fields in argument
+// order. Each field starts with its byte length as an unsigned 64-bit big-endian
+// integer. No normalization or JSON escaping participates in identity.
 func ScopeIdentity(sourceHash, partName, partHash, extractor, assembler, localID string) string {
-	tuple, _ := json.Marshal([]string{sourceHash, partName, partHash, extractor, assembler, localID})
-	return identity.ExactBytes(append([]byte("aletharsis.office-scope/1\x00"), tuple...))
+	tuple := []byte("aletharsis.office-scope/2\x00")
+	for _, field := range []string{sourceHash, partName, partHash, extractor, assembler, localID} {
+		tuple = binary.BigEndian.AppendUint64(tuple, uint64(len(field)))
+		tuple = append(tuple, field...)
+	}
+	return identity.ExactBytes(tuple)
 }
 
 // ValidateScope checks origins against already validated XML records for its

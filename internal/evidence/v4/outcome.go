@@ -72,6 +72,7 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 		}
 		return nil
 	}
+	produced := map[[2]string]bool{}
 	for _, p := range e.Packages {
 		decompressed := map[string]bool{}
 		seen := map[[2]string]bool{}
@@ -88,6 +89,11 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 				return ErrLinkage
 			}
 			seen[key] = true
+			parent := t.Executions[o.ExecutionRef]
+			if (o.State == "completed" || o.State == "partial") &&
+				(parent.State == v2.Completed || parent.State == v2.Partial) {
+				produced[[2]string{o.Operation, *o.PartRef}] = true
+			}
 			if o.Operation == "aletharsis.parse.office_package" {
 				if decompressed[*o.PartRef] || o.State != part.State {
 					return ErrLinkage
@@ -127,6 +133,23 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 			if !decompressed[part.PartRef] || (p.State == "completed" && part.State != "completed") {
 				return ErrLinkage
 			}
+		}
+	}
+	// Retained extraction records require an actual successful per-part
+	// operation; package decompression alone cannot authorize their presence.
+	for _, scope := range e.Scopes {
+		if !produced[[2]string{"aletharsis.office.text", scope.PartRef}] {
+			return ErrLinkage
+		}
+	}
+	for _, item := range e.Metadata {
+		if !produced[[2]string{"aletharsis.office.metadata", item.PartRef}] {
+			return ErrLinkage
+		}
+	}
+	for _, item := range e.Relationships {
+		if !produced[[2]string{"aletharsis.office.relationships", item.Location.PartRef}] {
+			return ErrLinkage
 		}
 	}
 	for _, o := range e.Objects {

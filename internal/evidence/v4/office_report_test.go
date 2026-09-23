@@ -20,6 +20,9 @@ func TestCompleteOfficeReportValidation(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, mutate := range []func(*Report){
+		func(r *Report) { r.File.Format = "zip" },
+		func(r *Report) { r.File.Parser = nil },
+		func(r *Report) { s := "spoofed/9"; r.File.Parser = &s },
 		func(r *Report) { r.Evidence.Office.Scopes[0].IdentitySHA256 = "bad" },
 		func(r *Report) { r.Evidence.Office.Packages[0].Parts[0].ArtifactRef = "artifact/999" },
 		func(r *Report) { r.Trace.Results[0].AnchorRefs = nil },

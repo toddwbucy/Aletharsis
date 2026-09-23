@@ -55,8 +55,14 @@ func DecodeRevealTree(raw, corpusRaw []byte, envelopeLimits, reportLimits identi
 		}
 		expected := entry.State
 		var report struct {
-			Status string `json:"status"`
-			File   struct {
+			Status   string `json:"status"`
+			Schema   string `json:"schema_version"`
+			Evidence struct {
+				Office struct {
+					Packages []json.RawMessage `json:"packages"`
+				} `json:"office"`
+			} `json:"evidence"`
+			File struct {
 				SHA256 *string `json:"sha256"`
 				Format string  `json:"format"`
 			} `json:"file"`
@@ -84,7 +90,7 @@ func DecodeRevealTree(raw, corpusRaw []byte, envelopeLimits, reportLimits identi
 				return RevealTree{}, ErrLinkage
 			}
 			eligible := expected == "partial" || expected == "requires_review" || expected == "no_reported_findings"
-			if eligible && (report.File.Format == "docx" || report.File.Format == "odt") && source.PresentationOutcome != "failed" && source.PresentationOutcome != "unsupported" {
+			if eligible && (report.Schema == "4.0" && len(report.Evidence.Office.Packages) > 0) && source.PresentationOutcome != "failed" && source.PresentationOutcome != "unsupported" {
 				return RevealTree{}, ErrLinkage
 			}
 		} else if source.PresentationOutcome != "not_attempted" || source.ReportArtifactSHA256 != nil || len(source.Artifacts) > 0 {
