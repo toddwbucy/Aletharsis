@@ -49,9 +49,9 @@ func officeForPlatform(version string, maxBytes uint64, platform string) ([]v2.C
 	}{
 		{ParseOfficeID, v2.Parser, []string{"source"}, []string{"docx", "odt"}},
 		{OfficeIdentifyID, v2.Parser, []string{"package"}, []string{"docx", "odt"}},
-		{OfficeRelationshipsID, v2.Parser, []string{"package_part"}, []string{"docx"}},
-		{OfficeMetadataID, v2.Parser, []string{"package_part"}, []string{"docx"}},
-		{OfficeObjectsID, v2.Parser, []string{"package"}, []string{"docx"}},
+		{OfficeRelationshipsID, v2.Parser, []string{"package_part"}, []string{"docx", "odt"}},
+		{OfficeMetadataID, v2.Parser, []string{"package_part"}, []string{"docx", "odt"}},
+		{OfficeObjectsID, v2.Parser, []string{"package"}, []string{"docx", "odt"}},
 		{OfficeTextID, v2.Parser, []string{"package_part"}, []string{"docx", "odt"}},
 		{OfficeProfilesID, v2.Analyzer, []string{"office_observation"}, []string{"docx", "odt"}},
 	} {
@@ -59,6 +59,12 @@ func officeForPlatform(version string, maxBytes uint64, platform string) ([]v2.C
 			Implementation: &v2.Implementation{ID: entry.id, Version: version, Data: []v2.DataIdentity{}},
 			Availability:   v2.Availability{State: "available"},
 			SupportedScope: v2.SupportedScope{Kinds: entry.kinds, Formats: entry.formats}}
+		// Revision 2 also retains declared OOXML evidence inside ODT hybrids.
+		// This is not native ODF metadata/object support; the coordinator must
+		// declare restricted hybrid coverage rather than a whole-source scan.
+		if c.ID == OfficeRelationshipsID || c.ID == OfficeMetadataID || c.ID == OfficeObjectsID {
+			c.Revision = "2"
+		}
 		if c.Role == v2.Analyzer {
 			c.Mechanism = ptr(v2.Structural)
 		}

@@ -48,6 +48,11 @@ func TestPublishedBoundariesSurviveWithAndWithoutScopes(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			for _, execution := range out.Report.Trace.Executions {
+				if execution.CapabilityRef == capability.OfficeTextID && execution.State != v2.Partial {
+					t.Fatal("unrecognized context lost its coverage gap")
+				}
+			}
 			got := map[string]int{}
 			for _, scope := range out.Report.Evidence.Office.Scopes {
 				for _, b := range scope.Boundaries {
@@ -85,6 +90,8 @@ func odtWithFailedDOCX(t *testing.T) ([]byte, *Prepared, *Analysis) {
 	parts := budgetBase(t, "office-odt-minimal.odt")
 	docx := budgetBase(t, "office-minimal.docx")
 	budgetMetadata(docx)
+	budgetEmbedding(docx, "word/embeddings/obj1.bin", "PK\x03\x04payload")
+	budgetRelationship(docx, "word/_rels/document.xml.rels", `<Relationship Id="embed" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="embeddings/obj1.bin"/>`)
 	for k, v := range docx {
 		parts[k] = v
 	}
@@ -111,13 +118,13 @@ func TestODTHybridDoesNotClaimDOCXOnlyCoverage(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, e := range out.Report.Trace.Executions {
-		if e.CapabilityRef == capability.OfficeMetadataID || e.CapabilityRef == capability.OfficeRelationshipsID {
-			if e.State != v2.NotRun || e.ReasonCode == nil || *e.ReasonCode != failure.UnsupportedInput || len(e.AnalyzedScope) != 0 {
+		if e.CapabilityRef == capability.OfficeMetadataID || e.CapabilityRef == capability.OfficeRelationshipsID || e.CapabilityRef == capability.OfficeObjectsID {
+			if e.State != v2.Partial || e.ReasonCode == nil || len(e.Exclusions) == 0 || len(e.AnalyzedScope) != 1 || e.AnalyzedScope[0].Unit != "byte" {
 				t.Fatal("DOCX-only coverage claimed ODT", e)
 			}
 		}
 	}
-	if len(out.Report.Evidence.Office.XML) == 0 {
+	if len(out.Report.Evidence.Office.XML) == 0 || len(out.Report.Evidence.Office.Metadata) == 0 || len(out.Report.Evidence.Office.Objects) != 1 || len(out.Report.Evidence.Office.Relationships) == 0 {
 		t.Fatal("declaration evidence lost")
 	}
 }
@@ -204,4 +211,46 @@ func TestEqualTargetsKeepDeclarationOrderAndIdentityFailureCode(t *testing.T) {
 			t.Fatal("identity failure mislabeled", part.Code)
 		}
 	}
+}
+
+func TestUnknownMetadataRemainderDoesNotCreditPayloads(t *testing.T) {
+	parts := budgetBase(t, "office-minimal.docx")
+	parts["stray.unknown"] = "unclassified"
+	raw := budgetArchive(t, parts, false)
+	hash, size := evidence.Hash(raw), len(raw)
+	p, err := Prepare(context.Background(), raw, hash, DefaultLimits())
+	if err != nil {
+		t.Fatal(err)
+	}
+	a, err := AnalyzePrepared(context.Background(), p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	out, err := buildFixtureReport(context.Background(), raw, evidence.File{Path: "stray.docx", Filename: "stray.docx", SHA256: &hash, Size: &size}, p, a, "test")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, ex := range out.Report.Trace.Executions {
+		if ex.CapabilityRef != capability.OfficeMetadataID {
+			continue
+		}
+		if ex.State != v2.Partial {
+			t.Fatal("unknown remainder lost")
+		}
+		for _, scope := range ex.AnalyzedScope {
+			if scope.Unit != "byte" {
+				t.Fatal("whole-source assessment claimed")
+			}
+			for _, region := range scope.Regions {
+				for _, part := range out.Report.Evidence.Office.Packages[0].Parts {
+					span := part.CompressedSpan
+					if span.Start < span.End && region.Start < uint64(span.End) && uint64(span.Start) < region.End {
+						t.Fatal("unassessed payload credited")
+					}
+				}
+			}
+		}
+		return
+	}
+	t.Fatal("missing metadata operation")
 }

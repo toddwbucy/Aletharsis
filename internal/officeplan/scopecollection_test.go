@@ -59,8 +59,13 @@ func TestCollectScopesBindsWholeOriginChain(t *testing.T) {
 				t.Fatal("coordinate identities do not connect", err)
 			}
 			omissions := 0
-			for _, items := range scopes.Omitted {
-				omissions += len(items)
+			for _, part := range a.Parts {
+				if part.Word != nil {
+					omissions += len(part.Word.Omitted)
+				}
+				if part.ODT != nil {
+					omissions += len(part.ODT.Omitted)
+				}
 			}
 			if omit {
 				if len(scopes.Scopes) != 0 || len(scopes.Artifacts) != 0 || len(scopes.Findings) != 0 || omissions != 1 {

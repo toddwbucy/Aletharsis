@@ -120,19 +120,6 @@ func xmlCode(err error) string {
 		return "xml.invalid"
 	}
 }
-func valueBytes(d *xmlparts.Document) int {
-	n := 0
-	for _, e := range d.Elements {
-		n += len(e.Name.Prefix) + len(e.Name.Local) + len(e.Name.Namespace)
-		for _, a := range e.Attributes {
-			n += len(a.Name.Prefix) + len(a.Name.Local) + len(a.Name.Namespace) + len(a.Value)
-		}
-	}
-	for _, t := range d.Tokens {
-		n += len(t.Value)
-	}
-	return n
-}
 func attrs(e xmlparts.Element) (map[string]string, bool) {
 	result := map[string]string{}
 	unknown := false
@@ -217,18 +204,15 @@ func inspectPackage(ctx context.Context, pkg *packageparts.Package, outcomes *pa
 			limits := xmlparts.DefaultLimits()
 			limits.Tokens = min(limits.Tokens, tokensLeft)
 			limits.RetainedBytes = min(limits.RetainedBytes, valuesLeft)
-			doc, err := xmlparts.Parse(ctx, p.Bytes, p.SHA256, limits)
+			doc, used, err := xmlparts.ParseMeasured(ctx, p.Bytes, p.SHA256, limits)
+			tokensLeft -= used.Tokens
+			valuesLeft -= used.RetainedBytes
 			if err != nil {
 				if ctx.Err() != nil {
 					return nil, ctx.Err()
 				}
-				// Failed parses do not expose actual token use. Charge their full allowance.
-				tokensLeft -= limits.Tokens
-				valuesLeft -= limits.RetainedBytes
 				part.State, part.Code = "failed", xmlCode(err)
 			} else {
-				tokensLeft -= len(doc.Tokens)
-				valuesLeft -= valueBytes(doc)
 				part.XML = doc
 				result.readPart(&part, index)
 			}

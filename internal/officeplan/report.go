@@ -53,7 +53,7 @@ func buildReportWithCatalog(ctx context.Context, source []byte, file evidence.Fi
 	}
 	acquisition := descriptors[capability.AcquireID]
 	if acquisition.Availability.State != "available" || acquisition.Participation == v2.Disabled {
-		return unavailableAcquisitionReport(file, p.Limits, version, acquisition)
+		return unavailableAcquisitionReport(file, p.Limits, version, catalog)
 	}
 	nextExecution := 0
 	reserve := func(count int) int { first := nextExecution; nextExecution += count; return first }
@@ -118,19 +118,9 @@ func buildReportWithCatalog(ctx context.Context, source []byte, file evidence.Fi
 	report.Evidence.Office.Objects = objects.Objects
 	report.Evidence.Office.Packages = slices.Clone(report.Evidence.Office.Packages)
 	report.Evidence.Office.Packages[0].Issues = identification.Issues
-	outcomes := slices.Clone(pkg.Outcomes)
-	diagnostic := 0
-	for i := range outcomes {
-		if outcomes[i].State != "completed" {
-			if diagnostic >= len(parseDiagnostics) {
-				return nil, v4.ErrLinkage
-			}
-			outcomes[i].DiagnosticRefs = []string{parseDiagnostics[diagnostic].Ref}
-			diagnostic++
-		}
-	}
-	if diagnostic != len(parseDiagnostics) {
-		return nil, v4.ErrLinkage
+	outcomes, err := bindParseDiagnostics(pkg, parseDiagnostics)
+	if err != nil {
+		return nil, err
 	}
 	report.Evidence.Office.Packages[0].Outcomes = append(append(outcomes, identification.Outcomes...), parts.Outcomes...)
 	report.Limitations = append(report.Limitations, parts.Limitations...)

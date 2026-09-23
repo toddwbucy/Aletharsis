@@ -11,14 +11,10 @@ import (
 	"github.com/toddwbucy/Aletharsis/internal/failure"
 )
 
-// No bytes are attested when native acquisition cannot run. Use the frozen
-// pre-acquisition (flat) report framing; no Office parser was authorized to run.
+// No bytes are attested when native acquisition cannot run. Empty evidence
+// retains the requested Office capability catalog and each unrun operation.
 // Caller-supplied prepared evidence cannot override platform availability.
-func unavailableAcquisitionReport(file evidence.File, limits Limits, version string, acquisition v2.Capability) (*ReportOutput, error) {
-	catalog, err := capability.Native(version, uint64(limits.Package.SourceBytes))
-	if err != nil {
-		return nil, err
-	}
+func unavailableAcquisitionReport(file evidence.File, limits Limits, version string, catalog []v2.Capability) (*ReportOutput, error) {
 	data, err := capability.NativeDataRevision()
 	if err != nil {
 		return nil, err
@@ -29,7 +25,7 @@ func unavailableAcquisitionReport(file evidence.File, limits Limits, version str
 	file.Format = "unknown"
 	file.MIME = "application/octet-stream"
 	file.Basis = "acquisition unavailable"
-	r := v4.Report{Version: version, Schema: "4.0", File: file, Evidence: v4.Document{Document: evidence.EmptyDocument(), Office: v4.Evidence{Packages: []v4.Package{}, XML: []v4.XML{}, Scopes: []v4.Scope{}, Metadata: []v4.Metadata{}, Relationships: []v4.Relationship{}, Objects: []v4.Object{}}}, Findings: []v2.Finding{}, Limitations: []string{"Office evidence was not assessed because native acquisition could not run."}, CatalogVersion: capability.CatalogVersion, ProfileAssessments: []struct{}{}, View: v2.View{Name: "audit", FindingCategories: []string{}}, AdapterRuns: []json.RawMessage{}, Trace: v4.NativeTrace{Capabilities: catalog, Executions: []v2.Execution{}, Diagnostics: []v2.Diagnostic{}, Results: []v2.Result{}, Anchors: []v4.Anchor{}}}
+	r := v4.Report{Version: version, Schema: "4.0", File: file, Evidence: v4.Document{Document: evidence.EmptyDocument(), Office: v4.Evidence{Packages: []v4.Package{}, XML: []v4.XML{}, Scopes: []v4.Scope{}, Metadata: []v4.Metadata{}, Relationships: []v4.Relationship{}, Objects: []v4.Object{}}}, Findings: []v2.Finding{}, Limitations: []string{"Office evidence was not assessed because native acquisition could not run."}, CatalogVersion: capability.OfficeCatalogVersion, ProfileAssessments: []struct{}{}, View: v2.View{Name: "audit", FindingCategories: []string{}}, AdapterRuns: []json.RawMessage{}, Trace: v4.NativeTrace{Capabilities: catalog, Executions: []v2.Execution{}, Diagnostics: []v2.Diagnostic{}, Results: []v2.Result{}, Anchors: []v4.Anchor{}}}
 	reasonUnavailable := "not_acquired"
 	mappingReason := failure.Code("mapping.not_applicable")
 	mapping, err := json.Marshal(v2.Mapping{Quality: "unavailable", ReasonCode: &mappingReason})
@@ -42,10 +38,6 @@ func unavailableAcquisitionReport(file evidence.File, limits Limits, version str
 	}
 	r.Artifacts = []v4.Artifact{{Ref: "artifact/0", Kind: "source", Representation: representation, UnavailableReason: &reasonUnavailable, Parents: []string{}, Mapping: mapping}}
 	for i, c := range catalog {
-		if c.ID == capability.AcquireID {
-			c = acquisition
-			r.Trace.Capabilities[i] = c
-		}
 		config, err := v2.NewNativeConfig(c.Revision, data, c.Limits)
 		if err != nil {
 			return nil, err

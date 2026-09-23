@@ -93,7 +93,7 @@ func BuildPartGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *Ass
 		}
 	}
 	nextDiagnostic := firstDiagnostic + len(content.Diagnostics)
-	if p.Identity != IdentityODT && len(p.DOCX.OPC.Parts) > 0 {
+	if len(p.DOCX.OPC.Parts) > 0 {
 		relationships, err := CollectRelationshipCoverage(ctx, base, p.DOCX.OPC, ordinals[capability.OfficeRelationshipsID], nextDiagnostic)
 		if err != nil {
 			return nil, err
@@ -102,9 +102,6 @@ func BuildPartGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *Ass
 		nextDiagnostic += len(relationships.Diagnostics)
 	}
 	addGap := func(op, part, code string) error {
-		if p.Identity == IdentityODT && op != capability.OfficeTextID {
-			return nil
-		}
 		ref := fmt.Sprintf("exec/%d", ordinals[op])
 		d := v2.Diagnostic{Ref: fmt.Sprintf("diagnostic/%d", nextDiagnostic), ExecutionRef: &ref, Stage: failure.Parsing, Code: failure.Code(code), Message: "Office operation retains incomplete selection or evidence mapping.", Details: v2.ErrorDetails{ErrorType: "OfficeOperationGap"}}
 		if part != "" {
@@ -194,13 +191,15 @@ func BuildPartGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *Ass
 				refs = append(refs, d.Ref)
 			}
 			execution = v2.Execution{Ref: fmt.Sprintf("exec/%d", ordinals[op]), CapabilityRef: op, Config: configs[op], RequestedScope: v2.Scope{ArtifactRef: pkg.SourceArtifactRef, Unit: "whole_artifact"}, AnalyzedScope: []v2.Scope{}, Exclusions: []v2.Exclusion{}, State: v2.NotRun, ReasonCode: &reason, DiagnosticRefs: refs}
-		} else if p.Identity == IdentityODT && op != capability.OfficeTextID {
-			if len(coverage.Outcomes) != 0 || len(coverage.Diagnostics) != 0 {
-				return nil, v4.ErrLinkage
-			}
+		} else if p.Identity == IdentityODT && op != capability.OfficeTextID && len(coverage.Outcomes) == 0 && len(coverage.Diagnostics) == 0 {
 			reason := failure.UnsupportedInput
 			execution = v2.Execution{Ref: fmt.Sprintf("exec/%d", ordinals[op]), CapabilityRef: op, Config: configs[op], RequestedScope: v2.Scope{ArtifactRef: pkg.SourceArtifactRef, Unit: "whole_artifact"}, AnalyzedScope: []v2.Scope{}, Exclusions: []v2.Exclusion{}, State: v2.NotRun, ReasonCode: &reason, DiagnosticRefs: []string{}}
 		} else {
+			if p.Identity == IdentityODT && op != capability.OfficeTextID {
+				if err := addGap(op, "", "office.hybrid_scope_only"); err != nil {
+					return nil, err
+				}
+			}
 			execution, err = OperationCoverage(base, coverage, op, configs[op], ordinals[op])
 			if err != nil {
 				return nil, err

@@ -30,6 +30,10 @@ func CollectRelationshipCoverage(ctx context.Context, base *PackageRecords, nati
 	for _, p := range pkg.Parts {
 		parts[p.Name] = p
 	}
+	byPart := map[string][]opcrels.Relationship{}
+	for _, rel := range native.Relationships {
+		byPart[rel.Anchor.Part] = append(byPart[rel.Anchor.Part], rel)
+	}
 	entries := slices.Clone(native.Parts)
 	slices.SortFunc(entries, func(a, b opcrels.PartResult) int { return strings.Compare(a.Part, b.Part) })
 	result := &AnalysisCoverage{Outcomes: []v4.Outcome{}, Diagnostics: []v2.Diagnostic{}, Limitations: []string{}}
@@ -85,10 +89,7 @@ func CollectRelationshipCoverage(ctx context.Context, base *PackageRecords, nati
 			}
 		}
 		unresolved := 0
-		for _, rel := range native.Relationships {
-			if rel.Anchor.Part != n.Part {
-				continue
-			}
+		for _, rel := range byPart[n.Part] {
 			if n.XML == nil || p.SHA256 == nil || rel.Anchor.PartSHA256 != *p.SHA256 || n.XML.PartSHA256 != *p.SHA256 {
 				return nil, v4.ErrLinkage
 			}
@@ -112,10 +113,7 @@ func CollectRelationshipCoverage(ctx context.Context, base *PackageRecords, nati
 			// Retained declarations were inspected even when target resolution
 			// failed. Keep their diagnostic, but do not call their bytes unread.
 			// A part-wide structural gap still excludes unrecognized regions.
-			for _, rel := range native.Relationships {
-				if rel.Anchor.Part != n.Part {
-					continue
-				}
+			for _, rel := range byPart[n.Part] {
 				span := wireSpan(rel.Anchor.Span)
 				remaining := []v4.Span{}
 				for _, gap := range o.Excluded {

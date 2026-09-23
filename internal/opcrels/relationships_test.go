@@ -264,8 +264,8 @@ func TestXMLAggregateAndFailureAccounting(t *testing.T) {
 		t.Fatal("aggregate XML byte limit", r.Parts)
 	}
 	r = inspect(t, map[string]string{"_rels/a.xml.rels": "<broken>", "_rels/b.xml.rels": rels(""), "a.xml": "a", "b.xml": "b"})
-	if r.Parts[0].Code != "xml.invalid" || r.Parts[1].Code != "opc.resource_limit" || r.Parts[1].XML != nil {
-		t.Fatal("failed parse allowance reused")
+	if r.Parts[0].Code != "xml.invalid" || r.Parts[1].State != "completed" || r.Parts[1].XML == nil {
+		t.Fatal("cheap malformed part exhausted unrelated parsing budget")
 	}
 }
 

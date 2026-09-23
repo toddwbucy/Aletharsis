@@ -30,14 +30,12 @@ type Phase struct {
 	Name  string
 	Parts []string
 }
-type Gap struct{ Name, Code string }
 
 // Result exposes planning observations for deterministic admission tests and
-// debugging. Phases/Gaps are not report coverage: consumers must use Outcomes
+// debugging. Phases are not report coverage: consumers must use Outcomes
 // and the namespace-checked producer diagnostics when constructing a report.
 type Result struct {
 	Phases   []Phase
-	Gaps     []Gap
 	Outcomes packageparts.OutcomeView
 }
 
@@ -58,7 +56,7 @@ func Admit(ctx context.Context, reader *packageparts.OutcomeReader, resolver Res
 	if view.SourceSHA256 == "" {
 		return nil, v4.ErrLinkage
 	}
-	r := &Result{Phases: []Phase{}, Gaps: []Gap{}}
+	r := &Result{Phases: []Phase{}}
 	defer func() {
 		r.Outcomes = reader.ReadOnlyView()
 		if err != nil {
@@ -88,9 +86,6 @@ func Admit(ctx context.Context, reader *packageparts.OutcomeReader, resolver Res
 		if len(found) == 1 {
 			return found[0]
 		}
-		if len(found) > 1 {
-			r.Gaps = append(r.Gaps, Gap{name, "office.prerequisite_ambiguous"})
-		}
 		return ""
 	}
 	phase := func(name string, candidates []string, ordered bool) error {
@@ -104,7 +99,6 @@ func Admit(ctx context.Context, reader *packageparts.OutcomeReader, resolver Res
 				continue
 			}
 			if !names[n] {
-				r.Gaps = append(r.Gaps, Gap{n, "office.prerequisite_missing"})
 				continue
 			}
 			selected[n] = true
@@ -172,15 +166,6 @@ func Admit(ctx context.Context, reader *packageparts.OutcomeReader, resolver Res
 			return nil, err
 		}
 	}
-	// Empty directory records still receive verified outcomes, without expansion.
-	directories := []string{}
-	for _, o := range view.Parts {
-		if o.Part.Directory {
-			directories = append(directories, o.Part.Name)
-		}
-	}
-	if err := reader.Admit(ctx, directories); err != nil {
-		return nil, err
-	}
+	// OpenOutcomes already verifies empty directory payloads.
 	return r, nil
 }

@@ -44,8 +44,13 @@ func TestAssembleRetainedOfficeSources(t *testing.T) {
 			}
 			if limited {
 				omitted := 0
-				for _, items := range result.Omitted {
-					omitted += len(items)
+				for _, part := range a.Parts {
+					if part.Word != nil {
+						omitted += len(part.Word.Omitted)
+					}
+					if part.ODT != nil {
+						omitted += len(part.ODT.Omitted)
+					}
 				}
 				if len(result.Evidence.Scopes) != 0 || len(result.Findings) != 0 || omitted != 1 {
 					t.Fatal("omission authority lost")

@@ -6,7 +6,6 @@ import (
 
 	"github.com/toddwbucy/Aletharsis/internal/evidence"
 	v4 "github.com/toddwbucy/Aletharsis/internal/evidence/v4"
-	"github.com/toddwbucy/Aletharsis/internal/scopelimits"
 )
 
 type ScopedFindings struct {
@@ -21,7 +20,6 @@ type ScopeCollection struct {
 	Artifacts  []v4.Artifact
 	Findings   []ScopedFindings
 	Boundaries map[string][]v4.Boundary
-	Omitted    map[string][]scopelimits.Omission
 }
 
 func CollectScopes(ctx context.Context, base *PackageRecords, a *Analysis, xml *XMLInventory) (*ScopeCollection, error) {
@@ -45,7 +43,7 @@ func collectScopes(ctx context.Context, base *PackageRecords, a *Analysis, xml *
 			analyses[part.Part] = part
 		}
 	}
-	r := &ScopeCollection{Scopes: []v4.Scope{}, Artifacts: []v4.Artifact{}, Findings: []ScopedFindings{}, Boundaries: map[string][]v4.Boundary{}, Omitted: map[string][]scopelimits.Omission{}}
+	r := &ScopeCollection{Scopes: []v4.Scope{}, Artifacts: []v4.Artifact{}, Findings: []ScopedFindings{}, Boundaries: map[string][]v4.Boundary{}}
 	pkg := base.Evidence.Packages[0]
 	appendScope := func(s v4.Scope, part v4.Part, findings []evidence.Finding) error {
 		artifact, err := ScopeArtifact(s, part, len(base.Artifacts)+len(r.Artifacts))
@@ -79,7 +77,6 @@ func collectScopes(ctx context.Context, base *PackageRecords, a *Analysis, xml *
 		}
 		r.Boundaries[part.PartRef] = []v4.Boundary{}
 		if word := analysis.Word; word != nil {
-			r.Omitted[part.PartRef] = append([]scopelimits.Omission{}, word.Omitted...)
 			for _, b := range word.Boundaries {
 				r.Boundaries[part.PartRef] = append(r.Boundaries[part.PartRef], v4.Boundary{XMLRef: doc.XMLRef, Token: int64(b.Token), Reason: b.Reason})
 			}
@@ -94,7 +91,6 @@ func collectScopes(ctx context.Context, base *PackageRecords, a *Analysis, xml *
 			}
 		}
 		if odt := analysis.ODT; odt != nil {
-			r.Omitted[part.PartRef] = append([]scopelimits.Omission{}, odt.Omitted...)
 			for _, b := range odt.Boundaries {
 				r.Boundaries[part.PartRef] = append(r.Boundaries[part.PartRef], v4.Boundary{XMLRef: doc.XMLRef, Token: int64(b.Token), Reason: b.Reason})
 			}

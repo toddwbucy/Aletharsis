@@ -94,6 +94,11 @@ func BuildObjectGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *A
 		if a.ObjectsError != nil || !p.hasDOCXDeclarations() || a.Objects.SourceSHA256 != pkg.SourceSHA256 || len(a.Objects.Objects) != len(assembly.Evidence.Objects) || p.DOCX == nil || p.DOCX.OPC == nil {
 			return nil, v4.ErrLinkage
 		}
+		if p.Identity == IdentityODT {
+			if _, err := add("office.hybrid_scope_only", ""); err != nil {
+				return nil, err
+			}
+		}
 		result.Limitations = slices.Clone(a.Objects.Limitations)
 		for i, original := range assembly.Evidence.Objects {
 			if err := ctx.Err(); err != nil {

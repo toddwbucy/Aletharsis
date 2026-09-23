@@ -65,10 +65,10 @@ func TestPartGapsDoNotPreventOfficeReport(t *testing.T) {
 						found++
 					}
 				case "decoy metadata":
-					// OPC declarations remain lexical identification evidence;
-					// DOCX-only projection must not claim an ODT source was scanned.
-					if len(report.Evidence.Office.Metadata) != 0 || len(report.Evidence.Office.Relationships) != 0 {
-						t.Fatal("DOCX-only inventory claimed ODT coverage")
+					// Retain independently declared OOXML evidence; the parent
+					// reports only restricted hybrid coverage, not a complete ODT scan.
+					if len(report.Evidence.Office.Metadata) != 2 || len(report.Evidence.Office.Relationships) == 0 {
+						t.Fatal("hybrid inventory lost decoy evidence")
 					}
 					if len(report.Evidence.Office.XML) > 0 {
 						found++

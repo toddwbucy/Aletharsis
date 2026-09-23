@@ -129,7 +129,23 @@ func OperationCoverage(base *PackageRecords, coverage *AnalysisCoverage, operati
 		e.State = v2.Partial
 		reason := e.Exclusions[0].ReasonCode
 		e.ReasonCode = &reason
-		if len(gaps) == 0 {
+		if len(unknown) > 0 {
+			// Only verified ZIP framing was necessarily consumed by selection.
+			// Do not credit every payload merely because the missing extent is unknown.
+			payloads := []v4.Span{}
+			for _, part := range pkg.Parts {
+				if part.CompressedSpan.Start < part.CompressedSpan.End {
+					payloads = append(payloads, part.CompressedSpan)
+				}
+			}
+			framing, _, err := partitionCoverage(pkg.SourceByteLength, payloads, false, false)
+			if err != nil {
+				return fail()
+			}
+			if len(framing) > 0 {
+				e.AnalyzedScope = append(e.AnalyzedScope, v2.Scope{ArtifactRef: pkg.SourceArtifactRef, Unit: "byte", Regions: identityRegions(framing)})
+			}
+		} else if len(gaps) == 0 {
 			e.AnalyzedScope = append(e.AnalyzedScope, e.RequestedScope)
 		} else if len(regions) > 0 {
 			e.AnalyzedScope = append(e.AnalyzedScope, v2.Scope{ArtifactRef: pkg.SourceArtifactRef, Unit: "byte", Regions: regions})

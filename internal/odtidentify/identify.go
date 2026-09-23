@@ -200,7 +200,11 @@ func finishPackage(ctx context.Context, view *packageparts.OutcomeView, r *Resul
 			parts[p.Name] = i
 		}
 	}
-	manifest := view.Parts[parts["META-INF/manifest.xml"]]
+	manifestIndex, exists := parts["META-INF/manifest.xml"]
+	if !exists {
+		return nil, packageparts.ErrIdentity
+	}
+	manifest := view.Parts[manifestIndex]
 	r.membership(parts)
 	if r.RootEntry < 0 {
 		r.issue("odt.root_entry_missing", manifest.Name, -1)

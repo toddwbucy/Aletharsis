@@ -125,7 +125,7 @@ func TestCriticalCaseMatchingAndAmbiguity(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(got.Gaps) != 1 || got.Gaps[0].Code != "office.prerequisite_ambiguous" || !reflect.DeepEqual(got.Phases[0].Parts, []string{"_rels/.rels"}) {
+	if !reflect.DeepEqual(got.Phases[0].Parts, []string{"_rels/.rels"}) {
 		t.Fatal("arbitrary ambiguous prerequisite selected")
 	}
 }

@@ -75,10 +75,10 @@ func (s *Session) Parse(ctx context.Context, names []string) error {
 			limits := xmlparts.DefaultLimits()
 			limits.Tokens = min(limits.Tokens, s.tokensLeft)
 			limits.RetainedBytes = min(limits.RetainedBytes, s.valuesLeft)
-			doc, err := xmlparts.Parse(ctx, p.Bytes, p.SHA256, limits)
+			doc, used, err := xmlparts.ParseMeasured(ctx, p.Bytes, p.SHA256, limits)
+			s.tokensLeft -= used.Tokens
+			s.valuesLeft -= used.RetainedBytes
 			if err != nil {
-				s.tokensLeft -= limits.Tokens
-				s.valuesLeft -= limits.RetainedBytes
 				part.State, part.Code = "failed", xmlCode(err)
 				if ctx.Err() != nil {
 					part.State, part.Code = "canceled", "execution.canceled"
@@ -86,8 +86,6 @@ func (s *Session) Parse(ctx context.Context, names []string) error {
 					return ctx.Err()
 				}
 			} else {
-				s.tokensLeft -= len(doc.Tokens)
-				s.valuesLeft -= valueBytes(doc)
 				part.XML = doc
 			}
 		}

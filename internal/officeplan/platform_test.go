@@ -59,6 +59,9 @@ func TestUnavailableAcquisitionIsCoverageNotLinkage(t *testing.T) {
 			if report.Report.File.SHA256 != nil || len(report.Report.Evidence.Office.Packages) != 0 || report.Report.Summary["exit_code"] != 4 {
 				t.Fatal("unavailable acquisition attested supplied evidence")
 			}
+			if report.Report.CatalogVersion != capability.OfficeCatalogVersion || len(report.Report.Trace.Capabilities) != len(catalog) {
+				t.Fatal("Office request catalog lost")
+			}
 			found := false
 			for _, e := range report.Report.Trace.Executions {
 				if e.State != v2.NotRun || len(e.AnalyzedScope) != 0 {

@@ -11,6 +11,7 @@ import (
 
 	"github.com/toddwbucy/Aletharsis/internal/evidence"
 	v2 "github.com/toddwbucy/Aletharsis/internal/evidence/v2"
+	v4 "github.com/toddwbucy/Aletharsis/internal/evidence/v4"
 	"github.com/toddwbucy/Aletharsis/internal/identity"
 )
 
@@ -141,12 +142,33 @@ func TestPackageCoverageEmptyUnavailablePayloadsRemainPartial(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if e.State != v2.Partial || len(e.Exclusions) != 1 || !e.Exclusions[0].UnknownRemainder || ds[0].Scope != nil {
+			if e.State != v2.Partial || len(e.Exclusions) != 1 || !e.Exclusions[0].UnknownRemainder || (ds[0].Scope == nil || ds[0].Scope.Unit != "whole_artifact" || ds[0].Scope.ArtifactRef != records.Evidence.Packages[0].Parts[0].ArtifactRef) {
 				t.Fatal("empty unverified payload claimed complete or fabricated byte span")
 			}
 			if len(e.AnalyzedScope) != 1 || !reflect.DeepEqual(e.AnalyzedScope[0].Regions, []identity.Region{{Start: 0, End: uint64(len(raw))}}) {
 				t.Fatal("inspected framing lost")
 			}
 		})
+	}
+}
+
+func TestParseDiagnosticsBindByPartIdentity(t *testing.T) {
+	a, b := "office-part/0", "office-part/1"
+	ex := "exec/1"
+	pkg := v4.Package{Parts: []v4.Part{{PartRef: a, ArtifactRef: "artifact/1"}, {PartRef: b, ArtifactRef: "artifact/2"}}, Outcomes: []v4.Outcome{
+		{PartRef: &a, ExecutionRef: ex, State: "failed", Codes: []string{"office.part_crc_failed"}},
+		{PartRef: &b, ExecutionRef: ex, State: "failed", Codes: []string{"office.part_crc_failed"}},
+	}}
+	ds := []v2.Diagnostic{
+		{Ref: "diagnostic/1", ExecutionRef: &ex, Code: "office.part_crc_failed", Scope: &v2.Scope{ArtifactRef: "artifact/2", Unit: "whole_artifact"}},
+		{Ref: "diagnostic/0", ExecutionRef: &ex, Code: "office.part_crc_failed", Scope: &v2.Scope{ArtifactRef: "artifact/1", Unit: "whole_artifact"}},
+	}
+	got, err := bindParseDiagnostics(pkg, ds)
+	if err != nil || len(got[0].DiagnosticRefs) != 1 || got[0].DiagnosticRefs[0] != "diagnostic/0" || got[1].DiagnosticRefs[0] != "diagnostic/1" {
+		t.Fatal("diagnostics paired by order", got, err)
+	}
+	ds[0].Scope.ArtifactRef = "artifact/999"
+	if _, err := bindParseDiagnostics(pkg, ds); err == nil {
+		t.Fatal("unbound diagnostic accepted")
 	}
 }

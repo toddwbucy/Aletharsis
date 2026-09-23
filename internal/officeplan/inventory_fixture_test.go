@@ -4,9 +4,14 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"github.com/toddwbucy/Aletharsis/internal/capability"
 	"github.com/toddwbucy/Aletharsis/internal/evidence"
+	v2 "github.com/toddwbucy/Aletharsis/internal/evidence/v2"
+	v4 "github.com/toddwbucy/Aletharsis/internal/evidence/v4"
+	"github.com/toddwbucy/Aletharsis/internal/identity"
 	"os"
 	"path/filepath"
+	"slices"
 	"testing"
 )
 
@@ -42,28 +47,54 @@ func TestFullInventoryFixtureReproducesNativeReport(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	// The captured report predates retention of part-qualified boundaries.
-	// Keep its bytes frozen and permit only this deliberate additive difference.
-	var current, captured map[string]any
-	if err := json.Unmarshal(report, &current); err != nil {
-		t.Fatal(err)
+	limits := DefaultLimits().Report
+	canonical, err := identity.Canonicalize(report, limits)
+	if err != nil || !bytes.Equal(report, canonical) {
+		t.Fatal("producer bytes are not canonical", err)
 	}
-	if err := json.Unmarshal(want, &captured); err != nil {
-		t.Fatal(err)
-	}
-	scopes := current["evidence"].(map[string]any)["office"].(map[string]any)["scopes"].([]any)
-	for _, scope := range scopes {
-		scope.(map[string]any)["boundaries"] = []any{}
-	}
-	gotJSON, err := json.Marshal(current)
+	current, err := v4.DecodeReport(report, limits)
 	if err != nil {
 		t.Fatal(err)
 	}
-	wantJSON, err := json.Marshal(captured)
+	// Explicit compatibility projection to the frozen revision-1 capture. Only
+	// the reviewed boundary addition and three revised descriptors/configs differ.
+	for i := range current.Evidence.Office.Scopes {
+		current.Evidence.Office.Scopes[i].Boundaries = []v4.Boundary{}
+	}
+	changed := func(id string) bool {
+		return id == capability.OfficeMetadataID || id == capability.OfficeRelationshipsID || id == capability.OfficeObjectsID
+	}
+	for i := range current.Trace.Capabilities {
+		c := &current.Trace.Capabilities[i]
+		if changed(c.ID) {
+			if c.Revision != "2" || !slices.Equal(c.SupportedScope.Formats, []string{"docx", "odt"}) {
+				t.Fatal("unexpected capability revision", c.ID)
+			}
+			c.Revision = "1"
+			c.SupportedScope.Formats = []string{"docx"}
+		}
+	}
+	for i := range current.Trace.Executions {
+		e := &current.Trace.Executions[i]
+		if changed(e.CapabilityRef) {
+			if e.Config.Settings == nil {
+				t.Fatal("missing settings")
+			}
+			e.Config, err = v2.NewNativeConfig("1", e.Config.Settings.DataRevision, e.Config.Settings.Limits)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	raw, err := json.Marshal(current)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !bytes.Equal(gotJSON, wantJSON) {
-		t.Fatal("native report changed beyond newly retained boundary locations")
+	projected, err := identity.Canonicalize(raw, limits)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(projected, want) {
+		t.Fatal("native report differs beyond explicit reviewed projection")
 	}
 }

@@ -170,7 +170,22 @@ func declaration(data []byte) bool {
 // Parse owns its output; callers must not mutate input during the call. A complete
 // result means this XML subset parsed, not that an Office document is supported.
 // Errors expose no partial semantic document. Original bytes remain the evidence.
+// Usage records bounded work even when no semantic document can be returned.
+type Usage struct{ Tokens, RetainedBytes int }
+
 func Parse(ctx context.Context, source []byte, expectedSHA256 string, l Limits) (*Document, error) {
+	doc, _, err := ParseMeasured(ctx, source, expectedSHA256, l)
+	return doc, err
+}
+
+// ParseMeasured preserves Parse's fail-closed document contract and separately
+// reports consumed token/value allowance. Reservations are not consumption.
+func ParseMeasured(ctx context.Context, source []byte, expectedSHA256 string, l Limits) (*Document, Usage, error) {
+	var used Usage
+	doc, err := parseMeasured(ctx, source, expectedSHA256, l, &used)
+	return doc, used, err
+}
+func parseMeasured(ctx context.Context, source []byte, expectedSHA256 string, l Limits, used *Usage) (*Document, error) {
 	if ctx == nil || !validLimits(l) {
 		return nil, ErrLimit
 	}
@@ -200,7 +215,8 @@ func Parse(ctx context.Context, source []byte, expectedSHA256 string, l Limits) 
 	d.CharsetReader = func(string, io.Reader) (io.Reader, error) { unsupported = true; return nil, ErrUnsupported }
 	result := &Document{PartSHA256: expectedSHA256, Parser: Version, Encoding: "utf-8", BOM: base == 3, Elements: []Element{}, Tokens: []Token{}}
 	stack := []frame{}
-	roots, retained := 0, 0
+	roots, retained, tokensUsed := 0, 0, 0
+	defer func() { used.Tokens = min(tokensUsed, l.Tokens); used.RetainedBytes = retained }()
 	charge := func(n int) bool {
 		if n > l.RetainedBytes-retained {
 			return false
@@ -224,6 +240,7 @@ func Parse(ctx context.Context, source []byte, expectedSHA256 string, l Limits) 
 			}
 			return nil, ErrXML
 		}
+		tokensUsed++
 		if len(result.Tokens) >= l.Tokens {
 			return nil, ErrLimit
 		}

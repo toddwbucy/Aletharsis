@@ -142,10 +142,6 @@ func BuildScopeGraph(ctx context.Context, assembly *Assembly, catalog []v2.Capab
 			if err != nil {
 				return nil, err
 			}
-			raw, err = identity.Canonicalize(raw, limits)
-			if err != nil {
-				return nil, err
-			}
 			var owned evidence.Finding
 			if err := json.Unmarshal(raw, &owned); err != nil {
 				return nil, err

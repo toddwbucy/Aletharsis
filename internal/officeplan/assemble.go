@@ -4,7 +4,6 @@ import (
 	"context"
 
 	v4 "github.com/toddwbucy/Aletharsis/internal/evidence/v4"
-	"github.com/toddwbucy/Aletharsis/internal/scopelimits"
 )
 
 // Assembly contains linked evidence plus the inputs still needed to build
@@ -17,7 +16,6 @@ type Assembly struct {
 	XMLFailures   []XMLFailure
 	InventoryGaps []InventoryGap
 	Boundaries    map[string][]v4.Boundary
-	Omitted       map[string][]scopelimits.Omission
 }
 
 // Assemble combines previously acquired and analyzed evidence without rerunning
@@ -40,7 +38,7 @@ func Assemble(ctx context.Context, source []byte, p *Prepared, a *Analysis, pars
 		return nil, err
 	}
 	result := &Assembly{Evidence: base.Evidence, Artifacts: append(base.Artifacts, scopes.Artifacts...), Findings: scopes.Findings,
-		XMLFailures: xml.Failures, InventoryGaps: inventories.Gaps, Boundaries: scopes.Boundaries, Omitted: scopes.Omitted}
+		XMLFailures: xml.Failures, InventoryGaps: inventories.Gaps, Boundaries: scopes.Boundaries}
 	result.Evidence.XML = xml.Documents
 	result.Evidence.Scopes = scopes.Scopes
 	result.Evidence.Metadata = inventories.Metadata

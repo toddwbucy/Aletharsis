@@ -2,6 +2,7 @@ package officeplan
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/toddwbucy/Aletharsis/internal/capability"
 	"github.com/toddwbucy/Aletharsis/internal/evidence"
@@ -49,7 +50,7 @@ func PackageCoverage(records *PackageRecords, config v2.Config, execution, first
 		code := failure.Code(p.Outcomes[i].Codes[0])
 		d := v2.Diagnostic{Ref: fmt.Sprintf("diagnostic/%d", firstDiagnostic+len(diagnostics)), ExecutionRef: &e.Ref,
 			Stage: failure.Parsing, Code: code, Message: "Package payload was not verified; retained identity is compressed source evidence only.",
-			Details: v2.ErrorDetails{ErrorType: "OfficePartUnavailable"}}
+			Details: v2.ErrorDetails{ErrorType: "OfficePartUnavailable"}, Scope: &v2.Scope{ArtifactRef: part.ArtifactRef, Unit: "whole_artifact"}}
 		x := v2.Exclusion{ReasonCode: code}
 		span := part.CompressedSpan
 		if span.Start == span.End {
@@ -58,7 +59,6 @@ func PackageCoverage(records *PackageRecords, config v2.Config, execution, first
 			region := identity.Region{Start: uint64(span.Start), End: uint64(span.End)}
 			scope := v2.Scope{ArtifactRef: p.SourceArtifactRef, Unit: "byte", Regions: []identity.Region{region}}
 			x.Scope = &scope
-			d.Scope = &scope
 			gaps = append(gaps, region)
 		}
 		if err := d.Validate(); err != nil {
@@ -95,4 +95,41 @@ func PackageCoverage(records *PackageRecords, config v2.Config, execution, first
 		return v2.Execution{}, nil, err
 	}
 	return e, diagnostics, nil
+}
+
+func bindParseDiagnostics(pkg v4.Package, parseDiagnostics []v2.Diagnostic) ([]v4.Outcome, error) {
+	outcomes := slices.Clone(pkg.Outcomes)
+	// Bind by artifact identity and code, never by diagnostic position.
+	partArtifacts := map[string]string{}
+	for _, part := range pkg.Parts {
+		partArtifacts[part.PartRef] = part.ArtifactRef
+	}
+	usedParse := map[string]bool{}
+	for i := range outcomes {
+		o := &outcomes[i]
+		if o.State == "completed" {
+			continue
+		}
+		if o.PartRef == nil {
+			return nil, v4.ErrLinkage
+		}
+		o.DiagnosticRefs = []string{}
+		for _, d := range parseDiagnostics {
+			if d.ExecutionRef != nil && *d.ExecutionRef == o.ExecutionRef && d.Scope != nil && d.Scope.ArtifactRef == partArtifacts[*o.PartRef] && slices.Contains(o.Codes, string(d.Code)) {
+				if usedParse[d.Ref] {
+					return nil, v4.ErrLinkage
+				}
+				o.DiagnosticRefs = append(o.DiagnosticRefs, d.Ref)
+				usedParse[d.Ref] = true
+			}
+		}
+		if len(o.DiagnosticRefs) == 0 {
+			return nil, v4.ErrLinkage
+		}
+	}
+	if len(usedParse) != len(parseDiagnostics) {
+		return nil, v4.ErrLinkage
+	}
+
+	return outcomes, nil
 }

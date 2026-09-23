@@ -101,3 +101,49 @@ func TestSessionDoesNotParseOrdinaryPartsOrReplayFailedXML(t *testing.T) {
 		t.Fatal("lost parse failure", err)
 	}
 }
+
+func TestMalformedPartChargesConsumptionAcrossBothPaths(t *testing.T) {
+	raw := archive(t, map[string]string{"_rels/.rels": "<broken>", "word/main.xml": "<r/>", "word/_rels/main.xml.rels": rels(relationship("later", "target.bin", "")), "word/target.bin": "payload"})
+	reader, err := packageparts.OpenOutcomes(context.Background(), raw, evidence.Hash(raw), packageparts.DefaultLimits())
+	if err != nil {
+		t.Fatal(err)
+	}
+	names := []string{}
+	for _, part := range reader.View().Parts {
+		names = append(names, part.Part.Name)
+	}
+	if err := reader.Admit(context.Background(), names); err != nil {
+		t.Fatal(err)
+	}
+	session, err := NewSession(reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := session.Parse(context.Background(), []string{"_rels/.rels"}); err != nil {
+		t.Fatal(err)
+	}
+	if session.tokensLeft != maxTokens-1 || session.valuesLeft <= 0 {
+		t.Fatal("failed parse charged reservation", session.tokensLeft, session.valuesLeft)
+	}
+	if err := session.Parse(context.Background(), []string{"word/_rels/main.xml.rels"}); err != nil {
+		t.Fatal(err)
+	}
+	staged, err := session.Result(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	strict, err := Inspect(context.Background(), raw, evidence.Hash(raw))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, result := range []*Result{staged, strict} {
+		if result.State != "partial" || len(result.Relationships) != 1 || result.Relationships[0].ID != "later" {
+			t.Fatal("unrelated evidence suppressed", result)
+		}
+		for _, part := range result.Parts {
+			if part.Part == "word/_rels/main.xml.rels" && part.State != "completed" {
+				t.Fatal("invented resource failure", part)
+			}
+		}
+	}
+}

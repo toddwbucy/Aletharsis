@@ -57,9 +57,6 @@ func AnalyzePrepared(ctx context.Context, p *Prepared) (*Analysis, error) {
 		case capability.OfficeTextID:
 			texts = append(texts, target)
 		case capability.OfficeMetadataID:
-			if p.Identity == IdentityODT {
-				continue
-			}
 			metadata = append(metadata, target)
 		default:
 			return nil, v4.ErrLinkage

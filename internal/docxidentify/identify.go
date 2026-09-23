@@ -458,6 +458,15 @@ func (r *Result) assign(parts []packageparts.Outcome) {
 
 // Scheduling and final identification use the same complete-enumeration rule.
 func acceptableRootRelationships(opc *opcrels.Result) bool {
+	roots := 0
+	for _, p := range opc.Parts {
+		if opcrels.FoldName(p.Part) == "_rels/.rels" {
+			roots++
+		}
+	}
+	if roots != 1 {
+		return false
+	}
 	for _, part := range opc.Parts {
 		if opcrels.FoldName(part.Part) != "_rels/.rels" {
 			continue
@@ -475,6 +484,9 @@ func acceptableRootRelationships(opc *opcrels.Result) bool {
 		for _, rel := range opc.Relationships {
 			if opcrels.FoldName(rel.Anchor.Part) == "_rels/.rels" && (rel.Type == TransitionalRelationship || rel.Type == StrictRelationship) {
 				count++
+				if count > 1 {
+					return false
+				}
 				resolved = rel.State == "resolved"
 			}
 		}
