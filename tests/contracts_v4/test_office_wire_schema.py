@@ -3,6 +3,7 @@ import importlib.util
 import json
 from pathlib import Path
 
+import pytest
 from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -149,7 +150,8 @@ def test_complete_flat_fixtures_are_reproducible_and_wire_valid():
         validator.validate(fixture)
 
 
-def test_office_fixture_matches_retained_archive():
+@pytest.mark.parametrize('format', ['docx', 'odt'])
+def test_office_fixture_matches_retained_archive(format):
     import hashlib
     import io
     import zipfile
@@ -157,10 +159,11 @@ def test_office_fixture_matches_retained_archive():
         Path(__file__).with_name('build_office_fixture.py'))
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    report, source = module.build()
+    report, source = module.build(format)
     directory = Path(__file__).with_name('fixtures')
-    assert source == (directory / 'office-minimal.docx').read_bytes()
-    assert report == json.loads((directory / 'office-minimal.json').read_bytes())
+    name = Path(report['file']['filename'])
+    assert source == (directory / name).read_bytes()
+    assert report == json.loads((directory / name.with_suffix('.json')).read_bytes())
     Draft202012Validator(_builder.build()).validate(report)
     assert hashlib.sha256(source).hexdigest() == report['file']['sha256']
     with zipfile.ZipFile(io.BytesIO(source)) as archive:
@@ -170,7 +173,7 @@ def test_office_fixture_matches_retained_archive():
             assert hashlib.sha256(raw).hexdigest() == part['sha256']
             span = part['compressed_span']
             assert hashlib.sha256(source[span['start']:span['end']]).hexdigest() == part['compressed_sha256']
-        xml = archive.read('word/document.xml')
+        xml = archive.read('word/document.xml' if format == 'docx' else 'content.xml')
         scope = report['evidence']['office']['scopes'][0]
         assert ''.join(xml[o['source']['start']:o['source']['end']].decode()
                        for o in scope['origins']) == scope['text']

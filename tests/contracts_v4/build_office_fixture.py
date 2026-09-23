@@ -1,4 +1,4 @@
-"""Deterministic DOCX wire fixture with independently constructed byte locations.
+"""Deterministic DOCX/ODT wire fixtures with independently constructed byte locations.
 
 This tests the contract, not the future CLI producer. The retained ZIP allows
 independent verification of container/part identities and lexical coordinates.
@@ -15,13 +15,17 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[2]
 OUT = Path(__file__).with_name('fixtures')
 NS = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'
+OFFICE_NS = 'urn:oasis:names:tc:opendocument:xmlns:office:1.0'
+TEXT_NS = 'urn:oasis:names:tc:opendocument:xmlns:text:1.0'
 
 
 def digest(b):
     return hashlib.sha256(b).hexdigest()
 
 
-def build():
+def build(format='docx'):
+    if format not in ('docx', 'odt'):
+        raise ValueError('unsupported fixture format')
     r = json.loads((OUT / 'flat-structural-observation.json').read_bytes())
     text = r['evidence']['texts'][0]['text']
     body = (f'<w:document xmlns:w="{NS}"><w:body><w:p><w:r><w:t>' + text +
@@ -31,6 +35,15 @@ def build():
         '_rels/.rels': b'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>',
         'word/document.xml': body,
     }
+    if format == 'odt':
+        body = (f'<office:document-content xmlns:office="{OFFICE_NS}" xmlns:text="{TEXT_NS}" office:version="1.3">'
+                '<office:body><office:text><text:p><text:span>' + text +
+                '</text:span></text:p></office:text></office:body></office:document-content>').encode()
+        members = {
+            'mimetype': b'application/vnd.oasis.opendocument.text',
+            'META-INF/manifest.xml': b'<manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0" manifest:version="1.3"><manifest:file-entry manifest:full-path="/" manifest:media-type="application/vnd.oasis.opendocument.text"/><manifest:file-entry manifest:full-path="content.xml" manifest:media-type="text/xml"/></manifest:manifest>',
+            'content.xml': body,
+        }
     stream = io.BytesIO()
     with zipfile.ZipFile(stream, 'w') as z:
         for name, value in members.items():
@@ -39,7 +52,7 @@ def build():
     source_hash = digest(source)
     package = {'package_ref': 'office-package/0', 'source_artifact_ref': 'artifact/0',
         'source_sha256': source_hash, 'source_byte_length': len(source),
-        'parser_version': 'zip-parts/1', 'format': 'docx', 'state': 'completed',
+        'parser_version': 'zip-parts/1', 'format': format, 'state': 'completed',
         'issues': [], 'parts': [], 'outcomes': [], 'limits': {
             'source_bytes': 8 << 20, 'part_count': 4096, 'part_bytes': 32 << 20,
             'aggregate_bytes': 64 << 20, 'max_scope_text_utf8_bytes': 4 << 20,
@@ -72,9 +85,11 @@ def build():
         if raw.startswith(b'</'):
             element = stack.pop(); elements[element]['span']['end'] = match.end(); kind = 'end'
         elif raw.startswith(b'<'):
-            element = len(elements); local = raw[3:].split(b'>')[0].split(b' ')[0].decode()
+            element = len(elements)
+            prefix, local = raw[1:].split(b'>')[0].split(b' ')[0].decode().split(':', 1)
+            namespace = {'w': NS, 'office': OFFICE_NS, 'text': TEXT_NS}[prefix]
             elements.append({'index': element, 'parent': stack[-1] if stack else None,
-                'namespace': NS, 'local_name': local, 'span': dict(span)})
+                'namespace': namespace, 'local_name': local, 'span': dict(span)})
             stack.append(element); kind = 'start'
         else:
             element = stack[-1]; kind = 'text'; text_span = span; text_token = len(tokens)
@@ -92,8 +107,9 @@ def build():
         'mapper_version': 'xml-text-map/1', 'tokens': tokens, 'elements': elements, 'issues': [], 'controls': [],
         'segments': [{'token': text_token, 'element': 4, 'token_span': text_span, 'content_span': text_span,
                      'cdata': False, 'text': text, 'sha256': digest(text.encode()), 'scalars': scalars}]}
-    scope = {'scope_ref': 'office-scope/0', 'part_ref': part['part_ref'], 'local_id': 'word-scope/0',
-        'extractor_version': 'word-text/1', 'assembler_version': 'word-analysis/1', 'role': 'body',
+    scope = {'scope_ref': 'office-scope/0', 'part_ref': part['part_ref'], 'local_id': ('word' if format == 'docx' else 'odt') + '-scope/0',
+        'extractor_version': ('word' if format == 'docx' else 'odt') + '-text/1',
+        'assembler_version': ('word' if format == 'docx' else 'odt') + '-analysis/1', 'role': 'body',
         'text': text, 'sha256': digest(text.encode()), 'origins': origins,
         'hashes': r['evidence']['texts'][0]['hashes'], 'boundaries': [], 'issues': []}
     identity = [source_hash, part['name'], part['sha256'], scope['extractor_version'], scope['assembler_version'], scope['local_id']]
@@ -102,8 +118,10 @@ def build():
         content_ref={'kind': 'office_scope', 'scope_ref': scope['scope_ref']}, transform=None,
         mapping={'quality': 'unavailable', 'reason_code': 'mapping.not_applicable'})
     artifacts.append(text_art); r['artifacts'] = artifacts
-    r['file'].update(path='office-minimal.docx', filename='office-minimal.docx', extension='.docx',
-        mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document', format='docx',
+    filename = 'office-minimal.docx' if format == 'docx' else 'office-odt-minimal.odt'
+    r['file'].update(path=filename, filename=filename, extension='.' + format,
+        mime=('application/vnd.openxmlformats-officedocument.wordprocessingml.document' if format == 'docx'
+              else 'application/vnd.oasis.opendocument.text'), format=format,
         parser='office-fixture/1', size=len(source), sha256=source_hash)
     for c in r['capabilities']:
         if c['id'] == 'aletharsis.parse.text': c['id'] = 'aletharsis.parse.office_package'
@@ -123,6 +141,8 @@ def build():
 
 
 if __name__ == '__main__':
-    report, source = build()
-    (OUT / 'office-minimal.json').write_text(json.dumps(report, indent=2) + '\n')
-    (OUT / 'office-minimal.docx').write_bytes(source)
+    for format in ('docx', 'odt'):
+        report, source = build(format)
+        name = Path(report['file']['filename'])
+        (OUT / name.with_suffix('.json')).write_text(json.dumps(report, indent=2) + '\n')
+        (OUT / name).write_bytes(source)
