@@ -133,10 +133,8 @@ func validName(name string) bool {
 	return true
 }
 
-// Read requires an already acquired snapshot and its expected digest. The caller
-// must not mutate the snapshot during the call. Returned byte slices are owned by
-// the result. Errors return no partial package; cancellation is cooperative.
-func Read(ctx context.Context, source []byte, expectedSHA256 string, l Limits) (*Package, error) {
+// inspectContainer validates every physical header and span before any part is read.
+func inspectContainer(ctx context.Context, source []byte, expectedSHA256 string, l Limits, strict bool) (*zip.Reader, error) {
 	if ctx == nil || !validLimits(l) {
 		return nil, ErrLimit
 	}
@@ -188,10 +186,12 @@ func Read(ctx context.Context, source []byte, expectedSHA256 string, l Limits) (
 		if f.Mode().IsDir() != strings.HasSuffix(f.Name, "/") {
 			return nil, ErrFormat
 		}
-		if f.UncompressedSize64 > uint64(l.PartBytes) || f.UncompressedSize64 > uint64(l.TotalBytes)-total {
+		if strict && (f.UncompressedSize64 > uint64(l.PartBytes) || f.UncompressedSize64 > uint64(l.TotalBytes)-total) {
 			return nil, ErrLimit
 		}
-		total += f.UncompressedSize64
+		if strict {
+			total += f.UncompressedSize64
+		}
 		if strings.HasSuffix(f.Name, "/") && (f.UncompressedSize64 != 0 || f.CompressedSize64 != 0 || f.Method != zip.Store || f.CRC32 != 0) {
 			return nil, ErrFormat
 		}
@@ -262,6 +262,18 @@ func Read(ctx context.Context, source []byte, expectedSHA256 string, l Limits) (
 	if previous != int64(central) {
 		return nil, ErrFormat
 	}
+	return z, nil
+}
+
+// Read requires an already acquired snapshot and its expected digest. The caller
+// must not mutate the snapshot during the call. Returned byte slices are owned by
+// the result. Errors return no partial package; cancellation is cooperative.
+func Read(ctx context.Context, source []byte, expectedSHA256 string, l Limits) (*Package, error) {
+	z, err := inspectContainer(ctx, source, expectedSHA256, l, true)
+	if err != nil {
+		return nil, err
+	}
+
 	result := &Package{SourceSHA256: expectedSHA256, Parser: Version, Parts: make([]Part, 0, len(z.File))}
 	for _, f := range z.File {
 		if err := ctx.Err(); err != nil {
