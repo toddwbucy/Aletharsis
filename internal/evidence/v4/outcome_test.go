@@ -276,7 +276,7 @@ func TestNonParsingOperationsCannotAttestXMLMaps(t *testing.T) {
 // Overlap and XML attestation are operation-wide rules, not metadata exceptions.
 func TestOperationCoverageAndXMLAttestation(t *testing.T) {
 	for _, operation := range []string{"aletharsis.office.identify", "aletharsis.office.text", "aletharsis.office.relationships"} {
-		for _, mode := range []string{"valid", "overlap", "adjacent", "empty", "zero width"} {
+		for _, mode := range []string{"valid", "overlap", "adjacent", "empty", "zero width", "failed exclusion", "canceled exclusion", "unrun exclusion"} {
 			t.Run(operation+"/"+mode, func(t *testing.T) {
 				raw, err := os.ReadFile("../../../tests/contracts_v4/fixtures/office-minimal.json")
 				if err != nil {
@@ -304,15 +304,24 @@ func TestOperationCoverageAndXMLAttestation(t *testing.T) {
 						o.Assessed = nil
 					case "zero width":
 						o.Assessed = []Span{{0, 0}}
-					case "overlap", "adjacent":
+					case "overlap", "adjacent", "failed exclusion", "canceled exclusion", "unrun exclusion":
 						end := o.Assessed[0].End
 						excluded := Span{0, end}
 						if mode == "adjacent" {
 							o.Assessed = []Span{{0, end / 2}}
 							excluded.Start = end / 2
 						}
-						pkg.Outcomes = append(pkg.Outcomes, Outcome{ExecutionRef: "exec/99", Operation: operation, PartRef: o.PartRef, State: "partial", Excluded: []Span{excluded}})
-						r.Trace.Executions = append(r.Trace.Executions, v2.Execution{Ref: "exec/99", CapabilityRef: operation, State: v2.Partial})
+						state := v2.Partial
+						switch mode {
+						case "failed exclusion":
+							state = v2.Failed
+						case "canceled exclusion":
+							state = v2.Canceled
+						case "unrun exclusion":
+							state = v2.NotRun
+						}
+						pkg.Outcomes = append(pkg.Outcomes, Outcome{ExecutionRef: "exec/99", Operation: operation, PartRef: o.PartRef, State: string(state), Excluded: []Span{excluded}})
+						r.Trace.Executions = append(r.Trace.Executions, v2.Execution{Ref: "exec/99", CapabilityRef: operation, State: state})
 					}
 					break
 				}
@@ -325,7 +334,7 @@ func TestOperationCoverageAndXMLAttestation(t *testing.T) {
 					trace.Executions[e.Ref] = e
 				}
 				err = x.ValidateOutcomes(r.Evidence.Office, trace)
-				if (err == nil) != (mode == "valid" || mode == "adjacent") {
+				if (err == nil) != (mode == "valid" || mode == "adjacent" || mode == "failed exclusion" || mode == "canceled exclusion" || mode == "unrun exclusion") {
 					t.Fatal(mode, err)
 				}
 			})

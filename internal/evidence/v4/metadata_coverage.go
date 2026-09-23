@@ -80,7 +80,10 @@ func (x *Index) validateMetadataProjection(e Evidence, trace *TraceIndex) error 
 				gaps[element] = true
 			}
 		}
-		for _, element := range children {
+		for span, element := range children {
+			if retained[partRef][element] && !coveredByNormalized([]Span{span}, assessed) {
+				return ErrLinkage
+			}
 			if !retained[partRef][element] && !gaps[element] {
 				return ErrLinkage
 			}

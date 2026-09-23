@@ -20,7 +20,7 @@ func (x *Index) ValidateStructuralLocation(l StructuralLocation, objects map[str
 		}
 		return nil
 	}
-	if l.XMLRef == nil || l.Span == nil || !l.Span.Within(*p.ByteLength) || (l.Element == nil && l.Token == nil) {
+	if l.XMLRef == nil || l.Span == nil || !l.Span.Within(*p.ByteLength) || l.Span.Start >= l.Span.End || (l.Element == nil && l.Token == nil) {
 		return ErrLinkage
 	}
 	doc, ok := x.XML[*l.XMLRef]

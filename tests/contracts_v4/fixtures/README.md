@@ -4,14 +4,16 @@ native fixture described below.
 
 `metadata-inventory.docx` and `metadata-inventory.json` were captured from the
 increment-4 native producer at commit `e4c98be`. Its
-`internal/officeplan/inventory_fixture_test.go` constructs the archive and complete
-report in memory and verifies both byte-for-byte. That producer is intentionally
+`internal/officeplan/inventory_fixture_test.go` reads the committed archive and reproduces the complete report in memory. It
+does not require a particular Go toolchain to reproduce DEFLATE bytes. That producer is intentionally
 not duplicated into the increment-2 wire/import branch.
 
 On the wire branch, `test_inventory_source.py` independently verifies the complete
 source hash and length, ZIP entry set, exact compressed spans/digests, decompressed
 part hashes/lengths, and every retained scope and metadata scalar against source
 bytes. Mutation tests cover source, compressed/part identities, and both origin
-families. Go additionally compares the metadata projection to `officemetadata`;
+families. Go also checks whole-source/package identity and every compressed and decompressed
+part identity for all five Office archives, with mutation checks, and compares the
+metadata projection to `officemetadata`;
 the schema oracle and Go importer both validate the full report. These are captured
 interoperability vectors, not claims that the wire branch implements the producer.
