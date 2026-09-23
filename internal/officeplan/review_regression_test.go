@@ -288,3 +288,47 @@ func TestUnavailableMainPreservesVerifiedSiblingEvidence(t *testing.T) {
 		})
 	}
 }
+
+// Reproduce the review's default-limit case without a surviving text scope:
+// metadata and objects must survive, and the parent must retain the actual cause.
+func TestDefaultMainLimitPreservesInventoryAndExecutionReason(t *testing.T) {
+	parts := budgetBase(t, "office-minimal.docx")
+	budgetMetadata(parts)
+	budgetEmbedding(parts, "object.bin", "%PDF-1.7 payload")
+	parts["[Content_Types].xml"] = strings.Replace(parts["[Content_Types].xml"], "</Types>", `<Default Extension="bin" ContentType="application/octet-stream"/></Types>`, 1)
+	limits := DefaultLimits()
+	parts["word/document.xml"] += strings.Repeat(" ", int(limits.Package.PartBytes)+1)
+	raw := budgetArchive(t, parts, false)
+	digest, size := evidence.Hash(raw), len(raw)
+	p, err := Prepare(context.Background(), raw, digest, limits)
+	if err != nil {
+		t.Fatal(err)
+	}
+	a, err := AnalyzePrepared(context.Background(), p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	output, err := BuildReport(context.Background(), raw, evidence.File{Path: "limited.docx", Filename: "limited.docx", SHA256: &digest, Size: &size}, p, a, "test")
+	if err != nil {
+		t.Fatal(err)
+	}
+	r, err := v4.DecodeReport(output.JSON, limits.Report)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if r.File.Format != "unknown" || len(r.Evidence.Office.Metadata) != 2 || len(r.Evidence.Office.Objects) != 1 || len(r.Evidence.Office.Scopes) != 0 {
+		t.Fatal("lost verified inventories or invented main text")
+	}
+	found := false
+	for _, e := range r.Trace.Executions {
+		if e.CapabilityRef == capability.OfficeTextID {
+			found = true
+			if e.State != "partial" || e.ReasonCode == nil || *e.ReasonCode != "office.part_limit" {
+				t.Fatal("parent execution masked its child admission failure", e)
+			}
+		}
+	}
+	if !found {
+		t.Fatal("missing text execution")
+	}
+}
