@@ -237,3 +237,12 @@ def test_every_end_anchored_pattern_rejects_trailing_newline():
         assert not validator.is_valid(valid + '\n'), pattern
         count += 1
     assert count > 0
+
+
+def test_native_inventory_fixture_is_wire_valid():
+    report = json.loads(Path(__file__).with_name('fixtures').joinpath('metadata-inventory.json').read_bytes())
+    Draft202012Validator(_builder.build()).validate(report)
+    office = report['evidence']['office']
+    assert len(office['metadata']) == 5
+    assert len(office['relationships']) >= 3
+    assert len(office['objects']) == 1

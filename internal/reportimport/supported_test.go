@@ -38,7 +38,7 @@ func TestSupportedPreservesLegacyImports(t *testing.T) {
 }
 func TestSupportedNativeOfficeAndFlat(t *testing.T) {
 	paths, err := filepath.Glob("../../tests/contracts_v4/fixtures/*.json")
-	if err != nil || len(paths) != 12 {
+	if err != nil || len(paths) != 13 {
 		t.Fatal("twelve fixtures required", err)
 	}
 	for _, path := range paths {
