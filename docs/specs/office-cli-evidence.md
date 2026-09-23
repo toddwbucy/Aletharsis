@@ -226,14 +226,6 @@ A finding is not needed for every ordinary inventory entry.
 
 ### Package dispatch
 
-An unidentified ZIP without OPC relationship candidates reports that check as
-unrun with identity unconfirmed; an identified ODT with no OPC candidates retains
-the unsupported-input result. Actual OPC candidates may still be inspected
-independently of final file format, with explicit per-part coverage. Conflicting
-DOCX/ODT signatures do not suppress independently confirmed text, metadata or
-embedded-object inspection; the package remains format `unknown` with the
-conflict diagnostic.
-
 After acquisition, perform only a bounded signature check before package validation.
 For the 4.0 Office path, do not call the legacy `parsers.Identify` ZIP-member sniff:
 it uses `archive/zip.NewReader` before the hardened package limits. Validate the
@@ -252,6 +244,18 @@ not an assertion that the legacy ZIP sniff is already hardened. Preserve conflic
 as diagnostics. A ZIP that cannot be safely identified is not plain text.
 Package parsing precedes XML/relationship/text analysis. Process verified parts in
 ordinal name order, never ZIP storage order or worker completion order.
+
+An unidentified ZIP without OPC relationship candidates reports that check as
+unrun with identity unconfirmed; an identified ODT with no OPC candidates retains
+the unsupported-input result. Actual OPC candidates may still be inspected
+independently of final file format, with explicit per-part coverage. Conflicting
+DOCX/ODT signatures do not suppress independently confirmed text, metadata or
+embedded-object inspection; the package remains format `unknown` with the
+conflict diagnostic.
+
+A failed main payload likewise must not suppress independently declaration-selected
+sibling evidence. Each candidate still requires its own admitted bytes and
+namespace/root checks; inspecting it does not establish overall format identity.
 
 Separate global container validation from local content outcomes. Duplicate names,
 ambiguous spans, inconsistent headers or source-identity failure can invalidate the
