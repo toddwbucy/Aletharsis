@@ -120,7 +120,14 @@
         },
         "report_canonical_sha256": {
           "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
+          "pattern": "^[a-f0-9]{64}$",
+          "allOf": [
+            {
+              "not": {
+                "pattern": "\n"
+              }
+            }
+          ]
         },
         "report_schema": {
           "enum": [

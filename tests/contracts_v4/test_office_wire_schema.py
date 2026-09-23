@@ -58,7 +58,10 @@ def test_adapter_envelope_is_retained_without_redefinition():
 
 
 def test_all_patterns_remain_compatible_with_go_regexp():
-    for node in walk(_builder.build()):
+    envelope_spec = importlib.util.spec_from_file_location("envelopes", Path(__file__).with_name("build_envelopes.py"))
+    envelopes = importlib.util.module_from_spec(envelope_spec)
+    envelope_spec.loader.exec_module(envelopes)
+    for node in walk([_builder.build(), *envelopes.build().values()]):
         if isinstance(node, dict) and 'pattern' in node:
             assert not any(token in node['pattern'] for token in ('(?=', '(?!', '(?<=', '(?<!'))
 
@@ -210,13 +213,16 @@ def test_every_end_anchored_pattern_rejects_trailing_newline():
     # Walk the complete schema, including inherited definitions and inline nodes.
     # Fail if a future vocabulary introduces a pattern without a valid probe.
     import re
-    probes = ['a' * 64, 'U+200B', 'office.test',
+    probes = ['a' * 64, 'U+200B', 'office.test', 'presentation.unsupported',
               *[kind + '/0' for kind in ('exec', 'artifact', 'anchor', 'result',
                  'finding', 'diagnostic', 'office-package', 'office-part',
                  'office-scope', 'office-object', 'office-xml', 'office-relationship')],
               '/evidence/texts/0/byte_offsets', '/evidence/texts/0/text', '/evidence/texts/0']
     count = 0
-    for node in walk(_builder.build()):
+    envelope_spec = importlib.util.spec_from_file_location("envelopes", Path(__file__).with_name("build_envelopes.py"))
+    envelopes = importlib.util.module_from_spec(envelope_spec)
+    envelope_spec.loader.exec_module(envelopes)
+    for node in walk([_builder.build(), *envelopes.build().values()]):
         if not isinstance(node, dict) or 'pattern' not in node:
             continue
         pattern = node['pattern']

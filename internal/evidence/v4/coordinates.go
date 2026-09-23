@@ -80,6 +80,8 @@ func ValidateSegment(s Segment, partBytes int64) error {
 // ValidateStoredOrigins proves every scope scalar points to the declared XML
 // scalar. XML maps must already have passed ValidateSegment. Generated controls
 // require their own element/control verification and are not accepted here.
+// TextIndex is a producer-local ordinal, not an XML segment index. The record
+// validator must bind it to its own producer inventory where reconstructible.
 func ValidateStoredOrigins(text, digest string, origins []Origin, segments map[string][]Segment) error {
 	if !utf8.ValidString(text) || identity.ExactBytes([]byte(text)) != digest ||
 		origins == nil || len(origins) != utf8.RuneCountInString(text) {
@@ -93,7 +95,7 @@ func ValidateStoredOrigins(text, digest string, origins []Origin, segments map[s
 			return ErrCoordinates
 		}
 		ss, ok := segments[o.XMLRef]
-		if !ok || *o.TextIndex >= len(ss) || *o.Segment < 0 || *o.Segment >= len(ss) {
+		if !ok || *o.Segment < 0 || *o.Segment >= len(ss) {
 			return ErrCoordinates
 		}
 		scalars := ss[*o.Segment].Scalars

@@ -56,7 +56,14 @@
         },
         "sha256": {
           "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
+          "pattern": "^[a-f0-9]{64}$",
+          "allOf": [
+            {
+              "not": {
+                "pattern": "\n"
+              }
+            }
+          ]
         }
       }
     },
@@ -89,11 +96,25 @@
         },
         "source_sha256": {
           "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
+          "pattern": "^[a-f0-9]{64}$",
+          "allOf": [
+            {
+              "not": {
+                "pattern": "\n"
+              }
+            }
+          ]
         },
         "report_artifact_sha256": {
           "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
+          "pattern": "^[a-f0-9]{64}$",
+          "allOf": [
+            {
+              "not": {
+                "pattern": "\n"
+              }
+            }
+          ]
         },
         "detection_state": {
           "enum": [
@@ -153,7 +174,14 @@
           "else": {
             "properties": {
               "reason": {
-                "pattern": "^[a-z][a-z0-9_.-]{0,127}$"
+                "pattern": "^[a-z][a-z0-9_.-]{0,127}$",
+                "allOf": [
+                  {
+                    "not": {
+                      "pattern": "\n"
+                    }
+                  }
+                ]
               },
               "artifacts": {
                 "maxItems": 1

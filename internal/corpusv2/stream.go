@@ -37,7 +37,7 @@ func DecodeStream(raw []byte, envelopeLimits, reportLimits identity.Limits) (Doc
 			}
 			header = canonical
 		case "entry":
-			if header == nil || summary != nil {
+			if header == nil || summary != nil || len(entries) >= maxEntries {
 				return Document{}, ErrLinkage
 			}
 			entries = append(entries, canonical)

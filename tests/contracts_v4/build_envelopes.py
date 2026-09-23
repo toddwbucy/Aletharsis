@@ -2,6 +2,11 @@
 from copy import deepcopy
 import json
 from pathlib import Path
+import importlib.util
+
+_spec = importlib.util.spec_from_file_location("office_schema_builder", Path(__file__).with_name("build_schema.py"))
+_builder = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_builder)
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -80,8 +85,11 @@ def build():
     source['allOf'].append({'if': {'properties': {'presentation_outcome': {
         'enum': ['revealed', 'unsupported']}}},
         'then': {'required': ['report_artifact_sha256']}})
-    return {'corpus-v2.schema.json': corpus, 'corpus-document-v2.schema.json': document,
-            'reveal-tree-v2.schema.json': tree}
+    schemas = {'corpus-v2.schema.json': corpus, 'corpus-document-v2.schema.json': document,
+               'reveal-tree-v2.schema.json': tree}
+    for schema in schemas.values():
+        _builder.harden_patterns(schema)
+    return schemas
 
 
 if __name__ == '__main__':

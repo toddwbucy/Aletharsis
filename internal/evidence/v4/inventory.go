@@ -3,6 +3,7 @@ package v4
 import (
 	"github.com/toddwbucy/Aletharsis/internal/identity"
 	"github.com/toddwbucy/Aletharsis/internal/opcrels"
+	"slices"
 )
 
 // ValidateStructuralLocation checks a part-qualified XML or opaque-object
@@ -143,13 +144,30 @@ func (x *Index) ValidateInventories(e Evidence) error {
 		}
 		ordinals[ref] = values
 	}
+	metadataOrdinals := map[string]map[int64]int{}
+	for _, m := range e.Metadata {
+		if metadataOrdinals[m.PartRef] == nil {
+			metadataOrdinals[m.PartRef] = map[int64]int{}
+		}
+		metadataOrdinals[m.PartRef][m.Element] = 0
+	}
+	for _, ordinals := range metadataOrdinals {
+		elements := make([]int64, 0, len(ordinals))
+		for element := range ordinals {
+			elements = append(elements, element)
+		}
+		slices.Sort(elements)
+		for i, element := range elements {
+			ordinals[element] = i
+		}
+	}
 	seenMetadata := map[struct {
-		xml     string
+		part    string
 		element int64
 	}]bool{}
 	for _, m := range e.Metadata {
 		key := struct {
-			xml     string
+			part    string
 			element int64
 		}{m.PartRef, m.Element}
 		if seenMetadata[key] {
@@ -172,7 +190,7 @@ func (x *Index) ValidateInventories(e Evidence) error {
 			return err
 		}
 		for _, o := range m.ValueOrigins {
-			if o.XMLRef != m.XMLRef {
+			if o.XMLRef != m.XMLRef || o.TextIndex == nil || *o.TextIndex != metadataOrdinals[m.PartRef][m.Element] {
 				return ErrLinkage
 			}
 			segment := doc.Segments[*o.Segment]

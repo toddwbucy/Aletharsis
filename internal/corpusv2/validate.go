@@ -67,7 +67,18 @@ func Decode(raw []byte, envelopeLimits, reportLimits identity.Limits) (Document,
 	return validateDocument(d, reportLimits)
 }
 
+const maxEntries = 10000
+
 func validateDocument(d Document, reportLimits identity.Limits) (Document, error) {
+	var limits struct {
+		Entries int `json:"entries"`
+	}
+	if err := json.Unmarshal(d.Header.Limits, &limits); err != nil {
+		return Document{}, err
+	}
+	if len(d.Entries) > maxEntries || limits.Entries < 1 || len(d.Entries) > limits.Entries {
+		return Document{}, ErrLinkage
+	}
 	counts := map[string]int{"no_reported_findings": 0, "requires_review": 0, "unsupported": 0, "failed": 0, "skipped": 0, "canceled": 0, "partial": 0}
 	severities := map[string]int{"INFO": 0, "LOW": 0, "MEDIUM": 0, "HIGH": 0}
 	paths := map[string]bool{}

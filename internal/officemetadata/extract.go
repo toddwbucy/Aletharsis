@@ -159,13 +159,7 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	}
 	d := mapped.Document
 	root := d.Elements[0].Name
-	kind := ""
-	if root.Namespace == CoreNamespace && root.Local == "coreProperties" {
-		kind = "core"
-	}
-	if root.Namespace == AppNamespace && root.Local == "Properties" {
-		kind = "app"
-	}
+	kind := ProjectionKind(root.Namespace, root.Local)
 	if kind == "" {
 		if code := unsupportedRoot(root); code != "" {
 			return nil, &UnsupportedRootError{Code: code}
@@ -256,4 +250,16 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	}
 	sort.SliceStable(r.Issues, func(i, j int) bool { return r.Issues[i].Span.Start < r.Issues[j].Span.Start })
 	return r, nil
+}
+
+// ProjectionKind identifies roots for which this producer emits properties.
+// Unsupported roots remain errors rather than successful empty projections.
+func ProjectionKind(namespace, local string) string {
+	if namespace == CoreNamespace && local == "coreProperties" {
+		return "core"
+	}
+	if namespace == AppNamespace && local == "Properties" {
+		return "app"
+	}
+	return ""
 }

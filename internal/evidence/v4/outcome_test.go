@@ -167,3 +167,68 @@ func TestRetainedScopeCannotEscapeAssessedCoverage(t *testing.T) {
 		})
 	}
 }
+
+func TestCoverageLookupHandlesUnorderedRepeatedOrigins(t *testing.T) {
+	regions := make([]Span, 20000)
+	for i := range regions {
+		regions[i] = Span{int64(i * 2), int64(i*2 + 1)}
+	}
+	wanted := make([]Span, 80000)
+	for i := range wanted {
+		wanted[i] = regions[(i*7919)%len(regions)]
+	}
+	if !spansCovered(wanted, regions) {
+		t.Fatal("lost unordered or repeated origins")
+	}
+	wanted[0] = Span{1, 2}
+	if spansCovered(wanted, regions) {
+		t.Fatal("bridged a gap")
+	}
+	if !spansCovered([]Span{{0, 3}}, []Span{{2, 3}, {0, 1}, {1, 2}}) {
+		t.Fatal("adjacent ranges not united")
+	}
+}
+
+func TestRetainedRecordCanUseMultipleProducingExecutions(t *testing.T) {
+	raw, err := os.ReadFile("../../../tests/contracts_v4/fixtures/office-minimal.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	r, err := DecodeReport(raw, identity.Limits{InputBytes: 16 << 20, OutputBytes: 16 << 20, Nodes: 4194304, Depth: 64})
+	if err != nil {
+		t.Fatal(err)
+	}
+	scope := r.Evidence.Office.Scopes[0]
+	split := scope.Origins[len(scope.Origins)-1].Source.Start
+	pkg := &r.Evidence.Office.Packages[0]
+	for i, o := range pkg.Outcomes {
+		if o.Operation != "aletharsis.office.text" {
+			continue
+		}
+		next := o
+		next.ExecutionRef = "exec/99"
+		end := o.Assessed[len(o.Assessed)-1].End
+		pkg.Outcomes[i].Assessed = []Span{{0, split}}
+		next.Assessed = []Span{{split, end}}
+		pkg.Outcomes = append(pkg.Outcomes, next)
+		for _, e := range r.Trace.Executions {
+			if e.Ref == o.ExecutionRef {
+				e.Ref = next.ExecutionRef
+				r.Trace.Executions = append(r.Trace.Executions, e)
+				break
+			}
+		}
+		break
+	}
+	x, err := IndexEvidence(r.Evidence.Office, *r.File.SHA256, int64(*r.File.Size))
+	if err != nil {
+		t.Fatal(err)
+	}
+	trace, err := IndexTrace(r.Trace)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := x.ValidateOutcomes(r.Evidence.Office, trace); err != nil {
+		t.Fatal("split coverage rejected", err)
+	}
+}

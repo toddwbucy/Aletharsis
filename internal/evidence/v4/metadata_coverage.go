@@ -15,12 +15,27 @@ func (x *Index) validateMetadataProjection(e Evidence, trace *TraceIndex) error 
 		}
 		retained[m.PartRef][m.Element] = true
 	}
+	groups := map[string][]Outcome{}
 	for _, pkg := range e.Packages {
 		for _, outcome := range pkg.Outcomes {
-			if outcome.Operation != "aletharsis.office.metadata" || outcome.PartRef == nil || (outcome.State != "completed" && outcome.State != "partial") {
-				continue
+			if outcome.Operation == "aletharsis.office.metadata" && outcome.PartRef != nil && (outcome.State == "completed" || outcome.State == "partial") {
+				groups[*outcome.PartRef] = append(groups[*outcome.PartRef], outcome)
 			}
-			part := x.Parts[*outcome.PartRef]
+		}
+	}
+	for partRef, outcomes := range groups {
+		excluded := []Span{}
+		refs := map[string]string{}
+		for _, o := range outcomes {
+			excluded = append(excluded, o.Excluded...)
+			for _, ref := range o.DiagnosticRefs {
+				refs[ref] = o.ExecutionRef
+			}
+		}
+		excluded = normalizedSpans(excluded)
+		{
+
+			part := x.Parts[partRef]
 			var doc *XML
 			for _, candidate := range e.XML {
 				if candidate.PartRef == part.PartRef {
@@ -33,11 +48,11 @@ func (x *Index) validateMetadataProjection(e Evidence, trace *TraceIndex) error 
 				return ErrLinkage
 			}
 			root := doc.Elements[0]
-			if !((root.Namespace == officemetadata.CoreNamespace && root.LocalName == "coreProperties") || (root.Namespace == officemetadata.AppNamespace && root.LocalName == "Properties")) {
+			if officemetadata.ProjectionKind(root.Namespace, root.LocalName) == "" {
 				return ErrLinkage
 			}
 			gaps := map[int64]bool{}
-			for _, ref := range outcome.DiagnosticRefs {
+			for ref, execution := range refs {
 				diagnostic := trace.Diagnostics[ref]
 				switch diagnostic.Code {
 				case "metadata.property_unassessed", "metadata.standard_property_unassessed", "metadata.structured_value_unassessed":
@@ -45,7 +60,7 @@ func (x *Index) validateMetadataProjection(e Evidence, trace *TraceIndex) error 
 					continue
 				}
 				scope := diagnostic.Scope
-				if diagnostic.ExecutionRef == nil || *diagnostic.ExecutionRef != outcome.ExecutionRef || scope == nil || scope.Unit != "byte" || scope.ArtifactRef != part.ArtifactRef || len(scope.Regions) != 1 {
+				if diagnostic.ExecutionRef == nil || *diagnostic.ExecutionRef != execution || scope == nil || scope.Unit != "byte" || scope.ArtifactRef != part.ArtifactRef || len(scope.Regions) != 1 {
 					return ErrLinkage
 				}
 				matched := false
@@ -55,7 +70,7 @@ func (x *Index) validateMetadataProjection(e Evidence, trace *TraceIndex) error 
 					}
 					span := Span{int64(scope.Regions[0].Start), int64(scope.Regions[0].End)}
 					if element.Span == span {
-						if gaps[element.Index] || retained[part.PartRef][element.Index] || !spansCovered([]Span{span}, outcome.Excluded) {
+						if gaps[element.Index] || retained[part.PartRef][element.Index] || !coveredByNormalized([]Span{span}, excluded) {
 							return ErrLinkage
 						}
 						gaps[element.Index] = true

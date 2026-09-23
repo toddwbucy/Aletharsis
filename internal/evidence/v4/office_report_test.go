@@ -21,7 +21,7 @@ func TestCompleteOfficeReportValidation(t *testing.T) {
 	}
 	for _, mutate := range []func(*Report){
 		func(r *Report) { r.File.Format = "zip" },
-		func(r *Report) { r.Evidence.Office.Scopes[0].Origins[0].TextIndex = number(999) },
+		func(r *Report) { r.Evidence.Office.Scopes[0].Origins[0].TextIndex = number(-1) },
 		func(r *Report) {
 			duplicate := r.Evidence.Office.XML[0]
 			duplicate.XMLRef = "office-xml/99"

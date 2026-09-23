@@ -123,3 +123,31 @@ func TestUnverifiedObjectCandidateKeepsOnlyUniqueDeclarationLink(t *testing.T) {
 		})
 	}
 }
+
+func TestMetadataOrdinalIncludesEmptyProperties(t *testing.T) {
+	x, e := inventoryCase()
+	e.Relationships = nil
+	e.Objects = nil
+	old := e.Metadata[0]
+	doc := x.XML[old.XMLRef]
+	empty := doc.Elements[0]
+	empty.Index = 0
+	empty.LocalName = "empty"
+	empty.Span = Span{0, 5}
+	doc.Elements[0].Index = 1
+	doc.Elements = append([]Element{empty}, doc.Elements...)
+	doc.Segments[0].Element = number(1)
+	x.XML[doc.XMLRef] = doc
+	old.Element = 1
+	old.ValueOrigins[0].TextIndex = number(1)
+	e.Metadata = []Metadata{{PartRef: old.PartRef, XMLRef: old.XMLRef, Namespace: empty.Namespace, LocalName: "empty", Element: 0, LexicalValue: "", ValueOrigins: []Origin{}}, old}
+	if err := x.ValidateInventories(e); err != nil {
+		t.Fatal("property ordinal confused with segment ordinal", err)
+	}
+	for _, bad := range []int{0, 2, 999} {
+		e.Metadata[1].ValueOrigins[0].TextIndex = number(bad)
+		if x.ValidateInventories(e) == nil {
+			t.Fatal("accepted wrong property ordinal", bad)
+		}
+	}
+}

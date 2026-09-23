@@ -136,15 +136,21 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 			}
 		}
 	}
-	// One successful producing outcome must cover every retained byte of a
-	// record. Presence alone cannot authorize evidence outside assessed regions.
-	covers := func(operation, part string, spans []Span) bool {
-		for _, outcome := range produced[[2]string{operation, part}] {
-			if spansCovered(spans, outcome.Assessed) {
-				return true
-			}
+	// Successful executions may contribute separate assessed regions to one
+	// producer inventory. Normalize once per operation/part, then binary-search
+	// each wanted span; record order cannot trigger a quadratic scan.
+	coverage := map[[2]string][]Span{}
+	for key, outcomes := range produced {
+		regions := []Span{}
+		for _, outcome := range outcomes {
+			regions = append(regions, outcome.Assessed...)
 		}
-		return false
+		coverage[key] = normalizedSpans(regions)
+	}
+	covers := func(operation, part string, spans []Span) bool {
+		key := [2]string{operation, part}
+		_, exists := produced[key]
+		return exists && coveredByNormalized(spans, coverage[key])
 	}
 	origins := func(values []Origin) []Span {
 		spans := make([]Span, 0, len(values))
@@ -240,7 +246,11 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 
 // spansCovered accepts adjacent assessed regions but never bridges a gap.
 func spansCovered(wanted, assessed []Span) bool {
-	regions := slices.Clone(assessed)
+	return coveredByNormalized(wanted, normalizedSpans(assessed))
+}
+
+func normalizedSpans(spans []Span) []Span {
+	regions := slices.Clone(spans)
 	slices.SortFunc(regions, func(a, b Span) int {
 		if a.Start < b.Start {
 			return -1
@@ -250,21 +260,35 @@ func spansCovered(wanted, assessed []Span) bool {
 		}
 		return 0
 	})
-	for _, span := range wanted {
-		cursor := span.Start
-		for _, region := range regions {
-			if region.End < cursor {
-				continue
-			}
-			if region.Start > cursor {
-				break
-			}
-			cursor = max(cursor, region.End)
-			if cursor >= span.End {
-				break
-			}
+	merged := regions[:0]
+	for _, span := range regions {
+		if len(merged) > 0 && span.Start <= merged[len(merged)-1].End {
+			merged[len(merged)-1].End = max(merged[len(merged)-1].End, span.End)
+		} else {
+			merged = append(merged, span)
 		}
-		if cursor < span.End {
+	}
+	return merged
+}
+
+func coveredByNormalized(wanted, regions []Span) bool {
+	for _, span := range wanted {
+		if span.Start == span.End {
+			continue
+		}
+		i, _ := slices.BinarySearchFunc(regions, span.Start, func(r Span, start int64) int {
+			if r.End < start {
+				return -1
+			}
+			if r.End > start {
+				return 1
+			}
+			return 0
+		})
+		if i < len(regions) && regions[i].End == span.Start {
+			i++
+		}
+		if i >= len(regions) || regions[i].Start > span.Start || regions[i].End < span.End {
 			return false
 		}
 	}
