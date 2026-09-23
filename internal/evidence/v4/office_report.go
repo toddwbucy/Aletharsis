@@ -15,6 +15,9 @@ func validateOfficeReport(r Report) error {
 	if err != nil {
 		return err
 	}
+	if err := office.validateDeclaredLimits(); err != nil {
+		return err
+	}
 	trace, err := IndexTrace(r.Trace)
 	if err != nil {
 		return err
