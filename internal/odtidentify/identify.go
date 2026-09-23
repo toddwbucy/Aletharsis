@@ -34,6 +34,8 @@ type Entry struct {
 	Anchor                                 Anchor
 }
 type Membership struct {
+	// Manifest membership and payload admission are independent facts.
+	AdmissionState, AdmissionCode string
 	Part, PartSHA256, State, Code string
 	Entry                         int
 }
@@ -42,6 +44,9 @@ type Issue struct {
 	Element    int
 }
 type Result struct {
+	// Borrowed admission view: Parts[i].Bytes aliases reader payloads (staged)
+	// or Package.Parts[i].Bytes (strict). Callers must not mutate the bytes.
+	Outcomes                                      *packageparts.OutcomeView
 	Parser, State, Format, ManifestVersion        string
 	Package                                       *packageparts.Package
 	ManifestSHA256, MimetypeSHA256, ContentSHA256 string
@@ -102,9 +107,24 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	if err != nil {
 		return nil, err
 	}
-	r := &Result{Parser: Version, State: "not_applicable", Package: pkg, Entries: []Entry{}, Memberships: []Membership{}, Issues: []Issue{}, RootEntry: -1, ContentEntry: -1}
+	view := packageparts.CompletedView(pkg)
+	return inspectView(ctx, pkg, &view)
+}
+
+// InspectVerified checks already admitted package bytes and preserves unavailable
+// prerequisite identities. No archive reading or decompression occurs here.
+func InspectVerified(ctx context.Context, reader *packageparts.OutcomeReader) (*Result, error) {
+	view, err := reader.InspectionView(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return inspectView(ctx, nil, &view)
+}
+
+func inspectView(ctx context.Context, pkg *packageparts.Package, view *packageparts.OutcomeView) (*Result, error) {
+	r := &Result{Parser: Version, State: "not_applicable", Package: pkg, Outcomes: view, Entries: []Entry{}, Memberships: []Membership{}, Issues: []Issue{}, RootEntry: -1, ContentEntry: -1}
 	parts := map[string]int{}
-	for i, p := range pkg.Parts {
+	for i, p := range view.Parts {
 		if !p.Directory {
 			parts[p.Name] = i
 		}
@@ -119,7 +139,14 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		r.issue("odt.mimetype_missing", "mimetype", -1)
 		return r, nil
 	}
-	mt := pkg.Parts[mi]
+	mt := view.Parts[mi]
+	if mt.State != "completed" {
+		r.issue("odt.mimetype_unavailable", mt.Name, -1)
+		if mt.Code != "" {
+			r.issue(mt.Code, mt.Name, -1)
+		}
+		return r, nil
+	}
 	r.MimetypeSHA256 = mt.SHA256
 	if string(mt.Bytes) != MIME {
 		r.issue("odt.mimetype_unsupported", "mimetype", -1)
@@ -135,7 +162,14 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		r.issue("odt.manifest_missing", "META-INF/manifest.xml", -1)
 		return r, nil
 	}
-	manifest := pkg.Parts[fi]
+	manifest := view.Parts[fi]
+	if manifest.State != "completed" {
+		r.issue("odt.manifest_unavailable", manifest.Name, -1)
+		if manifest.Code != "" {
+			r.issue(manifest.Code, manifest.Name, -1)
+		}
+		return r, nil
+	}
 	r.ManifestSHA256 = manifest.SHA256
 	doc, err := xmlparts.Parse(ctx, manifest.Bytes, manifest.SHA256, xmlparts.DefaultLimits())
 	if err != nil {
@@ -173,6 +207,9 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		return r, nil
 	}
 	if contentEntry.State != "resolved" || contentEntry.MediaType != "text/xml" {
+		if contentEntry.Code == "office.part_not_admitted" {
+			r.issue(contentEntry.Code, "META-INF/manifest.xml", contentEntry.Anchor.Element)
+		}
 		r.issue("odt.content_identity_unavailable", "content.xml", contentEntry.Anchor.Element)
 		return r, nil
 	}
@@ -181,7 +218,11 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		r.issue("odt.content_missing", "content.xml", -1)
 		return r, nil
 	}
-	content := pkg.Parts[ci]
+	content := view.Parts[ci]
+	if content.State != "completed" {
+		r.issue("odt.content_unavailable", content.Name, -1)
+		return r, nil
+	}
 	r.ContentSHA256 = content.SHA256
 	d, err := xmlparts.Parse(ctx, content.Bytes, content.SHA256, xmlparts.DefaultLimits())
 	if err != nil {
@@ -363,10 +404,14 @@ func (r *Result) membership(parts map[string]int) {
 		if e.Path != "/" {
 			if index, ok := parts[e.Path]; ok {
 				e.State = "resolved"
-				e.StoredPartSHA256 = r.Package.Parts[index].SHA256
+				e.StoredPartSHA256 = r.Outcomes.Parts[index].SHA256
+				target := r.Outcomes.Parts[index]
+				if target.State != "completed" {
+					e.State, e.Code = target.State, target.Code
+				}
 			} else if strings.HasSuffix(e.Path, "/") {
-				j := sort.Search(len(r.Package.Parts), func(j int) bool { return r.Package.Parts[j].Name >= e.Path })
-				if j < len(r.Package.Parts) && strings.HasPrefix(r.Package.Parts[j].Name, e.Path) {
+				j := sort.Search(len(r.Outcomes.Parts), func(j int) bool { return r.Outcomes.Parts[j].Name >= e.Path })
+				if j < len(r.Outcomes.Parts) && strings.HasPrefix(r.Outcomes.Parts[j].Name, e.Path) {
 					e.State = "directory"
 				} else {
 					e.State, e.Code = "missing", "odt.manifest_target_missing"
@@ -386,19 +431,24 @@ func (r *Result) membership(parts map[string]int) {
 			}
 		} else if e.SizeDeclared && e.State == "resolved" {
 			size, err := strconv.ParseUint(e.DeclaredSize, 10, 64)
-			if index, ok := parts[e.Path]; err != nil || !ok || size != uint64(len(r.Package.Parts[index].Bytes)) {
+			if index, ok := parts[e.Path]; err != nil || !ok || size != uint64(len(r.Outcomes.Parts[index].Bytes)) {
 				e.State, e.Code = "unresolved", "odt.declared_size_mismatch"
 			}
 		}
-		if e.Code != "" {
-			r.issue(e.Code, "META-INF/manifest.xml", e.Anchor.Element)
+		if e.Code != "" && e.Code != "office.part_not_admitted" {
+			// Payload admission failures are emitted once at the payload below;
+			// declaration errors keep their manifest anchor.
+			index, found := parts[e.Path]
+			if !found || r.Outcomes.Parts[index].Code != e.Code {
+				r.issue(e.Code, "META-INF/manifest.xml", e.Anchor.Element)
+			}
 		}
 	}
-	for _, p := range r.Package.Parts {
+	for _, p := range r.Outcomes.Parts {
 		if p.Directory {
 			continue
 		}
-		m := Membership{Part: p.Name, PartSHA256: p.SHA256, Entry: -1}
+		m := Membership{Part: p.Name, PartSHA256: p.SHA256, AdmissionState: p.State, AdmissionCode: p.Code, Entry: -1}
 		if i, ok := declared[p.Name]; ok {
 			m.Entry = i
 			m.State = r.Entries[i].State
@@ -408,6 +458,9 @@ func (r *Result) membership(parts map[string]int) {
 		} else {
 			m.State, m.Code = "unlisted", "odt.part_unlisted"
 			r.issue(m.Code, p.Name, -1)
+		}
+		if p.State != "completed" && p.Code != "" && p.Code != "office.part_not_admitted" {
+			r.issue(p.Code, p.Name, -1)
 		}
 		r.Memberships = append(r.Memberships, m)
 	}

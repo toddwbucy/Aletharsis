@@ -24,6 +24,9 @@ type Anchor struct {
 	Span             xmlparts.Span
 }
 type Relationship struct {
+	// Target admission fields and TargetSHA256 are derived from the target part;
+	// they are not independent relationship wire properties.
+	TargetState, TargetCode                string
 	ID, Type, Target, TargetMode           string
 	SourcePart, ResolvedPart, TargetSHA256 string
 	State, Code                            string
@@ -40,11 +43,15 @@ type PartResult struct {
 type Result struct {
 	Parser, State string
 	Package       *packageparts.Package
+	// Borrowed admission view: Parts[i].Bytes aliases reader payloads (staged)
+	// or Package.Parts[i].Bytes (strict). Callers must not mutate the bytes.
+	Outcomes      *packageparts.OutcomeView
 	Parts         []PartResult
 	Relationships []Relationship
 }
 
-func fold(s string) string {
+// FoldName applies OPC ASCII case equivalence without Unicode case folding.
+func FoldName(s string) string {
 	return strings.Map(func(r rune) rune {
 		if r >= 'A' && r <= 'Z' {
 			return r + 32
@@ -53,12 +60,12 @@ func fold(s string) string {
 	}, s)
 }
 func owner(name string) (string, bool) {
-	if fold(name) == "_rels/.rels" {
+	if FoldName(name) == "_rels/.rels" {
 		return "", true
 	}
 	split := strings.Split(name, "/")
 	n := len(split)
-	if n < 2 || fold(split[n-2]) != "_rels" || !strings.HasSuffix(fold(split[n-1]), ".rels") || len(split[n-1]) <= 5 {
+	if n < 2 || FoldName(split[n-2]) != "_rels" || !strings.HasSuffix(FoldName(split[n-1]), ".rels") || len(split[n-1]) <= 5 {
 		return "", false
 	}
 	return strings.Join(append(split[:n-2], split[n-1][:len(split[n-1])-5]), "/"), true
@@ -155,19 +162,41 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	if err != nil {
 		return nil, err
 	}
-	result := &Result{Parser: Version, State: "not_applicable", Package: pkg, Parts: []PartResult{}, Relationships: []Relationship{}}
+	view := packageparts.CompletedView(pkg)
+	return inspectPackage(ctx, pkg, &view)
+}
+
+// InspectVerified borrows the outcome reader's read-only view. It never opens the
+// ZIP or admits a part. Failed/unadmitted relationship parts retain their gaps;
+// unrelated unreadable parts do not prevent relationship inspection.
+func InspectVerified(ctx context.Context, reader *packageparts.OutcomeReader) (*Result, error) {
+	view, err := reader.InspectionView(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return inspectPackage(ctx, nil, &view)
+}
+
+func inspectPackage(ctx context.Context, pkg *packageparts.Package, outcomes *packageparts.OutcomeView) (*Result, error) {
+	unavailable := map[string]packageparts.Outcome{}
+	for _, o := range outcomes.Parts {
+		if o.State != "completed" {
+			unavailable[o.Part.Name] = o
+		}
+	}
+	result := &Result{Parser: Version, State: "not_applicable", Package: pkg, Parts: []PartResult{}, Relationships: []Relationship{}, Outcomes: outcomes}
 	index := map[string][]int{}
-	for i, p := range pkg.Parts {
+	for i, p := range outcomes.Parts {
 		if !p.Directory {
-			index[fold(p.Name)] = append(index[fold(p.Name)], i)
+			index[FoldName(p.Name)] = append(index[FoldName(p.Name)], i)
 		}
 	}
 	bytesLeft, tokensLeft, valuesLeft, partsLeft := maxXMLBytes, maxTokens, maxValues, maxParts
-	for _, p := range pkg.Parts {
+	for _, p := range outcomes.Parts {
 		if err := ctx.Err(); err != nil {
 			return nil, err
 		}
-		if p.Directory || !strings.HasSuffix(fold(p.Name), ".rels") {
+		if p.Directory || !strings.HasSuffix(FoldName(p.Name), ".rels") {
 			continue
 		}
 		part := PartResult{Part: p.Name, PartSHA256: p.SHA256, State: "completed"}
@@ -176,8 +205,10 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		switch {
 		case !valid:
 			part.State, part.Code = "unsupported", "opc.relationship_name_unsupported"
-		case len(index[fold(p.Name)]) != 1:
+		case len(index[FoldName(p.Name)]) != 1:
 			part.State, part.Code = "failed", "opc.relationship_part_ambiguous"
+		case unavailable[p.Name].Code != "":
+			part.State, part.Code = unavailable[p.Name].State, unavailable[p.Name].Code
 		case partsLeft <= 0 || len(p.Bytes) > bytesLeft || tokensLeft <= 0 || valuesLeft <= 0:
 			part.State, part.Code = "not_run", "opc.resource_limit"
 		default:
@@ -232,7 +263,7 @@ func (r *Result) readPart(part *PartResult, index map[string][]int) {
 		if _, code := ResolveInternalTarget("", part.SourcePart); code != "" {
 			sourceCode = "opc.source_syntax_unsupported"
 		}
-		found := index[fold(part.SourcePart)]
+		found := index[FoldName(part.SourcePart)]
 		if sourceCode != "" {
 			// Preserve the source name without inventing unsupported URI resolution.
 		} else if len(found) == 0 {
@@ -240,7 +271,7 @@ func (r *Result) readPart(part *PartResult, index map[string][]int) {
 		} else if len(found) > 1 {
 			sourceCode = "opc.source_ambiguous"
 		} else {
-			part.SourcePart = r.Package.Parts[found[0]].Name
+			part.SourcePart = r.Outcomes.Parts[found[0]].Name
 		}
 	}
 	part.SourceCode = sourceCode
@@ -299,13 +330,15 @@ func (r *Result) readPart(part *PartResult, index map[string][]int) {
 			if code != "" {
 				rel.State, rel.Code = "unresolved", code
 			} else {
-				matches := index[fold(target)]
+				matches := index[FoldName(target)]
 				switch len(matches) {
 				case 0:
 					rel.State, rel.Code = "missing", "opc.target_missing"
+					rel.TargetState, rel.TargetCode = "absent", rel.Code
 				case 1:
-					found := r.Package.Parts[matches[0]]
+					found := r.Outcomes.Parts[matches[0]]
 					rel.ResolvedPart, rel.TargetSHA256, rel.State = found.Name, found.SHA256, "resolved"
+					rel.TargetState, rel.TargetCode = found.State, found.Code
 				default:
 					rel.State, rel.Code = "ambiguous", "opc.target_ambiguous"
 				}
@@ -324,6 +357,3 @@ func (r *Result) readPart(part *PartResult, index map[string][]int) {
 // RelationshipOwner derives the source name from a canonical OPC relationship
 // part name. It never trusts a caller-supplied source owner.
 func RelationshipOwner(name string) (string, bool) { return owner(name) }
-
-// FoldName applies OPC ASCII case equivalence without Unicode case folding.
-func FoldName(name string) string { return fold(name) }
