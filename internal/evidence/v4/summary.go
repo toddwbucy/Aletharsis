@@ -49,11 +49,37 @@ func validateSummary(r Report, t *TraceIndex) error {
 	if r.Status != aggregateNativeStatus(r.Trace, t, r.Evidence.Office) {
 		return ErrLinkage
 	}
+	counts, err := summaryCounts(r)
+	if err != nil {
+		return err
+	}
+	if !reflect.DeepEqual(counts, r.Summary) {
+		return ErrLinkage
+	}
+	return nil
+}
+
+// Summarize derives status and counts from native execution evidence. Encode
+// remains mandatory: this method does not validate all report coordinates.
+func (r *Report) Summarize() error {
+	if r == nil {
+		return ErrLinkage
+	}
+	trace, err := IndexTrace(r.Trace)
+	if err != nil {
+		return err
+	}
+	r.Status = aggregateNativeStatus(r.Trace, trace, r.Evidence.Office)
+	r.Summary, err = summaryCounts(*r)
+	return err
+}
+
+func summaryCounts(r Report) (map[string]int, error) {
 	counts := map[string]int{"findings": len(r.Findings), "high": 0, "medium": 0, "low": 0, "info": 0, "exit_code": 0}
 	for _, f := range r.Findings {
 		key := strings.ToLower(f.Severity)
 		if key != "high" && key != "medium" && key != "low" && key != "info" {
-			return ErrLinkage
+			return nil, ErrLinkage
 		}
 		counts[key]++
 		counts["exit_code"] = max(counts["exit_code"], evidence.Rank(f.Severity))
@@ -61,8 +87,5 @@ func validateSummary(r Report, t *TraceIndex) error {
 	if r.Status != v2.Completed {
 		counts["exit_code"] = 4
 	}
-	if !reflect.DeepEqual(counts, r.Summary) {
-		return ErrLinkage
-	}
-	return nil
+	return counts, nil
 }

@@ -199,3 +199,40 @@ func TestUnicodeFindingJoinsThroughDecodedScalar(t *testing.T) {
 		t.Fatal("native Unicode finding absent")
 	}
 }
+
+func TestMapParsedMatchesSinglePass(t *testing.T) {
+	for _, source := range []string{"<r/>", "\ufeff \r\n<r>A&#x200B;&amp;<![CDATA[😀\r\n]]><x/>z</r>\n", "<r xmlns='urn:test'>é</r>"} {
+		b := []byte(source)
+		doc, err := Parse(context.Background(), b, evidence.Hash(b), DefaultLimits())
+		if err != nil {
+			t.Fatal(err)
+		}
+		got, err := MapParsed(context.Background(), b, doc, MaxScalarMappings)
+		if err != nil {
+			t.Fatal(err)
+		}
+		want := mapped(t, source, MaxScalarMappings)
+		if got.Document != doc || !reflect.DeepEqual(got, want) {
+			t.Fatal("mapped parse diverged")
+		}
+		if _, err := MapParsed(context.Background(), append(append([]byte{}, b...), byte(' ')), doc, MaxScalarMappings); !errors.Is(err, ErrIdentity) {
+			t.Fatal("different bytes accepted", err)
+		}
+	}
+	b := []byte("<r>ab</r>")
+	doc, err := Parse(context.Background(), b, evidence.Hash(b), DefaultLimits())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, err := MapParsed(context.Background(), b, doc, 1); got != nil || !errors.Is(err, ErrLimit) {
+		t.Fatal("partial mapping survived", err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	if got, err := MapParsed(ctx, b, doc, 10); got != nil || !errors.Is(err, context.Canceled) {
+		t.Fatal("canceled mapping survived", err)
+	}
+	if got, err := MapParsed(context.Background(), b, nil, 10); got != nil || !errors.Is(err, ErrIdentity) {
+		t.Fatal("nil document accepted", err)
+	}
+}

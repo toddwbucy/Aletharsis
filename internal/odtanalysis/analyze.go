@@ -9,8 +9,10 @@ import (
 
 	"github.com/toddwbucy/Aletharsis/internal/analyzers"
 	"github.com/toddwbucy/Aletharsis/internal/evidence"
+	"github.com/toddwbucy/Aletharsis/internal/failure"
 	"github.com/toddwbucy/Aletharsis/internal/odttext"
 	"github.com/toddwbucy/Aletharsis/internal/parsers"
+	"github.com/toddwbucy/Aletharsis/internal/scopelimits"
 	"github.com/toddwbucy/Aletharsis/internal/xmlparts"
 )
 
@@ -37,6 +39,7 @@ type Boundary struct {
 	Reason string
 }
 type Result struct {
+	Omitted     []scopelimits.Omission
 	Version     string
 	State       string
 	Extraction  *odttext.Result
@@ -46,10 +49,40 @@ type Result struct {
 }
 
 func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result, error) {
+	return analyzeScopes(ctx, source, expectedSHA256, nil)
+}
+
+// AnalyzeWithLimits omits a whole candidate before running analyzers when its
+// complete text or origin map exceeds the fixed per-scope configuration.
+func AnalyzeWithLimits(ctx context.Context, source []byte, expectedSHA256 string, limits scopelimits.Limits) (*Result, error) {
+	if err := limits.Validate(); err != nil {
+		return nil, err
+	}
+	return analyzeScopes(ctx, source, expectedSHA256, &limits)
+}
+
+func analyzeScopes(ctx context.Context, source []byte, expectedSHA256 string, limits *scopelimits.Limits) (*Result, error) {
 	extracted, err := odttext.Extract(ctx, source, expectedSHA256)
 	if err != nil {
 		return nil, err
 	}
+	return analyzeExtracted(ctx, extracted, limits)
+}
+
+// AnalyzeParsedWithLimits reuses immutable identification XML while preserving
+// the same extraction, scope limits, and findings as AnalyzeWithLimits.
+func AnalyzeParsedWithLimits(ctx context.Context, source []byte, doc *xmlparts.Document, limits scopelimits.Limits) (*Result, error) {
+	if err := limits.Validate(); err != nil {
+		return nil, err
+	}
+	extracted, err := odttext.ExtractParsed(ctx, source, doc)
+	if err != nil {
+		return nil, err
+	}
+	return analyzeExtracted(ctx, extracted, &limits)
+}
+
+func analyzeExtracted(ctx context.Context, extracted *odttext.Result, limits *scopelimits.Limits) (*Result, error) {
 	r := &Result{Version: Version, State: extracted.State, Extraction: extracted, Scopes: []Scope{}, Boundaries: []Boundary{}, Limitations: []string{"odt.analysis_not_rendered_text", "odt.whitespace_not_collapsed", "odt.cross_paragraph_patterns_not_assessed", "odt.structural_boundaries_split_analysis", "odt.only_unicode_emoji_and_patterns_analyzed"}}
 	d := extracted.XML.Document
 	texts := map[int]int{}
@@ -60,6 +93,7 @@ func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	for i, c := range extracted.Controls {
 		controls[c.Element] = i
 	}
+	candidate := 0
 	var builder strings.Builder
 	origins := []Origin{}
 	active := false
@@ -79,7 +113,23 @@ func Analyze(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 			return
 		}
 		text := builder.String()
-		r.Scopes = append(r.Scopes, Scope{ID: fmt.Sprintf("odt-scope/%d", len(r.Scopes)), Text: text, SHA256: evidence.Hash([]byte(text)), Paragraph: paragraph, Origins: origins, Findings: []evidence.Finding{}})
+		localID := fmt.Sprintf("odt-scope/%d", candidate)
+		candidate++
+		dimension := ""
+		if limits != nil {
+			dimension = limits.Dimension(len(text), len(origins))
+		}
+		if dimension != "" {
+			span := origins[0].Source
+			for _, origin := range origins[1:] {
+				span.Start = min(span.Start, origin.Source.Start)
+				span.End = max(span.End, origin.Source.End)
+			}
+			r.Omitted = append(r.Omitted, scopelimits.Omission{LocalID: localID, Dimension: dimension, Code: failure.ResourceLimit, Source: span, TextUTF8Bytes: len(text), ScalarOrigins: len(origins)})
+			r.State = "partial"
+		} else {
+			r.Scopes = append(r.Scopes, Scope{ID: localID, Text: text, SHA256: evidence.Hash([]byte(text)), Paragraph: paragraph, Origins: origins, Findings: []evidence.Finding{}})
+		}
 		builder = strings.Builder{}
 		origins = []Origin{}
 		active = false

@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"slices"
 	"sort"
 	"strings"
 
@@ -126,7 +127,7 @@ func (r *OutcomeReader) Admit(ctx context.Context, names []string) error {
 			r.outcomes[name] = o
 			continue
 		}
-		data, readErr := io.ReadAll(io.LimitReader(&contextReader{ctx: ctx, r: reader}, int64(o.ReservedBytes)+1))
+		data, readErr := readReservedPayload(&contextReader{ctx: ctx, r: reader}, int(o.ReservedBytes))
 		closeErr := reader.Close()
 		switch {
 		case ctx.Err() != nil:
@@ -187,4 +188,54 @@ func (r *OutcomeReader) InspectionView(ctx context.Context) (OutcomeView, error)
 		return OutcomeView{}, err
 	}
 	return r.ReadOnlyView(), nil
+}
+
+func (r *OutcomeReader) SourceSHA256() string { return r.hash }
+func (r *OutcomeReader) Names() []string      { return slices.Clone(r.names) }
+
+// readReservedPayload distinguishes a normal EOF from a decoder's truncated
+// stream error. io.ReadFull would turn both into ErrUnexpectedEOF when the
+// one-byte overflow probe is not filled, losing that distinction.
+func readReservedPayload(reader io.Reader, reserved int) ([]byte, error) {
+	data := make([]byte, min(1024, reserved))
+	used, empty := 0, 0
+	for {
+		var n int
+		var err error
+		if used == reserved {
+			// Probe with a stack byte; a valid power-of-two payload must not force
+			// another payload-sized allocation merely to discover EOF.
+			var probe [1]byte
+			n, err = reader.Read(probe[:])
+			if n > 0 {
+				data = append(data[:used], probe[0])
+				used++
+			}
+		} else {
+			if used == len(data) {
+				grown := make([]byte, min(reserved, 2*len(data)))
+				copy(grown, data)
+				data = grown
+			}
+			n, err = reader.Read(data[used:])
+			used += n
+		}
+		if err == io.EOF {
+			return data[:used:used], nil
+		}
+		if err != nil {
+			return data[:used:used], err
+		}
+		if used > reserved {
+			return data[:used:used], nil
+		}
+		if n == 0 {
+			empty++
+			if empty >= 100 {
+				return data[:used:used], io.ErrNoProgress
+			}
+		} else {
+			empty = 0
+		}
+	}
 }

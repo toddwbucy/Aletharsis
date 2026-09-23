@@ -73,7 +73,8 @@ func signature(b []byte) string {
 	return ""
 }
 
-// Inspect consumes one identified DOCX plus its shared verified OPC inventory.
+// Inspect consumes a DOCX declaration chain and its shared verified OPC inventory.
+// Main payload failure does not erase independently declared sibling objects.
 // Callers must not mutate the supplied records during inspection. Ordinary
 // filenames only create candidates; they never establish type or authenticity.
 func Inspect(ctx context.Context, doc *docxidentify.Result) (*Result, error) {
@@ -83,8 +84,8 @@ func Inspect(ctx context.Context, doc *docxidentify.Result) (*Result, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
-	if doc.Format != "docx" {
-		return nil, errors.New("embedded-object inventory requires identified DOCX")
+	if doc.Format != "docx" && doc.MainPart == "" {
+		return nil, errors.New("embedded-object inventory requires a declared DOCX main part")
 	}
 	opc := doc.OPC
 	if opc.Outcomes.SourceSHA256 == "" {
