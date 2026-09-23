@@ -92,12 +92,13 @@ Identity is `internal/docxidentify` / `internal/odtidentify`; extraction is `int
   failure codes (`internal/failure`), artifact/anchor identity (`internal/identity`). Its console
   view prints coverage *before* findings so an empty finding list cannot hide an unrun or
   unavailable operation. `internal/wire` validates against schemas compiled in by
-  `schemas/embed.go` — only 1.0 and 2.0 are embedded, and no URL inside a report selects a schema.
+  `schemas/embed.go` — 1.0, 2.0 and 4.0 are embedded, and no URL inside a report selects a schema.
 - **3.0** is `schemas/report-v3.schema.json` plus an offline Python conformance oracle in
   `tests/contracts_v3/`. No Go code implements it.
-- **4.0 (proposed, not implemented)** — [OC-001](docs/specs/office-cli-evidence.md),
+- **4.0 (wire/import implemented; CLI integration pending)** — [OC-001](docs/specs/office-cli-evidence.md),
   PR #74: Office evidence and corpus-v2; retains the 3.0 adapter envelope.
-  Existing runtime support remains 1.0/2.0 only.
+  `reportimport.ReadSupported` validates native 4.0 reports; nonempty adapter runs
+  remain `unsupported_feature`. Legacy `Read` and CLI production remain 1.0/2.0.
 
 Other wire contracts: `corpus-v1`, `corpus-document-v1`, `reveal-tree-v1`, `profile-v1`.
 

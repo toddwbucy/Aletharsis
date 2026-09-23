@@ -1,0 +1,1555 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "texts": [],
+    "metadata": {},
+    "structure": {},
+    "office": {
+      "packages": [
+        {
+          "package_ref": "office-package/0",
+          "source_artifact_ref": "artifact/0",
+          "source_sha256": "6a924ca0fb4fabc3d2ee23d6fde9f25ced1f8525c2d680703c9ad174ff7a54a5",
+          "source_byte_length": 1004,
+          "parser_version": "zip-parts/1",
+          "format": "odt",
+          "state": "completed",
+          "issues": [],
+          "parts": [
+            {
+              "part_ref": "office-part/0",
+              "package_ref": "office-package/0",
+              "name": "mimetype",
+              "artifact_ref": "artifact/1",
+              "method": 0,
+              "compressed_span": {
+                "start": 38,
+                "end": 77
+              },
+              "compressed_sha256": "714dbe370b0a7063669217d91b287566fe8babbc8599b629b24476ff81b83593",
+              "sha256": "714dbe370b0a7063669217d91b287566fe8babbc8599b629b24476ff81b83593",
+              "byte_length": 39,
+              "state": "completed",
+              "issues": []
+            },
+            {
+              "part_ref": "office-part/1",
+              "package_ref": "office-package/0",
+              "name": "META-INF/manifest.xml",
+              "artifact_ref": "artifact/2",
+              "method": 0,
+              "compressed_span": {
+                "start": 128,
+                "end": 451
+              },
+              "compressed_sha256": "4546255d22ece4b9cc36266520b6ffb34b6d65ec266768ac765935c55692993f",
+              "sha256": "4546255d22ece4b9cc36266520b6ffb34b6d65ec266768ac765935c55692993f",
+              "byte_length": 323,
+              "state": "completed",
+              "issues": []
+            },
+            {
+              "part_ref": "office-part/2",
+              "package_ref": "office-package/0",
+              "name": "content.xml",
+              "artifact_ref": "artifact/3",
+              "method": 0,
+              "compressed_span": {
+                "start": 492,
+                "end": 804
+              },
+              "compressed_sha256": "2b516a286a48f661cd88f35a3ebd6a438c9ab33cfb6fcdaa930e7f4a9f1d7906",
+              "sha256": "2b516a286a48f661cd88f35a3ebd6a438c9ab33cfb6fcdaa930e7f4a9f1d7906",
+              "byte_length": 312,
+              "state": "completed",
+              "issues": []
+            }
+          ],
+          "outcomes": [
+            {
+              "operation": "aletharsis.parse.office_package",
+              "execution_ref": "exec/1",
+              "part_ref": "office-part/0",
+              "state": "completed",
+              "codes": [],
+              "diagnostic_refs": [],
+              "assessed": [
+                {
+                  "start": 0,
+                  "end": 39
+                }
+              ],
+              "excluded": []
+            },
+            {
+              "operation": "aletharsis.parse.office_package",
+              "execution_ref": "exec/1",
+              "part_ref": "office-part/1",
+              "state": "completed",
+              "codes": [],
+              "diagnostic_refs": [],
+              "assessed": [
+                {
+                  "start": 0,
+                  "end": 323
+                }
+              ],
+              "excluded": []
+            },
+            {
+              "operation": "aletharsis.parse.office_package",
+              "execution_ref": "exec/1",
+              "part_ref": "office-part/2",
+              "state": "completed",
+              "codes": [],
+              "diagnostic_refs": [],
+              "assessed": [
+                {
+                  "start": 0,
+                  "end": 312
+                }
+              ],
+              "excluded": []
+            },
+            {
+              "operation": "aletharsis.office.text",
+              "execution_ref": "exec/5",
+              "part_ref": "office-part/2",
+              "state": "completed",
+              "codes": [],
+              "diagnostic_refs": [],
+              "assessed": [
+                {
+                  "start": 0,
+                  "end": 312
+                }
+              ],
+              "excluded": []
+            }
+          ],
+          "limits": {
+            "source_bytes": 8388608,
+            "part_count": 4096,
+            "part_bytes": 33554432,
+            "aggregate_bytes": 67108864,
+            "max_scope_text_utf8_bytes": 4194304,
+            "max_scope_scalar_origins": 200000,
+            "report_input_bytes": 16777216,
+            "report_output_bytes": 16777216,
+            "report_nodes": 4194304,
+            "report_depth": 64
+          }
+        }
+      ],
+      "xml": [
+        {
+          "xml_ref": "office-xml/0",
+          "part_ref": "office-part/2",
+          "parser_version": "xml-parts/1",
+          "mapper_version": "xml-text-map/1",
+          "tokens": [
+            {
+              "index": 0,
+              "kind": "start",
+              "span": {
+                "start": 0,
+                "end": 170
+              },
+              "element": 0
+            },
+            {
+              "index": 1,
+              "kind": "start",
+              "span": {
+                "start": 170,
+                "end": 183
+              },
+              "element": 1
+            },
+            {
+              "index": 2,
+              "kind": "start",
+              "span": {
+                "start": 183,
+                "end": 196
+              },
+              "element": 2
+            },
+            {
+              "index": 3,
+              "kind": "start",
+              "span": {
+                "start": 196,
+                "end": 204
+              },
+              "element": 3
+            },
+            {
+              "index": 4,
+              "kind": "start",
+              "span": {
+                "start": 204,
+                "end": 215
+              },
+              "element": 4
+            },
+            {
+              "index": 5,
+              "kind": "text",
+              "span": {
+                "start": 215,
+                "end": 237
+              },
+              "element": 4
+            },
+            {
+              "index": 6,
+              "kind": "end",
+              "span": {
+                "start": 237,
+                "end": 249
+              },
+              "element": 4
+            },
+            {
+              "index": 7,
+              "kind": "end",
+              "span": {
+                "start": 249,
+                "end": 258
+              },
+              "element": 3
+            },
+            {
+              "index": 8,
+              "kind": "end",
+              "span": {
+                "start": 258,
+                "end": 272
+              },
+              "element": 2
+            },
+            {
+              "index": 9,
+              "kind": "end",
+              "span": {
+                "start": 272,
+                "end": 286
+              },
+              "element": 1
+            },
+            {
+              "index": 10,
+              "kind": "end",
+              "span": {
+                "start": 286,
+                "end": 312
+              },
+              "element": 0
+            }
+          ],
+          "elements": [
+            {
+              "index": 0,
+              "parent": null,
+              "namespace": "urn:oasis:names:tc:opendocument:xmlns:office:1.0",
+              "local_name": "document-content",
+              "span": {
+                "start": 0,
+                "end": 312
+              }
+            },
+            {
+              "index": 1,
+              "parent": 0,
+              "namespace": "urn:oasis:names:tc:opendocument:xmlns:office:1.0",
+              "local_name": "body",
+              "span": {
+                "start": 170,
+                "end": 286
+              }
+            },
+            {
+              "index": 2,
+              "parent": 1,
+              "namespace": "urn:oasis:names:tc:opendocument:xmlns:office:1.0",
+              "local_name": "text",
+              "span": {
+                "start": 183,
+                "end": 272
+              }
+            },
+            {
+              "index": 3,
+              "parent": 2,
+              "namespace": "urn:oasis:names:tc:opendocument:xmlns:text:1.0",
+              "local_name": "p",
+              "span": {
+                "start": 196,
+                "end": 258
+              }
+            },
+            {
+              "index": 4,
+              "parent": 3,
+              "namespace": "urn:oasis:names:tc:opendocument:xmlns:text:1.0",
+              "local_name": "span",
+              "span": {
+                "start": 204,
+                "end": 249
+              }
+            }
+          ],
+          "issues": [],
+          "controls": [],
+          "segments": [
+            {
+              "token": 5,
+              "element": 4,
+              "token_span": {
+                "start": 215,
+                "end": 237
+              },
+              "content_span": {
+                "start": 215,
+                "end": 237
+              },
+              "cdata": false,
+              "text": "An isolated\u200b space.\n",
+              "sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a",
+              "scalars": [
+                {
+                  "scalar": 0,
+                  "code_point": 65,
+                  "source": {
+                    "start": 215,
+                    "end": 216
+                  },
+                  "utf8": {
+                    "start": 0,
+                    "end": 1
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 1,
+                  "code_point": 110,
+                  "source": {
+                    "start": 216,
+                    "end": 217
+                  },
+                  "utf8": {
+                    "start": 1,
+                    "end": 2
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 2,
+                  "code_point": 32,
+                  "source": {
+                    "start": 217,
+                    "end": 218
+                  },
+                  "utf8": {
+                    "start": 2,
+                    "end": 3
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 3,
+                  "code_point": 105,
+                  "source": {
+                    "start": 218,
+                    "end": 219
+                  },
+                  "utf8": {
+                    "start": 3,
+                    "end": 4
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 4,
+                  "code_point": 115,
+                  "source": {
+                    "start": 219,
+                    "end": 220
+                  },
+                  "utf8": {
+                    "start": 4,
+                    "end": 5
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 5,
+                  "code_point": 111,
+                  "source": {
+                    "start": 220,
+                    "end": 221
+                  },
+                  "utf8": {
+                    "start": 5,
+                    "end": 6
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 6,
+                  "code_point": 108,
+                  "source": {
+                    "start": 221,
+                    "end": 222
+                  },
+                  "utf8": {
+                    "start": 6,
+                    "end": 7
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 7,
+                  "code_point": 97,
+                  "source": {
+                    "start": 222,
+                    "end": 223
+                  },
+                  "utf8": {
+                    "start": 7,
+                    "end": 8
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 8,
+                  "code_point": 116,
+                  "source": {
+                    "start": 223,
+                    "end": 224
+                  },
+                  "utf8": {
+                    "start": 8,
+                    "end": 9
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 9,
+                  "code_point": 101,
+                  "source": {
+                    "start": 224,
+                    "end": 225
+                  },
+                  "utf8": {
+                    "start": 9,
+                    "end": 10
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 10,
+                  "code_point": 100,
+                  "source": {
+                    "start": 225,
+                    "end": 226
+                  },
+                  "utf8": {
+                    "start": 10,
+                    "end": 11
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 11,
+                  "code_point": 8203,
+                  "source": {
+                    "start": 226,
+                    "end": 229
+                  },
+                  "utf8": {
+                    "start": 11,
+                    "end": 14
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 12,
+                  "code_point": 32,
+                  "source": {
+                    "start": 229,
+                    "end": 230
+                  },
+                  "utf8": {
+                    "start": 14,
+                    "end": 15
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 13,
+                  "code_point": 115,
+                  "source": {
+                    "start": 230,
+                    "end": 231
+                  },
+                  "utf8": {
+                    "start": 15,
+                    "end": 16
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 14,
+                  "code_point": 112,
+                  "source": {
+                    "start": 231,
+                    "end": 232
+                  },
+                  "utf8": {
+                    "start": 16,
+                    "end": 17
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 15,
+                  "code_point": 97,
+                  "source": {
+                    "start": 232,
+                    "end": 233
+                  },
+                  "utf8": {
+                    "start": 17,
+                    "end": 18
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 16,
+                  "code_point": 99,
+                  "source": {
+                    "start": 233,
+                    "end": 234
+                  },
+                  "utf8": {
+                    "start": 18,
+                    "end": 19
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 17,
+                  "code_point": 101,
+                  "source": {
+                    "start": 234,
+                    "end": 235
+                  },
+                  "utf8": {
+                    "start": 19,
+                    "end": 20
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 18,
+                  "code_point": 46,
+                  "source": {
+                    "start": 235,
+                    "end": 236
+                  },
+                  "utf8": {
+                    "start": 20,
+                    "end": 21
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 19,
+                  "code_point": 10,
+                  "source": {
+                    "start": 236,
+                    "end": 237
+                  },
+                  "utf8": {
+                    "start": 21,
+                    "end": 22
+                  },
+                  "transformation": "literal"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "scopes": [
+        {
+          "scope_ref": "office-scope/0",
+          "part_ref": "office-part/2",
+          "local_id": "odt-scope/0",
+          "extractor_version": "odt-text/1",
+          "assembler_version": "odt-analysis/1",
+          "role": "body",
+          "text": "An isolated\u200b space.\n",
+          "sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a",
+          "origins": [
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 0,
+              "source": {
+                "start": 215,
+                "end": 216
+              },
+              "utf8": {
+                "start": 0,
+                "end": 1
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 1,
+              "source": {
+                "start": 216,
+                "end": 217
+              },
+              "utf8": {
+                "start": 1,
+                "end": 2
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 2,
+              "source": {
+                "start": 217,
+                "end": 218
+              },
+              "utf8": {
+                "start": 2,
+                "end": 3
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 3,
+              "source": {
+                "start": 218,
+                "end": 219
+              },
+              "utf8": {
+                "start": 3,
+                "end": 4
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 4,
+              "source": {
+                "start": 219,
+                "end": 220
+              },
+              "utf8": {
+                "start": 4,
+                "end": 5
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 5,
+              "source": {
+                "start": 220,
+                "end": 221
+              },
+              "utf8": {
+                "start": 5,
+                "end": 6
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 6,
+              "source": {
+                "start": 221,
+                "end": 222
+              },
+              "utf8": {
+                "start": 6,
+                "end": 7
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 7,
+              "source": {
+                "start": 222,
+                "end": 223
+              },
+              "utf8": {
+                "start": 7,
+                "end": 8
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 8,
+              "source": {
+                "start": 223,
+                "end": 224
+              },
+              "utf8": {
+                "start": 8,
+                "end": 9
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 9,
+              "source": {
+                "start": 224,
+                "end": 225
+              },
+              "utf8": {
+                "start": 9,
+                "end": 10
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 10,
+              "source": {
+                "start": 225,
+                "end": 226
+              },
+              "utf8": {
+                "start": 10,
+                "end": 11
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 11,
+              "source": {
+                "start": 226,
+                "end": 229
+              },
+              "utf8": {
+                "start": 11,
+                "end": 14
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 12,
+              "source": {
+                "start": 229,
+                "end": 230
+              },
+              "utf8": {
+                "start": 14,
+                "end": 15
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 13,
+              "source": {
+                "start": 230,
+                "end": 231
+              },
+              "utf8": {
+                "start": 15,
+                "end": 16
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 14,
+              "source": {
+                "start": 231,
+                "end": 232
+              },
+              "utf8": {
+                "start": 16,
+                "end": 17
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 15,
+              "source": {
+                "start": 232,
+                "end": 233
+              },
+              "utf8": {
+                "start": 17,
+                "end": 18
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 16,
+              "source": {
+                "start": 233,
+                "end": 234
+              },
+              "utf8": {
+                "start": 18,
+                "end": 19
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 17,
+              "source": {
+                "start": 234,
+                "end": 235
+              },
+              "utf8": {
+                "start": 19,
+                "end": 20
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 18,
+              "source": {
+                "start": 235,
+                "end": 236
+              },
+              "utf8": {
+                "start": 20,
+                "end": 21
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 19,
+              "source": {
+                "start": 236,
+                "end": 237
+              },
+              "utf8": {
+                "start": 21,
+                "end": 22
+              },
+              "transformation": "literal"
+            }
+          ],
+          "hashes": {
+            "formatting_removed_sha256": "55af284cc8007ce9fda83cf8abf0b5a86e4c86199e145cfaa66835c74957099d",
+            "nfc_text_sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a",
+            "nfkc_text_sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a",
+            "raw_text_sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a"
+          },
+          "boundaries": [],
+          "issues": [],
+          "identity_sha256": "da821a35f40e6c33cdba2948725c08c1fb657a0ed8005477ca3e9fdcd801c235"
+        }
+      ],
+      "metadata": [],
+      "relationships": [],
+      "objects": []
+    }
+  },
+  "file": {
+    "extension": ".odt",
+    "filename": "office-odt-minimal.odt",
+    "format": "odt",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "application/vnd.oasis.opendocument.text",
+    "parser": "zip-parts/1",
+    "path": "office-odt-minimal.odt",
+    "sha256": "6a924ca0fb4fabc3d2ee23d6fde9f25ced1f8525c2d680703c9ad174ff7a54a5",
+    "size": 1004
+  },
+  "findings": [
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200B",
+        "contexts": [
+          {
+            "character_offset": 11,
+            "escaped_text": "An isolated\\u200b space.\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "ZERO WIDTH SPACE"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "kind": "office_offsets",
+        "scope_ref": "office-scope/0",
+        "scope_character_offsets": [
+          11
+        ],
+        "scope_byte_offsets": [
+          11
+        ]
+      },
+      "severity": "LOW",
+      "title": "U+200B ZERO WIDTH SPACE detected",
+      "finding_ref": "finding/0",
+      "execution_ref": "exec/2",
+      "mechanism": "structural",
+      "anchor_refs": [
+        "anchor/0"
+      ]
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "4.0",
+  "status": "completed",
+  "summary": {
+    "exit_code": 1,
+    "findings": 1,
+    "high": 0,
+    "info": 0,
+    "low": 1,
+    "medium": 0
+  },
+  "catalog_version": "conformance-subset/1",
+  "capabilities": [
+    {
+      "id": "aletharsis.acquire",
+      "revision": "1",
+      "role": "acquisition",
+      "mechanism": null,
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.acquire",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "aletharsis.c2pa.verify",
+      "revision": "1",
+      "role": "verifier",
+      "mechanism": "cryptographic",
+      "purpose": null,
+      "implementation": null,
+      "availability": {
+        "state": "unavailable",
+        "reason_code": "capability.not_implemented"
+      },
+      "participation": "disabled",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "aletharsis.parse.office_package",
+      "revision": "1",
+      "role": "parser",
+      "mechanism": null,
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.parse.text",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "aletharsis.unicode.inventory",
+      "revision": "1",
+      "role": "analyzer",
+      "mechanism": "structural",
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.unicode.inventory",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "text"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "anthropic.claude_text_watermark",
+      "revision": "1",
+      "role": "analyzer",
+      "mechanism": "statistical",
+      "purpose": "watermark_detection",
+      "implementation": null,
+      "availability": {
+        "state": "unavailable",
+        "reason_code": "capability.detector_access_unavailable"
+      },
+      "participation": "disabled",
+      "supported_scope": {
+        "kinds": [
+          "text"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "aletharsis.office.text",
+      "revision": "1",
+      "role": "parser",
+      "mechanism": null,
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.parse.text",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    }
+  ],
+  "executions": [
+    {
+      "execution_ref": "exec/0",
+      "capability_ref": "aletharsis.acquire",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/0",
+          "unit": "whole_artifact"
+        }
+      ],
+      "exclusions": [],
+      "state": "completed",
+      "reason_code": null,
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/1",
+      "capability_ref": "aletharsis.parse.office_package",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/0",
+          "unit": "whole_artifact"
+        }
+      ],
+      "exclusions": [],
+      "state": "completed",
+      "reason_code": null,
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/2",
+      "capability_ref": "aletharsis.unicode.inventory",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/4",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/4",
+          "unit": "whole_artifact"
+        }
+      ],
+      "exclusions": [],
+      "state": "completed",
+      "reason_code": null,
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/3",
+      "capability_ref": "anthropic.claude_text_watermark",
+      "config": {
+        "schema": null,
+        "revision": null,
+        "settings": null,
+        "sha256": null,
+        "key_ref": null,
+        "unavailable_reason": "configuration.unknown"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/4",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [],
+      "exclusions": [],
+      "state": "not_run",
+      "reason_code": "execution.disabled",
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/4",
+      "capability_ref": "aletharsis.c2pa.verify",
+      "config": {
+        "schema": null,
+        "revision": null,
+        "settings": null,
+        "sha256": null,
+        "key_ref": null,
+        "unavailable_reason": "configuration.unknown"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [],
+      "exclusions": [],
+      "state": "not_run",
+      "reason_code": "execution.disabled",
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/5",
+      "capability_ref": "aletharsis.office.text",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/3",
+        "unit": "byte",
+        "regions": [
+          {
+            "start": 0,
+            "end": 312
+          }
+        ]
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/3",
+          "unit": "byte",
+          "regions": [
+            {
+              "start": 0,
+              "end": 312
+            }
+          ]
+        }
+      ],
+      "exclusions": [],
+      "state": "completed",
+      "reason_code": null,
+      "diagnostic_refs": []
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_ref": "artifact/0",
+      "kind": "source",
+      "representation": {
+        "serialization": "original-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "6a924ca0fb4fabc3d2ee23d6fde9f25ced1f8525c2d680703c9ad174ff7a54a5",
+      "byte_length": 1004,
+      "content_ref": null,
+      "unavailable_reason": "not_retained",
+      "parents": [],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/1",
+      "kind": "package_part",
+      "representation": {
+        "serialization": "original-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "714dbe370b0a7063669217d91b287566fe8babbc8599b629b24476ff81b83593",
+      "byte_length": 39,
+      "content_ref": null,
+      "unavailable_reason": "not_retained",
+      "parents": [
+        "artifact/0"
+      ],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/2",
+      "kind": "package_part",
+      "representation": {
+        "serialization": "original-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "4546255d22ece4b9cc36266520b6ffb34b6d65ec266768ac765935c55692993f",
+      "byte_length": 323,
+      "content_ref": null,
+      "unavailable_reason": "not_retained",
+      "parents": [
+        "artifact/0"
+      ],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/3",
+      "kind": "package_part",
+      "representation": {
+        "serialization": "original-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "2b516a286a48f661cd88f35a3ebd6a438c9ab33cfb6fcdaa930e7f4a9f1d7906",
+      "byte_length": 312,
+      "content_ref": null,
+      "unavailable_reason": "not_retained",
+      "parents": [
+        "artifact/0"
+      ],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/4",
+      "kind": "text",
+      "representation": {
+        "serialization": "unicode-scalars-utf8/1",
+        "encoding": "utf-8",
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a",
+      "byte_length": 22,
+      "content_ref": {
+        "kind": "office_scope",
+        "scope_ref": "office-scope/0"
+      },
+      "unavailable_reason": null,
+      "parents": [
+        "artifact/3"
+      ],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    }
+  ],
+  "anchors": [
+    {
+      "anchor_ref": "anchor/0",
+      "kind": "office_scope",
+      "artifact_ref": "artifact/4",
+      "execution_ref": "exec/2",
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      },
+      "locator": {
+        "kind": "office_scope",
+        "scope_ref": "office-scope/0"
+      }
+    }
+  ],
+  "results": [
+    {
+      "result_ref": "result/0",
+      "execution_ref": "exec/2",
+      "kind": "structural_scan",
+      "contract_version": "1",
+      "anchor_refs": [
+        "anchor/0"
+      ],
+      "payload": {
+        "operation": "aletharsis.unicode.inventory",
+        "scope": {
+          "artifact_ref": "artifact/4",
+          "unit": "whole_artifact"
+        },
+        "outcome": "observations_present"
+      },
+      "limitations": []
+    }
+  ],
+  "diagnostics": [],
+  "profile_assessments": [],
+  "view": {
+    "name": "audit",
+    "finding_categories": []
+  },
+  "adapter_runs": []
+}

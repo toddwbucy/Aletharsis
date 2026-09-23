@@ -118,7 +118,13 @@ func TestHeaderAndPayloadCorruption(t *testing.T) {
 		{"method", func(b []byte) { b[central+10] = 99 }, ErrUnsupported},
 		{"count_lie", func(b []byte) { end := len(b) - 22; b[end+8] = 0; b[end+10] = 0 }, ErrFormat},
 		{"offset", func(b []byte) { binary.LittleEndian.PutUint32(b[central+42:], 0xfffffff0) }, ErrFormat},
-		{"huge_expansion", func(b []byte) { binary.LittleEndian.PutUint32(b[central+24:], 1<<30) }, ErrLimit},
+		{"huge_expansion_inconsistent_header", func(b []byte) { binary.LittleEndian.PutUint32(b[central+24:], 1<<30) }, ErrFormat},
+		{"huge_expansion", func(b []byte) {
+			binary.LittleEndian.PutUint32(b[central+24:], 1<<30)
+			// Keep the data descriptor consistent so this exercises the
+			// expansion policy, not the earlier structural identity check.
+			binary.LittleEndian.PutUint32(b[central-4:], 1<<30)
+		}, ErrLimit},
 		{"multidisk", func(b []byte) { b[len(b)-18] = 1 }, ErrUnsupported},
 		{"zip64", func(b []byte) { binary.LittleEndian.PutUint32(b[central+24:], 0xffffffff) }, ErrUnsupported},
 	}

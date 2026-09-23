@@ -27,6 +27,8 @@ type Declaration struct {
 	Anchor                                         opcrels.Anchor
 }
 type Assignment struct {
+	// Type assignment and payload admission are independent facts.
+	AdmissionState, AdmissionCode              string
 	Part, PartSHA256, ContentType, State, Code string
 	Declaration                                int
 }
@@ -47,14 +49,6 @@ type Result struct {
 	MainXML                          *xmlparts.Document
 }
 
-func fold(s string) string {
-	return strings.Map(func(r rune) rune {
-		if r >= 'A' && r <= 'Z' {
-			return r + 32
-		}
-		return r
-	}, s)
-}
 func (r *Result) issue(code, part string, element int) {
 	r.State = "partial"
 	r.Issues = append(r.Issues, Issue{code, part, element})
@@ -69,10 +63,10 @@ func parseCode(err error) string {
 		return "xml.invalid"
 	}
 }
-func find(parts []packageparts.Part, name string) []int {
+func find(parts []packageparts.Outcome, name string) []int {
 	result := []int{}
 	for i, p := range parts {
-		if !p.Directory && fold(p.Name) == fold(name) {
+		if !p.Directory && opcrels.FoldName(p.Name) == opcrels.FoldName(name) {
 			result = append(result, i)
 		}
 	}
@@ -87,8 +81,26 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	if err != nil {
 		return nil, err
 	}
+	return inspectOPC(ctx, opc)
+}
+
+// InspectVerified reuses the coordinator's single OPC inventory. It never reads
+// or decompresses the container. The caller must not mutate OPC during inspection.
+// Its prerequisite is an OPC result, not a reader: re-inspecting the reader here
+// would duplicate the coordinator's shared relationship inventory.
+func InspectVerified(ctx context.Context, opc *opcrels.Result) (*Result, error) {
+	if ctx == nil || opc == nil || opc.Outcomes == nil || opc.Outcomes.SourceSHA256 == "" {
+		return nil, packageparts.ErrIdentity
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	return inspectOPC(ctx, opc)
+}
+
+func inspectOPC(ctx context.Context, opc *opcrels.Result) (*Result, error) {
 	r := &Result{Parser: Version, State: "not_applicable", OPC: opc, Declarations: []Declaration{}, Assignments: []Assignment{}, Issues: []Issue{}, MainRelationship: -1, MainAssignment: -1}
-	parts := opc.Package.Parts
+	parts := opc.Outcomes.Parts
 	matches := find(parts, "[Content_Types].xml")
 	if len(matches) == 0 {
 		if opc.State != "not_applicable" {
@@ -103,6 +115,13 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	}
 	p := parts[matches[0]]
 	r.TypesPart, r.TypesSHA256 = p.Name, p.SHA256
+	if p.State != "completed" {
+		r.issue("opc.content_types_unavailable", p.Name, -1)
+		if p.Code != "" {
+			r.issue(p.Code, p.Name, -1)
+		}
+		return r, nil
+	}
 	if p.Name != "[Content_Types].xml" {
 		r.issue("opc.content_types_name_unsupported", p.Name, -1)
 		return r, nil
@@ -122,13 +141,13 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	r.assign(parts)
 	rootOK := false
 	for _, part := range opc.Parts {
-		if fold(part.Part) == "_rels/.rels" {
+		if opcrels.FoldName(part.Part) == "_rels/.rels" {
 			rootOK = part.State == "completed"
 		}
 	}
 	rootTypeOK := false
 	for _, a := range r.Assignments {
-		if fold(a.Part) == "_rels/.rels" && a.State == "assigned" && a.ContentType == "application/vnd.openxmlformats-package.relationships+xml" {
+		if opcrels.FoldName(a.Part) == "_rels/.rels" && a.State == "assigned" && a.ContentType == "application/vnd.openxmlformats-package.relationships+xml" {
 			rootTypeOK = true
 		}
 	}
@@ -137,12 +156,18 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		return r, nil
 	}
 	if !rootOK {
+		// Non-deferral admission codes were already emitted by assign().
+		for _, p := range parts {
+			if opcrels.FoldName(p.Name) == "_rels/.rels" && p.Code == "office.part_not_admitted" {
+				r.issue(p.Code, p.Name, -1)
+			}
+		}
 		r.issue("docx.root_relationships_incomplete", "_rels/.rels", -1)
 		return r, nil
 	}
 	candidates := []int{}
 	for i, rel := range opc.Relationships {
-		if fold(rel.Anchor.Part) == "_rels/.rels" && (rel.Type == TransitionalRelationship || rel.Type == StrictRelationship) {
+		if opcrels.FoldName(rel.Anchor.Part) == "_rels/.rels" && (rel.Type == TransitionalRelationship || rel.Type == StrictRelationship) {
 			candidates = append(candidates, i)
 		}
 	}
@@ -183,6 +208,14 @@ func Inspect(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 		return r, nil
 	}
 	main := parts[matches[0]]
+	if main.State != "completed" {
+		r.issue("docx.main_part_unavailable", main.Name, -1)
+		// Non-deferral admission codes were already emitted by assign().
+		if main.Code == "office.part_not_admitted" {
+			r.issue(main.Code, main.Name, -1)
+		}
+		return r, nil
+	}
 	doc, err := xmlparts.Parse(ctx, main.Bytes, main.SHA256, xmlparts.DefaultLimits())
 	if err != nil {
 		if ctx.Err() != nil {
@@ -348,35 +381,35 @@ func declarationKey(d Declaration) string {
 	if d.Kind == "Override" {
 		key = strings.TrimPrefix(key, "/")
 	}
-	return d.Kind + ":" + fold(key)
+	return d.Kind + ":" + opcrels.FoldName(key)
 }
-func (r *Result) assign(parts []packageparts.Part) {
+func (r *Result) assign(parts []packageparts.Outcome) {
 	defaults, overrides := map[string]int{}, map[string]int{}
 	for i, d := range r.Declarations {
 		if !d.typeDeclaration() {
 			continue
 		}
 		if d.Kind == "Default" {
-			defaults[fold(d.Key)] = i
+			defaults[opcrels.FoldName(d.Key)] = i
 		} else if d.Kind == "Override" {
-			overrides[fold(strings.TrimPrefix(d.Key, "/"))] = i
+			overrides[opcrels.FoldName(strings.TrimPrefix(d.Key, "/"))] = i
 		}
 	}
 	counts := map[string]int{}
 	for _, p := range parts {
 		if !p.Directory {
-			counts[fold(p.Name)]++
+			counts[opcrels.FoldName(p.Name)]++
 		}
 	}
 	for _, p := range parts {
 		if p.Directory || p.Name == r.TypesPart {
 			continue
 		}
-		a := Assignment{Part: p.Name, PartSHA256: p.SHA256, State: "unknown", Declaration: -1}
-		if counts[fold(p.Name)] > 1 {
+		a := Assignment{Part: p.Name, PartSHA256: p.SHA256, AdmissionState: p.State, AdmissionCode: p.Code, State: "unknown", Declaration: -1}
+		if counts[opcrels.FoldName(p.Name)] > 1 {
 			a.Code = "opc.part_name_ambiguous"
 		} else {
-			if i, ok := overrides[fold(p.Name)]; ok {
+			if i, ok := overrides[opcrels.FoldName(p.Name)]; ok {
 				a.Declaration = i
 			} else {
 				base := p.Name
@@ -384,7 +417,7 @@ func (r *Result) assign(parts []packageparts.Part) {
 					base = base[n+1:]
 				}
 				if dot := strings.LastIndexByte(base, '.'); dot >= 0 {
-					if i, ok := defaults[fold(base[dot+1:])]; ok {
+					if i, ok := defaults[opcrels.FoldName(base[dot+1:])]; ok {
 						a.Declaration = i
 					}
 				}
@@ -404,11 +437,14 @@ func (r *Result) assign(parts []packageparts.Part) {
 		if a.Code != "" {
 			r.issue(a.Code, p.Name, -1)
 		}
+		if p.State != "completed" && p.Code != "" && p.Code != "office.part_not_admitted" {
+			r.issue(p.Code, p.Name, -1)
+		}
 		r.Assignments = append(r.Assignments, a)
 	}
 	// Overrides for absent targets remain observable package inconsistencies.
 	for _, d := range r.Declarations {
-		if d.typeDeclaration() && d.Kind == "Override" && d.State == "accepted" && counts[fold(strings.TrimPrefix(d.Key, "/"))] == 0 {
+		if d.typeDeclaration() && d.Kind == "Override" && d.State == "accepted" && counts[opcrels.FoldName(strings.TrimPrefix(d.Key, "/"))] == 0 {
 			r.issue("opc.override_target_missing", r.TypesPart, d.Anchor.Element)
 		}
 	}
