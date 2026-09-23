@@ -65,3 +65,53 @@ func TestOpaqueObjectAnchorHasNoTextCoordinates(t *testing.T) {
 		}
 	}
 }
+
+func unavailableObjectCase() (*Index, Evidence) {
+	x, e := inventoryCase()
+	p := x.Parts["office-part/1"]
+	p.Name = "word/embeddings/object.bin"
+	p.SHA256 = nil
+	p.ByteLength = nil
+	p.State = "not_run"
+	x.Parts[p.PartRef] = p
+	e.Objects[0].SHA256 = nil
+	e.Relationships[0].Mode = "Internal"
+	e.Relationships[0].SourceOwner = "word/document.xml"
+	e.Relationships[0].Target = "embeddings/object.bin"
+	e.Relationships[0].ResolutionState = "unresolved"
+	e.Relationships[0].ResolutionCode = str("opc.target_unavailable")
+	e.Relationships[0].TargetPartRef = nil
+	return x, e
+}
+func TestUnverifiedObjectCandidateKeepsOnlyUniqueDeclarationLink(t *testing.T) {
+	x, e := unavailableObjectCase()
+	if err := x.ValidateInventories(e); err != nil {
+		t.Fatal("lost unavailable candidate relationship", err)
+	}
+	for name, mutate := range map[string]func(*Index, *Evidence){
+		"external":        func(x *Index, e *Evidence) { e.Relationships[0].Mode = "External" },
+		"unrelated path":  func(x *Index, e *Evidence) { e.Relationships[0].Target = "elsewhere.bin" },
+		"missing target":  func(x *Index, e *Evidence) { e.Relationships[0].ResolutionCode = str("opc.target_missing") },
+		"unsupported URI": func(x *Index, e *Evidence) { e.Relationships[0].Target = "embeddings/%6fbject.bin" },
+		"case ambiguity": func(x *Index, e *Evidence) {
+			p := x.Parts["office-part/1"]
+			p.PartRef = "office-part/2"
+			p.Name = "WORD/EMBEDDINGS/OBJECT.BIN"
+			x.Parts[p.PartRef] = p
+		},
+		"other package": func(x *Index, e *Evidence) {
+			p := x.Parts["office-part/1"]
+			p.PackageRef = "office-package/1"
+			x.Parts[p.PartRef] = p
+		},
+		"invented verified reference": func(x *Index, e *Evidence) { e.Relationships[0].TargetPartRef = str("office-part/1") },
+	} {
+		t.Run(name, func(t *testing.T) {
+			x, e := unavailableObjectCase()
+			mutate(x, &e)
+			if x.ValidateInventories(e) == nil {
+				t.Fatal("accepted unsupported candidate link")
+			}
+		})
+	}
+}

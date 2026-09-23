@@ -1,6 +1,39 @@
 package v4
 
-import "github.com/toddwbucy/Aletharsis/internal/identity"
+import (
+	"github.com/toddwbucy/Aletharsis/internal/identity"
+	"github.com/toddwbucy/Aletharsis/internal/opcrels"
+	"strings"
+)
+
+// An unverified target has no target_part_ref, but the original declaration may
+// still identify a unique candidate by name. Preserve that backlink without
+// upgrading unavailable bytes to a verified relationship target.
+func (x *Index) unavailableObjectTarget(r Relationship, o Object) bool {
+	if r.Mode != "Internal" || r.ResolutionState != "unresolved" || r.ResolutionCode == nil || *r.ResolutionCode != "opc.target_unavailable" || r.TargetPartRef != nil || o.SHA256 != nil {
+		return false
+	}
+	target, code := opcrels.ResolveInternalTarget(r.SourceOwner, r.Target)
+	if code != "" {
+		return false
+	}
+	fold := func(s string) string {
+		return strings.Map(func(c rune) rune {
+			if c >= 'A' && c <= 'Z' {
+				return c + 32
+			}
+			return c
+		}, s)
+	}
+	owner := x.Parts[r.Location.PartRef]
+	matches := []string{}
+	for ref, part := range x.Parts {
+		if part.PackageRef == owner.PackageRef && fold(part.Name) == fold(target) {
+			matches = append(matches, ref)
+		}
+	}
+	return len(matches) == 1 && matches[0] == o.PartRef
+}
 
 // ValidateStructuralLocation checks a part-qualified XML or opaque-object
 // anchor. Coordinates always index decompressed part bytes, never ZIP bytes.
@@ -94,7 +127,14 @@ func (x *Index) ValidateInventories(e Evidence) error {
 		seen := map[string]bool{}
 		for _, ref := range o.RelationshipRefs {
 			r, ok := rels[ref]
-			if !ok || seen[ref] || r.TargetPartRef == nil || *r.TargetPartRef != o.PartRef {
+			if !ok || seen[ref] {
+				return ErrLinkage
+			}
+			if r.TargetPartRef == nil {
+				if !x.unavailableObjectTarget(r, o) {
+					return ErrLinkage
+				}
+			} else if *r.TargetPartRef != o.PartRef {
 				return ErrLinkage
 			}
 			seen[ref] = true
