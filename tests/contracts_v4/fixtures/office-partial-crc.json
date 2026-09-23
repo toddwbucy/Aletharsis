@@ -1,0 +1,1570 @@
+{
+  "aletharsis_version": "0.1.0",
+  "evidence": {
+    "texts": [],
+    "metadata": {},
+    "structure": {},
+    "office": {
+      "packages": [
+        {
+          "package_ref": "office-package/0",
+          "source_artifact_ref": "artifact/0",
+          "source_sha256": "a4b0bb14d2bc508b650d8705ee71a8416b4d5229042ee8bec31f772ebf5610ec",
+          "source_byte_length": 1179,
+          "parser_version": "zip-parts/1",
+          "format": "docx",
+          "state": "partial",
+          "issues": [
+            {
+              "code": "office.part_crc_failed",
+              "diagnostic_ref": "diagnostic/0",
+              "part_ref": "office-part/2"
+            }
+          ],
+          "parts": [
+            {
+              "part_ref": "office-part/0",
+              "package_ref": "office-package/0",
+              "name": "[Content_Types].xml",
+              "artifact_ref": "artifact/1",
+              "method": 0,
+              "compressed_span": {
+                "start": 49,
+                "end": 367
+              },
+              "compressed_sha256": "ca9aa2a016b6a42b00f5369c4fe48d598f0326a3fc8a8b0adad1852d7acdb17f",
+              "sha256": "ca9aa2a016b6a42b00f5369c4fe48d598f0326a3fc8a8b0adad1852d7acdb17f",
+              "byte_length": 318,
+              "state": "completed",
+              "issues": []
+            },
+            {
+              "part_ref": "office-part/1",
+              "package_ref": "office-package/0",
+              "name": "_rels/.rels",
+              "artifact_ref": "artifact/2",
+              "method": 0,
+              "compressed_span": {
+                "start": 408,
+                "end": 650
+              },
+              "compressed_sha256": "22c01d12e912dc45bdf191c382dd5b80cdeca1a9e95af86a477798a9f7e541e9",
+              "sha256": "22c01d12e912dc45bdf191c382dd5b80cdeca1a9e95af86a477798a9f7e541e9",
+              "byte_length": 242,
+              "state": "completed",
+              "issues": []
+            },
+            {
+              "part_ref": "office-part/2",
+              "package_ref": "office-package/0",
+              "name": "unused.bin",
+              "artifact_ref": "artifact/3",
+              "method": 0,
+              "compressed_span": {
+                "start": 690,
+                "end": 701
+              },
+              "compressed_sha256": "47b6f565fda35e1bdd202c1a795db2e4fc7d18aefe8538ed305c952ac36a033c",
+              "sha256": null,
+              "byte_length": null,
+              "state": "failed",
+              "issues": [
+                {
+                  "code": "office.part_crc_failed",
+                  "diagnostic_ref": "diagnostic/0",
+                  "part_ref": "office-part/2"
+                }
+              ]
+            },
+            {
+              "part_ref": "office-part/3",
+              "package_ref": "office-package/0",
+              "name": "word/document.xml",
+              "artifact_ref": "artifact/4",
+              "method": 0,
+              "compressed_span": {
+                "start": 748,
+                "end": 916
+              },
+              "compressed_sha256": "f1d8eab00a52c3cfc0fe8b14d134459ed60fa648f9a9602b1bbbddfe626ab9f8",
+              "sha256": "f1d8eab00a52c3cfc0fe8b14d134459ed60fa648f9a9602b1bbbddfe626ab9f8",
+              "byte_length": 168,
+              "state": "completed",
+              "issues": []
+            }
+          ],
+          "outcomes": [
+            {
+              "operation": "aletharsis.parse.office_package",
+              "execution_ref": "exec/1",
+              "part_ref": "office-part/0",
+              "state": "completed",
+              "codes": [],
+              "diagnostic_refs": [],
+              "assessed": [
+                {
+                  "start": 0,
+                  "end": 318
+                }
+              ],
+              "excluded": []
+            },
+            {
+              "operation": "aletharsis.parse.office_package",
+              "execution_ref": "exec/1",
+              "part_ref": "office-part/1",
+              "state": "completed",
+              "codes": [],
+              "diagnostic_refs": [],
+              "assessed": [
+                {
+                  "start": 0,
+                  "end": 242
+                }
+              ],
+              "excluded": []
+            },
+            {
+              "operation": "aletharsis.parse.office_package",
+              "execution_ref": "exec/1",
+              "part_ref": "office-part/2",
+              "state": "failed",
+              "codes": [
+                "office.part_crc_failed"
+              ],
+              "diagnostic_refs": [
+                "diagnostic/0"
+              ],
+              "assessed": [],
+              "excluded": []
+            },
+            {
+              "operation": "aletharsis.parse.office_package",
+              "execution_ref": "exec/1",
+              "part_ref": "office-part/3",
+              "state": "completed",
+              "codes": [],
+              "diagnostic_refs": [],
+              "assessed": [
+                {
+                  "start": 0,
+                  "end": 168
+                }
+              ],
+              "excluded": []
+            }
+          ],
+          "limits": {
+            "source_bytes": 8388608,
+            "part_count": 4096,
+            "part_bytes": 33554432,
+            "aggregate_bytes": 67108864,
+            "max_scope_text_utf8_bytes": 4194304,
+            "max_scope_scalar_origins": 200000,
+            "report_input_bytes": 16777216,
+            "report_output_bytes": 16777216,
+            "report_nodes": 4194304,
+            "report_depth": 64
+          }
+        }
+      ],
+      "xml": [
+        {
+          "xml_ref": "office-xml/0",
+          "part_ref": "office-part/3",
+          "parser_version": "xml-parts/1",
+          "mapper_version": "xml-text-map/1",
+          "tokens": [
+            {
+              "index": 0,
+              "kind": "start",
+              "span": {
+                "start": 0,
+                "end": 83
+              },
+              "element": 0
+            },
+            {
+              "index": 1,
+              "kind": "start",
+              "span": {
+                "start": 83,
+                "end": 91
+              },
+              "element": 1
+            },
+            {
+              "index": 2,
+              "kind": "start",
+              "span": {
+                "start": 91,
+                "end": 96
+              },
+              "element": 2
+            },
+            {
+              "index": 3,
+              "kind": "start",
+              "span": {
+                "start": 96,
+                "end": 101
+              },
+              "element": 3
+            },
+            {
+              "index": 4,
+              "kind": "start",
+              "span": {
+                "start": 101,
+                "end": 106
+              },
+              "element": 4
+            },
+            {
+              "index": 5,
+              "kind": "text",
+              "span": {
+                "start": 106,
+                "end": 128
+              },
+              "element": 4
+            },
+            {
+              "index": 6,
+              "kind": "end",
+              "span": {
+                "start": 128,
+                "end": 134
+              },
+              "element": 4
+            },
+            {
+              "index": 7,
+              "kind": "end",
+              "span": {
+                "start": 134,
+                "end": 140
+              },
+              "element": 3
+            },
+            {
+              "index": 8,
+              "kind": "end",
+              "span": {
+                "start": 140,
+                "end": 146
+              },
+              "element": 2
+            },
+            {
+              "index": 9,
+              "kind": "end",
+              "span": {
+                "start": 146,
+                "end": 155
+              },
+              "element": 1
+            },
+            {
+              "index": 10,
+              "kind": "end",
+              "span": {
+                "start": 155,
+                "end": 168
+              },
+              "element": 0
+            }
+          ],
+          "elements": [
+            {
+              "index": 0,
+              "parent": null,
+              "namespace": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+              "local_name": "document",
+              "span": {
+                "start": 0,
+                "end": 168
+              }
+            },
+            {
+              "index": 1,
+              "parent": 0,
+              "namespace": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+              "local_name": "body",
+              "span": {
+                "start": 83,
+                "end": 155
+              }
+            },
+            {
+              "index": 2,
+              "parent": 1,
+              "namespace": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+              "local_name": "p",
+              "span": {
+                "start": 91,
+                "end": 146
+              }
+            },
+            {
+              "index": 3,
+              "parent": 2,
+              "namespace": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+              "local_name": "r",
+              "span": {
+                "start": 96,
+                "end": 140
+              }
+            },
+            {
+              "index": 4,
+              "parent": 3,
+              "namespace": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+              "local_name": "t",
+              "span": {
+                "start": 101,
+                "end": 134
+              }
+            }
+          ],
+          "issues": [],
+          "controls": [],
+          "segments": [
+            {
+              "token": 5,
+              "element": 4,
+              "token_span": {
+                "start": 106,
+                "end": 128
+              },
+              "content_span": {
+                "start": 106,
+                "end": 128
+              },
+              "cdata": false,
+              "text": "An isolated\u200b space.\n",
+              "sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a",
+              "scalars": [
+                {
+                  "scalar": 0,
+                  "code_point": 65,
+                  "source": {
+                    "start": 106,
+                    "end": 107
+                  },
+                  "utf8": {
+                    "start": 0,
+                    "end": 1
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 1,
+                  "code_point": 110,
+                  "source": {
+                    "start": 107,
+                    "end": 108
+                  },
+                  "utf8": {
+                    "start": 1,
+                    "end": 2
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 2,
+                  "code_point": 32,
+                  "source": {
+                    "start": 108,
+                    "end": 109
+                  },
+                  "utf8": {
+                    "start": 2,
+                    "end": 3
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 3,
+                  "code_point": 105,
+                  "source": {
+                    "start": 109,
+                    "end": 110
+                  },
+                  "utf8": {
+                    "start": 3,
+                    "end": 4
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 4,
+                  "code_point": 115,
+                  "source": {
+                    "start": 110,
+                    "end": 111
+                  },
+                  "utf8": {
+                    "start": 4,
+                    "end": 5
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 5,
+                  "code_point": 111,
+                  "source": {
+                    "start": 111,
+                    "end": 112
+                  },
+                  "utf8": {
+                    "start": 5,
+                    "end": 6
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 6,
+                  "code_point": 108,
+                  "source": {
+                    "start": 112,
+                    "end": 113
+                  },
+                  "utf8": {
+                    "start": 6,
+                    "end": 7
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 7,
+                  "code_point": 97,
+                  "source": {
+                    "start": 113,
+                    "end": 114
+                  },
+                  "utf8": {
+                    "start": 7,
+                    "end": 8
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 8,
+                  "code_point": 116,
+                  "source": {
+                    "start": 114,
+                    "end": 115
+                  },
+                  "utf8": {
+                    "start": 8,
+                    "end": 9
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 9,
+                  "code_point": 101,
+                  "source": {
+                    "start": 115,
+                    "end": 116
+                  },
+                  "utf8": {
+                    "start": 9,
+                    "end": 10
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 10,
+                  "code_point": 100,
+                  "source": {
+                    "start": 116,
+                    "end": 117
+                  },
+                  "utf8": {
+                    "start": 10,
+                    "end": 11
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 11,
+                  "code_point": 8203,
+                  "source": {
+                    "start": 117,
+                    "end": 120
+                  },
+                  "utf8": {
+                    "start": 11,
+                    "end": 14
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 12,
+                  "code_point": 32,
+                  "source": {
+                    "start": 120,
+                    "end": 121
+                  },
+                  "utf8": {
+                    "start": 14,
+                    "end": 15
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 13,
+                  "code_point": 115,
+                  "source": {
+                    "start": 121,
+                    "end": 122
+                  },
+                  "utf8": {
+                    "start": 15,
+                    "end": 16
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 14,
+                  "code_point": 112,
+                  "source": {
+                    "start": 122,
+                    "end": 123
+                  },
+                  "utf8": {
+                    "start": 16,
+                    "end": 17
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 15,
+                  "code_point": 97,
+                  "source": {
+                    "start": 123,
+                    "end": 124
+                  },
+                  "utf8": {
+                    "start": 17,
+                    "end": 18
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 16,
+                  "code_point": 99,
+                  "source": {
+                    "start": 124,
+                    "end": 125
+                  },
+                  "utf8": {
+                    "start": 18,
+                    "end": 19
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 17,
+                  "code_point": 101,
+                  "source": {
+                    "start": 125,
+                    "end": 126
+                  },
+                  "utf8": {
+                    "start": 19,
+                    "end": 20
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 18,
+                  "code_point": 46,
+                  "source": {
+                    "start": 126,
+                    "end": 127
+                  },
+                  "utf8": {
+                    "start": 20,
+                    "end": 21
+                  },
+                  "transformation": "literal"
+                },
+                {
+                  "scalar": 19,
+                  "code_point": 10,
+                  "source": {
+                    "start": 127,
+                    "end": 128
+                  },
+                  "utf8": {
+                    "start": 21,
+                    "end": 22
+                  },
+                  "transformation": "literal"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "scopes": [
+        {
+          "scope_ref": "office-scope/0",
+          "part_ref": "office-part/3",
+          "local_id": "word-scope/0",
+          "extractor_version": "word-text/1",
+          "assembler_version": "word-analysis/1",
+          "role": "body",
+          "text": "An isolated\u200b space.\n",
+          "sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a",
+          "origins": [
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 0,
+              "source": {
+                "start": 106,
+                "end": 107
+              },
+              "utf8": {
+                "start": 0,
+                "end": 1
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 1,
+              "source": {
+                "start": 107,
+                "end": 108
+              },
+              "utf8": {
+                "start": 1,
+                "end": 2
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 2,
+              "source": {
+                "start": 108,
+                "end": 109
+              },
+              "utf8": {
+                "start": 2,
+                "end": 3
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 3,
+              "source": {
+                "start": 109,
+                "end": 110
+              },
+              "utf8": {
+                "start": 3,
+                "end": 4
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 4,
+              "source": {
+                "start": 110,
+                "end": 111
+              },
+              "utf8": {
+                "start": 4,
+                "end": 5
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 5,
+              "source": {
+                "start": 111,
+                "end": 112
+              },
+              "utf8": {
+                "start": 5,
+                "end": 6
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 6,
+              "source": {
+                "start": 112,
+                "end": 113
+              },
+              "utf8": {
+                "start": 6,
+                "end": 7
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 7,
+              "source": {
+                "start": 113,
+                "end": 114
+              },
+              "utf8": {
+                "start": 7,
+                "end": 8
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 8,
+              "source": {
+                "start": 114,
+                "end": 115
+              },
+              "utf8": {
+                "start": 8,
+                "end": 9
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 9,
+              "source": {
+                "start": 115,
+                "end": 116
+              },
+              "utf8": {
+                "start": 9,
+                "end": 10
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 10,
+              "source": {
+                "start": 116,
+                "end": 117
+              },
+              "utf8": {
+                "start": 10,
+                "end": 11
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 11,
+              "source": {
+                "start": 117,
+                "end": 120
+              },
+              "utf8": {
+                "start": 11,
+                "end": 14
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 12,
+              "source": {
+                "start": 120,
+                "end": 121
+              },
+              "utf8": {
+                "start": 14,
+                "end": 15
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 13,
+              "source": {
+                "start": 121,
+                "end": 122
+              },
+              "utf8": {
+                "start": 15,
+                "end": 16
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 14,
+              "source": {
+                "start": 122,
+                "end": 123
+              },
+              "utf8": {
+                "start": 16,
+                "end": 17
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 15,
+              "source": {
+                "start": 123,
+                "end": 124
+              },
+              "utf8": {
+                "start": 17,
+                "end": 18
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 16,
+              "source": {
+                "start": 124,
+                "end": 125
+              },
+              "utf8": {
+                "start": 18,
+                "end": 19
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 17,
+              "source": {
+                "start": 125,
+                "end": 126
+              },
+              "utf8": {
+                "start": 19,
+                "end": 20
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 18,
+              "source": {
+                "start": 126,
+                "end": 127
+              },
+              "utf8": {
+                "start": 20,
+                "end": 21
+              },
+              "transformation": "literal"
+            },
+            {
+              "kind": "stored",
+              "xml_ref": "office-xml/0",
+              "text_index": 0,
+              "segment": 0,
+              "scalar": 19,
+              "source": {
+                "start": 127,
+                "end": 128
+              },
+              "utf8": {
+                "start": 21,
+                "end": 22
+              },
+              "transformation": "literal"
+            }
+          ],
+          "hashes": {
+            "formatting_removed_sha256": "55af284cc8007ce9fda83cf8abf0b5a86e4c86199e145cfaa66835c74957099d",
+            "nfc_text_sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a",
+            "nfkc_text_sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a",
+            "raw_text_sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a"
+          },
+          "boundaries": [],
+          "issues": [],
+          "identity_sha256": "3c5f59c93f484827fc935da015a654367a91f3d5389aeab41dfdcfaa26a69d89"
+        }
+      ],
+      "metadata": [],
+      "relationships": [],
+      "objects": []
+    }
+  },
+  "file": {
+    "extension": ".docx",
+    "filename": "office-partial-crc.docx",
+    "format": "docx",
+    "identification_basis": "valid Unicode text; extension is a MIME hint",
+    "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "parser": "office-fixture/1",
+    "path": "office-partial-crc.docx",
+    "sha256": "a4b0bb14d2bc508b650d8705ee71a8416b4d5229042ee8bec31f772ebf5610ec",
+    "size": 1179
+  },
+  "findings": [
+    {
+      "category": "unicode",
+      "classification": "observed_fact",
+      "confidence": 1.0,
+      "description": "Character occurrences are observable facts. Language, typography, emoji and formatting can explain legitimate uses; presence alone does not establish hidden data.",
+      "evidence": {
+        "code_point": "U+200B",
+        "contexts": [
+          {
+            "character_offset": 11,
+            "escaped_text": "An isolated\\u200b space.\\n"
+          }
+        ],
+        "contexts_omitted": 0,
+        "count": 1,
+        "leading_bom": false,
+        "name": "ZERO WIDTH SPACE"
+      },
+      "id": "unicode.zero_width",
+      "location": {
+        "kind": "office_offsets",
+        "scope_ref": "office-scope/0",
+        "scope_character_offsets": [
+          11
+        ],
+        "scope_byte_offsets": [
+          11
+        ]
+      },
+      "severity": "LOW",
+      "title": "U+200B ZERO WIDTH SPACE detected",
+      "finding_ref": "finding/0",
+      "execution_ref": "exec/2",
+      "mechanism": "structural",
+      "anchor_refs": [
+        "anchor/0"
+      ]
+    }
+  ],
+  "limitations": [
+    "A suspicious artifact is not necessarily a watermark. Observable evidence and structural patterns do not establish intent or provenance.",
+    "Statistical model-output watermarks cannot be determined by these analyzers. No AI authorship or vendor attribution is performed.",
+    "M0/M1 inspect literal text source only: HTML/XML markup, JSON escapes, entities and rendered content are not decoded or interpreted. Structured metadata is not extracted.",
+    "DOCX/PDF and batch auditing are not implemented in this milestone. Absence of findings is not proof of absence of a watermark.",
+    "Pattern thresholds are heuristics, not calibrated probabilities. Confidence describes support for the stated observation or pattern, not watermark intent."
+  ],
+  "schema_version": "4.0",
+  "status": "partial",
+  "summary": {
+    "exit_code": 4,
+    "findings": 1,
+    "high": 0,
+    "info": 0,
+    "low": 1,
+    "medium": 0
+  },
+  "catalog_version": "conformance-subset/1",
+  "capabilities": [
+    {
+      "id": "aletharsis.acquire",
+      "revision": "1",
+      "role": "acquisition",
+      "mechanism": null,
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.acquire",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "aletharsis.c2pa.verify",
+      "revision": "1",
+      "role": "verifier",
+      "mechanism": "cryptographic",
+      "purpose": null,
+      "implementation": null,
+      "availability": {
+        "state": "unavailable",
+        "reason_code": "capability.not_implemented"
+      },
+      "participation": "disabled",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "aletharsis.parse.office_package",
+      "revision": "1",
+      "role": "parser",
+      "mechanism": null,
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.parse.text",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "source"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "aletharsis.unicode.inventory",
+      "revision": "1",
+      "role": "analyzer",
+      "mechanism": "structural",
+      "purpose": null,
+      "implementation": {
+        "id": "aletharsis.unicode.inventory",
+        "version": "conformance-1",
+        "upstream": null,
+        "data": []
+      },
+      "availability": {
+        "state": "available",
+        "reason_code": null
+      },
+      "participation": "required",
+      "supported_scope": {
+        "kinds": [
+          "text"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    },
+    {
+      "id": "anthropic.claude_text_watermark",
+      "revision": "1",
+      "role": "analyzer",
+      "mechanism": "statistical",
+      "purpose": "watermark_detection",
+      "implementation": null,
+      "availability": {
+        "state": "unavailable",
+        "reason_code": "capability.detector_access_unavailable"
+      },
+      "participation": "disabled",
+      "supported_scope": {
+        "kinds": [
+          "text"
+        ],
+        "formats": [
+          "text"
+        ]
+      },
+      "limits": {
+        "input_bytes": 8388608,
+        "expanded_bytes": null,
+        "objects": null,
+        "depth": null,
+        "output_bytes": null,
+        "execution_ms": null
+      }
+    }
+  ],
+  "executions": [
+    {
+      "execution_ref": "exec/0",
+      "capability_ref": "aletharsis.acquire",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/0",
+          "unit": "whole_artifact"
+        }
+      ],
+      "exclusions": [],
+      "state": "completed",
+      "reason_code": null,
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/1",
+      "capability_ref": "aletharsis.parse.office_package",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/0",
+          "unit": "byte",
+          "regions": [
+            {
+              "start": 0,
+              "end": 690
+            },
+            {
+              "start": 701,
+              "end": 1179
+            }
+          ]
+        }
+      ],
+      "exclusions": [
+        {
+          "scope": {
+            "artifact_ref": "artifact/0",
+            "unit": "byte",
+            "regions": [
+              {
+                "start": 690,
+                "end": 701
+              }
+            ]
+          },
+          "unknown_remainder": false,
+          "reason_code": "office.part_crc_failed"
+        }
+      ],
+      "state": "partial",
+      "reason_code": "office.part_crc_failed",
+      "diagnostic_refs": [
+        "diagnostic/0"
+      ]
+    },
+    {
+      "execution_ref": "exec/2",
+      "capability_ref": "aletharsis.unicode.inventory",
+      "config": {
+        "schema": "aletharsis.native-text-config/1",
+        "revision": "conformance-1",
+        "settings": {
+          "limits": {
+            "input_bytes": 8388608,
+            "expanded_bytes": null,
+            "objects": null,
+            "depth": null,
+            "output_bytes": null,
+            "execution_ms": null
+          },
+          "preprocessing": "none",
+          "data_revision": "unicode-15.0.0"
+        },
+        "key_ref": null,
+        "sha256": "db32d9abf7841794e97555fa77ac861f4c47d78bff6aa070d60c39ebfc9d04d2"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/5",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [
+        {
+          "artifact_ref": "artifact/5",
+          "unit": "whole_artifact"
+        }
+      ],
+      "exclusions": [],
+      "state": "completed",
+      "reason_code": null,
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/3",
+      "capability_ref": "anthropic.claude_text_watermark",
+      "config": {
+        "schema": null,
+        "revision": null,
+        "settings": null,
+        "sha256": null,
+        "key_ref": null,
+        "unavailable_reason": "configuration.unknown"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/5",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [],
+      "exclusions": [],
+      "state": "not_run",
+      "reason_code": "execution.disabled",
+      "diagnostic_refs": []
+    },
+    {
+      "execution_ref": "exec/4",
+      "capability_ref": "aletharsis.c2pa.verify",
+      "config": {
+        "schema": null,
+        "revision": null,
+        "settings": null,
+        "sha256": null,
+        "key_ref": null,
+        "unavailable_reason": "configuration.unknown"
+      },
+      "requested_scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "whole_artifact"
+      },
+      "analyzed_scope": [],
+      "exclusions": [],
+      "state": "not_run",
+      "reason_code": "execution.disabled",
+      "diagnostic_refs": []
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_ref": "artifact/0",
+      "kind": "source",
+      "representation": {
+        "serialization": "original-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "a4b0bb14d2bc508b650d8705ee71a8416b4d5229042ee8bec31f772ebf5610ec",
+      "byte_length": 1179,
+      "content_ref": null,
+      "unavailable_reason": "not_retained",
+      "parents": [],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/1",
+      "kind": "package_part",
+      "representation": {
+        "serialization": "original-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "ca9aa2a016b6a42b00f5369c4fe48d598f0326a3fc8a8b0adad1852d7acdb17f",
+      "byte_length": 318,
+      "content_ref": null,
+      "unavailable_reason": "not_retained",
+      "parents": [
+        "artifact/0"
+      ],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/2",
+      "kind": "package_part",
+      "representation": {
+        "serialization": "original-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "22c01d12e912dc45bdf191c382dd5b80cdeca1a9e95af86a477798a9f7e541e9",
+      "byte_length": 242,
+      "content_ref": null,
+      "unavailable_reason": "not_retained",
+      "parents": [
+        "artifact/0"
+      ],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/3",
+      "kind": "package_part",
+      "representation": {
+        "serialization": "original-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": null,
+      "byte_length": null,
+      "content_ref": null,
+      "unavailable_reason": "extraction_unavailable",
+      "parents": [
+        "artifact/0"
+      ],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/4",
+      "kind": "package_part",
+      "representation": {
+        "serialization": "original-bytes/1",
+        "encoding": null,
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "f1d8eab00a52c3cfc0fe8b14d134459ed60fa648f9a9602b1bbbddfe626ab9f8",
+      "byte_length": 168,
+      "content_ref": null,
+      "unavailable_reason": "not_retained",
+      "parents": [
+        "artifact/0"
+      ],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    },
+    {
+      "artifact_ref": "artifact/5",
+      "kind": "text",
+      "representation": {
+        "serialization": "unicode-scalars-utf8/1",
+        "encoding": "utf-8",
+        "normalization": "none",
+        "line_endings": "preserved"
+      },
+      "sha256": "d887c905011994da13e5e0f3a525a66ee5523cd1a0d2b1d13f8e341d6771e11a",
+      "byte_length": 22,
+      "content_ref": {
+        "kind": "office_scope",
+        "scope_ref": "office-scope/0"
+      },
+      "unavailable_reason": null,
+      "parents": [
+        "artifact/4"
+      ],
+      "transform": null,
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      }
+    }
+  ],
+  "anchors": [
+    {
+      "anchor_ref": "anchor/0",
+      "kind": "office_scope",
+      "artifact_ref": "artifact/5",
+      "execution_ref": "exec/2",
+      "mapping": {
+        "quality": "unavailable",
+        "reason_code": "mapping.not_applicable"
+      },
+      "locator": {
+        "kind": "office_scope",
+        "scope_ref": "office-scope/0"
+      }
+    }
+  ],
+  "results": [
+    {
+      "result_ref": "result/0",
+      "execution_ref": "exec/2",
+      "kind": "structural_scan",
+      "contract_version": "1",
+      "anchor_refs": [
+        "anchor/0"
+      ],
+      "payload": {
+        "operation": "aletharsis.unicode.inventory",
+        "scope": {
+          "artifact_ref": "artifact/5",
+          "unit": "whole_artifact"
+        },
+        "outcome": "observations_present"
+      },
+      "limitations": []
+    }
+  ],
+  "diagnostics": [
+    {
+      "diagnostic_ref": "diagnostic/0",
+      "execution_ref": "exec/1",
+      "stage": "parsing",
+      "code": "office.part_crc_failed",
+      "message": "Retained package part failed CRC verification.",
+      "scope": {
+        "artifact_ref": "artifact/0",
+        "unit": "byte",
+        "regions": [
+          {
+            "start": 690,
+            "end": 701
+          }
+        ]
+      },
+      "details": {
+        "error_type": "CRCError"
+      }
+    }
+  ],
+  "profile_assessments": [],
+  "view": {
+    "name": "audit",
+    "finding_categories": []
+  },
+  "adapter_runs": []
+}

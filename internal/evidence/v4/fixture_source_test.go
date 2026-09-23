@@ -18,7 +18,7 @@ import (
 // coordinates against real format extraction, rather than just self-consistency.
 func TestOfficeFixturesAgreeWithNativeExtraction(t *testing.T) {
 	paths, err := filepath.Glob("../../../tests/contracts_v4/fixtures/office-*.json")
-	if err != nil || len(paths) != 2 {
+	if err != nil || len(paths) != 3 {
 		t.Fatal("DOCX and ODT fixtures required", err)
 	}
 	for _, path := range paths {

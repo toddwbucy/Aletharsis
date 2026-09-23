@@ -23,7 +23,7 @@ def digest(b):
     return hashlib.sha256(b).hexdigest()
 
 
-def build(format='docx'):
+def build(format='docx', bad_part=False):
     if format not in ('docx', 'odt'):
         raise ValueError('unsupported fixture format')
     r = json.loads((OUT / 'flat-structural-observation.json').read_bytes())
@@ -44,11 +44,25 @@ def build(format='docx'):
             'META-INF/manifest.xml': b'<manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0" manifest:version="1.3"><manifest:file-entry manifest:full-path="/" manifest:media-type="application/vnd.oasis.opendocument.text"/><manifest:file-entry manifest:full-path="content.xml" manifest:media-type="text/xml"/></manifest:manifest>',
             'content.xml': body,
         }
+    if bad_part:
+        # Keep text last so both fixture forms share the same text builder.
+        text_name, text_bytes = next(reversed(members.items()))
+        del members[text_name]
+        members['unused.bin'] = b'CRC fixture'
+        members[text_name] = text_bytes
     stream = io.BytesIO()
     with zipfile.ZipFile(stream, 'w') as z:
         for name, value in members.items():
             z.writestr(zipfile.ZipInfo(name, (1980, 1, 1, 0, 0, 0)), value)
     source = stream.getvalue()
+    if bad_part:
+        with zipfile.ZipFile(io.BytesIO(source)) as z:
+            info = z.getinfo('unused.bin')
+            n, extra = struct.unpack_from('<HH', source, info.header_offset + 26)
+            start = info.header_offset + 30 + n + extra
+        changed = bytearray(source)
+        changed[start] ^= 1  # Keep ZIP structure intact; only payload CRC fails.
+        source = bytes(changed)
     source_hash = digest(source)
     package = {'package_ref': 'office-package/0', 'source_artifact_ref': 'artifact/0',
         'source_sha256': source_hash, 'source_byte_length': len(source),
@@ -114,11 +128,14 @@ def build(format='docx'):
         'hashes': r['evidence']['texts'][0]['hashes'], 'boundaries': [], 'issues': []}
     identity = [source_hash, part['name'], part['sha256'], scope['extractor_version'], scope['assembler_version'], scope['local_id']]
     scope['identity_sha256'] = digest(b'aletharsis.office-scope/1\0' + json.dumps(identity, separators=(',', ':')).encode())
-    text_art = deepcopy(r['artifacts'][1]); text_art.update(artifact_ref='artifact/4', parents=[part['artifact_ref']],
+    text_ref = f'artifact/{len(artifacts)}'
+    text_art = deepcopy(r['artifacts'][1]); text_art.update(artifact_ref=text_ref, parents=[part['artifact_ref']],
         content_ref={'kind': 'office_scope', 'scope_ref': scope['scope_ref']}, transform=None,
         mapping={'quality': 'unavailable', 'reason_code': 'mapping.not_applicable'})
     artifacts.append(text_art); r['artifacts'] = artifacts
     filename = 'office-minimal.docx' if format == 'docx' else 'office-odt-minimal.odt'
+    if bad_part:
+        filename = 'office-partial-crc.' + format
     r['file'].update(path=filename, filename=filename, extension='.' + format,
         mime=('application/vnd.openxmlformats-officedocument.wordprocessingml.document' if format == 'docx'
               else 'application/vnd.oasis.opendocument.text'), format=format,
@@ -128,21 +145,44 @@ def build(format='docx'):
     for e in r['executions']:
         if e['capability_ref'] == 'aletharsis.parse.text': e['capability_ref'] = 'aletharsis.parse.office_package'
         for s in [e['requested_scope'], *e['analyzed_scope']]:
-            if s['artifact_ref'] == 'artifact/1': s['artifact_ref'] = 'artifact/4'
-    r['results'][0]['payload']['scope']['artifact_ref'] = 'artifact/4'
-    r['anchors'][0].update(kind='office_scope', artifact_ref='artifact/4', mapping=text_art['mapping'],
+            if s['artifact_ref'] == 'artifact/1': s['artifact_ref'] = text_ref
+    r['results'][0]['payload']['scope']['artifact_ref'] = text_ref
+    r['anchors'][0].update(kind='office_scope', artifact_ref=text_ref, mapping=text_art['mapping'],
         locator={'kind': 'office_scope', 'scope_ref': scope['scope_ref']})
     for f in r['findings']:
         old = f['location']; f['location'] = {'kind': 'office_offsets', 'scope_ref': scope['scope_ref'],
             'scope_character_offsets': old['character_offsets'], 'scope_byte_offsets': old['byte_offsets']}
     r['evidence'] = {'texts': [], 'metadata': {}, 'structure': {}, 'office': {
         'packages': [package], 'xml': [xml], 'scopes': [scope], 'metadata': [], 'relationships': [], 'objects': []}}
+    if bad_part:
+        damaged = next(p for p in package['parts'] if p['name'] == 'unused.bin')
+        code = 'office.part_crc_failed'
+        issue = {'code': code, 'diagnostic_ref': 'diagnostic/0', 'part_ref': damaged['part_ref']}
+        damaged.update(sha256=None, byte_length=None, state='failed', issues=[issue])
+        package.update(state='partial', issues=[issue])
+        for o in package['outcomes']:
+            if o['part_ref'] == damaged['part_ref']:
+                o.update(state='failed', codes=[code], diagnostic_refs=['diagnostic/0'], assessed=[])
+        for a in artifacts:
+            if a['artifact_ref'] == damaged['artifact_ref']:
+                a.update(sha256=None, byte_length=None, unavailable_reason='extraction_unavailable')
+        span = damaged['compressed_span']
+        excluded = {'artifact_ref': 'artifact/0', 'unit': 'byte', 'regions': [span]}
+        r['executions'][1].update(state='partial', reason_code=code, diagnostic_refs=['diagnostic/0'],
+            analyzed_scope=[{'artifact_ref': 'artifact/0', 'unit': 'byte', 'regions': [
+                {'start': 0, 'end': span['start']}, {'start': span['end'], 'end': len(source)}]}],
+            exclusions=[{'scope': excluded, 'unknown_remainder': False, 'reason_code': code}])
+        r['diagnostics'] = [{'diagnostic_ref': 'diagnostic/0', 'execution_ref': 'exec/1',
+            'stage': 'parsing', 'code': code, 'message': 'Retained package part failed CRC verification.',
+            'scope': excluded, 'details': {'error_type': 'CRCError'}}]
+        r['status'] = 'partial'
+        r['summary']['exit_code'] = 4
     return r, source
 
 
 if __name__ == '__main__':
-    for format in ('docx', 'odt'):
-        report, source = build(format)
+    for format, bad_part in [('docx', False), ('odt', False), ('docx', True)]:
+        report, source = build(format, bad_part)
         name = Path(report['file']['filename'])
         (OUT / name.with_suffix('.json')).write_text(json.dumps(report, indent=2) + '\n')
         (OUT / name).write_bytes(source)

@@ -150,8 +150,8 @@ def test_complete_flat_fixtures_are_reproducible_and_wire_valid():
         validator.validate(fixture)
 
 
-@pytest.mark.parametrize('format', ['docx', 'odt'])
-def test_office_fixture_matches_retained_archive(format):
+@pytest.mark.parametrize('format,bad_part', [('docx', False), ('odt', False), ('docx', True)])
+def test_office_fixture_matches_retained_archive(format, bad_part):
     import hashlib
     import io
     import zipfile
@@ -159,7 +159,7 @@ def test_office_fixture_matches_retained_archive(format):
         Path(__file__).with_name('build_office_fixture.py'))
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    report, source = module.build(format)
+    report, source = module.build(format, bad_part)
     directory = Path(__file__).with_name('fixtures')
     name = Path(report['file']['filename'])
     assert source == (directory / name).read_bytes()
@@ -168,12 +168,28 @@ def test_office_fixture_matches_retained_archive(format):
     assert hashlib.sha256(source).hexdigest() == report['file']['sha256']
     with zipfile.ZipFile(io.BytesIO(source)) as archive:
         for part in report['evidence']['office']['packages'][0]['parts']:
-            raw = archive.read(part['name'])
-            assert len(raw) == part['byte_length']
-            assert hashlib.sha256(raw).hexdigest() == part['sha256']
             span = part['compressed_span']
             assert hashlib.sha256(source[span['start']:span['end']]).hexdigest() == part['compressed_sha256']
+            if part['state'] == 'failed':
+                assert bad_part and part['name'] == 'unused.bin'
+                with pytest.raises(zipfile.BadZipFile, match='CRC'):
+                    archive.read(part['name'])
+                assert part['sha256'] is None and part['byte_length'] is None
+            else:
+                raw = archive.read(part['name'])
+                assert len(raw) == part['byte_length']
+                assert hashlib.sha256(raw).hexdigest() == part['sha256']
         xml = archive.read('word/document.xml' if format == 'docx' else 'content.xml')
         scope = report['evidence']['office']['scopes'][0]
         assert ''.join(xml[o['source']['start']:o['source']['end']].decode()
                        for o in scope['origins']) == scope['text']
+
+    if bad_part:
+        assert report['status'] == 'partial'
+        assert report['summary']['exit_code'] == 4
+        assert report['findings']
+        failed = [o for o in report['evidence']['office']['packages'][0]['outcomes']
+                  if o['state'] == 'failed']
+        assert len(failed) == 1
+        assert failed[0]['assessed'] == []
+        assert failed[0]['diagnostic_refs'] == ['diagnostic/0']
