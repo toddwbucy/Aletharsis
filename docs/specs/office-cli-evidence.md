@@ -114,9 +114,40 @@ emission.
 | XML evidence | Part reference, parser version, retained token/element identities and exact lexical spans needed by downstream records |
 | Text scope | Part reference, scope/assembler identity, role, exact text/hash, scalar origins, analytical hashes, boundaries and extraction issues |
 | Metadata occurrence | Namespace/local name, lexical value, normalized key if supported, part reference, element and lexical value mapping, duplicate ordinal |
-| Relationship | Original ID/type/target/mode, declaring part/anchor, source owner, resolution state/code, resolved target identity only when verified |
+| Relationship | Original ID/type/target/mode, declaring part/anchor, source owner, resolution state/code, resolved package-part reference, independently verified payload identity when available |
 | Embedded object | Candidate part/identity, evidence for inclusion, relationship references, declared type, observed signature if bounded inspection supports it, inspection coverage |
 | Part outcome | Operation, part reference, state, stable codes, diagnostic references, assessed and excluded scope |
+
+The following distinctions apply to the wire increment's property spellings:
+
+- `resolution_state` describes relationship name resolution, independently of
+  payload admission. A unique internal target may have `target_part_ref` even
+  when its bytes were not admitted or failed verification. That reference binds
+  the verified container entry and compressed identity; the target part's `state`,
+  issues and parse outcome carry its admission result. Decompressed SHA-256 and
+  size remain null until verified. An absent target has no part reference and
+  retains the relationship's `missing` state/code. Runtime `TargetState` and
+  `TargetCode` convenience fields are derived observations, not additional wire
+  properties or a second source of admission authority.
+- A stored origin's `text_index` is a producer-local ordinal, not an XML segment
+  ordinal or a coordinate. For metadata it indexes projected properties in
+  document order, including empty properties; the importer checks it against
+  that retained inventory. For Word/ODT text, the wire's XML subset does not
+  reconstruct the extractor's complete text inventory. The importer checks
+  nonnegativity but does not attest that ordinal. Authoritative retained origin
+  checks use `xml_ref`, segment/scalar identity, source span, UTF-8 span and the
+  declared transformation. Source-backed replay of the named extractor is
+  required to independently attest its local text ordinals. Consumers must not
+  use an unverified ordinal for highlighting or transformation authority.
+- A successful metadata projection retains its XML map so property completeness
+  and exact omission locations can be checked. Every direct property is either
+  retained or covered by a same-operation, property-located omission diagnostic.
+  Unsupported metadata roots do not become successful empty projections.
+- Separate successful executions of the same operation may contribute assessed
+  regions to a part. Validate retained evidence against their union, while
+  preserving every execution's own states, diagnostics and exclusions. Failed,
+  canceled and unrun executions contribute no assessed coverage. A diagnostic
+  used to explain an omission must still bind to its actual producing execution.
 
 Fixed objects reject unknown keys. Nullable identities distinguish unavailable
 bytes from empty bytes. No failed decompression receives a digest computed from
@@ -276,6 +307,16 @@ relationships/content identification; do not trust a familiar filename alone.
 Retain every duplicate/conflicting occurrence in document order. Project recognized
 keys (creator, last modifier, application/version, company, timestamps, revision,
 template and identifiers) without interpreting timestamps as verified facts.
+Applicability is distinct from an empty inventory: a confirmed DOCX with no
+optional metadata can report an assessed absence. An unidentified ZIP without
+OPC relationship candidates cannot claim completed OPC analysis merely because
+its outcome list is empty; report the check as unrun with identity unconfirmed.
+An identified ODT with no OPC candidates retains the unsupported-input result.
+Actual OPC candidates may still be inspected independently of the final file
+format, with explicit per-part coverage. Conflicting DOCX/ODT signatures do not
+suppress independently confirmed text, metadata or embedded-object inspection;
+the package remains format `unknown` with the conflict diagnostic.
+
 Missing optional metadata is an assessed absence; malformed metadata is a partial
 operation. Unknown elements remain inventory evidence with explicit extraction
 coverage, not asserted metadata values. Custom properties/ODT metadata are explicitly
