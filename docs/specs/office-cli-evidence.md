@@ -149,25 +149,46 @@ frozen 1.0/2.0 behavior:
   outcome's own execution and excluded region; another outcome's diagnostic or
   exclusion cannot supply omission authority. Only a partial outcome may authorize
   a property omission; the property span must be nonempty and covered by that
-  outcome's own exclusion. At most one omission diagnostic may authorize omission
-  of a direct property across all executions.
+  outcome's own exclusion. Distinct direct properties must not share a lexical
+  extent. A retained property's full element span, including an empty-valued
+  property's span, must lie inside the union of assessed metadata regions for
+  that part; value origins alone do not establish property coverage. At most one
+  omission diagnostic may authorize omission of a direct property across all
+  executions.
   Unsupported metadata roots do not become completed empty projections.
 - Completed or partial executions of the same operation may contribute assessed
-  regions to a part through their completed or partial outcomes. Validate retained evidence against their union, while
-  preserving every execution's own states, diagnostics and exclusions. Failed,
+  regions to a part through their completed or partial outcomes. Only these
+  contributing outcomes supply assessed/excluded regions for the combined
+  projection; failed, canceled and unrun outcomes remain historical failure/gap
+  evidence and do not contribute to that union. Validate retained evidence against
+  the contributing union, while preserving every execution's own states, diagnostics and exclusions. Failed,
   canceled and unrun executions contribute no assessed coverage. A diagnostic
   used to explain an omission must still bind to its actual producing execution.
   An omitted property must lie outside the union of assessed regions for that
-  operation and part. No assessed region may overlap any excluded region for the
-  same operation and part, including across executions. Failed, canceled and unrun
-  parents cannot authorize omissions through otherwise successful child outcomes.
+  operation and part. No contributing assessed region may overlap any contributing
+  excluded region for the same operation and part, including across executions. This is an
+  unordered snapshot, not a retry log: one partial contribution cannot be
+  superseded by a later completed contribution in the same report. Re-audits
+  that supersede earlier coverage produce separate reports; no ordering or
+  supersedes relationship is inferred from execution ordinals. Failed, canceled
+  and unrun parents cannot authorize omissions through otherwise successful child outcomes.
 - XML maps require an attesting XML-parsing operation: identification, text,
   metadata or relationships. Its assessed coverage must contain a nonempty region
   of the part; an empty or zero-width region cannot attest an XML map. Maps may
   retain lexical structure for analytically excluded regions without claiming
-  those regions were analyzed. Embedded-object signature inspection and profiles
-  consume existing evidence; they do not parse XML and cannot independently
+  those regions were analyzed. This nonempty-region requirement is deliberately a
+  minimum producer linkage check, not proof that the whole map was independently
+  replayed from source. Analytical coverage and XML parse coverage are different:
+  requiring all map element extents inside analytical coverage would incorrectly
+  reject lexical evidence for excluded content. Exact map attestation requires
+  source-backed parser replay; a future distinct XML parse-coverage contract must
+  be approved before its coverage can be inferred from analytical outcomes.
+  Embedded-object signature inspection and profiles consume existing evidence; they do not parse XML and cannot independently
   attest an XML map.
+
+XML structural locations and generated-control source spans must be nonempty;
+zero-width anchors cannot authorize relationship or text coverage. This does not
+prohibit empty text values, empty text scopes, or empty opaque payloads.
 
 Fixed objects reject unknown keys. Nullable identities distinguish unavailable
 bytes from empty bytes. No failed decompression receives a digest computed from
