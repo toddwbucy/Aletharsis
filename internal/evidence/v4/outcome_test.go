@@ -110,9 +110,12 @@ func TestEveryRetainedExtractionRequiresSuccessfulPartOperation(t *testing.T) {
 				case "aletharsis.office.relationships":
 					e.Relationships = []Relationship{{Location: StructuralLocation{PartRef: part, Span: &Span{}}}}
 				}
-				x := Index{Parts: map[string]Part{part: {PartRef: part}}, XML: map[string]XML{"xml": {Elements: []Element{{}}}}}
+				x := Index{Parts: map[string]Part{part: {PartRef: part, State: "completed", ByteLength: wide(1)}}, XML: map[string]XML{"xml": {Elements: []Element{{}}}}}
 				trace := TraceIndex{Executions: map[string]v2.Execution{"exec/0": {Ref: "exec/0", CapabilityRef: operation, State: state}}}
 				good := state == v2.Completed || state == v2.Partial
+				if good {
+					e.Packages[0].Outcomes[0].Assessed = []Span{{0, 1}}
+				}
 				if err := x.ValidateOutcomes(e, &trace); (err == nil) != good {
 					t.Fatalf("state %s: %v", state, err)
 				}
@@ -266,6 +269,66 @@ func TestNonParsingOperationsCannotAttestXMLMaps(t *testing.T) {
 		}
 		if x.ValidateOutcomes(r.Evidence.Office, trace) == nil {
 			t.Fatal("non-parsing operation attested XML", operation)
+		}
+	}
+}
+
+// Overlap and XML attestation are operation-wide rules, not metadata exceptions.
+func TestOperationCoverageAndXMLAttestation(t *testing.T) {
+	for _, operation := range []string{"aletharsis.office.identify", "aletharsis.office.text", "aletharsis.office.relationships"} {
+		for _, mode := range []string{"valid", "overlap", "adjacent", "empty", "zero width"} {
+			t.Run(operation+"/"+mode, func(t *testing.T) {
+				raw, err := os.ReadFile("../../../tests/contracts_v4/fixtures/office-minimal.json")
+				if err != nil {
+					t.Fatal(err)
+				}
+				r, err := DecodeReport(raw, identity.Limits{InputBytes: 16 << 20, OutputBytes: 16 << 20, Nodes: 4194304, Depth: 64})
+				if err != nil {
+					t.Fatal(err)
+				}
+				r.Evidence.Office.Scopes = nil
+				pkg := &r.Evidence.Office.Packages[0]
+				for i := range pkg.Outcomes {
+					o := &pkg.Outcomes[i]
+					if o.Operation != "aletharsis.office.text" {
+						continue
+					}
+					o.Operation = operation
+					for j := range r.Trace.Executions {
+						if r.Trace.Executions[j].Ref == o.ExecutionRef {
+							r.Trace.Executions[j].CapabilityRef = operation
+						}
+					}
+					switch mode {
+					case "empty":
+						o.Assessed = nil
+					case "zero width":
+						o.Assessed = []Span{{0, 0}}
+					case "overlap", "adjacent":
+						end := o.Assessed[0].End
+						excluded := Span{0, end}
+						if mode == "adjacent" {
+							o.Assessed = []Span{{0, end / 2}}
+							excluded.Start = end / 2
+						}
+						pkg.Outcomes = append(pkg.Outcomes, Outcome{ExecutionRef: "exec/99", Operation: operation, PartRef: o.PartRef, State: "partial", Excluded: []Span{excluded}})
+						r.Trace.Executions = append(r.Trace.Executions, v2.Execution{Ref: "exec/99", CapabilityRef: operation, State: v2.Partial})
+					}
+					break
+				}
+				x, err := IndexEvidence(r.Evidence.Office, *r.File.SHA256, int64(*r.File.Size))
+				if err != nil {
+					t.Fatal(err)
+				}
+				trace := &TraceIndex{Executions: map[string]v2.Execution{}, Diagnostics: map[string]v2.Diagnostic{}}
+				for _, e := range r.Trace.Executions {
+					trace.Executions[e.Ref] = e
+				}
+				err = x.ValidateOutcomes(r.Evidence.Office, trace)
+				if (err == nil) != (mode == "valid" || mode == "adjacent") {
+					t.Fatal(mode, err)
+				}
+			})
 		}
 	}
 }

@@ -50,6 +50,11 @@ func (x *Index) validateMetadataProjection(e Evidence, trace *TraceIndex) error 
 		children := map[Span]int64{}
 		for _, element := range doc.Elements {
 			if element.Parent != nil && *element.Parent == 0 {
+				// Two distinct properties cannot share a lexical extent. Never let
+				// a span-key collision erase a property from the completeness check.
+				if _, exists := children[element.Span]; exists || element.Span.Start >= element.Span.End {
+					return ErrLinkage
+				}
 				children[element.Span] = element.Index
 			}
 		}
@@ -69,7 +74,7 @@ func (x *Index) validateMetadataProjection(e Evidence, trace *TraceIndex) error 
 				}
 				span := Span{int64(scope.Regions[0].Start), int64(scope.Regions[0].End)}
 				element, ok := children[span]
-				if !ok || retained[partRef][element] || !coveredByNormalized([]Span{span}, ownExcluded) {
+				if !ok || o.State != "partial" || span.Start >= span.End || gaps[element] || retained[partRef][element] || !coveredByNormalized([]Span{span}, ownExcluded) {
 					return ErrLinkage
 				}
 				gaps[element] = true

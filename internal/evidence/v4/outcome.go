@@ -141,11 +141,15 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 	// each wanted span; record order cannot trigger a quadratic scan.
 	coverage := map[[2]string][]Span{}
 	for key, outcomes := range produced {
-		regions := []Span{}
+		regions, excluded := []Span{}, []Span{}
 		for _, outcome := range outcomes {
 			regions = append(regions, outcome.Assessed...)
+			excluded = append(excluded, outcome.Excluded...)
 		}
 		coverage[key] = normalizedSpans(regions)
+		if normalizedSpansOverlap(coverage[key], normalizedSpans(excluded)) {
+			return ErrLinkage
+		}
 	}
 	covers := func(operation, part string, spans []Span) bool {
 		key := [2]string{operation, part}
@@ -185,7 +189,7 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 	for _, doc := range e.XML {
 		matched := false
 		for _, operation := range []string{"aletharsis.office.identify", "aletharsis.office.text", "aletharsis.office.metadata", "aletharsis.office.relationships"} {
-			if covers(operation, doc.PartRef, nil) {
+			if slices.ContainsFunc(coverage[[2]string{operation, doc.PartRef}], func(span Span) bool { return span.Start < span.End }) {
 				matched = true
 				break
 			}

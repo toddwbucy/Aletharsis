@@ -77,7 +77,7 @@ func TestMetadataProjectionUnionsSeparateExecutionOmissions(t *testing.T) {
 }
 
 func TestMetadataOmissionCannotBorrowAnotherExecutionAuthority(t *testing.T) {
-	for _, mode := range []string{"valid partial pair", "completed sibling", "partially overlapping sibling", "failed parent", "canceled parent", "unrun parent", "borrowed exclusion", "borrowed diagnostic"} {
+	for _, mode := range []string{"valid partial pair", "completed sibling", "partially overlapping sibling", "failed parent", "canceled parent", "unrun parent", "borrowed exclusion", "borrowed diagnostic", "duplicate omission", "coincident properties", "empty property", "completed omission"} {
 		t.Run(mode, func(t *testing.T) {
 			part := Part{PartRef: "office-part/0", ArtifactRef: "artifact/1"}
 			doc := XML{PartRef: part.PartRef, Elements: []Element{{Index: 0, Namespace: officemetadata.CoreNamespace, LocalName: "coreProperties", Span: Span{0, 100}}, {Index: 1, Parent: wide(0), Span: Span{10, 30}}, {Index: 2, Parent: wide(0), Span: Span{40, 60}}}}
@@ -86,6 +86,23 @@ func TestMetadataOmissionCannotBorrowAnotherExecutionAuthority(t *testing.T) {
 			d := v2.Diagnostic{Ref: "diagnostic/0", ExecutionRef: &a.ExecutionRef, Code: "metadata.structured_value_unassessed", Scope: &v2.Scope{ArtifactRef: part.ArtifactRef, Unit: "byte", Regions: []identity.Region{{Start: 10, End: 30}}}}
 			trace := TraceIndex{Executions: map[string]v2.Execution{"exec/0": {CapabilityRef: a.Operation, State: v2.Partial}, "exec/1": {CapabilityRef: a.Operation, State: v2.Partial}}, Diagnostics: map[string]v2.Diagnostic{d.Ref: d}}
 			switch mode {
+			case "coincident properties":
+				doc.Elements[1].Span = doc.Elements[2].Span
+				a.DiagnosticRefs = nil
+				a.Excluded = nil
+			case "empty property":
+				doc.Elements[1].Span = Span{50, 50}
+				d.Scope.Regions = []identity.Region{{Start: 50, End: 50}}
+				trace.Diagnostics[d.Ref] = d
+				a.Excluded = nil
+			case "completed omission":
+				a.State = "completed"
+			case "duplicate omission":
+				b.Excluded = a.Excluded
+				b.DiagnosticRefs = []string{"diagnostic/1"}
+				d.Ref = "diagnostic/1"
+				d.ExecutionRef = &b.ExecutionRef
+				trace.Diagnostics[d.Ref] = d
 			case "completed sibling":
 				b.State = "completed"
 				b.Assessed = []Span{{0, 100}}
