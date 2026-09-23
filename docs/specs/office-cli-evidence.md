@@ -114,9 +114,119 @@ emission.
 | XML evidence | Part reference, parser version, retained token/element identities and exact lexical spans needed by downstream records |
 | Text scope | Part reference, scope/assembler identity, role, exact text/hash, scalar origins, analytical hashes, boundaries and extraction issues |
 | Metadata occurrence | Namespace/local name, lexical value, normalized key if supported, part reference, element and lexical value mapping, duplicate ordinal |
-| Relationship | Original ID/type/target/mode, declaring part/anchor, source owner, resolution state/code, resolved target identity only when verified |
+| Relationship | Original ID/type/target/mode, declaring part/anchor, source owner, resolution state/code, resolved package-part reference when a unique internal target exists; verified payload identity is carried by the referenced part record, not this record (proposed normative amendment) |
 | Embedded object | Candidate part/identity, evidence for inclusion, relationship references, declared type, observed signature if bounded inspection supports it, inspection coverage |
 | Part outcome | Operation, part reference, state, stable codes, diagnostic references, assessed and excluded scope |
+
+The following proposed normative amendments apply to the 4.0 wire increment;
+they require acceptance independently of the implementation PRs and do not alter
+frozen 1.0/2.0 behavior:
+
+- `resolution_state` describes relationship name resolution, independently of
+  payload admission. A unique internal target may have `target_part_ref` even
+  when its bytes were not admitted or failed verification. That reference binds
+  the verified container entry and compressed identity; the target part's `state`,
+  issues and parse outcome carry its admission result. The target part record's decompressed SHA-256 and
+  size remain null until verified. An absent target has no part reference and
+  retains the relationship's `missing` state/code. Runtime `TargetSHA256`, `TargetState` and
+  `TargetCode` convenience fields are derived observations, not additional wire
+  properties or a second source of admission authority.
+- A stored origin's `text_index` is a producer-local ordinal, not an XML segment
+  ordinal or a coordinate. For metadata it indexes projected properties in
+  document order, including empty properties; the importer checks each stored
+  origin against that retained inventory. Empty properties occupy ordinal slots
+  but have no value origins on which to check a text_index field. For Word/ODT text, the wire's XML subset does not
+  reconstruct the extractor's complete text inventory. The importer checks
+  nonnegativity but does not attest that ordinal. Authoritative retained origin
+  checks use `xml_ref` plus, for stored origins, segment/scalar identity, source
+  span, UTF-8 span and declared transformation; generated controls additionally
+  bind control/element/repetition identity and derivation. The ordinal exception
+  does not apply to these generated-control fields. Source-backed replay of the named extractor is
+  required to independently attest its local text ordinals. Consumers must not
+  use an unverified ordinal for highlighting or transformation authority.
+- A completed or partial metadata projection retains its XML map so property completeness
+  and exact omission locations can be checked. Element zero is the sole parentless
+  root; every later element has a preceding parent. A direct property is an
+  element whose parent is that root (index zero), and its span must be nonempty
+  whether retained or omitted. Every direct property is either
+  retained or covered by a property-located omission diagnostic bound to that
+  outcome's own execution and excluded region; another outcome's diagnostic or
+  exclusion cannot supply omission authority. Only a partial outcome may authorize
+  a property omission; the property span must be nonempty and covered by that
+  outcome's own exclusion. Distinct direct properties must not share a lexical
+  extent. A retained property's full element span, including an empty-valued
+  property's span, must lie inside the union of assessed metadata regions for
+  that part; value origins alone do not establish property coverage. At most one
+  omission diagnostic may authorize omission of a direct property across all
+  executions.
+  Unsupported metadata roots do not become completed empty projections.
+- Completed or partial executions of the same operation may contribute assessed
+  regions to a part through their completed or partial outcomes. Only these
+  contributing outcomes supply assessed/excluded regions for the combined
+  projection. Failed, canceled and unrun outcomes retain their states, codes
+  and diagnostics but must have empty assessed and excluded arrays. They cannot
+  carry inert exclusions that contradict another outcome's assessed regions.
+  Validate retained evidence against the contributing union, while preserving
+  every execution's own failure history. Failed, canceled and unrun executions
+  contribute no assessed coverage. A diagnostic
+  used to explain an omission must still bind to its actual producing execution.
+  An omitted property must lie outside the union of assessed regions for that
+  operation and part. No contributing assessed region may overlap any contributing
+  excluded region for the same operation and part, including across executions. This is an
+  unordered snapshot, not a retry log: one partial contribution cannot be
+  superseded by a later completed contribution in the same report. Re-audits
+  that supersede earlier coverage produce separate reports; no ordering or
+  supersedes relationship is inferred from execution ordinals. Failed, canceled
+  and unrun parents cannot carry completed or partial child outcomes, even with
+  empty assessed regions. A completed parent permits only completed children;
+  a partial parent may retain completed, partial or unsuccessful children.
+- XML maps require an attesting XML-parsing operation: identification, text,
+  metadata or relationships. Its assessed coverage must contain a nonempty region
+  of the part; an empty or zero-width region cannot attest an XML map. Maps may
+  retain lexical structure for analytically excluded regions without claiming
+  those regions were analyzed. This nonempty-region requirement is deliberately a
+  minimum producer linkage check, not proof that the whole map was independently
+  replayed from source. Analytical coverage and XML parse coverage are different:
+  requiring all map element extents inside analytical coverage would incorrectly
+  reject lexical evidence for excluded content. Exact map attestation requires
+  source-backed parser replay; a future distinct XML parse-coverage contract must
+  be approved before its coverage can be inferred from analytical outcomes.
+  Embedded-object signature inspection and profiles consume existing evidence; they do not parse XML and cannot independently
+  attest an XML map.
+
+- XML structural locations and generated-control source spans must be nonempty;
+  zero-width anchors cannot authorize relationship or text coverage. This does not
+  prohibit empty text values, empty text scopes, or empty opaque payloads.
+- Retained XML tokens and elements must describe the same single rooted tree:
+  each element has one start and one matching end token, in parser order, with
+  matching extent endpoints and immediate-parent nesting. Start tokens and element
+  extents are nonempty. A zero-width end token is permitted immediately after
+  its own self-closing start token, at that token's end. Non-tag tokens bind to
+  their containing element, or to no element outside the root. Token deletion,
+  detached tag tokens and reparenting to a more distant ancestor cannot preserve
+  a complete XML map.
+- A relationship location covers its full declaring element. A direct OPC
+  Relationship element in retained relationship XML that lies within assessed
+  relationship coverage must have a retained relationship record. Distinct
+  records cannot claim the same declaring element. These checks establish
+  consistency between retained XML, inventory and coverage; they do not
+  authenticate XML attributes against unavailable source bytes. Retained OPC
+  relationships bind a direct Relationship element beneath the Relationships
+  root in the OPC relationships namespace. Resolved relationships require
+  nonempty Id and Type values.
+- An observed embedded-object prefix signature requires completed or partial
+  inspection coverage over its supporting prefix: five bytes for PDF, four for
+  a ZIP local header, and eight for OLE compound or PNG magic. Other nonempty
+  descriptive signatures require at least one assessed prefix byte; their
+  semantics are not verified by this minimum check. An embedded-relationship
+  inclusion reason requires a retained relationship reference.
+- Completed embedded-object enumeration must retain candidates already explicit
+  in the report: word/embeddings/ package parts and resolved OPC oleObject/package
+  relationship targets. It must not duplicate candidates for one part. This
+  does not prove discovery of candidates absent from retained source structure.
+- An empty compressed extent must have SHA-256(empty), stored method zero, and
+  no nonzero uncompressed byte length. A DEFLATE stream cannot occupy zero bytes;
+  valid empty stored payloads remain permitted.
 
 Fixed objects reject unknown keys. Nullable identities distinguish unavailable
 bytes from empty bytes. No failed decompression receives a digest computed from
@@ -193,6 +303,18 @@ not an assertion that the legacy ZIP sniff is already hardened. Preserve conflic
 as diagnostics. A ZIP that cannot be safely identified is not plain text.
 Package parsing precedes XML/relationship/text analysis. Process verified parts in
 ordinal name order, never ZIP storage order or worker completion order.
+
+An unidentified ZIP without OPC relationship candidates reports that check as
+unrun with identity unconfirmed; an identified ODT with no OPC candidates retains
+the unsupported-input result. Actual OPC candidates may still be inspected
+independently of final file format, with explicit per-part coverage. Conflicting
+DOCX/ODT signatures do not suppress independently confirmed text, metadata or
+embedded-object inspection; the package remains format `unknown` with the
+conflict diagnostic.
+
+A failed main payload likewise must not suppress independently declaration-selected
+sibling evidence. Each candidate still requires its own admitted bytes and
+namespace/root checks; inspecting it does not establish overall format identity.
 
 Separate global container validation from local content outcomes. Duplicate names,
 ambiguous spans, inconsistent headers or source-identity failure can invalidate the
@@ -276,6 +398,32 @@ relationships/content identification; do not trust a familiar filename alone.
 Retain every duplicate/conflicting occurrence in document order. Project recognized
 keys (creator, last modifier, application/version, company, timestamps, revision,
 template and identifiers) without interpreting timestamps as verified facts.
+Applicability is distinct from an empty inventory: a confirmed DOCX with no
+optional metadata can report an assessed absence. Once the coverage-contract
+decision below is accepted, coverage shall identify the selection evidence
+actually inspected, rather than claim whole-source payload analysis merely
+because there are no applicable metadata parts. The selection
+pass may inspect package declarations and relationships even when the selected
+metadata inventory is empty.
+
+**Open coverage-contract decision:** the frozen execution record requires a
+completed execution's analyzed scope to equal its requested scope. An empty
+completed analyzed scope cannot be introduced silently. Before accepting the
+assessed-absence implementation, specify a bounded scope for inspected selection
+evidence or explicitly amend the execution contract. Until that decision is
+accepted, the current whole-artifact summary is not clearance of this requirement.
+The bounded-selection option also needs an explicit representation: current
+metadata part outcomes require core/app projection roots, so declarations and
+relationship parts cannot be added as metadata projection outcomes. One option
+is an execution-level byte scope over inspected declarations' compressed spans,
+separate from projection outcomes; implementing it requires changing the coverage
+builder and dispatcher. Both requested and analyzed scopes must describe the
+same bounded selection for a completed execution; narrowing only analyzed scope
+while leaving a whole-artifact request is invalid. This does not relax
+property-completeness checks by implication. Alternatively,
+a new selection-evidence contract must explicitly distinguish selection from
+projection. Neither option is approved by recording it here.
+
 Missing optional metadata is an assessed absence; malformed metadata is a partial
 operation. Unknown elements remain inventory evidence with explicit extraction
 coverage, not asserted metadata values. Custom properties/ODT metadata are explicitly
@@ -459,7 +607,11 @@ Before claiming B1–B5 delivered, tests must establish:
   are retained. Source bytes and timestamps remain unchanged.
 - Cross-run invisible patterns, entities, CDATA, non-BMP scalars and ODT generated
   controls resolve to exact appropriate artifacts. Altered part hashes, lexical
-  spans or scalar origins fail verification. Normal text verification stays strict.
+  spans or authoritative scalar-origin fields fail verification. The explicit
+  exception is a text scope origin's producer-local `text_index`: the importer
+  checks nonnegativity but does not attest its ordinal; independent attestation
+  requires source-backed extractor replay. Metadata ordinals are checked against
+  the retained property inventory, including empty values. Normal text verification stays strict.
 - Malformed XML/CRC failures beside good parts preserve good evidence. Bad
   container identity fails closed. A bad document between good documents does
   not stop corpus or reveal processing. Test cancellation and each local/global
