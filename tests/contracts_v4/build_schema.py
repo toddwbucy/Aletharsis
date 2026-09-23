@@ -38,7 +38,10 @@ def build():
     name = {'type': 'string', 'minLength': 1}
     for kind in ('package', 'part', 'scope', 'object', 'xml', 'relationship'):
         d['office' + kind.title() + 'Ref'] = {
-            'type': 'string', 'pattern': '^office-' + kind + '/(0|[1-9][0-9]*)$'}
+            'type': 'string', 'pattern': '^office-' + kind + '/(0|[1-9][0-9]*)$',
+            # Some JSON Schema engines let $ match before a final newline.
+            # Keep RE2 compatibility without permitting noncanonical bytes.
+            'not': {'pattern': '[^a-z0-9/-]'}}
     state = {'enum': ['completed', 'partial', 'failed', 'canceled', 'not_run']}
     d['officeIssue'] = obj({'code': ref('code'), 'diagnostic_ref': nullable(ref('diagnosticRef')),
                            'part_ref': nullable(ref('officePartRef'))})

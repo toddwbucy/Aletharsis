@@ -4658,27 +4658,45 @@
     },
     "officePackageRef": {
       "type": "string",
-      "pattern": "^office-package/(0|[1-9][0-9]*)$"
+      "pattern": "^office-package/(0|[1-9][0-9]*)$",
+      "not": {
+        "pattern": "[^a-z0-9/-]"
+      }
     },
     "officePartRef": {
       "type": "string",
-      "pattern": "^office-part/(0|[1-9][0-9]*)$"
+      "pattern": "^office-part/(0|[1-9][0-9]*)$",
+      "not": {
+        "pattern": "[^a-z0-9/-]"
+      }
     },
     "officeScopeRef": {
       "type": "string",
-      "pattern": "^office-scope/(0|[1-9][0-9]*)$"
+      "pattern": "^office-scope/(0|[1-9][0-9]*)$",
+      "not": {
+        "pattern": "[^a-z0-9/-]"
+      }
     },
     "officeObjectRef": {
       "type": "string",
-      "pattern": "^office-object/(0|[1-9][0-9]*)$"
+      "pattern": "^office-object/(0|[1-9][0-9]*)$",
+      "not": {
+        "pattern": "[^a-z0-9/-]"
+      }
     },
     "officeXmlRef": {
       "type": "string",
-      "pattern": "^office-xml/(0|[1-9][0-9]*)$"
+      "pattern": "^office-xml/(0|[1-9][0-9]*)$",
+      "not": {
+        "pattern": "[^a-z0-9/-]"
+      }
     },
     "officeRelationshipRef": {
       "type": "string",
-      "pattern": "^office-relationship/(0|[1-9][0-9]*)$"
+      "pattern": "^office-relationship/(0|[1-9][0-9]*)$",
+      "not": {
+        "pattern": "[^a-z0-9/-]"
+      }
     },
     "officeIssue": {
       "type": "object",

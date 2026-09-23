@@ -60,6 +60,25 @@ def test_all_patterns_remain_compatible_with_go_regexp():
             assert not any(token in node['pattern'] for token in ('(?=', '(?!', '(?<=', '(?<!'))
 
 
+def test_every_office_reference_requires_canonical_bytes():
+    schema = _builder.build()
+    references = {name: definition for name, definition in schema['$defs'].items()
+                  if name.startswith('office') and name.endswith('Ref')}
+    assert references
+    for name, definition in references.items():
+        validator = Draft202012Validator(definition)
+        kind = name[len('office'):-len('Ref')].lower()
+        prefix = 'office-' + kind + '/'
+        for index in ('0', '1', '123'):
+            valid = prefix + index
+            assert validator.is_valid(valid), name
+            for extra in ('\n', '\r', '\r\n', '\x00', ' ', '\u2028'):
+                assert not validator.is_valid(valid + extra), (name, repr(extra))
+                assert not validator.is_valid(extra + valid), (name, repr(extra))
+        for index in ('00', '01', '-1', '+1', '1.0', '\u0661', ''):
+            assert not validator.is_valid(prefix + index), (name, index)
+
+
 def test_office_location_alternatives_follow_analyzer_scope():
     old = json.loads((ROOT / 'schemas/report-v3.schema.json').read_bytes())
     new = _builder.build()
