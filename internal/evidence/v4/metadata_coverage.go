@@ -48,7 +48,10 @@ func (x *Index) validateMetadataProjection(e Evidence, trace *TraceIndex) error 
 			return ErrLinkage
 		}
 		children := map[Span]int64{}
-		for _, element := range doc.Elements {
+		for i, element := range doc.Elements {
+			if (i == 0) != (element.Parent == nil) {
+				return ErrLinkage
+			}
 			if element.Parent != nil && *element.Parent == 0 {
 				// Two distinct properties cannot share a lexical extent. Never let
 				// a span-key collision erase a property from the completeness check.

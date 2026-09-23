@@ -84,7 +84,7 @@ func (x *Index) ValidateInventories(e Evidence) error {
 		if err := x.ValidateStructuralLocation(r.Location, objects); err != nil {
 			return err
 		}
-		if r.Location.ObjectRef != nil {
+		if r.Location.ObjectRef != nil || r.Location.Element == nil || *r.Location.Span != x.XML[*r.Location.XMLRef].Elements[*r.Location.Element].Span {
 			return ErrLinkage
 		}
 		declaring := x.Parts[r.Location.PartRef]
@@ -108,6 +108,9 @@ func (x *Index) ValidateInventories(e Evidence) error {
 		rels[r.RelationshipRef] = r
 	}
 	for _, o := range e.Objects {
+		if slices.Contains(o.InclusionEvidence, "embedded_relationship") && len(o.RelationshipRefs) == 0 {
+			return ErrLinkage
+		}
 		seen := map[string]bool{}
 		for _, ref := range o.RelationshipRefs {
 			r, ok := rels[ref]

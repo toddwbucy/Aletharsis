@@ -72,8 +72,8 @@ func checkFixtureArchive(raw []byte, r Report) error {
 
 func TestAllOfficeFixtureArchiveIdentities(t *testing.T) {
 	paths, err := filepath.Glob("../../../tests/contracts_v4/fixtures/office-*.json")
-	if err != nil || len(paths) != 4 {
-		t.Fatal("four Office fixtures required", err)
+	if err != nil || len(paths) < 4 {
+		t.Fatal("at least four Office fixtures required", err)
 	}
 	paths = append(paths, "../../../tests/contracts_v4/fixtures/metadata-inventory.json")
 	for _, path := range paths {
@@ -102,6 +102,14 @@ func TestAllOfficeFixtureArchiveIdentities(t *testing.T) {
 				if checkFixtureArchive(corrupted, r) == nil {
 					t.Fatal("source corruption accepted", p.Name)
 				}
+				changed := r
+				changed.File.SHA256 = str(evidence.Hash(corrupted))
+				changed.Evidence.Office.Packages = append([]Package{}, r.Evidence.Office.Packages...)
+				changed.Evidence.Office.Packages[0].SourceSHA256 = evidence.Hash(corrupted)
+				if err := checkFixtureArchive(corrupted, changed); err == nil || err.Error() == "source identity" || err.Error() == "package identity" {
+					t.Fatal("part binding not exercised", p.Name, err)
+				}
+
 			}
 			for i := range r.Evidence.Office.Packages[0].Parts {
 				p := &r.Evidence.Office.Packages[0].Parts[i]

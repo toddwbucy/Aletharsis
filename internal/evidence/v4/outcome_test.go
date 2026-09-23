@@ -108,9 +108,13 @@ func TestEveryRetainedExtractionRequiresSuccessfulPartOperation(t *testing.T) {
 					e.Metadata = []Metadata{{PartRef: part, XMLRef: "xml"}}
 					e.XML = []XML{{PartRef: part, Elements: []Element{{Namespace: "http://schemas.openxmlformats.org/package/2006/metadata/core-properties", LocalName: "coreProperties"}}}}
 				case "aletharsis.office.relationships":
-					e.Relationships = []Relationship{{Location: StructuralLocation{PartRef: part, Span: &Span{}}}}
+					e.Relationships = []Relationship{{Location: StructuralLocation{PartRef: part, XMLRef: str("xml"), Element: wide(1), Span: &Span{0, 1}}}}
 				}
 				x := Index{Parts: map[string]Part{part: {PartRef: part, State: "completed", ByteLength: wide(1)}}, XML: map[string]XML{"xml": {Elements: []Element{{}}}}}
+				if operation == "aletharsis.office.relationships" {
+					const ns = "http://schemas.openxmlformats.org/package/2006/relationships"
+					x.XML["xml"] = XML{Elements: []Element{{Namespace: ns, LocalName: "Relationships"}, {Index: 1, Parent: wide(0), Namespace: ns, LocalName: "Relationship", Span: Span{0, 1}}}}
+				}
 				trace := TraceIndex{Executions: map[string]v2.Execution{"exec/0": {Ref: "exec/0", CapabilityRef: operation, State: state}}}
 				good := state == v2.Completed || state == v2.Partial
 				if good {
@@ -276,7 +280,7 @@ func TestNonParsingOperationsCannotAttestXMLMaps(t *testing.T) {
 // Overlap and XML attestation are operation-wide rules, not metadata exceptions.
 func TestOperationCoverageAndXMLAttestation(t *testing.T) {
 	for _, operation := range []string{"aletharsis.office.identify", "aletharsis.office.text", "aletharsis.office.relationships"} {
-		for _, mode := range []string{"valid", "overlap", "adjacent", "empty", "zero width", "failed exclusion", "canceled exclusion", "unrun exclusion"} {
+		for _, mode := range []string{"valid", "overlap", "adjacent", "empty", "zero width", "failed exclusion", "canceled exclusion", "unrun exclusion", "failed history", "canceled history", "unrun history"} {
 			t.Run(operation+"/"+mode, func(t *testing.T) {
 				raw, err := os.ReadFile("../../../tests/contracts_v4/fixtures/office-minimal.json")
 				if err != nil {
@@ -304,7 +308,7 @@ func TestOperationCoverageAndXMLAttestation(t *testing.T) {
 						o.Assessed = nil
 					case "zero width":
 						o.Assessed = []Span{{0, 0}}
-					case "overlap", "adjacent", "failed exclusion", "canceled exclusion", "unrun exclusion":
+					case "overlap", "adjacent", "failed exclusion", "canceled exclusion", "unrun exclusion", "failed history", "canceled history", "unrun history":
 						end := o.Assessed[0].End
 						excluded := Span{0, end}
 						if mode == "adjacent" {
@@ -313,14 +317,17 @@ func TestOperationCoverageAndXMLAttestation(t *testing.T) {
 						}
 						state := v2.Partial
 						switch mode {
-						case "failed exclusion":
+						case "failed exclusion", "failed history":
 							state = v2.Failed
-						case "canceled exclusion":
+						case "canceled exclusion", "canceled history":
 							state = v2.Canceled
-						case "unrun exclusion":
+						case "unrun exclusion", "unrun history":
 							state = v2.NotRun
 						}
 						pkg.Outcomes = append(pkg.Outcomes, Outcome{ExecutionRef: "exec/99", Operation: operation, PartRef: o.PartRef, State: string(state), Excluded: []Span{excluded}})
+						if mode == "failed history" || mode == "canceled history" || mode == "unrun history" {
+							pkg.Outcomes[len(pkg.Outcomes)-1].Excluded = nil
+						}
 						r.Trace.Executions = append(r.Trace.Executions, v2.Execution{Ref: "exec/99", CapabilityRef: operation, State: state})
 					}
 					break
@@ -334,7 +341,7 @@ func TestOperationCoverageAndXMLAttestation(t *testing.T) {
 					trace.Executions[e.Ref] = e
 				}
 				err = x.ValidateOutcomes(r.Evidence.Office, trace)
-				if (err == nil) != (mode == "valid" || mode == "adjacent" || mode == "failed exclusion" || mode == "canceled exclusion" || mode == "unrun exclusion") {
+				if (err == nil) != (mode == "valid" || mode == "adjacent" || mode == "failed history" || mode == "canceled history" || mode == "unrun history") {
 					t.Fatal(mode, err)
 				}
 			})

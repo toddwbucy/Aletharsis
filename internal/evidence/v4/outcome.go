@@ -2,7 +2,9 @@ package v4
 
 import (
 	v2 "github.com/toddwbucy/Aletharsis/internal/evidence/v2"
+	"github.com/toddwbucy/Aletharsis/internal/opcrels"
 	"slices"
+	"strings"
 )
 
 // ValidateOutcomes binds retained per-part outcomes to their parent operation.
@@ -16,10 +18,10 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 		if ex.State == v2.Completed && o.State != "completed" {
 			return ErrLinkage
 		}
-		if (ex.State == v2.NotRun || ex.State == v2.Failed || ex.State == v2.Canceled) && len(o.Assessed) > 0 {
+		if (ex.State == v2.NotRun || ex.State == v2.Failed || ex.State == v2.Canceled) && (len(o.Assessed) > 0 || o.State == "completed" || o.State == "partial") {
 			return ErrLinkage
 		}
-		if (o.State == "not_run" || o.State == "failed" || o.State == "canceled") && len(o.Assessed) > 0 {
+		if (o.State == "not_run" || o.State == "failed" || o.State == "canceled") && (len(o.Assessed) > 0 || len(o.Excluded) > 0) {
 			return ErrLinkage
 		}
 		if o.State == "completed" && len(o.Excluded) > 0 {
@@ -178,7 +180,53 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 			return ErrLinkage
 		}
 	}
+	// Assessed relationship elements cannot silently disappear from the
+	// retained projection. This is an internal XML/coverage check, not a
+	// claim that the report authenticates the original package bytes.
+	retainedRelationships := map[string]map[int64]bool{}
 	for _, item := range e.Relationships {
+		if retainedRelationships[item.Location.PartRef] == nil {
+			retainedRelationships[item.Location.PartRef] = map[int64]bool{}
+		}
+		if item.Location.Element != nil {
+			if retainedRelationships[item.Location.PartRef][*item.Location.Element] {
+				return ErrLinkage
+			}
+			retainedRelationships[item.Location.PartRef][*item.Location.Element] = true
+		}
+	}
+	for _, doc := range e.XML {
+		if len(doc.Elements) == 0 {
+			continue
+		}
+		root := doc.Elements[0]
+		if root.Namespace != "http://schemas.openxmlformats.org/package/2006/relationships" || root.LocalName != "Relationships" {
+			continue
+		}
+		for _, element := range doc.Elements {
+			if element.Parent != nil && *element.Parent == 0 && element.Namespace == root.Namespace &&
+				element.LocalName == "Relationship" &&
+				covers("aletharsis.office.relationships", doc.PartRef, []Span{element.Span}) &&
+				!retainedRelationships[doc.PartRef][element.Index] {
+				return ErrLinkage
+			}
+		}
+	}
+	for _, item := range e.Relationships {
+		if item.Location.XMLRef == nil || item.Location.Element == nil {
+			return ErrLinkage
+		}
+		doc := x.XML[*item.Location.XMLRef]
+		if *item.Location.Element < 0 || *item.Location.Element >= int64(len(doc.Elements)) {
+			return ErrLinkage
+		}
+		element := doc.Elements[*item.Location.Element]
+		if len(doc.Elements) == 0 || doc.Elements[0].Namespace != "http://schemas.openxmlformats.org/package/2006/relationships" ||
+			doc.Elements[0].LocalName != "Relationships" || element.Parent == nil || *element.Parent != 0 ||
+			element.Namespace != doc.Elements[0].Namespace || element.LocalName != "Relationship" ||
+			(item.ResolutionState == "resolved" && (item.ID == "" || item.Type == "")) {
+			return ErrLinkage
+		}
 		if item.Location.Span == nil || !covers("aletharsis.office.relationships", item.Location.PartRef, []Span{*item.Location.Span}) {
 			return ErrLinkage
 		}
@@ -198,9 +246,60 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 			return ErrLinkage
 		}
 	}
+	// A completed object enumeration cannot omit candidates already explicit
+	// in the retained package names or resolved embedded-object relationships.
+	// This does not infer candidates hidden in unretained source structure.
+	objectsComplete := false
+	for _, execution := range t.Executions {
+		if execution.CapabilityRef == "aletharsis.office.embedded_objects" && execution.State == v2.Completed {
+			objectsComplete = true
+		}
+	}
+	if objectsComplete {
+		retained := map[string]bool{}
+		for _, object := range e.Objects {
+			if retained[object.PartRef] {
+				return ErrLinkage
+			}
+			retained[object.PartRef] = true
+		}
+		for ref, part := range x.Parts {
+			if strings.HasPrefix(opcrels.FoldName(part.Name), "word/embeddings/") && !retained[ref] {
+				return ErrLinkage
+			}
+		}
+		for _, relationship := range e.Relationships {
+			if relationship.TargetPartRef == nil {
+				continue
+			}
+			for _, prefix := range []string{"http://schemas.openxmlformats.org/officeDocument/2006/relationships/", "http://purl.oclc.org/ooxml/officeDocument/relationships/"} {
+				if (relationship.Type == prefix+"oleObject" || relationship.Type == prefix+"package") && !retained[*relationship.TargetPartRef] {
+					return ErrLinkage
+				}
+			}
+		}
+	}
 	for _, o := range e.Objects {
 		if err := check(o.Inspection); err != nil {
 			return err
+		}
+		if o.ObservedSignature != nil && *o.ObservedSignature != "" {
+			// A prefix observation needs coverage of the bytes supporting it.
+			// Unknown descriptive signatures still need a nonempty prefix;
+			// the importer does not authenticate their truth without bytes.
+			width := int64(1)
+			switch *o.ObservedSignature {
+			case "ole_compound_magic", "png_magic":
+				width = 8
+			case "zip_local_header_magic":
+				width = 4
+			case "pdf_header_magic":
+				width = 5
+			}
+			if o.Inspection.State != "completed" && o.Inspection.State != "partial" ||
+				!coveredByNormalized([]Span{{0, width}}, normalizedSpans(o.Inspection.Assessed)) {
+				return ErrLinkage
+			}
 		}
 	}
 	checkIssue := func(issue Issue) error {

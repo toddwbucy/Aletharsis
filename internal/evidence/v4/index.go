@@ -4,6 +4,8 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+
+	"github.com/toddwbucy/Aletharsis/internal/identity"
 )
 
 var ErrLinkage = errors.New("Office evidence linkage is invalid")
@@ -42,6 +44,14 @@ func IndexEvidence(e Evidence, sourceHash string, sourceSize int64) (*Index, err
 		for _, part := range p.Parts {
 			if !canonicalRef(part.PartRef, "part") || part.PackageRef != p.PackageRef || names[part.Name] ||
 				!part.CompressedSpan.Within(sourceSize) || (part.SHA256 == nil) != (part.ByteLength == nil) {
+				return nil, ErrLinkage
+			}
+			// An empty compressed extent is independently checkable without
+			// source bytes: its digest is SHA-256(empty), and DEFLATE needs
+			// at least a stream header/block even for an empty payload.
+			if part.CompressedSpan.Start == part.CompressedSpan.End &&
+				(part.Method != 0 || part.CompressedSHA256 != identity.ExactBytes(nil) ||
+					(part.ByteLength != nil && *part.ByteLength != 0)) {
 				return nil, ErrLinkage
 			}
 			if _, exists := x.Parts[part.PartRef]; exists {
