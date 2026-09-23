@@ -1,12 +1,12 @@
 package v4
 
 import (
+	v2 "github.com/toddwbucy/Aletharsis/internal/evidence/v2"
 	"github.com/toddwbucy/Aletharsis/internal/officemetadata"
 )
 
-// A completed/partial metadata projection accounts for every direct property:
-// either a retained scalar, or a diagnostic at the exact property's byte span.
-// Attribute/markup diagnostics do not stand in for a missing property.
+// Every direct property is retained or has an omission bound to one producing
+// execution's own exclusion. No execution may assess an omitted region.
 func (x *Index) validateMetadataProjection(e Evidence, trace *TraceIndex) error {
 	retained := map[string]map[int64]bool{}
 	for _, m := range e.Metadata {
@@ -17,42 +17,46 @@ func (x *Index) validateMetadataProjection(e Evidence, trace *TraceIndex) error 
 	}
 	groups := map[string][]Outcome{}
 	for _, pkg := range e.Packages {
-		for _, outcome := range pkg.Outcomes {
-			if outcome.Operation == "aletharsis.office.metadata" && outcome.PartRef != nil && (outcome.State == "completed" || outcome.State == "partial") {
-				groups[*outcome.PartRef] = append(groups[*outcome.PartRef], outcome)
+		for _, o := range pkg.Outcomes {
+			if o.Operation != "aletharsis.office.metadata" || o.PartRef == nil || (o.State != "completed" && o.State != "partial") {
+				continue
 			}
+			parent, ok := trace.Executions[o.ExecutionRef]
+			if !ok || parent.CapabilityRef != o.Operation || (parent.State != v2.Completed && parent.State != v2.Partial) {
+				return ErrLinkage
+			}
+			groups[*o.PartRef] = append(groups[*o.PartRef], o)
 		}
 	}
+	documents := map[string]XML{}
+	for _, doc := range e.XML {
+		documents[doc.PartRef] = doc
+	}
 	for partRef, outcomes := range groups {
-		excluded := []Span{}
-		refs := map[string]string{}
+		part := x.Parts[partRef]
+		doc, ok := documents[partRef]
+		if !ok || len(doc.Elements) == 0 || officemetadata.ProjectionKind(doc.Elements[0].Namespace, doc.Elements[0].LocalName) == "" {
+			return ErrLinkage
+		}
+		assessed, excluded := []Span{}, []Span{}
 		for _, o := range outcomes {
+			assessed = append(assessed, o.Assessed...)
 			excluded = append(excluded, o.Excluded...)
-			for _, ref := range o.DiagnosticRefs {
-				refs[ref] = o.ExecutionRef
+		}
+		assessed, excluded = normalizedSpans(assessed), normalizedSpans(excluded)
+		if normalizedSpansOverlap(assessed, excluded) {
+			return ErrLinkage
+		}
+		children := map[Span]int64{}
+		for _, element := range doc.Elements {
+			if element.Parent != nil && *element.Parent == 0 {
+				children[element.Span] = element.Index
 			}
 		}
-		excluded = normalizedSpans(excluded)
-		{
-
-			part := x.Parts[partRef]
-			var doc *XML
-			for _, candidate := range e.XML {
-				if candidate.PartRef == part.PartRef {
-					copy := candidate
-					doc = &copy
-					break
-				}
-			}
-			if doc == nil || len(doc.Elements) == 0 {
-				return ErrLinkage
-			}
-			root := doc.Elements[0]
-			if officemetadata.ProjectionKind(root.Namespace, root.LocalName) == "" {
-				return ErrLinkage
-			}
-			gaps := map[int64]bool{}
-			for ref, execution := range refs {
+		gaps := map[int64]bool{}
+		for _, o := range outcomes {
+			ownExcluded := normalizedSpans(o.Excluded)
+			for _, ref := range o.DiagnosticRefs {
 				diagnostic := trace.Diagnostics[ref]
 				switch diagnostic.Code {
 				case "metadata.property_unassessed", "metadata.standard_property_unassessed", "metadata.structured_value_unassessed":
@@ -60,34 +64,38 @@ func (x *Index) validateMetadataProjection(e Evidence, trace *TraceIndex) error 
 					continue
 				}
 				scope := diagnostic.Scope
-				if diagnostic.ExecutionRef == nil || *diagnostic.ExecutionRef != execution || scope == nil || scope.Unit != "byte" || scope.ArtifactRef != part.ArtifactRef || len(scope.Regions) != 1 {
+				if diagnostic.ExecutionRef == nil || *diagnostic.ExecutionRef != o.ExecutionRef || scope == nil || scope.Unit != "byte" || scope.ArtifactRef != part.ArtifactRef || len(scope.Regions) != 1 {
 					return ErrLinkage
 				}
-				matched := false
-				for _, element := range doc.Elements {
-					if element.Parent == nil || *element.Parent != 0 {
-						continue
-					}
-					span := Span{int64(scope.Regions[0].Start), int64(scope.Regions[0].End)}
-					if element.Span == span {
-						if gaps[element.Index] || retained[part.PartRef][element.Index] || !coveredByNormalized([]Span{span}, excluded) {
-							return ErrLinkage
-						}
-						gaps[element.Index] = true
-						matched = true
-						break
-					}
-				}
-				if !matched {
+				span := Span{int64(scope.Regions[0].Start), int64(scope.Regions[0].End)}
+				element, ok := children[span]
+				if !ok || retained[partRef][element] || !coveredByNormalized([]Span{span}, ownExcluded) {
 					return ErrLinkage
 				}
+				gaps[element] = true
 			}
-			for _, element := range doc.Elements {
-				if element.Parent != nil && *element.Parent == 0 && !retained[part.PartRef][element.Index] && !gaps[element.Index] {
-					return ErrLinkage
-				}
+		}
+		for _, element := range children {
+			if !retained[partRef][element] && !gaps[element] {
+				return ErrLinkage
 			}
 		}
 	}
 	return nil
+}
+
+// Inputs are normalized, sorted, disjoint lists of half-open spans.
+func normalizedSpansOverlap(a, b []Span) bool {
+	for i, j := 0, 0; i < len(a) && j < len(b); {
+		if a[i].Start == a[i].End || a[i].End <= b[j].Start {
+			i++
+			continue
+		}
+		if b[j].Start == b[j].End || b[j].End <= a[i].Start {
+			j++
+			continue
+		}
+		return true
+	}
+	return false
 }

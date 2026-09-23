@@ -3,7 +3,9 @@ package corpusv2
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/toddwbucy/Aletharsis/internal/wire"
 	"testing"
 )
 
@@ -40,7 +42,14 @@ func TestBothCorpusFormsEnforceEntryLimits(t *testing.T) {
 			stream.WriteByte('\n')
 		}
 		for _, decode := range []func() error{func() error { _, e := Decode(raw, limits(), limits()); return e }, func() error { _, e := DecodeStream(stream.Bytes(), limits(), limits()); return e }} {
-			if err := decode(); (err == nil) != tc.valid {
+			err := decode()
+			if tc.count > maxEntries && !errors.Is(err, wire.ErrSchema) {
+				t.Fatalf("fixed entry cap must be schema error: %v", err)
+			}
+			if tc.count <= maxEntries && !tc.valid && !errors.Is(err, ErrLinkage) {
+				t.Fatalf("declared entry cap must be linkage error: %v", err)
+			}
+			if (err == nil) != tc.valid {
 				t.Fatalf("count=%d declared=%d: %v", tc.count, tc.declared, err)
 			}
 		}

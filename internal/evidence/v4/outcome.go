@@ -244,11 +244,6 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 	return x.validateMetadataProjection(e, t)
 }
 
-// spansCovered accepts adjacent assessed regions but never bridges a gap.
-func spansCovered(wanted, assessed []Span) bool {
-	return coveredByNormalized(wanted, normalizedSpans(assessed))
-}
-
 func normalizedSpans(spans []Span) []Span {
 	regions := slices.Clone(spans)
 	slices.SortFunc(regions, func(a, b Span) int {

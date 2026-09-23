@@ -177,14 +177,14 @@ func TestCoverageLookupHandlesUnorderedRepeatedOrigins(t *testing.T) {
 	for i := range wanted {
 		wanted[i] = regions[(i*7919)%len(regions)]
 	}
-	if !spansCovered(wanted, regions) {
+	if !coveredByNormalized(wanted, normalizedSpans(regions)) {
 		t.Fatal("lost unordered or repeated origins")
 	}
 	wanted[0] = Span{1, 2}
-	if spansCovered(wanted, regions) {
+	if coveredByNormalized(wanted, normalizedSpans(regions)) {
 		t.Fatal("bridged a gap")
 	}
-	if !spansCovered([]Span{{0, 3}}, []Span{{2, 3}, {0, 1}, {1, 2}}) {
+	if !coveredByNormalized([]Span{{0, 3}}, normalizedSpans([]Span{{2, 3}, {0, 1}, {1, 2}})) {
 		t.Fatal("adjacent ranges not united")
 	}
 }
@@ -230,5 +230,42 @@ func TestRetainedRecordCanUseMultipleProducingExecutions(t *testing.T) {
 	}
 	if err := x.ValidateOutcomes(r.Evidence.Office, trace); err != nil {
 		t.Fatal("split coverage rejected", err)
+	}
+}
+
+func TestNonParsingOperationsCannotAttestXMLMaps(t *testing.T) {
+	for _, operation := range []string{"aletharsis.office.embedded_objects", "aletharsis.office.profiles"} {
+		raw, err := os.ReadFile("../../../tests/contracts_v4/fixtures/office-minimal.json")
+		if err != nil {
+			t.Fatal(err)
+		}
+		r, err := DecodeReport(raw, identity.Limits{InputBytes: 16 << 20, OutputBytes: 16 << 20, Nodes: 4194304, Depth: 64})
+		if err != nil {
+			t.Fatal(err)
+		}
+		r.Evidence.Office.Scopes = nil
+		for i := range r.Evidence.Office.Packages[0].Outcomes {
+			o := &r.Evidence.Office.Packages[0].Outcomes[i]
+			if o.Operation == "aletharsis.parse.office_package" {
+				continue
+			}
+			o.Operation = operation
+			for j := range r.Trace.Executions {
+				if r.Trace.Executions[j].Ref == o.ExecutionRef {
+					r.Trace.Executions[j].CapabilityRef = operation
+				}
+			}
+		}
+		x, err := IndexEvidence(r.Evidence.Office, *r.File.SHA256, int64(*r.File.Size))
+		if err != nil {
+			t.Fatal(err)
+		}
+		trace := &TraceIndex{Executions: map[string]v2.Execution{}, Diagnostics: map[string]v2.Diagnostic{}}
+		for _, e := range r.Trace.Executions {
+			trace.Executions[e.Ref] = e
+		}
+		if x.ValidateOutcomes(r.Evidence.Office, trace) == nil {
+			t.Fatal("non-parsing operation attested XML", operation)
+		}
 	}
 }
