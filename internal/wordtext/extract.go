@@ -80,6 +80,20 @@ func Extract(ctx context.Context, source []byte, expectedSHA256 string) (*Result
 	if err != nil {
 		return nil, err
 	}
+	return extractMapped(ctx, mapped)
+}
+
+// ExtractParsed reuses a parser-produced document from these exact source bytes.
+// The caller must retain the document unchanged; MapParsed verifies byte identity.
+func ExtractParsed(ctx context.Context, source []byte, doc *xmlparts.Document) (*Result, error) {
+	mapped, err := xmlparts.MapParsed(ctx, source, doc, xmlparts.MaxScalarMappings)
+	if err != nil {
+		return nil, err
+	}
+	return extractMapped(ctx, mapped)
+}
+
+func extractMapped(ctx context.Context, mapped *xmlparts.MappedDocument) (*Result, error) {
 	d := mapped.Document
 	root := d.Elements[0]
 	ns := root.Name.Namespace

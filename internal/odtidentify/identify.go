@@ -121,7 +121,7 @@ func InspectVerified(ctx context.Context, reader *packageparts.OutcomeReader) (*
 	return inspectView(ctx, nil, &view)
 }
 
-func inspectView(ctx context.Context, pkg *packageparts.Package, view *packageparts.OutcomeView) (*Result, error) {
+func prepareManifest(ctx context.Context, pkg *packageparts.Package, view *packageparts.OutcomeView) (*Result, bool, error) {
 	r := &Result{Parser: Version, State: "not_applicable", Package: pkg, Outcomes: view, Entries: []Entry{}, Memberships: []Membership{}, Issues: []Issue{}, RootEntry: -1, ContentEntry: -1}
 	parts := map[string]int{}
 	for i, p := range view.Parts {
@@ -132,12 +132,12 @@ func inspectView(ctx context.Context, pkg *packageparts.Package, view *packagepa
 	mi, hasMIME := parts["mimetype"]
 	fi, hasManifest := parts["META-INF/manifest.xml"]
 	if !hasMIME && !hasManifest {
-		return r, nil
+		return r, false, nil
 	}
 	r.State = "completed"
 	if !hasMIME {
 		r.issue("odt.mimetype_missing", "mimetype", -1)
-		return r, nil
+		return r, false, nil
 	}
 	mt := view.Parts[mi]
 	if mt.State != "completed" {
@@ -145,22 +145,22 @@ func inspectView(ctx context.Context, pkg *packageparts.Package, view *packagepa
 		if mt.Code != "" {
 			r.issue(mt.Code, mt.Name, -1)
 		}
-		return r, nil
+		return r, false, nil
 	}
 	r.MimetypeSHA256 = mt.SHA256
 	if string(mt.Bytes) != MIME {
 		r.issue("odt.mimetype_unsupported", "mimetype", -1)
-		return r, nil
+		return r, false, nil
 	}
 	// With DP-001's contiguous ZIP records, offset 38 proves the first local
 	// header has the eight-byte mimetype name and no local extra field.
 	if mt.Method != zip.Store || mt.CompressedSpan.Start != 38 {
 		r.issue("odt.mimetype_layout_invalid", "mimetype", -1)
-		return r, nil
+		return r, false, nil
 	}
 	if !hasManifest {
 		r.issue("odt.manifest_missing", "META-INF/manifest.xml", -1)
-		return r, nil
+		return r, false, nil
 	}
 	manifest := view.Parts[fi]
 	if manifest.State != "completed" {
@@ -168,21 +168,43 @@ func inspectView(ctx context.Context, pkg *packageparts.Package, view *packagepa
 		if manifest.Code != "" {
 			r.issue(manifest.Code, manifest.Name, -1)
 		}
-		return r, nil
+		return r, false, nil
 	}
 	r.ManifestSHA256 = manifest.SHA256
 	doc, err := xmlparts.Parse(ctx, manifest.Bytes, manifest.SHA256, xmlparts.DefaultLimits())
 	if err != nil {
 		if ctx.Err() != nil {
-			return nil, ctx.Err()
+			return nil, false, ctx.Err()
 		}
 		r.issue(parseCode(err), manifest.Name, -1)
-		return r, nil
+		return r, false, nil
 	}
 	r.ManifestXML = doc
 	if !r.readManifest() {
-		return r, nil
+		return r, false, nil
 	}
+	return r, true, nil
+}
+
+func inspectView(ctx context.Context, pkg *packageparts.Package, view *packageparts.OutcomeView) (*Result, error) {
+	r, ready, err := prepareManifest(ctx, pkg, view)
+	if err != nil || !ready {
+		return r, err
+	}
+	return finishPackage(ctx, view, r)
+}
+func finishPackage(ctx context.Context, view *packageparts.OutcomeView, r *Result) (*Result, error) {
+	parts := map[string]int{}
+	for i, p := range view.Parts {
+		if !p.Directory {
+			parts[p.Name] = i
+		}
+	}
+	manifestIndex, exists := parts["META-INF/manifest.xml"]
+	if !exists {
+		return nil, packageparts.ErrIdentity
+	}
+	manifest := view.Parts[manifestIndex]
 	r.membership(parts)
 	if r.RootEntry < 0 {
 		r.issue("odt.root_entry_missing", manifest.Name, -1)
@@ -203,14 +225,14 @@ func inspectView(ctx context.Context, pkg *packageparts.Package, view *packagepa
 	}
 	contentEntry := r.Entries[r.ContentEntry]
 	if contentEntry.Encrypted {
-		r.issue("odt.content_encrypted", "content.xml", contentEntry.Anchor.Element)
+		r.issue("odt.content_encrypted", manifest.Name, contentEntry.Anchor.Element)
 		return r, nil
 	}
 	if contentEntry.State != "resolved" || contentEntry.MediaType != "text/xml" {
 		if contentEntry.Code == "office.part_not_admitted" {
 			r.issue(contentEntry.Code, "META-INF/manifest.xml", contentEntry.Anchor.Element)
 		}
-		r.issue("odt.content_identity_unavailable", "content.xml", contentEntry.Anchor.Element)
+		r.issue("odt.content_identity_unavailable", manifest.Name, contentEntry.Anchor.Element)
 		return r, nil
 	}
 	ci, exists := parts["content.xml"]

@@ -8,6 +8,15 @@ import (
 // ValidateOutcomes binds retained per-part outcomes to their parent operation.
 // Child failure is allowed under partial coverage, never under completed coverage.
 func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
+	return x.validateOutcomes(e, t, true)
+}
+
+// ValidateOutcomeLinks checks intermediate operation links only. Complete report
+// encoding and import always call ValidateOutcomes.
+func (x *Index) ValidateOutcomeLinks(e Evidence, t *TraceIndex) error {
+	return x.validateOutcomes(e, t, false)
+}
+func (x *Index) validateOutcomes(e Evidence, t *TraceIndex, complete bool) error {
 	check := func(o Outcome) error {
 		ex, ok := t.Executions[o.ExecutionRef]
 		if !ok || ex.CapabilityRef != o.Operation {
@@ -136,66 +145,68 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 			}
 		}
 	}
-	// Successful executions may contribute separate assessed regions to one
-	// producer inventory. Normalize once per operation/part, then binary-search
-	// each wanted span; record order cannot trigger a quadratic scan.
-	coverage := map[[2]string][]Span{}
-	for key, outcomes := range produced {
-		regions, excluded := []Span{}, []Span{}
-		for _, outcome := range outcomes {
-			regions = append(regions, outcome.Assessed...)
-			excluded = append(excluded, outcome.Excluded...)
-		}
-		coverage[key] = normalizedSpans(regions)
-		if normalizedSpansOverlap(coverage[key], normalizedSpans(excluded)) {
-			return ErrLinkage
-		}
-	}
-	covers := func(operation, part string, spans []Span) bool {
-		key := [2]string{operation, part}
-		_, exists := produced[key]
-		return exists && coveredByNormalized(spans, coverage[key])
-	}
-	origins := func(values []Origin) []Span {
-		spans := make([]Span, 0, len(values))
-		for _, value := range values {
-			spans = append(spans, value.Source)
-		}
-		return spans
-	}
-	for _, scope := range e.Scopes {
-		if !covers("aletharsis.office.text", scope.PartRef, origins(scope.Origins)) {
-			return ErrLinkage
-		}
-	}
-	for _, item := range e.Metadata {
-		doc := x.XML[item.XMLRef]
-		if item.Element < 0 || item.Element >= int64(len(doc.Elements)) {
-			return ErrLinkage
-		}
-		spans := origins(item.ValueOrigins)
-		if !covers("aletharsis.office.metadata", item.PartRef, spans) {
-			return ErrLinkage
-		}
-	}
-	for _, item := range e.Relationships {
-		if item.Location.Span == nil || !covers("aletharsis.office.relationships", item.Location.PartRef, []Span{*item.Location.Span}) {
-			return ErrLinkage
-		}
-	}
-	// XML mapping may retain lexical structure for excluded analytical regions.
-	// Bind the map to a parsing operation without claiming those regions were
-	// assessed for text, metadata, or relationship interpretation.
-	for _, doc := range e.XML {
-		matched := false
-		for _, operation := range []string{"aletharsis.office.identify", "aletharsis.office.text", "aletharsis.office.metadata", "aletharsis.office.relationships"} {
-			if slices.ContainsFunc(coverage[[2]string{operation, doc.PartRef}], func(span Span) bool { return span.Start < span.End }) {
-				matched = true
-				break
+	if complete {
+		// Successful executions may contribute separate assessed regions to one
+		// producer inventory. Normalize once per operation/part, then binary-search
+		// each wanted span; record order cannot trigger a quadratic scan.
+		coverage := map[[2]string][]Span{}
+		for key, outcomes := range produced {
+			regions, excluded := []Span{}, []Span{}
+			for _, outcome := range outcomes {
+				regions = append(regions, outcome.Assessed...)
+				excluded = append(excluded, outcome.Excluded...)
+			}
+			coverage[key] = normalizedSpans(regions)
+			if normalizedSpansOverlap(coverage[key], normalizedSpans(excluded)) {
+				return ErrLinkage
 			}
 		}
-		if !matched {
-			return ErrLinkage
+		covers := func(operation, part string, spans []Span) bool {
+			key := [2]string{operation, part}
+			_, exists := produced[key]
+			return exists && coveredByNormalized(spans, coverage[key])
+		}
+		origins := func(values []Origin) []Span {
+			spans := make([]Span, 0, len(values))
+			for _, value := range values {
+				spans = append(spans, value.Source)
+			}
+			return spans
+		}
+		for _, scope := range e.Scopes {
+			if !covers("aletharsis.office.text", scope.PartRef, origins(scope.Origins)) {
+				return ErrLinkage
+			}
+		}
+		for _, item := range e.Metadata {
+			doc := x.XML[item.XMLRef]
+			if item.Element < 0 || item.Element >= int64(len(doc.Elements)) {
+				return ErrLinkage
+			}
+			spans := origins(item.ValueOrigins)
+			if !covers("aletharsis.office.metadata", item.PartRef, spans) {
+				return ErrLinkage
+			}
+		}
+		for _, item := range e.Relationships {
+			if item.Location.Span == nil || !covers("aletharsis.office.relationships", item.Location.PartRef, []Span{*item.Location.Span}) {
+				return ErrLinkage
+			}
+		}
+		// XML mapping may retain lexical structure for excluded analytical regions.
+		// Bind the map to a parsing operation without claiming those regions were
+		// assessed for text, metadata, or relationship interpretation.
+		for _, doc := range e.XML {
+			matched := false
+			for _, operation := range []string{"aletharsis.office.identify", "aletharsis.office.text", "aletharsis.office.metadata", "aletharsis.office.relationships"} {
+				if slices.ContainsFunc(coverage[[2]string{operation, doc.PartRef}], func(span Span) bool { return span.Start < span.End }) {
+					matched = true
+					break
+				}
+			}
+			if !matched {
+				return ErrLinkage
+			}
 		}
 	}
 	for _, o := range e.Objects {
@@ -245,7 +256,10 @@ func (x *Index) ValidateOutcomes(e Evidence, t *TraceIndex) error {
 			}
 		}
 	}
-	return x.validateMetadataProjection(e, t)
+	if complete {
+		return x.validateMetadataProjection(e, t)
+	}
+	return nil
 }
 
 func normalizedSpans(spans []Span) []Span {

@@ -269,3 +269,23 @@ func TestLiteralAndReferencedAttributeWhitespace(t *testing.T) {
 	}
 	invariants(t, []byte(s), d)
 }
+
+func TestMeasuredFailureRetainsOnlyUsage(t *testing.T) {
+	for _, source := range []string{"<r>", "<r>value", "<r/>"} {
+		raw := []byte(source)
+		doc, used, err := ParseMeasured(context.Background(), raw, evidence.Hash(raw), DefaultLimits())
+		if source != "<r/>" && (err == nil || doc != nil) {
+			t.Fatal("malformed document exposed semantic evidence")
+		}
+		if used.Tokens < 1 || used.Tokens > 2 || used.RetainedBytes > len(raw) {
+			t.Fatal("reservation reported as consumption", used)
+		}
+	}
+	raw := []byte("<r><a/></r>")
+	limits := DefaultLimits()
+	limits.Tokens = 1
+	doc, used, err := ParseMeasured(context.Background(), raw, evidence.Hash(raw), limits)
+	if err != ErrLimit || doc != nil || used.Tokens != 1 {
+		t.Fatal("real exhaustion not charged", used, err)
+	}
+}

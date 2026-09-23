@@ -533,3 +533,23 @@ Merge policy: this proposal and implementation increments remain reviewable;
 "no merge authorization" records the current owner instruction, not an inherent
 ban on accepting this specification. A later explicit owner instruction may
 merge the documentation alone without clearing implementation or comparator gates.
+
+### Hybrid OOXML evidence inside ODT containers
+
+The native relationships, metadata and embedded-object descriptors at revision 2
+accept DOCX and ODT containers. ODT support here is limited to independently
+declared, namespace-checked OOXML parts in hybrid packages; it does not imply
+native ODF metadata or embedded-object analysis. Pure ODT inputs without such
+evidence retain explicit unsupported-input executions for these operations.
+
+For an ODT-identified hybrid, retain the OOXML properties, XML maps, relationships
+and linked object candidates. The three operation parents are partial with
+`office.hybrid_scope_only` and an unknown remainder; they must not claim complete
+ODT coverage or report assessed absence. Part outcomes preserve exact independent
+assessments. Where an enumeration remainder has unknown location, source-coordinate
+coverage credits only verified ZIP framing, excluding all compressed payload
+extents. It does not invent a source-byte complement for an unknown gap.
+
+Unavailable acquisition retains the Office catalog and not-run Office operations,
+with no acquired source identity or Office evidence. This is a coverage report,
+not evidence of cross-platform Office acquisition support.

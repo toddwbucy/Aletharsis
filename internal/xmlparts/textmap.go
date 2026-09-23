@@ -50,6 +50,23 @@ func ParseWithTextMaps(ctx context.Context, source []byte, expectedSHA256 string
 	if err != nil {
 		return nil, err
 	}
+	return mapParsed(ctx, source, doc, maxMappings)
+}
+
+// MapParsed maps a previously parsed document against the same verified bytes.
+// The caller must supply an unmodified Parse result. This avoids reparsing
+// identification and relationship parts when assembling retained XML evidence.
+func MapParsed(ctx context.Context, source []byte, doc *Document, maxMappings int) (*MappedDocument, error) {
+	if ctx == nil || doc == nil || doc.Parser != Version || doc.PartSHA256 != evidence.Hash(source) {
+		return nil, ErrIdentity
+	}
+	if maxMappings < 1 || maxMappings > MaxScalarMappings {
+		return nil, ErrLimit
+	}
+	return mapParsed(ctx, source, doc, maxMappings)
+}
+
+func mapParsed(ctx context.Context, source []byte, doc *Document, maxMappings int) (*MappedDocument, error) {
 	result := &MappedDocument{Mapper: TextMapVersion, Document: doc, Segments: []TextSegment{}}
 	remaining := maxMappings
 	for i, token := range doc.Tokens {

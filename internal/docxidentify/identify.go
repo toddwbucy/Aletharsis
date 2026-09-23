@@ -96,7 +96,7 @@ func InspectVerified(ctx context.Context, opc *opcrels.Result) (*Result, error) 
 	return inspectOPC(ctx, opc)
 }
 
-func inspectOPC(ctx context.Context, opc *opcrels.Result) (*Result, error) {
+func prepareTypes(ctx context.Context, opc *opcrels.Result) (*Result, bool, error) {
 	r := &Result{Parser: Version, State: "not_applicable", OPC: opc, Declarations: []Declaration{}, Assignments: []Assignment{}, Issues: []Issue{}, MainRelationship: -1, MainAssignment: -1}
 	parts := opc.Outcomes.Parts
 	matches := find(parts, "[Content_Types].xml")
@@ -104,12 +104,12 @@ func inspectOPC(ctx context.Context, opc *opcrels.Result) (*Result, error) {
 		if opc.State != "not_applicable" {
 			r.issue("opc.content_types_missing", "", -1)
 		}
-		return r, nil
+		return r, false, nil
 	}
 	r.State = "completed"
 	if len(matches) != 1 {
 		r.issue("opc.content_types_ambiguous", "", -1)
-		return r, nil
+		return r, false, nil
 	}
 	p := parts[matches[0]]
 	r.TypesPart, r.TypesSHA256 = p.Name, p.SHA256
@@ -118,31 +118,39 @@ func inspectOPC(ctx context.Context, opc *opcrels.Result) (*Result, error) {
 		if p.Code != "" {
 			r.issue(p.Code, p.Name, -1)
 		}
-		return r, nil
+		return r, false, nil
 	}
 	if p.Name != "[Content_Types].xml" {
 		r.issue("opc.content_types_name_unsupported", p.Name, -1)
-		return r, nil
+		return r, false, nil
 	}
 	d, err := xmlparts.Parse(ctx, p.Bytes, p.SHA256, xmlparts.DefaultLimits())
 	if err != nil {
 		if ctx.Err() != nil {
-			return nil, ctx.Err()
+			return nil, false, ctx.Err()
 		}
 		r.issue(parseCode(err), p.Name, -1)
-		return r, nil
+		return r, false, nil
 	}
 	r.TypesXML = d
 	if !r.readTypes() {
-		return r, nil
+		return r, false, nil
 	}
+	return r, true, nil
+}
+
+func inspectOPC(ctx context.Context, opc *opcrels.Result) (*Result, error) {
+	r, ready, err := prepareTypes(ctx, opc)
+	if err != nil || !ready {
+		return r, err
+	}
+	return finishOPC(ctx, opc, r)
+}
+
+func finishOPC(ctx context.Context, opc *opcrels.Result, r *Result) (*Result, error) {
+	parts := opc.Outcomes.Parts
 	r.assign(parts)
-	rootOK := false
-	for _, part := range opc.Parts {
-		if opcrels.FoldName(part.Part) == "_rels/.rels" {
-			rootOK = part.State == "completed"
-		}
-	}
+	rootOK := acceptableRootRelationships(opc)
 	rootTypeOK := false
 	for _, a := range r.Assignments {
 		if opcrels.FoldName(a.Part) == "_rels/.rels" && a.State == "assigned" && a.ContentType == "application/vnd.openxmlformats-package.relationships+xml" {
@@ -200,7 +208,7 @@ func inspectOPC(ctx context.Context, opc *opcrels.Result) (*Result, error) {
 		return r, nil
 	}
 	r.MainPart, r.MainSHA256 = a.Part, a.PartSHA256
-	matches = find(parts, a.Part)
+	matches := find(parts, a.Part)
 	if len(matches) != 1 {
 		r.issue("docx.main_part_ambiguous", a.Part, -1)
 		return r, nil
@@ -446,4 +454,43 @@ func (r *Result) assign(parts []packageparts.Outcome) {
 			r.issue("opc.override_target_missing", r.TypesPart, d.Anchor.Element)
 		}
 	}
+}
+
+// Scheduling and final identification use the same complete-enumeration rule.
+func acceptableRootRelationships(opc *opcrels.Result) bool {
+	roots := 0
+	for _, p := range opc.Parts {
+		if opcrels.FoldName(p.Part) == "_rels/.rels" {
+			roots++
+		}
+	}
+	if roots != 1 {
+		return false
+	}
+	for _, part := range opc.Parts {
+		if opcrels.FoldName(part.Part) != "_rels/.rels" {
+			continue
+		}
+		if part.XML == nil || part.LimitCode != "" || part.SourceCode != "" {
+			return false
+		}
+		if !(part.State == "completed" && part.Code == "" || part.State == "partial" && part.Code == "opc.relationship_unresolved") {
+			return false
+		}
+		if part.State == "completed" {
+			return true
+		}
+		count, resolved := 0, false
+		for _, rel := range opc.Relationships {
+			if opcrels.FoldName(rel.Anchor.Part) == "_rels/.rels" && (rel.Type == TransitionalRelationship || rel.Type == StrictRelationship) {
+				count++
+				if count > 1 {
+					return false
+				}
+				resolved = rel.State == "resolved"
+			}
+		}
+		return count == 1 && resolved
+	}
+	return false
 }
