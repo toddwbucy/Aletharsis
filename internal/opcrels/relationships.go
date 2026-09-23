@@ -165,71 +165,28 @@ func InspectVerified(ctx context.Context, reader *packageparts.OutcomeReader) (*
 }
 
 func inspectPackage(ctx context.Context, pkg *packageparts.Package, outcomes *packageparts.OutcomeView) (*Result, error) {
-	unavailable := map[string]packageparts.Outcome{}
+	if ctx == nil || outcomes == nil {
+		return nil, packageparts.ErrIdentity
+	}
+	s := newSession()
+	names := make([]string, 0, len(outcomes.Parts))
 	for _, o := range outcomes.Parts {
-		if o.State != "completed" {
-			unavailable[o.Part.Name] = o
-		}
+		names = append(names, o.Part.Name)
 	}
-	result := &Result{Parser: Version, State: "not_applicable", Package: pkg, Parts: []PartResult{}, Relationships: []Relationship{}, Outcomes: outcomes}
-	index := map[string][]int{}
-	for i, p := range outcomes.Parts {
-		if !p.Directory {
-			index[FoldName(p.Name)] = append(index[FoldName(p.Name)], i)
-		}
+	if err := s.parseView(ctx, *outcomes, names); err != nil {
+		return nil, err
 	}
-	bytesLeft, tokensLeft, valuesLeft, partsLeft := maxXMLBytes, maxTokens, maxValues, maxParts
-	for _, p := range outcomes.Parts {
-		if err := ctx.Err(); err != nil {
-			return nil, err
-		}
-		if p.Directory || !strings.HasSuffix(FoldName(p.Name), ".rels") {
-			continue
-		}
-		part := PartResult{Part: p.Name, PartSHA256: p.SHA256, State: "completed"}
-		sourceName, valid := owner(p.Name)
-		part.SourcePart = sourceName
-		switch {
-		case !valid:
-			part.State, part.Code = "unsupported", "opc.relationship_name_unsupported"
-		case len(index[FoldName(p.Name)]) != 1:
-			part.State, part.Code = "failed", "opc.relationship_part_ambiguous"
-		case unavailable[p.Name].Code != "":
-			part.State, part.Code = unavailable[p.Name].State, unavailable[p.Name].Code
-		case partsLeft <= 0 || len(p.Bytes) > bytesLeft || tokensLeft <= 0 || valuesLeft <= 0:
-			part.State, part.Code = "not_run", "opc.resource_limit"
-		default:
-			partsLeft--
-			bytesLeft -= len(p.Bytes)
-			limits := xmlparts.DefaultLimits()
-			limits.Tokens = min(limits.Tokens, tokensLeft)
-			limits.RetainedBytes = min(limits.RetainedBytes, valuesLeft)
-			doc, used, err := xmlparts.ParseMeasured(ctx, p.Bytes, p.SHA256, limits)
-			tokensLeft -= used.Tokens
-			valuesLeft -= used.RetainedBytes
-			if err != nil {
-				if ctx.Err() != nil {
-					return nil, ctx.Err()
-				}
-				part.State, part.Code = "failed", xmlCode(err)
-			} else {
-				part.XML = doc
-				result.readPart(&part, index)
-			}
-		}
-		result.Parts = append(result.Parts, part)
-		if result.State == "not_applicable" {
-			result.State = "completed"
-		}
-		if part.State != "completed" {
-			result.State = "partial"
-		}
+	r, err := s.resultView(ctx, *outcomes)
+	if err != nil {
+		return nil, err
 	}
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
-	return result, nil
+	r.Package = pkg
+	return r, nil
 }
+
 func (r *Result) readPart(part *PartResult, index map[string][]int) {
 	d := part.XML
 	if len(d.Elements) == 0 || d.Elements[0].Name.Namespace != Namespace || d.Elements[0].Name.Local != "Relationships" {

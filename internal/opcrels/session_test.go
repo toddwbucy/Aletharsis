@@ -147,3 +147,42 @@ func TestMalformedPartChargesConsumptionAcrossBothPaths(t *testing.T) {
 		}
 	}
 }
+
+func TestUnparsedRelationshipClassificationMatchesOneShot(t *testing.T) {
+	raw := archive(t, map[string]string{"stray.rels": "<a/>", "_rels/.rels": rels(""), "_RELS/.rels": rels(""), "word/_rels/main.xml.rels": rels("")})
+	reader, err := packageparts.OpenOutcomes(context.Background(), raw, evidence.Hash(raw), packageparts.DefaultLimits())
+	if err != nil {
+		t.Fatal(err)
+	}
+	session, err := NewSession(reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert := func() {
+		t.Helper()
+		staged, err := session.Result(context.Background())
+		if err != nil {
+			t.Fatal(err)
+		}
+		view := reader.ReadOnlyView()
+		strict, err := inspectPackage(context.Background(), nil, &view)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !reflect.DeepEqual(staged, strict) {
+			t.Fatalf("staged/one-shot classification differs:\n%+v\n%+v", staged.Parts, strict.Parts)
+		}
+		codes := map[string]string{}
+		for _, p := range staged.Parts {
+			codes[p.Part] = p.Code
+		}
+		if codes["stray.rels"] != "opc.relationship_name_unsupported" || codes["_rels/.rels"] != "opc.relationship_part_ambiguous" || codes["_RELS/.rels"] != "opc.relationship_part_ambiguous" || codes["word/_rels/main.xml.rels"] != "office.part_not_admitted" {
+			t.Fatal(codes)
+		}
+	}
+	assert()
+	if err := session.Parse(context.Background(), []string{"stray.rels", "_rels/.rels", "_RELS/.rels", "word/_rels/main.xml.rels"}); err != nil {
+		t.Fatal(err)
+	}
+	assert()
+}

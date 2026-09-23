@@ -57,3 +57,11 @@ func Assemble(ctx context.Context, source []byte, p *Prepared, a *Analysis, pars
 	}
 	return result, nil
 }
+
+// partLayer excludes object records until their separate execution owns them.
+// It copies the evidence header; the retained part records remain read-only.
+func partLayer(a *Assembly) *PackageRecords {
+	evidence := a.Evidence
+	evidence.Objects = nil
+	return &PackageRecords{Evidence: evidence, Artifacts: a.Artifacts}
+}

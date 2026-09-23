@@ -85,3 +85,27 @@ func TestManifestCandidateRejectsIncompleteOrConflictingDeclarations(t *testing.
 		})
 	}
 }
+
+func TestPreparedManifestRejectsStalePrerequisiteIdentity(t *testing.T) {
+	for _, name := range []string{"manifest", "mimetype"} {
+		t.Run(name, func(t *testing.T) {
+			reader, p := prepare(t, base())
+			if err := reader.Admit(context.Background(), []string{"content.xml"}); err != nil {
+				t.Fatal(err)
+			}
+			if _, err := InspectPrepared(context.Background(), reader, p); err != nil {
+				t.Fatal(err)
+			}
+			// Private prepared state models a stale digest; the reader itself never
+			// exposes mutation of an admitted record.
+			if name == "manifest" {
+				p.result.ManifestSHA256 = evidence.Hash([]byte("stale"))
+			} else {
+				p.result.MimetypeSHA256 = evidence.Hash([]byte("stale"))
+			}
+			if _, err := InspectPrepared(context.Background(), reader, p); err != packageparts.ErrIdentity {
+				t.Fatal("stale prerequisite accepted", err)
+			}
+		})
+	}
+}

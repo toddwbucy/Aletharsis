@@ -97,5 +97,19 @@ func InspectPrepared(ctx context.Context, reader *packageparts.OutcomeReader, p 
 	if !p.ready {
 		return &r, nil
 	}
+	for name, digest := range map[string]string{"mimetype": r.MimetypeSHA256, "META-INF/manifest.xml": r.ManifestSHA256} {
+		matches := 0
+		for _, o := range view.Parts {
+			if o.Part.Name == name && !o.Part.Directory {
+				matches++
+				if o.State != "completed" || digest == "" || o.Part.SHA256 != digest {
+					return nil, packageparts.ErrIdentity
+				}
+			}
+		}
+		if matches != 1 {
+			return nil, packageparts.ErrIdentity
+		}
+	}
 	return finishPackage(ctx, &view, &r)
 }

@@ -162,9 +162,7 @@ func BuildIdentityGraph(ctx context.Context, p *Prepared, assembly *Assembly, de
 		}
 	}
 	result.Outcomes = coverage.Outcomes
-	partEvidence := assembly.Evidence
-	partEvidence.Objects = nil
-	parent, err := OperationCoverage(&PackageRecords{Evidence: partEvidence, Artifacts: assembly.Artifacts}, coverage, descriptor.ID, config, execution)
+	parent, err := OperationCoverage(partLayer(assembly), coverage, descriptor.ID, config, execution)
 	if err != nil {
 		return nil, err
 	}

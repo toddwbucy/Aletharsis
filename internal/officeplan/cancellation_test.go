@@ -69,3 +69,44 @@ func TestCanceledAnalysisRetainsEverySelectedTarget(t *testing.T) {
 		}
 	}
 }
+
+// Deterministically interrupt at successive producer checks, without timing races.
+type deadlineAfterChecks struct {
+	context.Context
+	left int
+}
+
+func (c *deadlineAfterChecks) Err() error {
+	c.left--
+	if c.left <= 0 {
+		return context.DeadlineExceeded
+	}
+	return nil
+}
+func TestInFlightDeadlineIsCanceledNotMalformed(t *testing.T) {
+	for _, fixture := range []string{"office-minimal.docx", "office-odt-minimal.odt"} {
+		raw := budgetArchive(t, budgetBase(t, fixture), false)
+		p, err := Prepare(context.Background(), raw, evidence.Hash(raw), DefaultLimits())
+		if err != nil {
+			t.Fatal(err)
+		}
+		seen := false
+		for checks := 1; checks <= 80; checks++ {
+			a, err := AnalyzePrepared(&deadlineAfterChecks{Context: context.Background(), left: checks}, p)
+			if err != nil && !errors.Is(err, context.DeadlineExceeded) {
+				t.Fatal(err)
+			}
+			for _, part := range a.Parts {
+				if errors.Is(part.Error, context.DeadlineExceeded) {
+					if part.State != "not_run" && part.State != "canceled" {
+						t.Fatal("timeout reported as broken part", part.State)
+					}
+					seen = seen || part.State == "canceled"
+				}
+			}
+		}
+		if !seen {
+			t.Fatal("never interrupted in-flight extraction", fixture)
+		}
+	}
+}

@@ -38,7 +38,8 @@ type Analysis struct {
 // discovers files nor follows relationships outside the package. Independently
 // declaration-selected targets do not depend on a successful overall identity;
 // each payload must still pass its own namespace/root and admission checks. Cancellation retains every selected
-// target: unstarted operations are not_run, and completed siblings remain usable.
+// target: unstarted operations are not_run, interrupted operations are canceled
+// (with a distinct timeout code for deadlines), and completed siblings remain usable.
 func AnalyzePrepared(ctx context.Context, p *Prepared) (*Analysis, error) {
 	if ctx == nil || p == nil || p.Admission == nil || p.DOCX == nil || p.ODT == nil {
 		return nil, v4.ErrLinkage
@@ -157,7 +158,7 @@ func AnalyzePrepared(ctx context.Context, p *Prepared) (*Analysis, error) {
 					record.State = record.Word.State
 				}
 			}
-			if errors.Is(record.Error, context.Canceled) && record.State == "failed" {
+			if (errors.Is(record.Error, context.Canceled) || errors.Is(record.Error, context.DeadlineExceeded)) && record.State == "failed" {
 				record.State = "canceled"
 			}
 			result.Parts = append(result.Parts, record)

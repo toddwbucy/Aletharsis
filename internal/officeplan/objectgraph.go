@@ -165,9 +165,7 @@ func BuildObjectGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *A
 		}
 		// Object outcomes are validated under this parent; leave unrelated object
 		// slots out of the package-layer helper's temporary execution index.
-		partEvidence := assembly.Evidence
-		partEvidence.Objects = nil
-		parent, err = OperationCoverage(&PackageRecords{Evidence: partEvidence, Artifacts: assembly.Artifacts}, coverage, descriptor.ID, config, execution)
+		parent, err = OperationCoverage(partLayer(assembly), coverage, descriptor.ID, config, execution)
 		if err != nil {
 			return nil, err
 		}

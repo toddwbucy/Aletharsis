@@ -3,6 +3,7 @@ package officeplan
 import (
 	"context"
 	"errors"
+	"fmt"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -76,6 +77,24 @@ func TestBuildOfficeReportsWithoutWireFixtureTemplates(t *testing.T) {
 			}
 			if decoded.CatalogVersion != capability.OfficeCatalogVersion || decoded.Status != v2.Partial || decoded.Summary["exit_code"] != 4 {
 				t.Fatal("unavailable checks hidden", decoded.Status, decoded.Summary)
+			}
+			refs := map[string]bool{}
+			for _, e := range decoded.Trace.Executions {
+				refs[e.Ref] = true
+			}
+			for i := range decoded.Trace.Executions {
+				if !refs[fmt.Sprintf("exec/%d", i)] {
+					t.Fatal("reserved execution ordinal missing", i)
+				}
+			}
+			refs = map[string]bool{}
+			for _, d := range decoded.Trace.Diagnostics {
+				refs[d.Ref] = true
+			}
+			for i := range decoded.Trace.Diagnostics {
+				if !refs[fmt.Sprintf("diagnostic/%d", i)] {
+					t.Fatal("allocated diagnostic missing", i)
+				}
 			}
 			planned := map[string]bool{}
 			for _, e := range decoded.Trace.Executions {

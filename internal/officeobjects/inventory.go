@@ -84,7 +84,7 @@ func Inspect(ctx context.Context, doc *docxidentify.Result) (*Result, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
-	if doc.Format != "docx" && doc.MainPart == "" {
+	if doc.MainPart == "" {
 		return nil, errors.New("embedded-object inventory requires a declared DOCX main part")
 	}
 	opc := doc.OPC

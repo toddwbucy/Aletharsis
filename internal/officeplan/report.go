@@ -65,9 +65,7 @@ func buildReportWithCatalog(ctx context.Context, source []byte, file evidence.Fi
 	if err != nil {
 		return nil, fmt.Errorf("assembly: %w", err)
 	}
-	partEvidence := assembly.Evidence
-	partEvidence.Objects = nil
-	base := &PackageRecords{Evidence: partEvidence, Artifacts: assembly.Artifacts}
+	base := partLayer(assembly)
 	parse, parseDiagnostics, err := PackageCoverage(base, configs[capability.ParseOfficeID], parseOrdinal, 0)
 	if err != nil {
 		return nil, fmt.Errorf("parse, parseDiagnostics: %w", err)
@@ -130,6 +128,11 @@ func buildReportWithCatalog(ctx context.Context, source []byte, file evidence.Fi
 		planned[e.CapabilityRef] = true
 	}
 
+	// This coordinator owns the reserved profile execution. A fragment cannot
+	// consume that capability and silently leave its reserved ordinal unused.
+	if planned[capability.OfficeProfilesID] {
+		return nil, v4.ErrLinkage
+	}
 	for _, c := range catalog {
 		if planned[c.ID] {
 			continue

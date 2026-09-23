@@ -71,9 +71,7 @@ func BuildPartGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *Ass
 	}
 	// Object inspection is owned by its separate graph fragment. Keep its
 	// already assembled records out of this fragment's outcome validation only.
-	partEvidence := assembly.Evidence
-	partEvidence.Objects = nil
-	base := &PackageRecords{Evidence: partEvidence, Artifacts: assembly.Artifacts}
+	base := partLayer(assembly)
 	content, err := CollectAnalysisCoverage(ctx, base, a, ordinals, firstDiagnostic)
 	if err != nil {
 		return nil, err
@@ -86,10 +84,18 @@ func BuildPartGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *Ass
 		byOperation[o.Operation].Outcomes = append(byOperation[o.Operation].Outcomes, o)
 	}
 	for _, d := range content.Diagnostics {
+		routed := false
 		for _, op := range []string{capability.OfficeMetadataID, capability.OfficeTextID} {
 			if d.ExecutionRef != nil && *d.ExecutionRef == fmt.Sprintf("exec/%d", ordinals[op]) {
+				if routed {
+					return nil, v4.ErrLinkage
+				}
 				byOperation[op].Diagnostics = append(byOperation[op].Diagnostics, d)
+				routed = true
 			}
+		}
+		if !routed {
+			return nil, v4.ErrLinkage
 		}
 	}
 	nextDiagnostic := firstDiagnostic + len(content.Diagnostics)
@@ -234,6 +240,9 @@ func BuildPartGraph(ctx context.Context, p *Prepared, a *Analysis, assembly *Ass
 			span := doc.Tokens[boundary.Token].Span
 			ref := fmt.Sprintf("exec/%d", ordinals[capability.OfficeTextID])
 			d := v2.Diagnostic{Ref: fmt.Sprintf("diagnostic/%d", nextDiagnostic), ExecutionRef: &ref, Stage: failure.Parsing, Code: failure.Code("office.boundary." + boundary.Reason), Message: "Located extraction boundary retained without a surviving text scope.", Details: v2.ErrorDetails{ErrorType: "OfficeBoundary"}, Scope: &v2.Scope{ArtifactRef: part.ArtifactRef, Unit: "byte", Regions: identityRegions([]v4.Span{span})}}
+			if err := d.Validate(); err != nil {
+				return nil, err
+			}
 			nextDiagnostic++
 			result.Trace.Diagnostics = append(result.Trace.Diagnostics, d)
 			for i := range result.Trace.Executions {

@@ -189,3 +189,17 @@ func TestUnavailableObjectFailureStillDegradesInventory(t *testing.T) {
 		}
 	}
 }
+
+func TestInventoryRequiresDeclaredMainRegardlessOfFormatLabel(t *testing.T) {
+	for _, format := range []string{"docx", "unknown"} {
+		doc := fixture(t, nil, "", "")
+		doc.Format = format
+		if _, err := Inspect(context.Background(), doc); err != nil {
+			t.Fatal("declaration rejected", err)
+		}
+		doc.MainPart = ""
+		if _, err := Inspect(context.Background(), doc); err == nil {
+			t.Fatal("format label substituted for declaration")
+		}
+	}
+}

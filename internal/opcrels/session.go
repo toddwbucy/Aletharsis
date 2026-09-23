@@ -22,17 +22,41 @@ func NewSession(reader *packageparts.OutcomeReader) (*Session, error) {
 	if reader == nil || reader.SourceSHA256() == "" {
 		return nil, packageparts.ErrIdentity
 	}
-	return &Session{reader: reader, parsed: map[string]PartResult{}, bytesLeft: maxXMLBytes, tokensLeft: maxTokens, valuesLeft: maxValues, partsLeft: maxParts}, nil
+	s := newSession()
+	s.reader = reader
+	return s, nil
+}
+
+func newSession() *Session {
+	return &Session{parsed: map[string]PartResult{}, bytesLeft: maxXMLBytes, tokensLeft: maxTokens, valuesLeft: maxValues, partsLeft: maxParts}
+}
+
+// classifyPart applies name and ambiguity precedence before admission state in
+// both staged and one-shot inspection, including parts not selected for parsing.
+func classifyPart(o packageparts.Outcome, count int) PartResult {
+	source, valid := owner(o.Part.Name)
+	part := PartResult{Part: o.Part.Name, PartSHA256: o.Part.SHA256, SourcePart: source, State: o.State, Code: o.Code}
+	switch {
+	case !valid:
+		part.State, part.Code = "unsupported", "opc.relationship_name_unsupported"
+	case count != 1:
+		part.State, part.Code = "failed", "opc.relationship_part_ambiguous"
+	case o.State == "completed":
+		part.State, part.Code = "not_run", "opc.relationship_not_parsed"
+	}
+	return part
 }
 
 // Parse admits no payloads itself. Names select the coordinator's current phase,
 // preserving priority over unrelated relationship parts. Unknown names fail before
 // parsing any member. Unadmitted parts can be reconsidered after later admission.
 func (s *Session) Parse(ctx context.Context, names []string) error {
-	if ctx == nil {
+	if ctx == nil || s == nil || s.reader == nil {
 		return packageparts.ErrIdentity
 	}
-	view := s.reader.ReadOnlyView()
+	return s.parseView(ctx, s.reader.ReadOnlyView(), names)
+}
+func (s *Session) parseView(ctx context.Context, view packageparts.OutcomeView, names []string) error {
 	byName := map[string]packageparts.Outcome{}
 	counts := map[string]int{}
 	for _, o := range view.Parts {
@@ -58,15 +82,13 @@ func (s *Session) Parse(ctx context.Context, names []string) error {
 		if p.Directory || !strings.HasSuffix(FoldName(name), ".rels") {
 			continue
 		}
-		source, valid := owner(name)
-		part := PartResult{Part: name, PartSHA256: p.SHA256, SourcePart: source, State: "completed"}
-		switch {
-		case !valid:
-			part.State, part.Code = "unsupported", "opc.relationship_name_unsupported"
-		case counts[FoldName(name)] != 1:
-			part.State, part.Code = "failed", "opc.relationship_part_ambiguous"
-		case o.State != "completed":
+		part := classifyPart(o, counts[FoldName(name)])
+		if part.Code != "opc.relationship_not_parsed" {
+			// Unavailable payloads can be reconsidered after later admission.
 			continue
+		}
+		part.State, part.Code = "completed", ""
+		switch {
 		case s.partsLeft <= 0 || len(p.Bytes) > s.bytesLeft || s.tokensLeft <= 0 || s.valuesLeft <= 0:
 			part.State, part.Code = "not_run", "opc.resource_limit"
 		default:
@@ -100,10 +122,12 @@ func (s *Session) Parse(ctx context.Context, names []string) error {
 // Package payload slices borrow the reader's verified bytes and must not be
 // modified; outcome structs and relationship records belong to this result.
 func (s *Session) Result(ctx context.Context) (*Result, error) {
-	if ctx == nil {
+	if ctx == nil || s == nil || s.reader == nil {
 		return nil, packageparts.ErrIdentity
 	}
-	view := s.reader.ReadOnlyView()
+	return s.resultView(ctx, s.reader.ReadOnlyView())
+}
+func (s *Session) resultView(ctx context.Context, view packageparts.OutcomeView) (*Result, error) {
 	index := map[string][]int{}
 	for i, o := range view.Parts {
 		if !o.Part.Directory {
@@ -121,11 +145,7 @@ func (s *Session) Result(ctx context.Context) (*Result, error) {
 		}
 		part, ok := s.parsed[p.Name]
 		if !ok {
-			source, _ := owner(p.Name)
-			part = PartResult{Part: p.Name, PartSHA256: p.SHA256, SourcePart: source, State: o.State, Code: o.Code}
-			if o.State == "completed" {
-				part.State, part.Code = "not_run", "opc.relationship_not_parsed"
-			}
+			part = classifyPart(o, len(index[FoldName(p.Name)]))
 		} else if part.XML != nil {
 			r.readPart(&part, index)
 		}

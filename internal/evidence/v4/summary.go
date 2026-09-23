@@ -78,7 +78,7 @@ func summaryCounts(r Report) (map[string]int, error) {
 	counts := map[string]int{"findings": len(r.Findings), "high": 0, "medium": 0, "low": 0, "info": 0, "exit_code": 0}
 	for _, f := range r.Findings {
 		key := strings.ToLower(f.Severity)
-		if key != "high" && key != "medium" && key != "low" && key != "info" {
+		if f.Severity != "HIGH" && f.Severity != "MEDIUM" && f.Severity != "LOW" && f.Severity != "INFO" {
 			return nil, ErrLinkage
 		}
 		counts[key]++
